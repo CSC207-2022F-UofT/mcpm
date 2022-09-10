@@ -1,5 +1,6 @@
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.kohsuke.github.*
@@ -156,20 +157,50 @@ class CreateTeam()
         listOf(/*fo, repoCount, days, */stars, prs, issues, contrib).average()
     }
 
+    fun scoreOrNull(name: String): GithubResult?
+    {
+        return try { GithubResult(name, scoreUser(cachedGithubUser(name))) }
+        catch(e: GHFileNotFoundException) {
+            println("Not found: $name")
+            null
+        }
+    }
+
     /**
      * Get scores of each student
      *
-     * @return Map<GitHub username, Score>
+     * @return List<GithubResult>
      */
-    fun getScores(): List<GithubResult>
+    fun getScores() = crawlStudents().mapNotNull { scoreOrNull(it) }.sortedBy { it.score }.reversed()
+
+    /**
+     * Monitor for new students to submit scores
+     *
+     * @param period Delay period in seconds
+     */
+    suspend fun monitor(period: Double)
     {
-        return crawlStudents().mapNotNull {
-            try { GithubResult(it, scoreUser(cachedGithubUser(it))) }
-            catch(e: GHFileNotFoundException) {
-                println("Not found: $it")
-                null
+        val lastStudents = mutableListOf("")
+
+        while (true)
+        {
+            delay((period * 1000).toLong())
+
+            println("\nFetching students...")
+            val curStudents = crawlStudents().filter { ! lastStudents.contains(it) }
+
+            // No new students
+            if (curStudents.isEmpty())
+            {
+                println("> No new student found")
+                continue
             }
-        }.sortedBy { it.score }.reversed()
+
+            // Yes new students >_<
+            curStudents.mapNotNull { scoreOrNull(it) }.forEach { println(it) }
+
+            lastStudents.addAll(curStudents)
+        }
     }
 }
 
@@ -193,10 +224,12 @@ data class GithubResult(
     override fun toString() = "$name: ${(score * 100).format(1)}%"
 }
 
-fun main(args: Array<String>)
+suspend fun main(args: Array<String>)
 {
     val createTeam = CreateTeam()
 
     // println(createTeam.scoreUser(createTeam.cachedGithubUser("hykilpikonna")))
-    println(createTeam.getScores().joinToString("\n"))
+    // println(createTeam.getScores().joinToString("\n"))
+    createTeam.monitor(5.0)
 }
+
