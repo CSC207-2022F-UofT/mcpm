@@ -197,7 +197,7 @@ class CreateTeam()
             }
 
             // Yes new students >_<
-            curStudents.mapNotNull { scoreOrNull(it) }.forEach { println(it) }
+            curStudents.mapNotNull { scoreOrNull(it) }.sortedBy { it.score }.forEach { println(it) }
 
             lastStudents.addAll(curStudents)
         }
