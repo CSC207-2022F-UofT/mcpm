@@ -2,11 +2,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.kohsuke.github.GHRepository
-import org.kohsuke.github.GHUser
-import org.kohsuke.github.GitHub
-import org.kohsuke.github.GitHubBuilder
+import org.kohsuke.github.*
 import java.io.File
+import java.util.*
 import kotlin.text.Charsets.UTF_8
 
 
@@ -157,6 +155,19 @@ class CreateTeam()
         // println("$fo, $repoCount, $days, $stars, $prs, $issues, $contrib")
         listOf(fo, repoCount, days, stars, prs, issues, contrib).average()
     }
+
+    /**
+     * Get scores of each student
+     *
+     * @return Map<GitHub username, Score>
+     */
+    fun getScores(): List<GithubResult>
+    {
+        return crawlStudents().mapNotNull {
+            try { GithubResult(it, scoreUser(cachedGithubUser(it))) }
+            catch(e: GHFileNotFoundException) { null }
+        }.sortedBy { it.score }.reversed()
+    }
 }
 
 data class GithubStats(
@@ -169,8 +180,20 @@ data class GithubStats(
     val contrib: Int
 )
 
+fun Double.format(digits: Int) = "%.${digits}f".format(this)
+
+data class GithubResult(
+    val name: String,
+    val score: Double
+)
+{
+    override fun toString() = "$name: ${(score * 100).format(1)}%"
+}
+
 fun main(args: Array<String>)
 {
     val createTeam = CreateTeam()
-    println(createTeam.scoreUser(createTeam.cachedGithubUser("hykilpikonna")))
+
+    // println(createTeam.scoreUser(createTeam.cachedGithubUser("hykilpikonna")))
+    println(createTeam.getScores().joinToString("\n"))
 }
