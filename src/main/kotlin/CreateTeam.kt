@@ -7,10 +7,14 @@ import org.kohsuke.github.*
 import java.io.File
 import java.util.*
 import kotlin.text.Charsets.UTF_8
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
 
 
 val GSON = Gson()
 val HTTP = OkHttpClient()
+val KTOR = HttpClient(CIO)
 
 /**
  * fromJson patch for Kotlin
@@ -33,6 +37,8 @@ inline fun <reified T> Gson.fromJson(json: String): T
 class CreateTeam()
 {
     private val ghToken: String? = System.getenv("gh_token")
+    private val tgToken: String? = System.getenv("tg_token")
+    private val tgChatId: String? = System.getenv("tg_chat")
     private val github: GitHub
 
     init
@@ -41,6 +47,14 @@ class CreateTeam()
             throw RuntimeException("Please put gh_token in env")
 
         github = GitHubBuilder().withOAuthToken(ghToken).build()
+    }
+
+    suspend fun logTelegram(msg: String)
+    {
+        KTOR.get("https://api.telegram.org/$tgToken/sendMessage") {
+            parameter("chat_id", tgChatId)
+            parameter("text", msg)
+        }
     }
 
     /**
@@ -180,7 +194,7 @@ class CreateTeam()
      */
     suspend fun monitor(period: Double)
     {
-        val lastStudents = mutableListOf("")
+        val lastStudents = crawlStudents().toMutableList()
 
         while (true)
         {
@@ -197,7 +211,10 @@ class CreateTeam()
             }
 
             // Yes new students >_<
-            curStudents.mapNotNull { scoreOrNull(it) }.sortedBy { it.score }.forEach { println(it) }
+            curStudents.mapNotNull { scoreOrNull(it) }.sortedBy { it.score }.forEach {
+                println(it)
+                logTelegram(it.toString())
+            }
 
             lastStudents.addAll(curStudents)
         }
@@ -229,7 +246,8 @@ suspend fun main(args: Array<String>)
     val createTeam = CreateTeam()
 
     // println(createTeam.scoreUser(createTeam.cachedGithubUser("hykilpikonna")))
-    // println(createTeam.getScores().joinToString("\n"))
+    println(createTeam.getScores().joinToString("\n"))
     createTeam.monitor(5.0)
+    // createTeam.logTelegram("Test")
 }
 

@@ -14,9 +14,13 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
-    // HTTP Client
+    // OKHTTP HTTP Client
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
+    // Ktor HTTP Client
+    implementation "io.ktor:ktor-client-core:2.1.1"
+    implementation "io.ktor:ktor-client-cio:2.1.1"
 
     // Github API Client
     // https://mvnrepository.com/artifact/org.kohsuke/github-api
