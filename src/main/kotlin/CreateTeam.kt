@@ -134,11 +134,11 @@ class CreateTeam()
     fun scoreUser(user: GHUser): Double = cachedFn("data/processed/score/${user.login}")
     {
         // Compute scores for followers count and repo count
-        val fo = user.followersCount / 144f
-        val repoCount = user.publicRepoCount / 94f
+        // val fo = user.followersCount / 144f
+        // val repoCount = user.publicRepoCount / 94f
 
         // Compute score for days since the account is created
-        val days = ((System.currentTimeMillis() - user.createdAt.time) / 1000f / 60f / 60f / 24f) / 2183f
+        // val days = ((System.currentTimeMillis() - user.createdAt.time) / 1000f / 60f / 60f / 24f) / 2183f
 
         // Compute score for number of repos
         // val tmpRepos = cachedGithubUserRepos(user)
@@ -153,7 +153,7 @@ class CreateTeam()
 
         // Compute score
         // println("$fo, $repoCount, $days, $stars, $prs, $issues, $contrib")
-        listOf(fo, repoCount, days, stars, prs, issues, contrib).average()
+        listOf(/*fo, repoCount, days, */stars, prs, issues, contrib).average()
     }
 
     /**
@@ -165,7 +165,10 @@ class CreateTeam()
     {
         return crawlStudents().mapNotNull {
             try { GithubResult(it, scoreUser(cachedGithubUser(it))) }
-            catch(e: GHFileNotFoundException) { null }
+            catch(e: GHFileNotFoundException) {
+                println("Not found: $it")
+                null
+            }
         }.sortedBy { it.score }.reversed()
     }
 }
