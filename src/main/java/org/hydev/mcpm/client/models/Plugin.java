@@ -8,7 +8,8 @@ import java.util.List;
  *
  * @param name Name of the package
  * @param desc Description of what the package does
- * @param url Home page URL
+ * @param url Home page URL (provided by the latest version's meta)
+ * @param authors Authors (provided by the latest version's meta)
  * @param license License
  * @param maintainer Maintainer of the package
  * @param versions Current & historical versions (sorted in time order)
@@ -16,13 +17,14 @@ import java.util.List;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public record Package(
+public record Plugin(
     String name,
     String desc,
     String url,
+    List<String> authors,
     String license,
     String maintainer,
-    List<PackageVersion> versions
+    List<PluginVersion> versions
 )
 {
 }

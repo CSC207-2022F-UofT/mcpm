@@ -16,11 +16,16 @@ import java.util.List;
  * @param depends Runtime dependencies
  * @param makeDepends Building dependencies
  * @param checkDepends Testing dependencies
+ * @param main Main class identifier (in plugin.yml)
+ * @param apiVersion Minecraft Bukkit API Version (in plugin.yml)
+ * @param website Website url (in plugin.yml)
+ * @param authors Authors (in plugin.yml)
+ * @param commands Declared commands (in plugin.yml)
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public record PackageVersion(
+public record PluginVersion(
     String fileName,
     String version,
     long size,
@@ -31,7 +36,13 @@ public record PackageVersion(
 
     List<String> depends,
     List<String> makeDepends,
-    List<String> checkDepends
+    List<String> checkDepends,
+
+    String main,
+    String apiVersion,
+    String website,
+    List<String> authors,
+    List<PluginCommand> commands
 )
 {
 }
