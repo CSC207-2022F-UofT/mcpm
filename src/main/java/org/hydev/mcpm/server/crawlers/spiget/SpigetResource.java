@@ -6,6 +6,18 @@ import java.util.Map;
 /**
  * Spiget Resource POJO for endpoint api.spiget.org/v2/resources
  *
+ * @param id Resource ID
+ * @param name Displayed name (NOT UNIQUE/FINAL!)
+ * @param tag Displayed description
+ * @param external Whether it's an external resource
+ * @param likes Number of likes
+ * @param testedVersions Tested versions
+ * @param links Links
+ * @param releaseDate Release timestamp in ms
+ * @param updateDate Update timestamp in ms
+ * @param downloads Number of downloads
+ * @param existenceStatus Existence status, IDK what this means
+ *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
