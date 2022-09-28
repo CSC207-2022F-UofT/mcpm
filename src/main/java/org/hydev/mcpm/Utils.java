@@ -23,15 +23,39 @@ public class Utils
      * @param parameters Parameters in pairs (length must be multiple of two)
      * @return URI object
      */
-    public static URI makeUrl(String url, Object... parameters) throws URISyntaxException
+    public static URI makeUrl(String url, Object... parameters)
     {
-        var builder = new URIBuilder(url);
-
-        for (int i = 0; i < parameters.length; i += 2)
+        try
         {
-            builder.addParameter(parameters[i].toString(), parameters[i + 1].toString());
-        }
+            var builder = new URIBuilder(url);
 
-        return builder.build();
+            for (int i = 0; i < parameters.length; i += 2)
+            {
+                builder.addParameter(parameters[i].toString(), parameters[i + 1].toString());
+            }
+
+            return builder.build();
+        }
+        catch (URISyntaxException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Sleep but throw runtime exception instead of regular exception
+     *
+     * @param ms Duration to sleep in ms
+     */
+    public static void safeSleep(long ms)
+    {
+        try
+        {
+            Thread.sleep(ms);
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
