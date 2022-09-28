@@ -21,6 +21,10 @@ java {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
+    // Apache HTTP Client
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5-fluent
+    implementation 'org.apache.httpcomponents.client5:httpclient5-fluent:5.2-beta1'
+
     // OKHTTP HTTP Client
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
@@ -34,6 +38,15 @@ dependencies {
     implementation 'org.kohsuke:github-api:1.308'
 
     // Json parser
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0-rc1'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0-rc1'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1'
+
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation 'com.google.code.gson:gson:2.9.1'
 
