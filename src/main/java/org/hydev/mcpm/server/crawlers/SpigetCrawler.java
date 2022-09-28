@@ -59,13 +59,9 @@ public class SpigetCrawler
             // Return array
             return StreamSupport.stream(page.spliterator(), false).toList();
         }
-        catch (URISyntaxException e)
+        catch (URISyntaxException | IOException e)
         {
             throw new RuntimeException(e);
-        }
-        catch (IOException e)
-        {
-            return new ArrayList<>();
         }
     }
 
