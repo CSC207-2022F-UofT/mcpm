@@ -43,7 +43,8 @@ public class SpigetCrawler
         try
         {
             // Send request
-            var resp = Request.get(makeUrl(SPIGET + "/resources", "size", 500, "sort", "+id", "page", i))
+            var resp = Request.get(makeUrl(SPIGET + "/resources", "size", 500, "sort", "+id", "page", i,
+                    "fields", "id,name,tag,external,likes,testedVersions,links,contributors,premium,price,currency,version,releaseDate,updateDate,downloads,existenceStatus"))
                 .addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
                 .execute().returnContent().asString();
 
