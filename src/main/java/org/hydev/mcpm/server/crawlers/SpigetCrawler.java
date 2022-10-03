@@ -210,43 +210,7 @@ public class SpigetCrawler
      */
     private File getTemporaryDownloadPath(SpigetResource res)
     {
-        return new File(format(".mcpm/crawler/spiget/dl-cache/latest/%s.jar",
-            res.id()));
-    }
-
-    /**
-     * Get a list of versions in all plugins that haven't been downloaded locally
-     *
-     * @param res List of plugins
-     * @return List of versions
-     */
-    private List<SpigetVersion> getVersionsToDownload(List<SpigetResource> res)
-    {
-        return res.stream().flatMap(r -> filterDuplicateVersions(crawlVersions(r.id(), false))
-            .stream().filter(v -> !getTemporaryDownloadPath(v).isFile()))
-            .collect(Collectors.toList());
-    }
-
-    private void download(SpigetVersion version)
-    {
-        var fp = getTemporaryDownloadPath(version);
-
-        // Make request
-        var url = makeUrl(format(SPIGET + "/resources/%s/versions/%s/download",
-            version.resource(), version.id()));
-
-        try
-        {
-            // Write bytes
-            Files.write(fp.toPath(), Request.get(url).addHeader("User-Agent", UA).execute()
-                .returnContent().asBytes());
-
-            System.out.printf("Downloaded %s version %s", version.url(), version.name());
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return new File(format(".mcpm/crawler/spiget/dl-cache/latest/%s.jar", res.id()));
     }
 
     /**
@@ -301,26 +265,11 @@ public class SpigetCrawler
 
         System.out.println(res.size());
 
-        // .parallel()
-        //res.stream().filter(it -> it.downloads() > 1000).map(SpigetResource::id).map(it -> {
-        //    crawler.crawlVersions(it, false);
-        //
-        //    // Wait some time (because of rate limit)
-        //    //safeSleep(MT_DELAY);
-        //
-        //    return 0;
-        //}).toList();
-
-        //crawler.getVersionsToDownload(res).stream().forEach(crawler::download);
-
         res.stream().filter(it -> !crawler.getTemporaryDownloadPath(it).isFile()).parallel().forEach(it ->
         {
             crawler.downloadLatest(it);
 
             safeSleep(MT_DELAY);
         });
-
-        //new SpigetCrawler().crawlAllResources();
-        //new SpigetCrawler().crawlVersions(2, true);
     }
 }
