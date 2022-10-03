@@ -2,7 +2,6 @@ package org.hydev.mcpm.server.crawlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.fluent.Request;
@@ -13,15 +12,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static java.lang.String.format;
-import static org.hydev.mcpm.Utils.makeUrl;
-import static org.hydev.mcpm.Utils.safeSleep;
+import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
+import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
 /**
  * TODO: Write a description for this class!
@@ -130,79 +128,6 @@ public class SpigetCrawler
     }
 
     /**
-     * Crawl the versions of a resource
-     *
-     * @param resourceId Resource ID
-     * @param refresh Whether to invalidate and refresh cache
-     * @return List of versions
-     */
-    public List<SpigetVersion> crawlVersions(long resourceId, boolean refresh)
-    {
-        var outPath = new File(".mcpm/crawler/spiget/versions/" + resourceId + ".json");
-
-        try
-        {
-            // Read existing cache
-            if (outPath.isFile() && !refresh)
-                return Arrays.asList(JACKSON.readValue(outPath, SpigetVersion[].class));
-
-            // Obtain new version info from HTTP request
-            var resp = Request.get(makeUrl(SPIGET + "/resources/" + resourceId + "/versions", "size", 500))
-                .addHeader("User-Agent", UA).execute().returnContent().asString();
-
-            // Parse json (validate that it can be parsed to json)
-            var json = Arrays.asList(JACKSON.readValue(resp, SpigetVersion[].class));
-
-            // Write to cache
-            outPath.getParentFile().mkdirs();
-            Files.writeString(outPath.toPath(), resp);
-
-            System.out.printf("Versions obtained for resource %s\n", resourceId);
-
-            safeSleep(150);
-
-            return json;
-        }
-        catch (IOException e)
-        {
-            if (e.getMessage().contains("404")) return new ArrayList<>();
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Filter out duplicate versions (If there are multiple versions with the same name, choose
-     * the one that's uploaded last)
-     *
-     * @param versions List of versions
-     * @return List of versions without duplicates
-     */
-    private List<SpigetVersion> filterDuplicateVersions(List<SpigetVersion> versions)
-    {
-        // Use linked hash map to preserve order
-        var tmp = new LinkedHashMap<String, SpigetVersion>();
-
-        // Sort so that the newest release is at the last, then put them in a map in order
-        // Then the map values will be the newest release of each version
-        versions.stream().sorted((a, b) -> Long.compare(b.releaseDate(), a.releaseDate()))
-            .forEach(it -> tmp.put(it.name(), it));
-
-        return tmp.values().stream().toList();
-    }
-
-    /**
-     * Get file download path for a version
-     *
-     * @param version Version of a plugin
-     * @return File download path
-     */
-    private File getTemporaryDownloadPath(SpigetVersion version)
-    {
-        return new File(format(".mcpm/crawler/spiget/dl-cache/%s/%s",
-            version.resource(), version.name()));
-    }
-
-    /**
      * Get file download path for the latest version of a plugin
      *
      * @param res Plugin
@@ -214,7 +139,7 @@ public class SpigetCrawler
     }
 
     /**
-     * Downlaod latest version of a plugin if not present
+     * Download the latest version of a plugin if not present
      *
      * @param res Resource
      */
