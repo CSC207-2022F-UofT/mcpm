@@ -1,25 +1,25 @@
 package org.hydev.mcpm.server.crawlers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.fluent.Request;
 import org.hydev.mcpm.server.crawlers.spiget.SpigetResource;
 import org.hydev.mcpm.server.crawlers.spiget.SpigetVersion;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
+import static java.lang.String.format;
 import static org.hydev.mcpm.Utils.makeUrl;
 import static org.hydev.mcpm.Utils.safeSleep;
 
@@ -34,7 +34,7 @@ public class SpigetCrawler
     public static final String SPIGET = "https://api.spiget.org/v2";
     public static final String UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
     public static final ObjectMapper JACKSON = new ObjectMapper()
-        .configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+        .configure(FAIL_ON_UNKNOWN_PROPERTIES, false).enable(INDENT_OUTPUT);;
     public static final long MT_DELAY = 1000;
 
     /**
@@ -170,20 +170,155 @@ public class SpigetCrawler
         }
     }
 
+    /**
+     * Filter out duplicate versions (If there are multiple versions with the same name, choose
+     * the one that's uploaded last)
+     *
+     * @param versions List of versions
+     * @return List of versions without duplicates
+     */
+    private List<SpigetVersion> filterDuplicateVersions(List<SpigetVersion> versions)
+    {
+        // Use linked hash map to preserve order
+        var tmp = new LinkedHashMap<String, SpigetVersion>();
+
+        // Sort so that the newest release is at the last, then put them in a map in order
+        // Then the map values will be the newest release of each version
+        versions.stream().sorted((a, b) -> Long.compare(b.releaseDate(), a.releaseDate()))
+            .forEach(it -> tmp.put(it.name(), it));
+
+        return tmp.values().stream().toList();
+    }
+
+    /**
+     * Get file download path for a version
+     *
+     * @param version Version of a plugin
+     * @return File download path
+     */
+    private File getTemporaryDownloadPath(SpigetVersion version)
+    {
+        return new File(format(".mcpm/crawler/spiget/dl-cache/%s/%s",
+            version.resource(), version.name()));
+    }
+
+    /**
+     * Get file download path for the latest version of a plugin
+     *
+     * @param res Plugin
+     * @return File download path
+     */
+    private File getTemporaryDownloadPath(SpigetResource res)
+    {
+        return new File(format(".mcpm/crawler/spiget/dl-cache/latest/%s.jar",
+            res.id()));
+    }
+
+    /**
+     * Get a list of versions in all plugins that haven't been downloaded locally
+     *
+     * @param res List of plugins
+     * @return List of versions
+     */
+    private List<SpigetVersion> getVersionsToDownload(List<SpigetResource> res)
+    {
+        return res.stream().flatMap(r -> filterDuplicateVersions(crawlVersions(r.id(), false))
+            .stream().filter(v -> !getTemporaryDownloadPath(v).isFile()))
+            .collect(Collectors.toList());
+    }
+
+    private void download(SpigetVersion version)
+    {
+        var fp = getTemporaryDownloadPath(version);
+
+        // Make request
+        var url = makeUrl(format(SPIGET + "/resources/%s/versions/%s/download",
+            version.resource(), version.id()));
+
+        try
+        {
+            // Write bytes
+            Files.write(fp.toPath(), Request.get(url).addHeader("User-Agent", UA).execute()
+                .returnContent().asBytes());
+
+            System.out.printf("Downloaded %s version %s", version.url(), version.name());
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Downlaod latest version of a plugin if not present
+     *
+     * @param res Resource
+     */
+    private void downloadLatest(SpigetResource res)
+    {
+        var fp = getTemporaryDownloadPath(res);
+        if (fp.isFile() || res.external()) return;
+
+        // Make request
+        var url = makeUrl(format(SPIGET + "/resources/%s/download", res.id()));
+
+        try
+        {
+            // Write bytes
+            fp.getParentFile().mkdirs();
+            Files.write(fp.toPath(), Request.get(url).addHeader("User-Agent", UA).execute()
+                .returnContent().asBytes());
+
+            System.out.printf("Downloaded (%s) %s latest version jar\n", res.id(), res.name());
+        }
+        catch (HttpResponseException e)
+        {
+            // Not found
+            if (e.getMessage().contains("404")) return;
+            // "External resource cannot be downloaded"
+            if (e.getMessage().contains("400")) return;
+            // Blocked by cloudflare
+            if (e.getMessage().contains("520")) return;
+            // This happens when the server has an error (e.g. when a plugin doesn't have files to download)
+            if (e.getMessage().contains("502")) return;
+            System.out.println("Error when downloading " + url + " " + e.getMessage());
+            //throw new RuntimeException("Error when downloading " + url, e);
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            //throw new RuntimeException("Error when downloading " + url, e);
+            System.out.println("Error when downloading " + url + " " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args)
     {
         var crawler = new SpigetCrawler();
-        var res = crawler.crawlAllResources(false);
+        var res = crawler.crawlAllResources(false).stream()
+            .filter(it -> it.downloads() > 1000 && !it.external()).toList();
+
+        System.out.println(res.size());
 
         // .parallel()
-        res.stream().filter(it -> it.downloads() > 1000).map(SpigetResource::id).map(it -> {
-            crawler.crawlVersions(it, false);
+        //res.stream().filter(it -> it.downloads() > 1000).map(SpigetResource::id).map(it -> {
+        //    crawler.crawlVersions(it, false);
+        //
+        //    // Wait some time (because of rate limit)
+        //    //safeSleep(MT_DELAY);
+        //
+        //    return 0;
+        //}).toList();
 
-            // Wait some time (because of rate limit)
-            //safeSleep(MT_DELAY);
+        //crawler.getVersionsToDownload(res).stream().forEach(crawler::download);
 
-            return 0;
-        }).toList();
+        res.stream().filter(it -> !crawler.getTemporaryDownloadPath(it).isFile()).parallel().forEach(it ->
+        {
+            crawler.downloadLatest(it);
+
+            safeSleep(MT_DELAY);
+        });
 
         //new SpigetCrawler().crawlAllResources();
         //new SpigetCrawler().crawlVersions(2, true);
