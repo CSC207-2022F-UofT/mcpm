@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.fluent.Request;
 import org.hydev.mcpm.server.crawlers.spiget.SpigetResource;
-import org.hydev.mcpm.server.crawlers.spiget.SpigetVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +28,18 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
  */
 public class SpigetCrawler
 {
-    public static final String SPIGET = "https://api.spiget.org/v2";
-    public static final String UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
     public static final ObjectMapper JACKSON = new ObjectMapper()
         .configure(FAIL_ON_UNKNOWN_PROPERTIES, false).enable(INDENT_OUTPUT);;
-    public static final long MT_DELAY = 1000;
+
+    private final String spiget = "https://api.spiget.org/v2";
+    private final String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
+    private final long mtDelay = 1000;
+    private final File dataDir;
+
+    public SpigetCrawler(File dataDir)
+    {
+        this.dataDir = dataDir;
+    }
 
     /**
      * Crawl one page of resources
@@ -46,9 +52,9 @@ public class SpigetCrawler
         try
         {
             // Send request
-            var resp = Request.get(makeUrl(SPIGET + "/resources", "size", 500, "sort", "+id", "page", i,
+            var resp = Request.get(makeUrl(spiget + "/resources", "size", 500, "sort", "+id", "page", i,
                     "fields", "id,name,tag,external,likes,testedVersions,links,contributors,premium,price,currency,version,releaseDate,updateDate,downloads,existenceStatus"))
-                .addHeader("User-Agent", UA).execute().returnContent().asString();
+                .addHeader("User-Agent", userAgent).execute().returnContent().asString();
 
             // Parse JSON
             ArrayNode page = (ArrayNode) JACKSON.readTree(resp);
@@ -69,7 +75,7 @@ public class SpigetCrawler
     }
 
     /**
-     * Crawl a list of all resources (cached to .mcpm/crawler/spiget/resources.json)
+     * Crawl a list of all resources (cached to dataDir/crawler/spiget/resources.json)
      *
      * @param refresh Ignore caches
      * @return List of all resources, or an empty list on error
@@ -77,8 +83,8 @@ public class SpigetCrawler
     public List<SpigetResource> crawlAllResources(boolean refresh)
     {
         var time = System.currentTimeMillis();
-        var outPath = new File(".mcpm/crawler/spiget/resources.json");
-        var bakPath = new File(".mcpm/crawler/spiget/backups/resources." + time + ".json");
+        var outPath = new File(dataDir, "crawler/spiget/resources.json");
+        var bakPath = new File(dataDir, "crawler/spiget/backups/resources." + time + ".json");
         long perChunk = 20;
 
         try
@@ -135,7 +141,18 @@ public class SpigetCrawler
      */
     private File getTemporaryDownloadPath(SpigetResource res)
     {
-        return new File(format(".mcpm/crawler/spiget/dl-cache/latest/%s.jar", res.id()));
+        return new File(dataDir, format("crawler/spiget/dl-cache/latest/%s.jar", res.id()));
+    }
+
+    /**
+     * Get file download path for the latest version of a plugin
+     *
+     * @param res Plugin
+     * @return File download path
+     */
+    private File getLatestPath(SpigetResource res)
+    {
+        return new File(dataDir, format("pkgs/spiget/%s/%s/release.jar", res.name(), res.id()));
     }
 
     /**
@@ -149,13 +166,13 @@ public class SpigetCrawler
         if (fp.isFile() || res.external()) return;
 
         // Make request
-        var url = makeUrl(format(SPIGET + "/resources/%s/download", res.id()));
+        var url = makeUrl(format(spiget + "/resources/%s/download", res.id()));
 
         try
         {
             // Write bytes
             fp.getParentFile().mkdirs();
-            Files.write(fp.toPath(), Request.get(url).addHeader("User-Agent", UA).execute()
+            Files.write(fp.toPath(), Request.get(url).addHeader("User-Agent", userAgent).execute()
                 .returnContent().asBytes());
 
             System.out.printf("Downloaded (%s) %s latest version jar\n", res.id(), res.name());
@@ -171,12 +188,10 @@ public class SpigetCrawler
             // This happens when the server has an error (e.g. when a plugin doesn't have files to download)
             if (e.getMessage().contains("502")) return;
             System.out.println("Error when downloading " + url + " " + e.getMessage());
-            //throw new RuntimeException("Error when downloading " + url, e);
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch (IOException e)
         {
-            //throw new RuntimeException("Error when downloading " + url, e);
             System.out.println("Error when downloading " + url + " " + e.getMessage());
             e.printStackTrace();
         }
@@ -184,7 +199,7 @@ public class SpigetCrawler
 
     public static void main(String[] args)
     {
-        var crawler = new SpigetCrawler();
+        var crawler = new SpigetCrawler(new File(".mcpm"));
         var res = crawler.crawlAllResources(false).stream()
             .filter(it -> it.downloads() > 1000 && !it.external()).toList();
 
@@ -194,7 +209,7 @@ public class SpigetCrawler
         {
             crawler.downloadLatest(it);
 
-            safeSleep(MT_DELAY);
+            safeSleep(crawler.mtDelay);
         });
     }
 }
