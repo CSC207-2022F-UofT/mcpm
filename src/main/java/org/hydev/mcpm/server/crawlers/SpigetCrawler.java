@@ -240,6 +240,47 @@ public class SpigetCrawler
         }
     }
 
+    /**
+     * Create symbolic links for a downloaded resource
+     */
+    public void links()
+    {
+        // Loop through each resource
+        var resourcesPath = new File(dataDir, "pkgs/spiget");
+        var files = resourcesPath.listFiles();
+        if (files == null) return;
+
+        Arrays.stream(files).forEach(res -> {
+            // Loop through each version
+            var versions = res.listFiles();
+            if (versions == null) return;
+
+            Arrays.stream(versions).forEach(ver -> {
+                // Read plugin.yml
+                try
+                {
+                    var meta = PluginYml.fromYml(Files.readString(new File(ver, "plugin.yml").toPath()));
+
+                    // Compute link path
+                    var linkPath = new File(dataDir, format("pkgs/links/%s/%s", meta.getName(), meta.getVersion()));
+
+                    // Delete old link
+                    if (Files.isSymbolicLink(linkPath.toPath()) || linkPath.exists()) linkPath.delete();
+
+                    // Create new link
+                    linkPath.getParentFile().mkdirs();
+                    Files.createSymbolicLink(linkPath.toPath(), linkPath.getParentFile().toPath().relativize(ver.toPath()));
+                }
+                catch (IOException e)
+                {
+                    // TODO: Better error handling
+                    //e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            });
+        });
+    }
+
     public static void main(String[] args)
     {
         var crawler = new SpigetCrawler(new File(".mcpm"));
@@ -255,5 +296,7 @@ public class SpigetCrawler
 
             //safeSleep(crawler.mtDelay);
         });
+
+        crawler.links();
     }
 }
