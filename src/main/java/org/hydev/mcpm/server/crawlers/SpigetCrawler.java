@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.fluent.Request;
+import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.server.crawlers.spiget.SpigetResource;
+import org.hydev.mcpm.utils.PluginJarFile;
+import org.hydev.mcpm.utils.StoredHashMap;
+import org.hydev.mcpm.utils.TemporaryDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +21,7 @@ import java.util.stream.StreamSupport;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static java.lang.String.format;
+import static org.hydev.mcpm.Constants.JACKSON;
 import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
 import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
@@ -28,17 +33,16 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
  */
 public class SpigetCrawler
 {
-    public static final ObjectMapper JACKSON = new ObjectMapper()
-        .configure(FAIL_ON_UNKNOWN_PROPERTIES, false).enable(INDENT_OUTPUT);;
-
     private final String spiget = "https://api.spiget.org/v2";
     private final String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
     private final long mtDelay = 1000;
     private final File dataDir;
+    private final StoredHashMap<Long, String> blacklist;
 
     public SpigetCrawler(File dataDir)
     {
         this.dataDir = dataDir;
+        this.blacklist = new StoredHashMap<>(new File(dataDir, "crawler/spiget/blacklist.json"));
     }
 
     /**
@@ -152,43 +156,82 @@ public class SpigetCrawler
      */
     private File getLatestPath(SpigetResource res)
     {
-        return new File(dataDir, format("pkgs/spiget/%s/%s/release.jar", res.name(), res.id()));
+        return new File(dataDir, format("pkgs/spiget/%s/%s/release.jar", res.id(), res.version().id()));
     }
 
     /**
-     * Download the latest version of a plugin if not present
+     * Check update for a plugin
      *
      * @param res Resource
      */
-    private void downloadLatest(SpigetResource res)
+    private void checkUpdate(SpigetResource res)
     {
-        var fp = getTemporaryDownloadPath(res);
-        if (fp.isFile() || res.external()) return;
+        // Plugin is in the blacklist, skip
+        if (blacklist.containsKey(res.id())) return;
 
-        // Make request
+        // Latest version already exists in local fs, skip
+        var fp = getLatestPath(res);
+        if (fp.isFile()) return;
+
+        // Resource is marked as external, we can't download it
+        if (res.external()) return;
+
+        // Try downloading the file
+        System.out.printf("Trying to download %s: %s\n", res.id(), res.name());
         var url = makeUrl(format(spiget + "/resources/%s/download", res.id()));
 
-        try
+        try (var tmp = new TemporaryDir())
         {
+            var tmpFile = new File(tmp.path, "tmp.jar");
+
             // Write bytes
+            // TODO: Maybe we can do this without tmp files, like read zip file content from byte array
+            var jarBytes = Request.get(url).addHeader("User-Agent", userAgent).execute().returnContent().asBytes();
+            Files.write(tmpFile.toPath(), jarBytes);
+
+            // Try to read plugin.yml from it
+            String metaStr;
+            try (var plugin = new PluginJarFile(tmpFile))
+            {
+                metaStr = plugin.readString("plugin.yml");
+            }
+            catch (Exception e)
+            {
+                // Cannot read plugin.yml, that means it's not a standard plugin, add to blacklist
+                System.out.printf("Cannot read plugin.yml (%s: %s)\n", res.id(), res.name());
+                blacklist.put(res.id(), "Cannot read plugin.yml");
+                return;
+            }
+
+            // Success, write to file
             fp.getParentFile().mkdirs();
-            Files.write(fp.toPath(), Request.get(url).addHeader("User-Agent", userAgent).execute()
-                .returnContent().asBytes());
+
+            // Write meta to plugin.yml
+            Files.writeString(new File(fp.getParentFile(), "plugin.yml").toPath(), metaStr);
+
+            // Write jar to release.jar
+            Files.write(fp.toPath(), jarBytes);
 
             System.out.printf("Downloaded (%s) %s latest version jar\n", res.id(), res.name());
         }
         catch (HttpResponseException e)
         {
             // Not found
-            if (e.getMessage().contains("404")) return;
+            if (e.getMessage().contains("404"))
+                blacklist.put(res.id(), "HTTP 404: Not found");
+
             // "External resource cannot be downloaded"
-            if (e.getMessage().contains("400")) return;
+            else if (e.getMessage().contains("400"))
+                blacklist.put(res.id(), "HTTP 400: Probably external resource");
+
             // Blocked by cloudflare
-            if (e.getMessage().contains("520")) return;
+            else if (e.getMessage().contains("520"))
+                blacklist.put(res.id(), "HTTP 520: External site, blocked by CloudFlare");
+
             // This happens when the server has an error (e.g. when a plugin doesn't have files to download)
-            if (e.getMessage().contains("502")) return;
+            //else if (e.getMessage().contains("502")) return;
+
             System.out.println("Error when downloading " + url + " " + e.getMessage());
-            //e.printStackTrace();
         }
         catch (IOException e)
         {
@@ -201,15 +244,16 @@ public class SpigetCrawler
     {
         var crawler = new SpigetCrawler(new File(".mcpm"));
         var res = crawler.crawlAllResources(false).stream()
-            .filter(it -> it.downloads() > 1000 && !it.external()).toList();
+            .filter(it -> it.downloads() > 100 && !it.external()).toList();
 
         System.out.println(res.size());
 
-        res.stream().filter(it -> !crawler.getTemporaryDownloadPath(it).isFile()).parallel().forEach(it ->
+        // TODO: Parallelize this. Currently causes ConcurrentModificationException with StoredHashMap
+        res.stream().filter(it -> !crawler.getLatestPath(it).isFile()).forEach(it ->
         {
-            crawler.downloadLatest(it);
+            crawler.checkUpdate(it);
 
-            safeSleep(crawler.mtDelay);
+            //safeSleep(crawler.mtDelay);
         });
     }
 }
