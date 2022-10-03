@@ -9,11 +9,17 @@ Server file/endpoint structure:
 `/db` : Database sync  
 `/db/core.tar.zst` : Core database (compressed)  
 `/pkgs` : List of packages  
-`/pkgs/{name}` : One package  
-`/pkgs/{name}/{version}` : One version  
-`/pkgs/{name}/{version}/release.jar` : Prebuilt jar for the version of a package  
-`/pkgs/{name}/{version}/plugin.yml` : Meta info for the version of a package  
-`/pkgs/{name}/{version}/build.sh` : Build script used to produce the release jar (if they're built)  
+`/pkgs/spiget` : Raw Spiget packages indexed by resource ids and version ids  
+`/pkgs/spiget/{resource-id}` : One Spiget resource  
+`/pkgs/spiget/{resource-id}/{version-id}` : One Spiget version  
+`/pkgs/spiget/{resource-id}/{version-id}/release.jar` : Jar published by the developer   
+`/pkgs/spiget/{resource-id}/{version-id}/plugin.yml` : Meta info  
+`/pkgs/links` : Generated symbolic links indexed by names and version names  
+`/pkgs/links/{name}` : One package  
+`/pkgs/links/{name}/{version}` : One version  
+`/pkgs/links/{name}/{version}/release.jar` : Prebuilt jar for the version of a package  
+`/pkgs/links/{name}/{version}/plugin.yml` : Meta info for the version of a package  
+`/pkgs/links/{name}/{version}/build.sh` : Build script used to produce the release jar (if they're built)  
 
 Internal server file structure:
 
