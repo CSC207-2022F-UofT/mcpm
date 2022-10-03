@@ -1,8 +1,10 @@
 package org.hydev.mcpm.client.models;
 
 import org.jetbrains.annotations.NotNull;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.util.*;
 
@@ -23,13 +25,13 @@ public class PluginYml
     String apiVersion;
     String load;
     String author;
-    List<String> authors;
+    ArrayList<String> authors;
     String website;
-    List<String> depend;
+    ArrayList<String> depend;
     String prefix;
-    List<String> softdepend;
-    List<String> loadbefore;
-    List<String> libraries;
+    ArrayList<String> softdepend;
+    ArrayList<String> loadbefore;
+    ArrayList<String> libraries;
     Map<String, Object> commands;
     Map<String, Object> permissions;
 
@@ -63,8 +65,11 @@ public class PluginYml
      */
     public static PluginYml fromYml(String yml)
     {
+        Representer representer = new Representer(new DumperOptions());
+        representer.getPropertyUtils().setSkipMissingProperties(true);
+
         yml = yml.replaceAll("api-version", "apiVersion");
-        return new Yaml(new Constructor(PluginYml.class)).load(yml);
+        return new Yaml(new Constructor(PluginYml.class), representer).load(yml);
     }
 
     @NotNull
@@ -140,12 +145,12 @@ public class PluginYml
         this.author = author;
     }
 
-    public List<String> getAuthors()
+    public ArrayList<String> getAuthors()
     {
         return authors;
     }
 
-    public void setAuthors(List<String> authors)
+    public void setAuthors(ArrayList<String> authors)
     {
         this.authors = authors;
     }
@@ -160,12 +165,12 @@ public class PluginYml
         this.website = website;
     }
 
-    public List<String> getDepend()
+    public ArrayList<String> getDepend()
     {
         return depend;
     }
 
-    public void setDepend(List<String> depend)
+    public void setDepend(ArrayList<String> depend)
     {
         this.depend = depend;
     }
@@ -180,32 +185,32 @@ public class PluginYml
         this.prefix = prefix;
     }
 
-    public List<String> getSoftdepend()
+    public ArrayList<String> getSoftdepend()
     {
         return softdepend;
     }
 
-    public void setSoftdepend(List<String> softdepend)
+    public void setSoftdepend(ArrayList<String> softdepend)
     {
         this.softdepend = softdepend;
     }
 
-    public List<String> getLoadbefore()
+    public ArrayList<String> getLoadbefore()
     {
         return loadbefore;
     }
 
-    public void setLoadbefore(List<String> loadbefore)
+    public void setLoadbefore(ArrayList<String> loadbefore)
     {
         this.loadbefore = loadbefore;
     }
 
-    public List<String> getLibraries()
+    public ArrayList<String> getLibraries()
     {
         return libraries;
     }
 
-    public void setLibraries(List<String> libraries)
+    public void setLibraries(ArrayList<String> libraries)
     {
         this.libraries = libraries;
     }
