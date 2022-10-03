@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * TODO: Write a description for this class!
+ * Tests for org.hydev.mcpm.utils.GeneralUtils
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-02
