@@ -9,6 +9,7 @@ import java.util.List;
  * @param description Description
  * @param aliases Other names
  * @param permission Required permission
+ * @param permissionMessage Message sent to player when player doesn't have permissions
  * @param usage Usage help
  *
  * @author Azalea (https://github.com/hykilpikonna)
@@ -19,6 +20,7 @@ public record PluginCommand(
     String description,
     List<String> aliases,
     String permission,
+    String permissionMessage,
     String usage
 )
 {
