@@ -4,10 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * POJO model for plugin.yml inside each Minecraft Bukkit/Spigot plugin.
@@ -231,5 +228,43 @@ public class PluginYml
     public void setPermissions(Map<String, Object> permissions)
     {
         this.permissions = permissions;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        return this.hashCode() == o.hashCode();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(main, name, version, description, apiVersion, load, author, authors, website, depend, prefix, softdepend, loadbefore, libraries, commands, permissions);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "PluginYml{" +
+            "main='" + main + '\'' +
+            ", name='" + name + '\'' +
+            ", version='" + version + '\'' +
+            ", description='" + description + '\'' +
+            ", apiVersion='" + apiVersion + '\'' +
+            ", load='" + load + '\'' +
+            ", author='" + author + '\'' +
+            ", authors=" + authors +
+            ", website='" + website + '\'' +
+            ", depend=" + depend +
+            ", prefix='" + prefix + '\'' +
+            ", softdepend=" + softdepend +
+            ", loadbefore=" + loadbefore +
+            ", libraries=" + libraries +
+            ", commands=" + commands +
+            ", permissions=" + permissions +
+            '}';
     }
 }
