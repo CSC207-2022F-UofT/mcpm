@@ -1,12 +1,11 @@
-package org.hydev.mcpm;
+package org.hydev.mcpm.utils;
 
 import org.apache.hc.core5.net.URIBuilder;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
+import java.net.URL;
 
 /**
  * TODO: Write a description for this class!
@@ -14,7 +13,7 @@ import java.nio.file.Files;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class Utils
+public class GeneralUtils
 {
     /**
      * Make an url with parameters
@@ -56,6 +55,27 @@ public class Utils
         catch (InterruptedException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Get resource file stored in this jar
+     *
+     * @param path Local file path
+     * @return Absolute file path
+     */
+    public static File getResourceFile(String path)
+    {
+        URL url = GeneralUtils.class.getClassLoader().getResource(path);
+        if (url == null) return null;
+
+        try
+        {
+            return new File(url.toURI());
+        }
+        catch (URISyntaxException e)
+        {
+            return new File(url.getPath());
         }
     }
 }
