@@ -226,8 +226,7 @@ data class GithubStats(
     // val percentile: Double,
     val stars: Int,
     val commits: Int,
-    val prs: Int,
-    val issues: Int,
+    val prs: Int,    val issues: Int,
     val contrib: Int
 )
 

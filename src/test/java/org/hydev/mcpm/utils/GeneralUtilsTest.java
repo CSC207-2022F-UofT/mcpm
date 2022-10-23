@@ -25,7 +25,7 @@ class GeneralUtilsTest
         long time = System.currentTimeMillis();
         GeneralUtils.safeSleep(50);
         long elapsed = System.currentTimeMillis() - time;
-        assert (45 <= elapsed) && (elapsed <= 55);
+        assert (40 <= elapsed) && (elapsed <= 60);
     }
 
     @Test

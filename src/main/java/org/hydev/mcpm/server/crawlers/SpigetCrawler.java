@@ -1,7 +1,6 @@
 package org.hydev.mcpm.server.crawlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.fluent.Request;
@@ -14,16 +13,16 @@ import org.hydev.mcpm.utils.TemporaryDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static java.lang.String.format;
 import static org.hydev.mcpm.Constants.JACKSON;
 import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
-import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
 /**
  * TODO: Write a description for this class!
