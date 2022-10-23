@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'org.hydev.csc207'
@@ -41,6 +42,27 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "github"
+            url = "https://maven.pkg.github.com/CSC207-2022F-UofT/mcpm"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        register("jar", MavenPublication) {
+            from(components["java"])
+            pom {
+                url.set("https://github.com/CSC207-2022F-UofT/mcpm.git")
+            }
+        }
+    }
 }
 
 if (hasProperty('buildScan')) {

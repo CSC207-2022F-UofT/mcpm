@@ -1,6 +1,8 @@
-name: Gradle Test CI
+name: Gradle Publish
 
-on: [push]
+on:
+  release:
+    types: [created]
 
 permissions:
   checks: write
@@ -37,3 +39,10 @@ jobs:
         with:
           name: mcpm
           path: build/libs
+
+      - name: Publish Maven Package to Github Package Registry
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
