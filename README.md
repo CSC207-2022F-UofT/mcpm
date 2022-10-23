@@ -2,6 +2,12 @@
 
 Final Project for CSC207
 
+## Links
+
+* [Course Overview](https://q.utoronto.ca/courses/278453/pages/course-project)
+* [Task List (Projects)](https://github.com/users/hykilpikonna/projects/1)
+* [Repo in CSC207 Organization](https://github.com/CSC207-2022F-UofT/mcpm)
+
 ## Brainstorm
 
 Server file/endpoint structure:
