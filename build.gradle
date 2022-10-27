@@ -21,6 +21,9 @@ checkstyle {
     // assign the latest checkstyle version explicitly, since the default version is very old
     toolVersion = '10.3.4'
     configFile = rootProject.file('.github/checkstyle.xml')
+
+    ignoreFailures = false
+    maxWarnings = 5
 }
 
 
