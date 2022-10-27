@@ -2,8 +2,6 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.models.Plugin;
 
-import javax.xml.crypto.Data;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
