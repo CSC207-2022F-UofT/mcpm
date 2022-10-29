@@ -30,3 +30,4 @@ build
 .gradle
 data
 .mcpm
+*.pyc

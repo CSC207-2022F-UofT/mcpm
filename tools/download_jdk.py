@@ -25,7 +25,20 @@ print('Detected system:', sys, arch)
 JAVA = Literal['19', '18', '17', '16', '15', '14', '13', '12', '11', '10', '9', '1.8', '1.7']
 
 
-def download_oracle(java_ver: JAVA, path: str | Path):
+def ensure_java(java_ver: Literal['19', '17'], path: str | Path) -> Path:
+    path = Path(path)
+    if not path.is_dir():
+        download_oracle(java_ver, path)
+
+    if sys == 'Darwin':
+        return path / 'Contents/Home/bin/java'
+    if sys == 'Linux':
+        return path / 'bin/java'
+    if sys == 'Windows':
+        return path / 'bin/java.exe'
+
+
+def download_oracle(java_ver: Literal['19', '17'], path: str | Path):
     path = Path(path)
 
     # Normalize OS and architecture
@@ -52,7 +65,7 @@ def download_oracle(java_ver: JAVA, path: str | Path):
         file = tmp / fname
         extract = ensure_dir(tmp / 'extract')
 
-        print('Downloading JDK...')
+        print(f'Downloading JDK from {url}...')
         download_file(url, file)
 
         print('Extracting JDK...')
