@@ -8,6 +8,13 @@ Final Project for CSC207
 * [Task List (Projects)](https://github.com/users/hykilpikonna/projects/1)
 * [Repo in CSC207 Organization](https://github.com/CSC207-2022F-UofT/mcpm)
 
+## Development
+
+Setup and start a testing minecraft server: 
+
+1. `pip install -r requirements.txt`
+2. `python3 -m tools.start_server`
+
 ## Brainstorm
 
 Server file/endpoint structure:
