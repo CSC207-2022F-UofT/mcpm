@@ -46,6 +46,21 @@ def start(java: Path, mc_path: Path):
             exit(0)
 
 
+def update_build(mc_path: Path):
+    # Build project
+    print('Building project...')
+    build_jar = Path('build/libs')
+    shutil.rmtree(build_jar, ignore_errors=True)
+    check_call('./gradlew build', shell=True)
+
+    # Install plugin
+    print('Installing our MCPM plugin...')
+    plugin_path = mc_path / 'plugins/mcpm.jar'
+    shutil.rmtree(plugin_path, ignore_errors=True)
+    ensure_dir(plugin_path.parent)
+    shutil.copy2(build_jar / str(os.listdir(build_jar)[0]), plugin_path)
+
+
 if __name__ == '__main__':
     # Download JDK
     java = ensure_java("19", 'build/jdk19')
@@ -72,18 +87,8 @@ if __name__ == '__main__':
 
             print(f'Server installed to {mc_path}')
 
-    # Build project
-    print('Building project...')
-    build_jar = Path('build/libs')
-    shutil.rmtree(build_jar, ignore_errors=True)
-    check_call('./gradlew build', shell=True)
-
-    # Install plugin
-    print('Installing our MCPM plugin...')
-    plugin_path = mc_path / 'plugins/mcpm.jar'
-    shutil.rmtree(plugin_path, ignore_errors=True)
-    ensure_dir(plugin_path.parent)
-    shutil.copy2(build_jar / str(os.listdir(build_jar)[0]), plugin_path)
+    # Update built jar file
+    update_build(mc_path)
 
     # Start server
     print('Starting server...')

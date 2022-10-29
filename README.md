@@ -15,6 +15,11 @@ Setup and start a testing minecraft server:
 1. `pip install -r requirements.txt`
 2. `python3 -m tools.start_server`
 
+Rebuild & update our MCPM plugin while the server is running:
+
+1. `python3 -m tools.update_build`
+2. `plugman reload mcpm` (Inside the server's command prompt)
+
 ## Brainstorm
 
 Server file/endpoint structure:
