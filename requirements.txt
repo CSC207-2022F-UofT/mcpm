@@ -1,0 +1,4 @@
+requests
+hypy_utils>=1.0.15
+py-cpuinfo
+tqdm
