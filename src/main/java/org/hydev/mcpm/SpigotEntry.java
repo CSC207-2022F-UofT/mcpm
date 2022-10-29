@@ -1,13 +1,20 @@
 package org.hydev.mcpm;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.logging.Logger;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Entrypoint for the Spigot plugin adapter of our program
  */
-public class SpigotEntry extends JavaPlugin
+public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
     private Logger log;
 
@@ -20,6 +27,9 @@ public class SpigotEntry extends JavaPlugin
         // Initialize logger
         log = getLogger();
         log.info("[MCPM] Enabled!");
+
+        // Register mcpm command
+        requireNonNull(this.getCommand("mcpm")).setExecutor(this);
     }
 
     /**
@@ -29,5 +39,12 @@ public class SpigotEntry extends JavaPlugin
     public void onDisable()
     {
         log.info("[MCPM] Disabled!");
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+    {
+        sender.sendMessage("This command is not yet implemented, meow~");
+        return false;
     }
 }
