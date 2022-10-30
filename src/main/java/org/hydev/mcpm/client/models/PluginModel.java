@@ -17,7 +17,7 @@ import java.util.List;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public record Plugin(
+public record PluginModel(
     String name,
     String desc,
     String url,
