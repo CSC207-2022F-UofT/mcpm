@@ -26,6 +26,8 @@ public class ProgressBar implements AutoCloseable
 
     private long lastUpdate;
 
+    private double frameDelay;
+
     /**
      * Create and initialize a progress bar
      *
@@ -41,6 +43,9 @@ public class ProgressBar implements AutoCloseable
 
         // Last update time
         this.lastUpdate = System.nanoTime();
+
+        // Default frame delay is 0.01666 (60 fps)
+        this.frameDelay = 1 / 60d;
     }
 
     /**
@@ -61,11 +66,11 @@ public class ProgressBar implements AutoCloseable
 
     protected void update()
     {
-        // Check time, update only every 0.0166s (60 fps)
+        // Check time to limit for framerate (default 60fps)
         // Performance of the update heavily depends on the terminal's escape code handling
         // implementation, so frequent updates will degrade performance on a bad terminal
         var curTime = System.nanoTime();
-        if ((curTime - lastUpdate) / 1e9d < 0.0166) return;
+        if ((curTime - lastUpdate) / 1e9d < frameDelay) return;
         lastUpdate = curTime;
 
         forceUpdate();
@@ -93,12 +98,28 @@ public class ProgressBar implements AutoCloseable
 
     /**
      * Finalize and close the progress bar (print the final line)
-     *
-     * @throws Exception e
      */
     @Override
     public void close()
     {
+    }
+
+    public ProgressBar setFrameDelay(double frameDelay)
+    {
+        this.frameDelay = frameDelay;
+        return this;
+    }
+
+    /**
+     * Set frame rate in the unit of frames per second
+     *
+     * @param fps FPS
+     * @return Self for fluent access
+     */
+    public ProgressBar setFps(int fps)
+    {
+        this.frameDelay = 1d / fps;
+        return this;
     }
 
     public List<ProgressRow> getActiveBars()
