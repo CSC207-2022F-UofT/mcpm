@@ -12,14 +12,16 @@ package org.hydev.mcpm.client.interaction;
  * @since 2022-09-27
  */
 public record ProgressBarTheme(
-    String ipr,
     String done,
-    int iprLen,
-    int doneLen
+    String ipr,
+    String prefix,
+    String suffix,
+    int doneLen,
+    int iprLen
 )
 {
-    public static final ProgressBarTheme ASCII_THEME = new ProgressBarTheme("#", "-", 1, 1);
-    public static final ProgressBarTheme CLASSIC_THEME = new ProgressBarTheme("█", ".", 1, 1);
-    public static final ProgressBarTheme EMOJI_THEME = new ProgressBarTheme("✅", "🕑", 2, 2);
-    public static final ProgressBarTheme FLOWER_THEME = new ProgressBarTheme("🌸", "🥀", 2, 2);
+    public static final ProgressBarTheme ASCII_THEME = new ProgressBarTheme("#", "-", "[", "]", 1, 1);
+    public static final ProgressBarTheme CLASSIC_THEME = new ProgressBarTheme("█", ".", "", "", 1, 1);
+    public static final ProgressBarTheme EMOJI_THEME = new ProgressBarTheme("✅", "🕑", "", "", 2, 2);
+    public static final ProgressBarTheme FLOWER_THEME = new ProgressBarTheme("🌸", "🥀", "", "", 2, 2);
 }

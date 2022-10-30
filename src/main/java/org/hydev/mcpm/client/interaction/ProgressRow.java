@@ -30,20 +30,21 @@ public class ProgressRow
      * Get formatted string of the current progress bar
      *
      * @param theme Progress bar theme
+     * @param cols Number of columns (width) of the terminal window
      * @return Formatted string
      */
-    public String fmt(ProgressBarTheme theme)
+    public String fmt(ProgressBarTheme theme, int cols)
     {
         double p = 100d * completed / total;
         var placeholder = "PLACEHOLDER_BAR";
         var t = format("%s%s%s %.0f %d/%d%s", theme.prefix(), placeholder, theme.suffix(), p, completed, total, unit);
 
         // Add progress bar length
-        var len = t.length() - placeholder.length();
+        var len = cols - t.length() + placeholder.length();
 
         // Calculate progress length
-        int pLen = (int) (completed / total * len);
-        var bar = theme.done().repeat(pLen / theme.doneLen()) + theme.ipr().repeat(pLen / theme.iprLen());
+        int pLen = (int) (1d * completed / total * len);
+        var bar = theme.done().repeat(pLen / theme.doneLen()) + theme.ipr().repeat((len - pLen) / theme.iprLen());
 
         return t.replaceFirst(placeholder, bar);
     }
