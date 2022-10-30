@@ -127,9 +127,9 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     }
 
     @Override
-    public void reloadPlugin(String name)
+    public void reloadPlugin(String name) throws PluginNotFoundException
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        unloadPlugin(name);
+        loadPlugin(name);
     }
 }
