@@ -46,7 +46,7 @@ public class ReflectionUtils
      * @param value New value to set
      * @return True if set successfully, or false if failed
      */
-    public static boolean setPrivateField(@NotNull Object obj, @NotNull String fieldName, @NotNull Object value)
+    public static boolean setPrivateField(@NotNull Object obj, @NotNull String fieldName, Object value)
     {
         try
         {
