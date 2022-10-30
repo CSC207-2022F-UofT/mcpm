@@ -1,7 +1,5 @@
 package org.hydev.mcpm.client.interaction;
 
-import java.util.Objects;
-
 import static java.lang.String.format;
 
 /**
@@ -14,26 +12,33 @@ public class ProgressRow
 {
     private final long total;
     private long completed;
-    private final String unit;
-
-    private long startTime;
+    private String unit;
     private ProgressBar pb;
+    private String desc;
+    private int descLen;
+    private String fmt;
 
-    public ProgressRow(long total, String unit)
+    private final long startTime;
+
+    public ProgressRow(long total)
     {
         this.total = total;
         this.completed = 0;
-
-        // Add leading space
-        this.unit = (!unit.isBlank() && !unit.startsWith(" ")) ? " " + unit : unit;
+        this.unit = " it";
+        this.desc = "";
+        this.descLen = 20;
+        this.fmt = "{desc}{speed} {eta} {prefix}{progbar}{suffix} {%done}";
 
         // Record start time for speed estimation
         this.startTime = System.nanoTime();
     }
 
-    public ProgressRow(long total)
+    /**
+     * @return Elapsed time in seconds
+     */
+    private double elapsed()
     {
-        this(total, "it");
+        return (System.nanoTime() - startTime) / 1e9d;
     }
 
     /**
@@ -86,5 +91,30 @@ public class ProgressRow
         this.completed = completed;
         pb.update();
         if (completed >= total) pb.finishBar(this);
+    }
+
+    public ProgressRow desc(String desc)
+    {
+        this.desc = desc;
+        return this;
+    }
+
+    public ProgressRow descLen(int descLen)
+    {
+        this.descLen = descLen;
+        return this;
+    }
+
+    public ProgressRow unit(String unit)
+    {
+        // Add leading space
+        this.unit = (!unit.isBlank() && !unit.startsWith(" ")) ? " " + unit : unit;
+        return this;
+    }
+
+    public ProgressRow fmt(String fmt)
+    {
+        this.fmt = fmt;
+        return this;
     }
 }
