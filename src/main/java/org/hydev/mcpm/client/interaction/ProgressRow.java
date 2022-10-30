@@ -48,20 +48,30 @@ public class ProgressRow
      * @param cols Number of columns (width) of the terminal window
      * @return Formatted string
      */
-    public String fmt(ProgressBarTheme theme, int cols)
+    public String toString(ProgressBarTheme theme, int cols)
     {
-        double p = 100d * completed / total;
-        var placeholder = "PLACEHOLDER_BAR";
-        var t = format("%s%s%s %3.0f%% %5d/%-5d%s", theme.prefix(), placeholder, theme.suffix(), p, completed, total, unit);
+        // Calculate speed. TODO: Use a moving window to calculate speed
+        double speed = completed / elapsed();
+        double eta = total / speed;
+        long eta_s = (long) (eta % 60), eta_m = (long) (eta / 60);
+
+        // Replace variables
+        var p = format("%3.0f%%", 100d * completed / total);
+        var t = fmt.replace("{prefix}", theme.prefix())
+            .replace("{suffix}", theme.suffix())
+            .replace("{%done}", p)
+            .replace("{eta}", format("%02d:%02d", eta_m, eta_s))
+            .replace("{speed}", format("%.2f%s/s", speed, unit))
+            .replace("{desc}", descLen != 0 ? format("%-" + descLen + "s", desc) : desc + " ");
 
         // Add progress bar length
-        var len = cols - t.length() + placeholder.length();
+        var len = cols - t.length() + "{progbar}".length();
 
         // Calculate progress length
         int pLen = (int) (1d * completed / total * len);
         var bar = theme.done().repeat(pLen / theme.doneLen()) + theme.ipr().repeat((len - pLen) / theme.iprLen());
 
-        return t.replaceFirst(placeholder, bar);
+        return t.replace("{progbar}", bar);
     }
 
     public void setPb(ProgressBar pb)

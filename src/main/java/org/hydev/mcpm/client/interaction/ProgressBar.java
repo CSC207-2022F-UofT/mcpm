@@ -58,7 +58,7 @@ public class ProgressBar implements AutoCloseable
     {
         // Roll back to the first line
         cu.curUp(activeBars.size());
-        activeBars.forEach(bar -> out.println(bar.fmt(theme, cols)));
+        activeBars.forEach(bar -> out.println(bar.toString(theme, cols)));
     }
 
     /**
@@ -90,7 +90,7 @@ public class ProgressBar implements AutoCloseable
     {
         try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
         {
-            //var r = b.appendBar(new ProgressRow(1000, "it"));
+            //var r = b.appendBar(new ProgressRow(1000));
             //for (int i = 0; i < 1000; i++)
             //{
             //    r.increase(1);
@@ -100,7 +100,8 @@ public class ProgressBar implements AutoCloseable
             var all = new ArrayList<ProgressRow>();
             for (int i = 0; i < 1300; i++)
             {
-                if (i < 1000 && i % 100 == 0) all.add(b.appendBar(new ProgressRow(300, "it")));
+                if (i < 1000 && i % 100 == 0)
+                    all.add(b.appendBar(new ProgressRow(300).unit("MB").desc(format("File %s.tar.gz", all.size()))).descLen(40));
                 all.forEach(a -> a.increase(1));
                 safeSleep(3);
             }
