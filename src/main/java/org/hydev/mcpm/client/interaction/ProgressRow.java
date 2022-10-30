@@ -53,14 +53,14 @@ public class ProgressRow
         // Calculate speed. TODO: Use a moving window to calculate speed
         double speed = completed / elapsed();
         double eta = total / speed;
-        long eta_s = (long) (eta % 60), eta_m = (long) (eta / 60);
+        long etaS = (long) (eta % 60), etaM = (long) (eta / 60);
 
         // Replace variables
         var p = format("%3.0f%%", 100d * completed / total);
         var t = fmt.replace("{prefix}", theme.prefix())
             .replace("{suffix}", theme.suffix())
             .replace("{%done}", p)
-            .replace("{eta}", format("%02d:%02d", eta_m, eta_s))
+            .replace("{eta}", format("%02d:%02d", etaM, etaS))
             .replace("{speed}", format("%.2f%s/s", speed, unit))
             .replace("{desc}", descLen != 0 ? format("%-" + descLen + "s", desc) : desc + " ");
 
@@ -86,6 +86,8 @@ public class ProgressRow
      */
     public void increase(long incr)
     {
+        if (this.completed >= total) return;
+
         this.completed += incr;
         pb.update();
         if (completed >= total) pb.finishBar(this);
@@ -98,6 +100,8 @@ public class ProgressRow
      */
     public void set(long completed)
     {
+        if (this.completed >= total) return;
+
         this.completed = completed;
         pb.update();
         if (completed >= total) pb.finishBar(this);

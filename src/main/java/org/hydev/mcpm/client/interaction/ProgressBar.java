@@ -24,6 +24,8 @@ public class ProgressBar implements AutoCloseable
 
     private final List<ProgressRow> activeBars;
 
+    private long lastUpdate;
+
     /**
      * Create and initialize a progress bar
      *
@@ -36,6 +38,9 @@ public class ProgressBar implements AutoCloseable
         this.cu = new ConsoleUtils(this.out);
         this.activeBars = new ArrayList<>();
         this.cols = AnsiConsole.getTerminalWidth();
+
+        // Last update time
+        this.lastUpdate = System.nanoTime();
     }
 
     /**
@@ -56,6 +61,18 @@ public class ProgressBar implements AutoCloseable
 
     protected void update()
     {
+        // Check time, update only every 0.0166s (60 fps)
+        // Performance of the update heavily depends on the terminal's escape code handling
+        // implementation, so frequent updates will degrade performance on a bad terminal
+        var curTime = System.nanoTime();
+        if ((curTime - lastUpdate) / 1e9d < 0.0166) return;
+        lastUpdate = curTime;
+
+        forceUpdate();
+    }
+
+    private void forceUpdate()
+    {
         // Roll back to the first line
         cu.curUp(activeBars.size());
         activeBars.forEach(bar -> out.println(bar.toString(theme, cols)));
@@ -68,6 +85,9 @@ public class ProgressBar implements AutoCloseable
      */
     public void finishBar(ProgressRow bar)
     {
+        if (!activeBars.contains(bar)) return;
+
+        forceUpdate();
         this.activeBars.remove(bar);
     }
 
