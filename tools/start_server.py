@@ -40,8 +40,8 @@ def start(java: Path, mc_path: Path):
         subprocess.Popen(cmd, shell=True, cwd=mc_path).wait()
 
         print('Server stopped, restarting in 5s\nPress any key to stop the server.')
-        i, o, e = select.select([sys.stdin], [], [], 5)
-        if i:
+        has_input, _, _ = select.select([sys.stdin], [], [], 5)
+        if has_input:
             print('Server stops.')
             exit(0)
 
