@@ -26,15 +26,13 @@ class ReflectionUtilsTest
     void getPrivateField()
     {
         var a = new A();
-        var f = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){});
-        assert f != null;
+        var f = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
         assert f.get(0).equals("meow");
         assert f.get(1).equals("qwq");
 
         // The obtained field is a pointer
         f.set(1, "wolf");
-        var newF = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){});
-        assert newF != null;
+        var newF = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
         assert newF.get(1).equals("wolf");
     }
 }
