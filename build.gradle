@@ -75,6 +75,10 @@ if (hasProperty('buildScan')) {
     }
 }
 
+task printCp() {
+    System.err.println sourceSets.main.runtimeClasspath.asPath;
+}
+
 test {
     useJUnitPlatform()
     testLogging.showStandardStreams = true
