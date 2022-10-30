@@ -37,4 +37,27 @@ public class ReflectionUtils
             return Optional.empty();
         }
     }
+
+    /**
+     * Set the value of a private instance variable
+     *
+     * @param obj Object to modify
+     * @param fieldName Name of the variable
+     * @param value New value to set
+     * @return True if set successfully, or false if failed
+     */
+    public static boolean setPrivateField(@NotNull Object obj, @NotNull String fieldName, @NotNull Object value)
+    {
+        try
+        {
+            var field = obj.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(obj, value);
+            return true;
+        }
+        catch (NoSuchFieldException | IllegalAccessException e)
+        {
+            return false;
+        }
+    }
 }
