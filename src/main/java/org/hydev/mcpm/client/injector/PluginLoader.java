@@ -32,10 +32,10 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     public boolean loadPlugin(String name) throws PluginNotFoundException
     {
         // 1. Find plugin file by name
-        var nf = new PluginNotFoundException(name);
         var dir = new File("plugins");
-        if (!dir.isDirectory()) throw nf;
-        var file = Arrays.stream(Optional.ofNullable(dir.listFiles()).orElseThrow(() -> nf))
+        if (!dir.isDirectory()) throw new PluginNotFoundException(name);
+        var file = Arrays.stream(Optional.ofNullable(dir.listFiles())
+                .orElseThrow(() -> new PluginNotFoundException(name)))
             .filter(f -> f.getName().endsWith(".jar"))
             .filter(f -> {
                 try (var jf = new PluginJarFile(f))
@@ -43,7 +43,7 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
                     return jf.readPluginYaml().getName().equalsIgnoreCase(name);
                 }
                 catch (IOException ignored) { return false; }
-            }).findFirst().orElseThrow(() -> nf);
+            }).findFirst().orElseThrow(() -> new PluginNotFoundException(name));
 
         return loadPlugin(file);
     }
