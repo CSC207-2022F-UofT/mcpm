@@ -48,11 +48,9 @@ def download_oracle(java_ver: Literal['19', '17'], path: str | Path):
     assert s in ['linux', 'macos', 'windows'], f'Unsupported OS for Oracle JDK: {s}'
 
     a = arch.lower()
-    if a == 'x86_64' or a == 'x86_32':
-        a = 'x64'
-    if a == 'ARM_8' or a == 'ARM_7':
-        a = 'aarch64'
-    assert a in ['x64', 'aarch64'], f'Unsupported CPU architecture for Oracle JDK: {a}'
+    arch_map = {'x86_64': 'x64', 'x86_32': 'x64', 'arm_8': 'aarch64', 'arm_7': 'aarch64'}
+    assert a in arch_map, f'Unsupported CPU architecture for Oracle JDK: {a}'
+    a = arch_map[a]
 
     # Create URL
     ext = 'tar.gz' if s in ['linux', 'macos'] else 'zip'
