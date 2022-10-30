@@ -47,41 +47,18 @@ public class ProgressBar implements AutoCloseable
     public ProgressRow appendBar(ProgressRow bar)
     {
         this.activeBars.add(bar);
-        out.println("");
+        bar.setPb(this);
+
+        out.println();
         update();
         return bar;
     }
 
-    private void update()
+    protected void update()
     {
         // Roll back to the first line
         cu.curUp(activeBars.size());
         activeBars.forEach(bar -> out.println(bar.fmt(theme, cols)));
-        activeBars.stream().toList().stream().filter(it -> it.completed >= it.total).forEach(this::finishBar);
-    }
-
-    /**
-     * Increase progress
-     *
-     * @param bar Progress row
-     * @param incr Increase amount
-     */
-    public void increase(ProgressRow bar, long incr)
-    {
-        bar.completed += incr;
-        update();
-    }
-
-    /**
-     * Set progress
-     *
-     * @param bar Progres bar
-     * @param completed Completed amount
-     */
-    public void set(ProgressRow bar, long completed)
-    {
-        bar.completed = completed;
-        update();
     }
 
     /**
@@ -116,7 +93,7 @@ public class ProgressBar implements AutoCloseable
             //var r = b.appendBar(new ProgressRow(1000, "it"));
             //for (int i = 0; i < 1000; i++)
             //{
-            //    b.increase(r, 1);
+            //    r.increase(1);
             //    safeSleep(5);
             //}
 
@@ -124,7 +101,7 @@ public class ProgressBar implements AutoCloseable
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0) all.add(b.appendBar(new ProgressRow(300, "it")));
-                all.forEach(a -> b.increase(a, 1));
+                all.forEach(a -> a.increase(1));
                 safeSleep(3);
             }
 

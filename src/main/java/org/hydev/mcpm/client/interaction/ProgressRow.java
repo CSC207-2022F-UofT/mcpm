@@ -12,18 +12,23 @@ import static java.lang.String.format;
  */
 public class ProgressRow
 {
-    protected long total;
-    protected long completed;
-    protected String unit;
+    private final long total;
+    private long completed;
+    private final String unit;
+
+    private long startTime;
+    private ProgressBar pb;
 
     public ProgressRow(long total, String unit)
     {
         this.total = total;
         this.completed = 0;
-        this.unit = unit;
 
         // Add leading space
-        if (!unit.isBlank() && !unit.startsWith(" ")) this.unit = " " + unit;
+        this.unit = (!unit.isBlank() && !unit.startsWith(" ")) ? " " + unit : unit;
+
+        // Record start time for speed estimation
+        this.startTime = System.nanoTime();
     }
 
     public ProgressRow(long total)
@@ -42,7 +47,7 @@ public class ProgressRow
     {
         double p = 100d * completed / total;
         var placeholder = "PLACEHOLDER_BAR";
-        var t = format("%s%s%s %.0f%% %5d/%-5d%s", theme.prefix(), placeholder, theme.suffix(), p, completed, total, unit);
+        var t = format("%s%s%s %3.0f%% %5d/%-5d%s", theme.prefix(), placeholder, theme.suffix(), p, completed, total, unit);
 
         // Add progress bar length
         var len = cols - t.length() + placeholder.length();
@@ -52,5 +57,34 @@ public class ProgressRow
         var bar = theme.done().repeat(pLen / theme.doneLen()) + theme.ipr().repeat((len - pLen) / theme.iprLen());
 
         return t.replaceFirst(placeholder, bar);
+    }
+
+    public void setPb(ProgressBar pb)
+    {
+        this.pb = pb;
+    }
+
+    /**
+     * Increase progress
+     *
+     * @param incr Increase amount
+     */
+    public void increase(long incr)
+    {
+        this.completed += incr;
+        pb.update();
+        if (completed >= total) pb.finishBar(this);
+    }
+
+    /**
+     * Set progress
+     *
+     * @param completed Completed amount
+     */
+    public void set(long completed)
+    {
+        this.completed = completed;
+        pb.update();
+        if (completed >= total) pb.finishBar(this);
     }
 }
