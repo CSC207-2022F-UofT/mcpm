@@ -26,7 +26,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     {
         // Initialize logger
         log = getLogger();
-        log.info("[MCPM] Enabled!");
+        log.info("Enabled!");
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
@@ -38,7 +38,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     @Override
     public void onDisable()
     {
-        log.info("[MCPM] Disabled!");
+        log.info("Disabled!");
     }
 
     @Override
