@@ -142,13 +142,6 @@ public class ProgressBar implements AutoCloseable
     {
         try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
         {
-            //var r = b.appendBar(new ProgressRow(1000));
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    r.increase(1);
-            //    safeSleep(5);
-            //}
-
             var all = new ArrayList<ProgressRow>();
             for (int i = 0; i < 1300; i++)
             {
