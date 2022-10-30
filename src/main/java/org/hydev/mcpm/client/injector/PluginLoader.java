@@ -29,7 +29,7 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
 public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
     @Override
-    public void loadPlugin(String name) throws PluginNotFoundException
+    public boolean loadPlugin(String name) throws PluginNotFoundException
     {
         // 1. Find plugin file by name
         var nf = new PluginNotFoundException(name);
@@ -45,28 +45,30 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
                 catch (IOException ignored) { return false; }
             }).findFirst().orElseThrow(() -> nf);
 
-        loadPlugin(file);
+        return loadPlugin(file);
     }
 
     @Override
-    public void loadPlugin(File jar)
+    public boolean loadPlugin(File jar)
     {
         // 2. Load plugin
         var pm = Bukkit.getPluginManager();
         try
         {
             var plugin = pm.loadPlugin(jar);
-            assert plugin != null;
+            if (plugin == null) return false;
 
             // 3. Call onLoad()
             plugin.onLoad();
             pm.enablePlugin(plugin);
+            return true;
         }
         catch (InvalidPluginException | InvalidDescriptionException e)
         {
             // These are errors indicating that the plugin we're trying to load is badly formatted.
             // There are nothing we can do.
             e.printStackTrace();
+            return false;
         }
     }
 

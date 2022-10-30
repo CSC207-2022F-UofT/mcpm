@@ -14,13 +14,16 @@ public interface LoadBoundary
      * Dynamically load a local plugin through JVM reflections and classloader hacks
      *
      * @param name Loaded plugin name
+     * @return True if success, false if failed
+     * @throws PluginNotFoundException Plugin of the name is not found in the plugins directory
      */
-    public void loadPlugin(String name) throws PluginNotFoundException;
+    public boolean loadPlugin(String name) throws PluginNotFoundException;
 
     /**
      * Dynamically load a local plugin through JVM reflections and classloader hacks
      *
      * @param jar Local jar file path
+     * @return True if success, false if failed
      */
-    public void loadPlugin(File jar);
+    public boolean loadPlugin(File jar);
 }
