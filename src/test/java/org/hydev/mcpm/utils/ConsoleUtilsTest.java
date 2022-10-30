@@ -16,7 +16,7 @@ class ConsoleUtilsTest
     void move()
     {
         // NOTE: You must be on a Xterm-compatible TTY for this test to work, which is why it's
-        // impossible to unit-test
+        // impossible to unit-test, and it can't even show up properly on gradle
         var cu = new ConsoleUtils();
         cu.clear();
         System.out.println("Hello World");
@@ -38,4 +38,8 @@ class ConsoleUtilsTest
         System.out.println("Erased");
     }
 
+    public static void main(String[] args)
+    {
+        new ConsoleUtilsTest().move();
+    }
 }

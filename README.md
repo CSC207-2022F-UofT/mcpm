@@ -8,6 +8,12 @@ Final Project for CSC207
 * [Task List (Projects)](https://github.com/users/hykilpikonna/projects/1)
 * [Repo in CSC207 Organization](https://github.com/CSC207-2022F-UofT/mcpm)
 
+## Development
+
+### Run a specific class in an external terminal
+
+`./gradlew classes testClasses && build/jdk19/Contents/Home/bin/java -cp "build/classes/java/main:build/classes/java/test" org.hydev.mcpm.<class>`
+
 ## Brainstorm
 
 Server file/endpoint structure:

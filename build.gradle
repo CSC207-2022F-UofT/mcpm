@@ -74,4 +74,5 @@ if (hasProperty('buildScan')) {
 
 test {
     useJUnitPlatform()
+    testLogging.showStandardStreams = true
 }
