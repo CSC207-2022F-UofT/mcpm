@@ -1,5 +1,7 @@
 package org.hydev.mcpm.client.interaction;
 
+import java.util.Objects;
+
 import static java.lang.String.format;
 
 /**
@@ -19,6 +21,9 @@ public class ProgressRow
         this.total = total;
         this.completed = 0;
         this.unit = unit;
+
+        // Add leading space
+        if (!unit.isBlank() && !unit.startsWith(" ")) this.unit = " " + unit;
     }
 
     public ProgressRow(long total)
@@ -37,7 +42,7 @@ public class ProgressRow
     {
         double p = 100d * completed / total;
         var placeholder = "PLACEHOLDER_BAR";
-        var t = format("%s%s%s %.0f %d/%d%s", theme.prefix(), placeholder, theme.suffix(), p, completed, total, unit);
+        var t = format("%s%s%s %.0f%% %5d/%-5d%s", theme.prefix(), placeholder, theme.suffix(), p, completed, total, unit);
 
         // Add progress bar length
         var len = cols - t.length() + placeholder.length();
