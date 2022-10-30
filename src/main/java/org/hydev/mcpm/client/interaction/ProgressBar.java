@@ -7,6 +7,8 @@ import java.io.PrintStream;
 import java.util.*;
 
 import static java.lang.String.format;
+import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
+import static org.fusesource.jansi.internal.CLibrary.isatty;
 import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
 /**
@@ -20,13 +22,15 @@ public class ProgressBar implements AutoCloseable
     private final ConsoleUtils cu;
     private final ProgressBarTheme theme;
     private final PrintStream out;
-    private final int cols;
+    private int cols;
 
     private final List<ProgressRow> activeBars;
 
     private long lastUpdate;
 
     private double frameDelay;
+
+    private final boolean istty;
 
     /**
      * Create and initialize a progress bar
@@ -41,11 +45,18 @@ public class ProgressBar implements AutoCloseable
         this.activeBars = new ArrayList<>();
         this.cols = AnsiConsole.getTerminalWidth();
 
+        // Default to 70-char width if the width can't be detected (like in a non-tty output)
+        if (this.cols == 0) this.cols = 70;
+
         // Last update time
         this.lastUpdate = System.nanoTime();
 
         // Default frame delay is 0.01666 (60 fps)
         this.frameDelay = 1 / 60d;
+
+        // Check if output is a TTY. If not, change frame rate to 0.5 fps to avoid spamming a log.
+        this.istty = isatty(STDOUT_FILENO) == 0;
+        if (istty) this.frameDelay = 1 / 0.5;
     }
 
     /**
@@ -79,7 +90,7 @@ public class ProgressBar implements AutoCloseable
     private void forceUpdate()
     {
         // Roll back to the first line
-        cu.curUp(activeBars.size());
+        if (istty) cu.curUp(activeBars.size());
         activeBars.forEach(bar -> out.println(bar.toString(theme, cols)));
     }
 
@@ -142,7 +153,7 @@ public class ProgressBar implements AutoCloseable
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0)
-                    all.add(b.appendBar(new ProgressRow(300).unit("MB").desc(format("File %s.tar.gz", all.size()))).descLen(40));
+                    all.add(b.appendBar(new ProgressRow(300).unit("MB").desc(format("File %s.tar.gz", all.size()))).descLen(30));
                 all.forEach(a -> a.increase(1));
                 safeSleep(3);
             }

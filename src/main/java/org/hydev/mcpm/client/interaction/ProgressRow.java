@@ -67,6 +67,9 @@ public class ProgressRow
         // Add progress bar length
         var len = cols - t.length() + "{progbar}".length();
 
+        // Safety check: If there are no space to display the progress bar, then don't display it
+        if (len < 0) return t.replace("{progbar}", "");
+
         // Calculate progress length
         int pLen = (int) (1d * completed / total * len);
         var bar = theme.done().repeat(pLen / theme.doneLen()) + theme.ipr().repeat((len - pLen) / theme.iprLen());
