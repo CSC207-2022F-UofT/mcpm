@@ -29,11 +29,17 @@ class ReflectionUtilsTest
     {
         var a = new A();
         var f = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
-        assert f.get(0).equals("meow");
-        assert f.get(1).equals("qwq");
+        assert f.equals(Arrays.asList("meow", "qwq"));
+    }
 
-        // The obtained field is a pointer
+    @Test
+    void getPrivateFieldMutation()
+    {
+        // Show that the obtained field is a pointer, and its contents can be mutated
+        var a = new A();
+        var f = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
         f.set(1, "wolf");
+
         var newF = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
         assert newF.get(1).equals("wolf");
     }

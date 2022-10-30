@@ -21,7 +21,7 @@ import static org.hydev.mcpm.utils.ReflectionUtils.getPrivateField;
 import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
 
 /**
- * TODO: Write a description for this class!
+ * Implementation of plugin hot-loading/unloading
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
