@@ -1,14 +1,28 @@
 package org.hydev.mcpm.client.interaction;
 
+import org.fusesource.jansi.AnsiConsole;
+import org.hydev.mcpm.utils.ConsoleUtils;
+
+import java.io.PrintStream;
+import java.util.*;
+
+import static java.lang.String.format;
+import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
+
 /**
- * TODO: Write a description for this class!
+ * Terminal progress bar based on Xterm escape codes
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
 public class ProgressBar implements AutoCloseable
 {
+    private final ConsoleUtils cu;
     private final ProgressBarTheme theme;
+    private final PrintStream out;
+    private final int cols;
+
+    private final List<ProgressRow> activeBars;
 
     /**
      * Create and initialize a progress bar
@@ -18,50 +32,44 @@ public class ProgressBar implements AutoCloseable
     public ProgressBar(ProgressBarTheme theme)
     {
         this.theme = theme;
-        this.init();
-    }
-
-    /**
-     * Initialize the progress bar (print the first line)
-     */
-    public void init()
-    {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        this.out = System.out;
+        this.cu = new ConsoleUtils(this.out);
+        this.activeBars = new ArrayList<>();
+        this.cols = AnsiConsole.getTerminalWidth();
+        System.out.println(cols);
     }
 
     /**
      * Append a progress bar at the end
      *
-     * @return Unique identifier of the progress bar
+     * @param bar Row of the progress bar
+     * @return bar for fluent access
      */
-    public String appendBar()
+    public ProgressRow appendBar(ProgressRow bar)
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        this.activeBars.add(bar);
+        out.println("");
+        update();
+        return bar;
     }
 
-    /**
-     * Set progress for a bar
-     *
-     * @param id Unique identifier
-     * @param progress Progress as a ratio in range 0-1
-     */
-    public void setBar(String id, float progress)
+    private void update()
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        // Roll back to the first line
+        cu.curUp(activeBars.size());
+        activeBars.forEach(bar -> out.println(bar.fmt(theme, cols)));
     }
 
     /**
      * Finish a progress bar
      *
-     * @param id Unique identifier of the progress bar
+     * @param bar Progress bar
      */
-    public void finishBar(String id)
+    public void finishBar(ProgressRow bar)
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        this.activeBars.remove(bar);
+        out.println();
+        update();
     }
 
     /**
@@ -70,9 +78,32 @@ public class ProgressBar implements AutoCloseable
      * @throws Exception e
      */
     @Override
-    public void close() throws Exception
+    public void close()
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        System.out.println("");
+    }
+
+    public static void main(String[] args)
+    {
+        try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
+        {
+            var r = b.appendBar(new ProgressRow(1000, "it"));
+            for (int i = 0; i < 1000; i++)
+            {
+                r.completed ++;
+                b.update();
+                safeSleep(10);
+            }
+
+
+            //var all = new ArrayList<ProgressRow>();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    all.add(b.appendBar(new ProgressRow(3, "it")));
+            //    all.forEach(a -> a.completed++);
+            //    b.update();
+            //    safeSleep(1000);
+            //}
+        }
     }
 }
