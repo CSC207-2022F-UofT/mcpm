@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'checkstyle'
 }
 
 group 'org.hydev.csc207'
@@ -14,6 +15,15 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(19))
     }
+}
+
+checkstyle {
+    // assign the latest checkstyle version explicitly, since the default version is very old
+    toolVersion = '10.3.4'
+    configFile = rootProject.file('.github/checkstyle.xml')
+
+    ignoreFailures = false
+    maxWarnings = 5
 }
 
 
@@ -39,6 +49,9 @@ dependencies {
     // IDE annotations
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
     implementation 'org.jetbrains:annotations:16.0.1'
+
+    // https://mvnrepository.com/artifact/org.fusesource.jansi/jansi
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
@@ -72,6 +85,13 @@ if (hasProperty('buildScan')) {
     }
 }
 
+task printCp {
+    doLast {
+        System.err.println sourceSets.main.runtimeClasspath.asPath
+    }
+}
+
 test {
     useJUnitPlatform()
+    testLogging.showStandardStreams = true
 }

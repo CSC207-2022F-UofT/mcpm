@@ -9,6 +9,28 @@ Final Project for CSC207
 * [Repo in CSC207 Organization](https://github.com/CSC207-2022F-UofT/mcpm)
 * [File Server Backend](https://mcpm.hydev.org)
 
+## Development
+
+### Run a specific class in an external terminal
+
+This is very useful to test terminal operations since the Gradle running environment isn't a tty, and IntelliJ IDEA's built-in terminal barely supports Xterm escape sequences.
+
+For this, I've set up a custom gradle task `printCp` that will print out the classpath needed to run the classes with dependencies. It will print in stderr instead of stdout in order for bash to easily separate out the classpath. You can obtain the classpath in a bash variable by:
+
+`cp="$(./gradlew classes testClasses printCp 2>&1 > /dev/null)" && echo "$cp"`
+
+(Unfortunately since Windows doesn't support Bash, you'll need to use a Bash-compatible environment on Windows, either cygwin / git bash or WSL)
+
+Then, you can run your class with:
+
+`java19 -cp "$cp" org.hydev.mcpm.<class>`
+
+For example, you can test the progress bar with:
+
+`java19 -cp "$cp" org.hydev.mcpm.client.interaction.ProgressBar`
+
+If you don't have JDK 19 installed or if you don't know where it's installed, you can use our JDK downloader tool to download a local version of JDK 19 without installing on the system. (TODO: Add tutorial after merging PR #8)
+
 ## Brainstorm
 
 Server file/endpoint structure:

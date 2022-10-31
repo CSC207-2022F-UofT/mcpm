@@ -21,6 +21,7 @@ import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 import static java.lang.String.format;
+import static java.nio.file.Files.createSymbolicLink;
 import static org.hydev.mcpm.Constants.JACKSON;
 import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
 
@@ -33,7 +34,8 @@ import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
 public class SpigetCrawler
 {
     private final String spiget = "https://api.spiget.org/v2";
-    private final String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
+    private final String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
     private final long mtDelay = 1000;
     private final File dataDir;
     private final StoredHashMap<Long, String> blacklist;
@@ -56,7 +58,8 @@ public class SpigetCrawler
         {
             // Send request
             var resp = Request.get(makeUrl(spiget + "/resources", "size", 500, "sort", "+id", "page", i,
-                    "fields", "id,name,tag,external,likes,testedVersions,links,contributors,premium,price,currency,version,releaseDate,updateDate,downloads,existenceStatus"))
+                    "fields", "id,name,tag,external,likes,testedVersions,links,contributors,premium," +
+                        "price,currency,version,releaseDate,updateDate,downloads,existenceStatus"))
                 .addHeader("User-Agent", userAgent).execute().returnContent().asString();
 
             // Parse JSON
@@ -64,7 +67,8 @@ public class SpigetCrawler
 
             // Print debug info
             if (!page.isEmpty())
-                System.out.printf("Page %s done, page len: %s, last id: %s\n", i, page.size(), page.get(page.size() - 1).get("id").asLong());
+                System.out.printf("Page %s done, page len: %s, last id: %s\n",
+                    i, page.size(), page.get(page.size() - 1).get("id").asLong());
             else
                 System.out.printf("Page %s is empty\n", i);
 
@@ -268,7 +272,7 @@ public class SpigetCrawler
 
                     // Create new link
                     linkPath.getParentFile().mkdirs();
-                    Files.createSymbolicLink(linkPath.toPath(), linkPath.getParentFile().toPath().relativize(ver.toPath()));
+                    createSymbolicLink(linkPath.toPath(), linkPath.getParentFile().toPath().relativize(ver.toPath()));
                 }
                 catch (IOException e)
                 {
@@ -280,6 +284,11 @@ public class SpigetCrawler
         });
     }
 
+    /**
+     * Execute server crawler
+     *
+     * @param args Arguments (Unused)
+     */
     public static void main(String[] args)
     {
         var crawler = new SpigetCrawler(new File(".mcpm"));

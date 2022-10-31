@@ -9,12 +9,20 @@ import java.util.*
 import kotlin.text.Charsets.UTF_8
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 
 
 val GSON = Gson()
 val HTTP = OkHttpClient()
-val KTOR = HttpClient(CIO)
+val KTOR = HttpClient(CIO) {
+    install(HttpTimeout) {
+        requestTimeoutMillis = 5000
+    }
+    install(HttpRequestRetry) {
+        retryOnServerErrors(maxRetries = 5)
+    }
+}
 
 /**
  * fromJson patch for Kotlin
