@@ -2,8 +2,6 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.models.Plugin;
 
-import javax.xml.crypto.Data;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +12,7 @@ import java.util.Map;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class DatabaseLoader
+public class DatabaseInteractor
 {
     /** Name index: map[lower-cased name] = Plugin of that name */
     private final Map<String, Plugin> nameIndex;
@@ -30,7 +28,7 @@ public class DatabaseLoader
      *
      * @param path Database file path
      */
-    public DatabaseLoader(String path)
+    public DatabaseInteractor(String path)
     {
         this.nameIndex = new HashMap<>();
         this.keywordIndex = new HashMap<>();
@@ -48,8 +46,12 @@ public class DatabaseLoader
      */
     public Plugin findByName(String name)
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        if (nameIndex.containsKey(name)) {
+            return nameIndex.get(name);
+        }
+        return null;
+
+        // throw new UnsupportedOperationException("TODO");
     }
 
     /**
@@ -67,8 +69,12 @@ public class DatabaseLoader
      */
     public List<Plugin> searchByKeyword(String keyword)
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+         if (keywordIndex.containsKey(keyword)) {
+            return keywordIndex.get(keyword);
+        }
+        return List.of();
+
+        // throw new UnsupportedOperationException("TODO");
     }
 
     /**
@@ -79,7 +85,11 @@ public class DatabaseLoader
      */
     public List<Plugin> searchByCommand(String command)
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        if (commandIndex.containsKey(command)) {
+            return commandIndex.get(command);
+        }
+        return List.of();
+
+        // throw new UnsupportedOperationException("TODO");
     }
 }
