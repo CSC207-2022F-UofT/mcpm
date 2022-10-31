@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.models.Plugin;
+import org.hydev.mcpm.client.models.PluginModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +15,13 @@ import java.util.Map;
 public class DatabaseLoader
 {
     /** Name index: map[lower-cased name] = Plugin of that name */
-    private final Map<String, Plugin> nameIndex;
+    private final Map<String, PluginModel> nameIndex;
 
     /** Keyword index: map[lower keyword] = List[plugins that contain the keyword either in name or description] */
-    private final Map<String, List<Plugin>> keywordIndex;
+    private final Map<String, List<PluginModel>> keywordIndex;
 
     /** Command index: map[lower command name/alias] = List[plugins that provide the command or alias] */
-    private final Map<String, List<Plugin>> commandIndex;
+    private final Map<String, List<PluginModel>> commandIndex;
 
     /**
      * Load database, create index for faster searching through the database
@@ -44,7 +44,7 @@ public class DatabaseLoader
      * @param name Name of the plugin
      * @return Plugin of that name, or null if not found
      */
-    public Plugin findByName(String name)
+    public PluginModel findByName(String name)
     {
         // TODO: Implement this
         throw new UnsupportedOperationException("TODO");
@@ -63,7 +63,7 @@ public class DatabaseLoader
      * @param keyword Keyword
      * @return List of packages matching the keyword, or empty list
      */
-    public List<Plugin> searchByKeyword(String keyword)
+    public List<PluginModel> searchByKeyword(String keyword)
     {
         // TODO: Implement this
         throw new UnsupportedOperationException("TODO");
@@ -75,7 +75,7 @@ public class DatabaseLoader
      * @param command Command name
      * @return Plugins that provides the command, or empty list
      */
-    public List<Plugin> searchByCommand(String command)
+    public List<PluginModel> searchByCommand(String command)
     {
         // TODO: Implement this
         throw new UnsupportedOperationException("TODO");
