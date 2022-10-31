@@ -9,6 +9,7 @@ import org.hydev.mcpm.server.crawlers.spiget.SpigetResource;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.utils.StoredHashMap;
 import org.hydev.mcpm.utils.TemporaryDir;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class SpigetCrawler
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
     private final long mtDelay = 1000;
     private final File dataDir;
-    private final StoredHashMap<Long, String> blacklist;
+    private final StoredHashMap<String, String> blacklist;
 
     public SpigetCrawler(File dataDir)
     {
@@ -170,7 +171,7 @@ public class SpigetCrawler
     private void checkUpdate(SpigetResource res)
     {
         // Plugin is in the blacklist, skip
-        if (blacklist.containsKey(res.id())) return;
+        if (blacklist.containsKey("" + res.id())) return;
 
         // Latest version already exists in local fs, skip
         var fp = getLatestPath(res);
@@ -202,7 +203,7 @@ public class SpigetCrawler
             {
                 // Cannot read plugin.yml, that means it's not a standard plugin, add to blacklist
                 System.out.printf("Cannot read plugin.yml (%s: %s)\n", res.id(), res.name());
-                blacklist.put(res.id(), "Cannot read plugin.yml");
+                blacklist.put("" + res.id(), "Cannot read plugin.yml");
                 return;
             }
 
@@ -221,15 +222,15 @@ public class SpigetCrawler
         {
             // Not found
             if (e.getMessage().contains("404"))
-                blacklist.put(res.id(), "HTTP 404: Not found");
+                blacklist.put("" + res.id(), "HTTP 404: Not found");
 
             // "External resource cannot be downloaded"
             else if (e.getMessage().contains("400"))
-                blacklist.put(res.id(), "HTTP 400: Probably external resource");
+                blacklist.put("" + res.id(), "HTTP 400: Probably external resource");
 
             // Blocked by cloudflare
             else if (e.getMessage().contains("520"))
-                blacklist.put(res.id(), "HTTP 520: External site, blocked by CloudFlare");
+                blacklist.put("" + res.id(), "HTTP 520: External site, blocked by CloudFlare");
 
             // This happens when the server has an error (e.g. when a plugin doesn't have files to download)
             //else if (e.getMessage().contains("502")) return;
@@ -274,11 +275,11 @@ public class SpigetCrawler
                     linkPath.getParentFile().mkdirs();
                     createSymbolicLink(linkPath.toPath(), linkPath.getParentFile().toPath().relativize(ver.toPath()));
                 }
-                catch (IOException e)
+                catch (IOException | YAMLException | NullPointerException e)
                 {
                     // TODO: Better error handling
                     //e.printStackTrace();
-                    throw new RuntimeException(e);
+                    System.out.printf("Cannot read plugin.yml for %s: %s\n", ver, e);
                 }
             });
         });
@@ -292,7 +293,7 @@ public class SpigetCrawler
     public static void main(String[] args)
     {
         var crawler = new SpigetCrawler(new File(".mcpm"));
-        var res = crawler.crawlAllResources(false).stream()
+        var res = crawler.crawlAllResources(true).stream()
             .filter(it -> it.downloads() > 100 && !it.external()).toList();
 
         System.out.println(res.size());
