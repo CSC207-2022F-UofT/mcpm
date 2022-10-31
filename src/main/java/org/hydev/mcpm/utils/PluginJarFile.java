@@ -2,18 +2,15 @@ package org.hydev.mcpm.utils;
 
 import org.hydev.mcpm.client.models.PluginYml;
 import org.jetbrains.annotations.NotNull;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.zip.ZipFile;
 
 /**
- * Static utility functions for reading Java archives (jar)
+ * Static utility functions for reading Java archives (jar).
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-02
@@ -31,7 +28,7 @@ public class PluginJarFile extends ZipFile
     }
 
     /**
-     * Read the content of a file inside a jar/zip file
+     * Read the content of a file inside a jar/zip file.
      *
      * @param innerPath Local path inside the jar/zip file (e.g. "./plugins.yml")
      * @return File content as byte array
@@ -43,7 +40,7 @@ public class PluginJarFile extends ZipFile
     }
 
     /**
-     * Read the content of a file inside a jar/zip file
+     * Read the content of a file inside a jar/zip file.
      *
      * @param innerPath Local path inside the jar/zip file (e.g. "./plugins.yml")
      * @return File content as string using UTF-8 encoding

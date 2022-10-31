@@ -1,9 +1,8 @@
 import os
 from collections import Counter
+from hypy_utils.tqdm_utils import pmap
 from pathlib import Path
 from subprocess import check_output
-
-from hypy_utils.tqdm_utils import pmap
 
 
 def get_file(fp: Path):

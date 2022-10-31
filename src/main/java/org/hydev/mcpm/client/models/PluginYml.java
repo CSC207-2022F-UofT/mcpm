@@ -6,7 +6,9 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * POJO model for plugin.yml inside each Minecraft Bukkit/Spigot plugin.
@@ -247,7 +249,8 @@ public class PluginYml
     @Override
     public int hashCode()
     {
-        return Objects.hash(main, name, version, description, apiVersion, load, author, authors, website, depend, prefix, softdepend, loadbefore, libraries, commands, permissions);
+        return Objects.hash(main, name, version, description, apiVersion, load, author, authors,
+            website, depend, prefix, softdepend, loadbefore, libraries, commands, permissions);
     }
 
     @Override

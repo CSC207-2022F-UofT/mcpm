@@ -1,11 +1,8 @@
 import json
-from collections import Counter
-from pathlib import Path
-
-import seaborn as sns
 import numpy as np
 from hypy_utils.scientific_utils import calc_col_stats
 from matplotlib import pyplot as plt
+from pathlib import Path
 
 if __name__ == '__main__':
     j = json.loads(Path(".mcpm/crawler/spiget/resources.json").read_text())

@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'checkstyle'
 }
 
 group 'org.hydev.csc207'
@@ -14,6 +15,15 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(19))
     }
+}
+
+checkstyle {
+    // assign the latest checkstyle version explicitly, since the default version is very old
+    toolVersion = '10.3.4'
+    configFile = rootProject.file('.github/checkstyle.xml')
+
+    ignoreFailures = false
+    maxWarnings = 5
 }
 
 

@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.models.Plugin;
 import org.hydev.mcpm.client.models.PluginVersion;
 
 import java.io.File;
