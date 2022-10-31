@@ -51,14 +51,14 @@ def update_build(mc_path: Path):
     print('Building project...')
     build_jar = Path('build/libs')
     shutil.rmtree(build_jar, ignore_errors=True)
-    check_call('./gradlew build', shell=True)
+    check_call('./gradlew shadow', shell=True)
 
     # Install plugin
     print('Installing our MCPM plugin...')
     plugin_path = mc_path / 'plugins/mcpm.jar'
     shutil.rmtree(plugin_path, ignore_errors=True)
     ensure_dir(plugin_path.parent)
-    shutil.copy2(build_jar / str(os.listdir(build_jar)[0]), plugin_path)
+    shutil.copy2(build_jar / str([f for f in os.listdir(build_jar) if f.endswith("-all.jar")][0]), plugin_path)
 
 
 if __name__ == '__main__':

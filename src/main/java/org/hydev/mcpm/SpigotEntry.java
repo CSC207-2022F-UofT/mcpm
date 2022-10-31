@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -17,6 +18,7 @@ import static java.util.Objects.requireNonNull;
 public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
     private Logger log;
+    private Controller controller;
 
     /**
      * onEnable() is called when our plugin is loaded on a Spigot server.
@@ -26,7 +28,10 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     {
         // Initialize logger
         log = getLogger();
-        log.info("[MCPM] Enabled!");
+        log.info("Enabled!");
+
+        // Initialize controller
+        controller = new Controller();
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
@@ -38,13 +43,13 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     @Override
     public void onDisable()
     {
-        log.info("[MCPM] Disabled!");
+        log.info("Disabled!");
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
-        sender.sendMessage("This command is not yet implemented, meow~");
-        return false;
+        controller.runCommand(args, sender::sendMessage);
+        return true;
     }
 }
