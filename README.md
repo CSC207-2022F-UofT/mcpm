@@ -31,6 +31,18 @@ For example, you can test the progress bar with:
 
 If you don't have JDK 19 installed or if you don't know where it's installed, you can use our JDK downloader tool to download a local version of JDK 19 without installing on the system. (TODO: Add tutorial after merging PR #8)
 
+## Development
+
+Setup and start a testing minecraft server: 
+
+1. `pip install -r requirements.txt`
+2. `python3 -m tools.start_server`
+
+Rebuild & update our MCPM plugin while the server is running:
+
+1. `python3 -m tools.update_build`
+2. `plugman reload mcpm` (Inside the server's command prompt)
+
 ## Brainstorm
 
 Server file/endpoint structure:
