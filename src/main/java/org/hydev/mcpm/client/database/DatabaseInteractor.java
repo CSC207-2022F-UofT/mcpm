@@ -50,8 +50,6 @@ public class DatabaseInteractor
             return nameIndex.get(name);
         }
         return null;
-
-        // throw new UnsupportedOperationException("TODO");
     }
 
     /**
@@ -73,8 +71,6 @@ public class DatabaseInteractor
             return keywordIndex.get(keyword);
         }
         return List.of();
-
-        // throw new UnsupportedOperationException("TODO");
     }
 
     /**
@@ -89,7 +85,5 @@ public class DatabaseInteractor
             return commandIndex.get(command);
         }
         return List.of();
-
-        // throw new UnsupportedOperationException("TODO");
     }
 }
