@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  mcprs-sync:
+    container_name: mcprs-sync
+    build: sync
+    volumes:
+      - /tmp/data:/data
+    environment:
+      - RSYNC_SOURCE=rsync://mcprs-bell.hydev.org/mcprs
+      - RSYNC_INTERVAL=24
+    restart: always
+
+  mcprs-nginx:
+    container_name: mcprs-nginx
+    build: nginx
+    volumes:
+      - /tmp/data:/data
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_DOMAIN=demo.daisy.hydev.org
+    restart: always
+
+  mcprs-rsyncd:
+    container_name: mcprs-rsyncd
+    image: axiom/rsync-server
+    ports:
+      - "873:873"
+    volumes:
+      - /tmp/data:/data
+    restart: always
