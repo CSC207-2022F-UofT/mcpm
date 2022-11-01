@@ -5,7 +5,8 @@ from subprocess import Popen
 
 import schedule
 
-RSYNC_ARGS = shlex.split("-rlptH --safe-links --delete-delay --delay-updates --timeout=600 --contimeout=60 --no-motd")
+RSYNC_ARGS = shlex.split("-rlptH --info=progress2 --safe-links --delete-delay --delay-updates "
+                         "--timeout=600 --contimeout=60 --no-motd")
 
 
 if __name__ == '__main__':
