@@ -1,14 +1,16 @@
 package org.hydev.mcpm;
 
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import org.hydev.mcpm.client.injector.*;
+import org.hydev.mcpm.client.injector.PluginNotFoundException;
+import org.hydev.mcpm.client.injector.PluginLoader;
+import org.hydev.mcpm.client.injector.LoadBoundary;
+import org.hydev.mcpm.client.injector.UnloadBoundary;
+import org.hydev.mcpm.client.injector.ReloadBoundary;
 
 import java.util.function.Consumer;
 
 import static java.lang.String.format;
-import static org.hydev.mcpm.utils.Sugar.sub;
 import static org.hydev.mcpm.utils.Sugar.subFrom;
-
 
 /**
  * Controller of the program
@@ -22,6 +24,9 @@ public class Controller
     private final UnloadBoundary unloader;
     private final ReloadBoundary reloader;
 
+    /**
+     * Creates default controller with a PluginLoader for all boundaries.
+     */
     public Controller()
     {
         var pl = new PluginLoader();
@@ -57,6 +62,7 @@ public class Controller
                             case "load" -> loader.loadPlugin(name);
                             case "unload" -> unloader.unloadPlugin(name);
                             case "reload" -> reloader.reloadPlugin(name);
+                            default -> { }
                         }
                         log.accept(format("Plugin %s %sed", name, cmd));
                     }

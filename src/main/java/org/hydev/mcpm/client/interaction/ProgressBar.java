@@ -4,7 +4,8 @@ import org.fusesource.jansi.AnsiConsole;
 import org.hydev.mcpm.utils.ConsoleUtils;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.String.format;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
@@ -138,6 +139,11 @@ public class ProgressBar implements AutoCloseable
         return activeBars;
     }
 
+    /**
+     * Displays a demo progress bar.
+     *
+     * @param args Arguments are ignored.
+     */
     public static void main(String[] args)
     {
         try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
@@ -145,8 +151,15 @@ public class ProgressBar implements AutoCloseable
             var all = new ArrayList<ProgressRow>();
             for (int i = 0; i < 1300; i++)
             {
-                if (i < 1000 && i % 100 == 0)
-                    all.add(b.appendBar(new ProgressRow(300).unit("MB").desc(format("File %s.tar.gz", all.size()))).descLen(30));
+                if (i < 1000 && i % 100 == 0) {
+                    var row = new ProgressRow(300)
+                        .unit("MB")
+                        .desc(format("File %s.tar.gz", all.size()))
+                        .descLen(30);
+
+                    all.add(b.appendBar(row));
+                }
+
                 all.forEach(a -> a.increase(1));
                 safeSleep(3);
             }
