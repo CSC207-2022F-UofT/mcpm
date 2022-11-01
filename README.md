@@ -68,7 +68,9 @@ If you want to contribute your network traffic by setting up a mirror, feel free
 
 ### How to set up a mirror
 
-The MCPRS server is hosted with a plain file server that supports both http and rsync. The official server is hosted using Nginx, but any file server with such compatibility would work.
+The MCPRS server is hosted with a plain file server that supports both http and rsync. The official server is hosted using Nginx, but any file server with such compatibility would work. You can follow one of the approaches below to set up a mirror.
+
+After setting up a mirror, if you want to add it to our mirror list, you can submit a pull request to this repo editing the [mirrorlist.yml](mirrorlist.yml) file.
 
 #### Setup Mirror using Docker Compose
 
@@ -92,7 +94,7 @@ sudo mkdir -p /data/mcprs
 # If you want to start everything (including nginx):
 sudo docker-compose up -d
 
-# Or if you only want to start sync and rsyncd, do:
+# Or if you want to start sync and rsyncd but want to use your own HTTP server, do:
 sudo docker-compose up mcprs-sync mcprs-rsyncd -d
 ```
 
