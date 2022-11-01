@@ -41,8 +41,30 @@ For example, you can test the progress bar with:
 
 If you don't have JDK 19 installed or if you don't know where it's installed, you can use our JDK downloader tool to download a local version of JDK 19 without installing on the system. (TODO: Add tutorial after merging PR #8)
 
+## MCPRS - Plugin Repository Server
 
-## Brainstorm
+The downloadable Spigot plugins and their meta info are stored on our server, hosted in Toronto 🇨🇦. If you live far from Canada, please consider switching to one of the mirrors below:
+
+**North America** 🇺🇸
+
+| Mirror URL (HTTPS)   | Hosted By | Provider    | Location      | Speed    | Update |
+|----------------------|-----------|-------------|---------------|----------|--------|
+| mcprs.hydev.org      | HyDEV     | OVH Hosting | 🇨🇦 Montreal | 100 Mbps | 1 day  |
+| mcprs-bell.hydev.org | HyDEV     | Bell Canada | 🇨🇦 Toronto  | 750 Mbps | 1 day  |
+
+**Europe** 🇪🇺
+
+| Mirror URL (HTTPS)   | Hosted By | Provider   | Location        | Speed    | Update |
+|----------------------|-----------|------------|-----------------|----------|--------|
+| mcprs-lux.hydev.org  | HyDEV     | GCore Labs | 🇱🇺 Luxembourg | 200 Mbps | 2 days |
+
+**Asia**
+
+| Mirror URL (HTTPS)    | Hosted By | Provider | Location   | Speed    | Update |
+|-----------------------|-----------|----------|------------|----------|--------|
+| mcprs-tokyo.hydev.org | HyDEV     | Vultr    | 🇯🇵 Tokyo | 200 Mbps | 2 days |
+
+If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#How to set up a mirror)
 
 Server file/endpoint structure:
 
