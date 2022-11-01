@@ -19,13 +19,9 @@ import java.util.List;
  * @since 2022-09-27
  */
 public record PluginVersion(
-    String fileName,
-    String version,
+    long id,
     long size,
-    String md5,
     String sha256,
-    List<String> arch,
-    long buildTime,
 
     PluginYml meta
 )

@@ -44,7 +44,7 @@ public class SpigetCrawler
     public SpigetCrawler(File dataDir)
     {
         this.dataDir = dataDir;
-        this.blacklist = new StoredHashMap<>(new File(dataDir, "crawler/spiget/blacklist.json"));
+        this.blacklist = new StoredHashMap<>(new File(dataDir, "crawler/spiget/blacklist.gs"));
     }
 
     /**
