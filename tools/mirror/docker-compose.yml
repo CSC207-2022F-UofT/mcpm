@@ -18,8 +18,6 @@ services:
       - /data/mcprs:/data:z
     ports:
       - "80:80"
-    environment:
-      - NGINX_DOMAIN=mcprs-lux.hydev.org
     restart: always
 
   mcprs-rsyncd:
