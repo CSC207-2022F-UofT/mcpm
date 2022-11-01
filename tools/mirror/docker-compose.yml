@@ -5,7 +5,7 @@ services:
     container_name: mcprs-sync
     build: sync
     volumes:
-      - /tmp/data:/data
+      - /data/mcprs:/data:z
     environment:
       - RSYNC_SOURCE=rsync://mcprs-bell.hydev.org/mcprs
       - RSYNC_INTERVAL=24
@@ -15,11 +15,11 @@ services:
     container_name: mcprs-nginx
     build: nginx
     volumes:
-      - /tmp/data:/data
+      - /data/mcprs:/data:z
     ports:
       - "80:80"
     environment:
-      - NGINX_DOMAIN=demo.daisy.hydev.org
+      - NGINX_DOMAIN=mcprs-lux.hydev.org
     restart: always
 
   mcprs-rsyncd:
@@ -28,5 +28,5 @@ services:
     ports:
       - "873:873"
     volumes:
-      - /tmp/data:/data
+      - /data/mcprs:/data:z
     restart: always
