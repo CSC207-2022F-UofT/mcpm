@@ -1,0 +1,28 @@
+-
+  host: mcprs.hydev.org
+  protocols: [http, https, rsyncd]
+  tier: 0
+  country: Canada
+  speed: 100
+  interval: 24
+-
+  host: mcprs-bell.hydev.org
+  protocols: [http, https, rsyncd]
+  tier: 0
+  country: Canada
+  speed: 750
+  interval: 24
+-
+  host: mcprs-lux.hydev.org
+  protocols: [http, rsyncd]
+  tier: 1
+  country: Luxembourg
+  speed: 200
+  interval: 24
+-
+  host: mcprs-tokyo.hydev.org
+  protocols: [http, https, rsyncd]
+  tier: 1
+  country: Tokyo
+  speed: 200
+  interval: 24
