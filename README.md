@@ -64,7 +64,7 @@ The downloadable Spigot plugins and their meta info are stored on our server, ho
 |-----------------------|-----------|----------|------------|----------|--------|
 | mcprs-tokyo.hydev.org | HyDEV     | Vultr    | 🇯🇵 Tokyo | 200 Mbps | 2 days |
 
-If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#How to set up a mirror)
+If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#how-to-set-up-a-mirror)
 
 ### How to set up a mirror
 
