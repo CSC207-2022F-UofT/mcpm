@@ -97,6 +97,61 @@ sudo docker-compose up mcprs-sync mcprs-rsyncd -d
 ```
 
 Note: If `docker-compose` says command not found, try `docker compose` instead
+
+#### Setup Mirror Manually
+
+You can sync all files from an existing mirror by using `rsync`, run rsync automatically using `crontab` or systemd timer, and hosting the synchronized local directory using `nginx`.
+
+```bash
+# Use rsync to sync 
+alias rsync1="rsync -rlptH --info=progress2 --safe-links --delete-delay --delay-updates --timeout=600 --contimeout=60 --no-motd"
+rsync1 "SOURCE_URL" "LOCAL_DIR"
+```
+
+```nginx.conf
+# /etc/nginx/conf.d/mcprs.conf
+# Make sure to include this sub-config in your /etc/nginx/nginx.conf
+# You can do "include /etc/nginx/conf.d/*.conf;"
+# After testing the http server works, you can use certbot to obtain a HTTPS certificate
+server
+{
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name mcprs.example.com; # TODO: Change this to your domain
+
+    root LOCAL_DIR; # TODO: Change this to your filesystem location
+
+    location / {
+        autoindex on;
+    }
+}
+
+# HTTPS Redirect
+server
+{
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name default;
+    return 301 https://$host$request_uri;
+}
+```
+
+```rsyncd.conf
+# /etc/rsyncd.conf
+uid = nobody
+gid = nobody
+use chroot = no
+max connections = 4
+syslog facility = local5
+pid file = /run/rsyncd.pid
+
+[mcprs]
+        path = /ws/mcpm/.mcpm
+        comment = MCPM Plugin Repository Server
+```
+
+### How does the server work?
+
 Server file/endpoint structure:
 
 `/db` : Database sync  
