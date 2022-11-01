@@ -66,6 +66,37 @@ The downloadable Spigot plugins and their meta info are stored on our server, ho
 
 If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#How to set up a mirror)
 
+### How to set up a mirror
+
+The MCPRS server is hosted with a plain file server that supports both http and rsync. The official server is hosted using Nginx, but any file server with such compatibility would work.
+
+#### Setup Mirror using Docker Compose
+
+For convenience, we created a docker image so that you can set up a mirror using Docker.
+It will automatically set up:
+
+1. `mcprs-sync`: Script to automatically sync updates every 24 hours (configurable)
+2. `mcprs-rsyncd`: rsync server
+3. `mcprs-nginx`: HTTP server (without SSL). This is only recommended if you don't have any other HTTP services set up
+
+You need to install docker and docker-compose, then you need to run:
+
+```bash
+git clone https://github.com/CSC207-2022F-UofT/mcpm
+cd mcpm/tools/mirror
+
+# Then, you should review or edit the docker-compose.yml script. After that:
+
+sudo mkdir -p /data/mcprs
+
+# If you want to start everything (including nginx):
+sudo docker-compose up -d
+
+# Or if you only want to start sync and rsyncd, do:
+sudo docker-compose up mcprs-sync mcprs-rsyncd -d
+```
+
+Note: If `docker-compose` says command not found, try `docker compose` instead
 Server file/endpoint structure:
 
 `/db` : Database sync  
