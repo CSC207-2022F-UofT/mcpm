@@ -32,8 +32,7 @@ public record PluginYml(
     ArrayList<String> softdepend,
     ArrayList<String> loadbefore,
     ArrayList<String> libraries,
-    Map<String, Object> commands,
-    Map<String, Object> permissions
+    Map<String, Object> commands
 )
 {
     /**
@@ -46,15 +45,29 @@ public record PluginYml(
     {
         yml = yml.replaceAll("api-version", "apiVersion");
 
+        // The YAML parser doesn't like \t tab characters
+        yml = yml.replace("\t", "    ");
+
+        // Some yml files are full of NUL characters, IDK why
+        yml = yml.replace("\0", "");
+
+        // Some people forget to put : after their version number
+        yml = yml.replaceAll("\nversion +(?=\\d)", "\nversion: ");
+
         // Try to fix mistakes that plugin authors might make
         var parsed = (ObjectNode) YML.readTree(yml);
 
         // Common mistake: Listing multiple authors under "author" while they should be under "authors"
-        if (parsed.get("author").isArray())
-        {
-            parsed.set("authors", parsed.get("authors"));
-            parsed.remove("authors");
-        }
+        if (parsed.has("author") && parsed.get("author").isArray())
+            parsed.set("authors", parsed.remove("author"));
+
+        // Same goes for the reverse, some developers put a single name under "authors"
+        if (parsed.has("authors") && !parsed.get("authors").isArray() && parsed.get("authors").isTextual())
+            parsed.set("author", parsed.remove("authors"));
+
+        // Some people put [PLUGIN] as their prefix without realizing that it will be parsed as an array
+        if (parsed.has("prefix") && parsed.get("prefix").isArray())
+            parsed.set("prefix", parsed.get("prefix").get(0));
 
         return YML.treeToValue(parsed, PluginYml.class);
     }

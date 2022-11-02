@@ -35,9 +35,9 @@ class PluginJarFileTest
     {
         var meta = jar.readPluginYaml();
 
-        assert meta.getMain().equals("org.hydev.mc.ActiveList");
-        assert meta.getName().equals("ActiveList");
-        assert meta.getVersion().equals("1.1");
-        assert meta.getAuthor().equals("Hykilpikonna");
+        assert meta.main().equals("org.hydev.mc.ActiveList");
+        assert meta.name().equals("ActiveList");
+        assert meta.version().equals("1.1");
+        assert meta.author().equals("Hykilpikonna");
     }
 }
