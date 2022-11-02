@@ -137,14 +137,7 @@ public class CreateDatabase {
 
             return Optional.of(new PluginVersion(versionId, jarFile.length(), hash, meta));
         } catch (JsonProcessingException e) {
-            try {
-                System.out.println("failed to yml: " + metaFile.getAbsolutePath());
-                System.out.println(Files.readString(metaFile.toPath()));
-            } catch (IOException s) {
-                System.out.println("What");
-                s.printStackTrace();
-            }
-
+            System.out.println("Failed to parse " + metaFile.toPath());
             e.printStackTrace();
 
             return Optional.empty();
