@@ -14,6 +14,7 @@ import java.io.IOException;
 public class NetworkUtils
 {
     private static final Timeout ONE_S = Timeout.ofSeconds(1);
+    private static final int PING_ITERS = 3;
 
     static
     {
@@ -33,19 +34,20 @@ public class NetworkUtils
      */
     public static int ping(String url)
     {
-        var to = Timeout.ofSeconds(1);
         try
         {
-            var start = System.nanoTime();
+            var start = System.currentTimeMillis();
 
             // Do request and check code
-            var head = Request.head(url).connectTimeout(to).responseTimeout(to)
-                .execute().returnResponse();
-            var status = head.getCode();
-            if (status >= 400) return -1;
+            for (int i = 0; i < PING_ITERS; i++)
+            {
+                var status = Request.head(url).connectTimeout(ONE_S).responseTimeout(ONE_S)
+                    .execute().returnResponse().getCode();
+                if (status >= 400) return -1;
+            }
 
             // Return time
-            return (int) ((System.nanoTime() - start) / 1e6);
+            return (int) (System.currentTimeMillis() - start) / PING_ITERS;
         }
         catch (IOException e)
         {
