@@ -43,8 +43,6 @@ public record PluginYml(
      */
     public static PluginYml fromYml(String yml) throws JsonProcessingException
     {
-        yml = yml.replaceAll("api-version", "apiVersion");
-
         // The YAML parser doesn't like \t tab characters
         yml = yml.replace("\t", "    ");
 
@@ -56,6 +54,9 @@ public record PluginYml(
 
         // Try to fix mistakes that plugin authors might make
         var parsed = (ObjectNode) YML.readTree(yml);
+
+        if (parsed.has("api-version"))
+            parsed.set("apiVersion", parsed.remove("api-version"));
 
         // Common mistake: Listing multiple authors under "author" while they should be under "authors"
         if (parsed.has("author") && parsed.get("author").isArray())
