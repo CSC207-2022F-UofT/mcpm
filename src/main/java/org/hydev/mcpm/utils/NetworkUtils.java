@@ -35,6 +35,9 @@ public class NetworkUtils
      */
     public static int ping(String url)
     {
+        url = (url.startsWith("http://") || url.startsWith("https://")) ? url : "http://" + url;
+        final var u = url;
+
         var start = System.currentTimeMillis();
 
         // Do request and check code
@@ -42,7 +45,7 @@ public class NetworkUtils
         {
             try
             {
-                return Request.head(url).connectTimeout(ONE_S).responseTimeout(ONE_S)
+                return Request.head(u).connectTimeout(ONE_S).responseTimeout(ONE_S)
                     .execute().returnResponse().getCode() < 400;
             }
             catch (IOException e)
