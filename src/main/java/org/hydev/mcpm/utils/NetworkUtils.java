@@ -4,6 +4,7 @@ import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.util.Timeout;
 
 import java.io.IOException;
+import java.util.stream.IntStream;
 
 /**
  * Network utilities
@@ -34,24 +35,25 @@ public class NetworkUtils
      */
     public static int ping(String url)
     {
-        try
-        {
-            var start = System.currentTimeMillis();
+        var start = System.currentTimeMillis();
 
-            // Do request and check code
-            for (int i = 0; i < PING_ITERS; i++)
+        // Do request and check code
+        var hasSuccess = IntStream.range(0, PING_ITERS).anyMatch(i ->
+        {
+            try
             {
-                var status = Request.head(url).connectTimeout(ONE_S).responseTimeout(ONE_S)
-                    .execute().returnResponse().getCode();
-                if (status >= 400) return -1;
+                return Request.head(url).connectTimeout(ONE_S).responseTimeout(ONE_S)
+                    .execute().returnResponse().getCode() < 400;
             }
+            catch (IOException e)
+            {
+                return false;
+            }
+        });
 
-            // Return time
-            return (int) (System.currentTimeMillis() - start) / PING_ITERS;
-        }
-        catch (IOException e)
-        {
-            return -1;
-        }
+        if (!hasSuccess) return -1;
+
+        // Return time
+        return (int) (System.currentTimeMillis() - start) / PING_ITERS;
     }
 }
