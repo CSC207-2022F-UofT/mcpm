@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.database;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -24,4 +25,25 @@ public record Mirror(
     int interval
 )
 {
+    /**
+     * Check if the mirror supoorts either http or https.
+     *
+     * @return Supports web
+     */
+    public boolean isWeb()
+    {
+        return protocols.contains("http") || protocols.contains("https");
+    }
+
+    /**
+     * Get the url of the mirror. Set to use https in priority.
+     *
+     * @return Http URL or null if it doesn't support http protocols
+     */
+    public @Nullable String url()
+    {
+        if (protocols.contains("https")) return "https://" + host;
+        else if (protocols.contains("http")) return "http://" + host;
+        else return null;
+    }
 }
