@@ -1,8 +1,8 @@
 package org.hydev.mcpm.client.database;
 
+import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
@@ -14,14 +14,6 @@ import java.util.List;
  */
 public interface MirrorSelectBoundary
 {
-    /**
-     * Automatically select a mirror
-     *
-     * @return Fastest mirror, or null if none are available
-     */
-    @Nullable
-    Mirror selectMirror() throws IOException;
-
     /**
      * List available mirrors
      *
@@ -36,10 +28,9 @@ public interface MirrorSelectBoundary
     void updateMirrors() throws IOException;
 
     /**
-     * Measure the ping (internet connectivity delay) of a mirror
+     * Measure the ping (internet connectivity delay) of mirrors
      *
-     * @param mirror Mirror
-     * @return Delay in milliseconds
+     * @return Sorted list of mirrors with their latencies, with the fastest on top
      */
-    int pingMirror(Mirror mirror);
+    List<Pair<Mirror, Integer>> pingMirrors() throws IOException;
 }
