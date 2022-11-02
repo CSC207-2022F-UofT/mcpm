@@ -20,6 +20,11 @@ public class ProgressRow
 
     private final long startTime;
 
+    /**
+     * Creates a ProgressRow object with a maximum 100% value of total.
+     *
+     * @param total The value that completed has to take to display 100% in this row.
+     */
     public ProgressRow(long total)
     {
         this.total = total;
@@ -53,7 +58,8 @@ public class ProgressRow
         // Calculate speed. TODO: Use a moving window to calculate speed
         double speed = completed / elapsed();
         double eta = total / speed;
-        long etaS = (long) (eta % 60), etaM = (long) (eta / 60);
+        long etaS = (long) (eta % 60);
+        long etaM = (long) (eta / 60);
 
         // Replace variables
         var p = format("%3.0f%%", 100d * completed / total);
@@ -71,8 +77,12 @@ public class ProgressRow
         if (len < 0) return t.replace("{progbar}", "");
 
         // Calculate progress length
-        int pLen = (int) (1d * completed / total * len);
-        var bar = theme.done().repeat(pLen / theme.doneLen()) + theme.ipr().repeat((len - pLen) / theme.iprLen());
+        int progress = (int) (1d * completed / total * len);
+
+        var leading = theme.done().repeat(progress / theme.doneLen());
+        var trailing = theme.ipr().repeat((len - progress) / theme.iprLen());
+
+        var bar = leading + trailing;
 
         return t.replace("{progbar}", bar);
     }
@@ -83,7 +93,7 @@ public class ProgressRow
     }
 
     /**
-     * Increase progress
+     * Increase progress by incr.
      *
      * @param incr Increase amount
      */
@@ -97,9 +107,9 @@ public class ProgressRow
     }
 
     /**
-     * Set progress
+     * Update the progress.
      *
-     * @param completed Completed amount
+     * @param completed Completed so far
      */
     public void set(long completed)
     {
@@ -110,18 +120,36 @@ public class ProgressRow
         if (completed >= total) pb.finishBar(this);
     }
 
+    /**
+     * Sets the description of this object.
+     *
+     * @param desc The description to set
+     * @return This object for chaining.
+     */
     public ProgressRow desc(String desc)
     {
         this.desc = desc;
         return this;
     }
 
+    /**
+     * Sets the maximum description length. This value is used for padding.
+     *
+     * @param descLen The description length.
+     * @return This object for chaining.
+     */
     public ProgressRow descLen(int descLen)
     {
         this.descLen = descLen;
         return this;
     }
 
+    /**
+     * Sets the unit indicator for the speed indicator.
+     *
+     * @param unit A unit string, beginning with an empty space.
+     * @return This object for chaining.
+     */
     public ProgressRow unit(String unit)
     {
         // Add leading space
@@ -129,6 +157,14 @@ public class ProgressRow
         return this;
     }
 
+    /**
+     * Sets the overall format of the progress bar.
+     * This is specified using indicators like {speed}, {desc}.
+     * For a full list see class implementation.
+     *
+     * @param fmt The foramt string.
+     * @return This object for chaining.
+     */
     public ProgressRow fmt(String fmt)
     {
         this.fmt = fmt;

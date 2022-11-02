@@ -67,7 +67,7 @@ public class DatabaseInteractor
      */
     public List<PluginModel> searchByKeyword(String keyword)
     {
-         if (keywordIndex.containsKey(keyword)) {
+        if (keywordIndex.containsKey(keyword)) {
             return keywordIndex.get(keyword);
         }
         return List.of();
