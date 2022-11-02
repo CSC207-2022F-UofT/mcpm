@@ -25,6 +25,11 @@ If you want to rebuild & update our MCPM plugin while the server is running:
 
 This is very useful to test terminal operations since the Gradle running environment isn't a tty, and IntelliJ IDEA's built-in terminal barely supports Xterm escape sequences.
 
+You can use `python3 -m tools.run <class reference>` to build and run a specific main class externally.
+
+<details>
+    <summary>How does it work</summary>
+
 For this, I've set up a custom gradle task `printCp` that will print out the classpath needed to run the classes with dependencies. It will print in stderr instead of stdout in order for bash to easily separate out the classpath. You can obtain the classpath in a bash variable by:
 
 `cp="$(./gradlew classes testClasses printCp 2>&1 > /dev/null)" && echo "$cp"`
@@ -39,7 +44,8 @@ For example, you can test the progress bar with:
 
 `java19 -cp "$cp" org.hydev.mcpm.client.interaction.ProgressBar`
 
-If you don't have JDK 19 installed or if you don't know where it's installed, you can use our JDK downloader tool to download a local version of JDK 19 without installing on the system. (TODO: Add tutorial after merging PR #8)
+</details>
+
 
 ## MCPRS - Plugin Repository Server
 
