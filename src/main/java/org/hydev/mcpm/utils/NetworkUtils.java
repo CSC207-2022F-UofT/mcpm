@@ -16,16 +16,7 @@ public class NetworkUtils
 {
     private static final Timeout ONE_S = Timeout.ofSeconds(1);
     private static final int PING_ITERS = 3;
-
-    static
-    {
-        // Preheat HTTP request module so that subsequent access return similar delay
-        try
-        {
-            Request.head("https://1.1.1.1").connectTimeout(ONE_S).execute();
-        }
-        catch (IOException ignored) { }
-    }
+    private static boolean pingInitialized = false;
 
     /**
      * Measure the ping (internet connectivity delay) to an url
@@ -35,6 +26,17 @@ public class NetworkUtils
      */
     public static int ping(String url)
     {
+        // Preheat HTTP request module so that subsequent access return similar delay
+        if (!pingInitialized)
+        {
+            try
+            {
+                Request.head("https://1.1.1.1").connectTimeout(ONE_S).execute();
+            }
+            catch (IOException ignored) { }
+            pingInitialized = true;
+        }
+
         url = (url.startsWith("http://") || url.startsWith("https://")) ? url : "http://" + url;
         final var u = url;
 
