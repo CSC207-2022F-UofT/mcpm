@@ -46,4 +46,10 @@ public record Mirror(
         else if (protocols.contains("http")) return "http://" + host;
         else return null;
     }
+
+    @Override
+    public String toString()
+    {
+        return host;
+    }
 }

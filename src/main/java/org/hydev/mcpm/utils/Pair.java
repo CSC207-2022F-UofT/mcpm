@@ -42,4 +42,10 @@ public record Pair<K, V>(K k, V v) implements Map.Entry<K, V>
     {
         return Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue);
     }
+
+    @Override
+    public String toString()
+    {
+        return k.toString() + ": " + v.toString();
+    }
 }
