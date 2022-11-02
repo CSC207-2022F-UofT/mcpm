@@ -40,7 +40,7 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
             .filter(f -> {
                 try (var jf = new PluginJarFile(f))
                 {
-                    return jf.readPluginYaml().getName().equalsIgnoreCase(name);
+                    return jf.readPluginYaml().name().equalsIgnoreCase(name);
                 }
                 catch (IOException ignored) { return false; }
             }).findFirst().orElseThrow(() -> new PluginNotFoundException(name));

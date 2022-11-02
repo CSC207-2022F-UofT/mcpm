@@ -1,5 +1,6 @@
 package org.hydev.mcpm.server.crawlers.spiget;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.utils.Hex;
 import org.hydev.mcpm.client.models.Database;
@@ -8,7 +9,6 @@ import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -136,11 +136,7 @@ public class CreateDatabase {
             var versionId = Long.parseLong(versionDir.getName());
 
             return Optional.of(new PluginVersion(versionId, jarFile.length(), hash, meta));
-        } catch (NumberFormatException | NoSuchAlgorithmException | IOException e) {
-            e.printStackTrace();
-
-            return Optional.empty();
-        } catch (YAMLException e) {
+        } catch (JsonProcessingException e) {
             try {
                 System.out.println("failed to yml: " + metaFile.getAbsolutePath());
                 System.out.println(Files.readString(metaFile.toPath()));
@@ -149,6 +145,10 @@ public class CreateDatabase {
                 s.printStackTrace();
             }
 
+            e.printStackTrace();
+
+            return Optional.empty();
+        } catch (NumberFormatException | NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
 
             return Optional.empty();

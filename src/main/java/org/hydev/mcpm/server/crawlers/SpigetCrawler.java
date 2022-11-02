@@ -9,15 +9,11 @@ import org.hydev.mcpm.server.crawlers.spiget.SpigetResource;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.utils.StoredHashMap;
 import org.hydev.mcpm.utils.TemporaryDir;
-import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
@@ -266,7 +262,7 @@ public class SpigetCrawler
                     var meta = PluginYml.fromYml(Files.readString(new File(ver, "plugin.yml").toPath()));
 
                     // Compute link path
-                    var linkPath = new File(dataDir, format("pkgs/links/%s/%s", meta.getName(), meta.getVersion()));
+                    var linkPath = new File(dataDir, format("pkgs/links/%s/%s", meta.name(), meta.version()));
 
                     // Delete old link
                     if (Files.isSymbolicLink(linkPath.toPath()) || linkPath.exists()) linkPath.delete();
@@ -275,7 +271,7 @@ public class SpigetCrawler
                     linkPath.getParentFile().mkdirs();
                     createSymbolicLink(linkPath.toPath(), linkPath.getParentFile().toPath().relativize(ver.toPath()));
                 }
-                catch (IOException | YAMLException | NullPointerException e)
+                catch (IOException | NullPointerException e)
                 {
                     // TODO: Better error handling
                     //e.printStackTrace();
