@@ -18,7 +18,7 @@ import java.util.List;
  */
 public record Mirror(
     String host,
-    List<String> protocols,
+    Set<String> protocols,
     int tier,
     String country,
     int speed,
