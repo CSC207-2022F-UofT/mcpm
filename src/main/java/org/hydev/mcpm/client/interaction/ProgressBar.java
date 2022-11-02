@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
+import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
 import static org.fusesource.jansi.internal.CLibrary.isatty;
 import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
@@ -55,7 +56,7 @@ public class ProgressBar implements AutoCloseable
         this.frameDelay = 1 / 60d;
 
         // Check if output is a TTY. If not, change frame rate to 0.5 fps to avoid spamming a log.
-        this.istty = isatty(1) == 1;
+        this.istty = isatty(STDOUT_FILENO) == 1;
         if (!istty) this.frameDelay = 1 / 0.5;
     }
 
