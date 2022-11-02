@@ -15,7 +15,11 @@ import org.hydev.mcpm.utils.PluginJarFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SortedSet;
 
 import static org.hydev.mcpm.utils.ReflectionUtils.getPrivateField;
 import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;

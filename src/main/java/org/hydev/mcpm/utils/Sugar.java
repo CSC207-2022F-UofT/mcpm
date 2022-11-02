@@ -13,11 +13,11 @@ public class Sugar
     /**
      * Subarray, behaves exactly like python's arr[start:end]
      *
+     * @param <T> Type of the array
      * @param arr Array
      * @param start Start (inclusive, negative numbers means (len - n))
      * @param end End (non-inclusive, negative numbers means (len - n))
      * @return Subarray
-     * @param <T> Type of the array
      */
     public static <T> T[] sub(T[] arr, int start, int end)
     {
@@ -32,10 +32,10 @@ public class Sugar
     /**
      * Subarray from start, behaves exactly like python's arr[start:]
      *
+     * @param <T> Type of the array
      * @param arr Array
      * @param start Start (inclusive, negative numbers means (len - n))
      * @return Subarray
-     * @param <T> Type of the array
      */
     public static <T> T[] subFrom(T[] arr, int start)
     {
@@ -45,10 +45,10 @@ public class Sugar
     /**
      * Subarray to end, behaves exactly like python's arr[:end]
      *
+     * @param <T> Type of the array
      * @param arr Array
      * @param end End (non-inclusive, negative numbers means (len - n))
      * @return Subarray
-     * @param <T> Type of the array
      */
     public static <T> T[] subTo(T[] arr, int end)
     {
