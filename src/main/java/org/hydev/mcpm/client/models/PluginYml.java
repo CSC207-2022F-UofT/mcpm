@@ -46,8 +46,15 @@ public record PluginYml(
     {
         yml = yml.replaceAll("api-version", "apiVersion");
 
+        // Try to fix mistakes that plugin authors might make
         var parsed = (ObjectNode) YML.readTree(yml);
 
+        // Common mistake: Listing multiple authors under "author" while they should be under "authors"
+        if (parsed.get("author").isArray())
+        {
+            parsed.set("authors", parsed.get("authors"));
+            parsed.remove("authors");
+        }
 
         return YML.treeToValue(parsed, PluginYml.class);
     }
