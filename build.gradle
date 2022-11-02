@@ -113,9 +113,17 @@ if (hasProperty('buildScan')) {
     }
 }
 
+sourceSets {
+    test {
+        resources {
+            srcDir "test"
+        }
+    }
+}
+
 task printCp {
     doLast {
-        System.err.println sourceSets.main.runtimeClasspath.asPath
+        System.err.println sourceSets.test.runtimeClasspath.asPath
     }
 }
 
