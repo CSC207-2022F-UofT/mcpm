@@ -20,15 +20,6 @@ class MirrorSelectorTest
     static MirrorSelector mi = new MirrorSelector();
 
     @Test
-    void selectMirror() throws IOException
-    {
-        assumeTrue(hasInternet);
-
-        // We can't assume which mirror is the fastest, so we can only print
-        System.out.println(mi.selectMirror());
-    }
-
-    @Test
     void listAvailableMirrors() throws IOException
     {
         assumeTrue(hasInternet);

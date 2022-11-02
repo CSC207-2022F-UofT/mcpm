@@ -24,7 +24,7 @@ public class NetworkUtils
         {
             Request.head("https://1.1.1.1").connectTimeout(ONE_S).execute();
         }
-        catch (IOException ignored) {}
+        catch (IOException ignored) { }
     }
 
     /**

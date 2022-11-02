@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
  */
 public record Pair<K, V>(K k, V v) implements Map.Entry<K, V>
 {
+    /**
+     * Exception when trying to modify an unmodifiable field
+     */
     public static class UnmodifiableException extends RuntimeException {}
 
     @Override
