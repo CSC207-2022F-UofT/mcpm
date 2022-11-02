@@ -24,6 +24,7 @@ class MirrorSelectorTest
     {
         assumeTrue(hasInternet);
         System.out.println(mi.listAvailableMirrors());
+        mi.listAvailableMirrors().forEach(it -> System.out.println(it.url()));
     }
 
     @Test

@@ -56,7 +56,7 @@ public class MirrorSelector implements MirrorSelectBoundary
     @Override
     public List<Pair<Mirror, Integer>> pingMirrors() throws IOException
     {
-        return listAvailableMirrors().stream()
+        return listAvailableMirrors().stream().filter(Mirror::isWeb)
             .map(m -> new Pair<>(m, ping(m.url())))
             .sorted(comparingInt(Map.Entry::getValue))
             .toList();

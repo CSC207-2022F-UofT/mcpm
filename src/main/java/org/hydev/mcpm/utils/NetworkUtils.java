@@ -45,6 +45,7 @@ public class NetworkUtils
         {
             try
             {
+                // Status code < 400 means HTTP success for HEAD (either 200 success or 300 redirect)
                 return Request.head(u).connectTimeout(ONE_S).responseTimeout(ONE_S)
                     .execute().returnResponse().getCode() < 400;
             }

@@ -1,17 +1,18 @@
 package org.hydev.mcpm.client.database;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Model for a mirror source
  *
- * @param host Hosting domain or half url of the mirror (e.g. "mcprs.hydev.org" or "eg.com/mcprs")
+ * @param host Hosting domain of the mirror (e.g. "mcprs.hydev.org")
  * @param protocols Supported protocols. Can contain "http", "https", or "rsyncd"
  * @param tier Mirror tier. 0th tier mirrors are the source. 1st tier mirrors are synced from 0th tier mirrors, etc.
  * @param country Origin of the mirror (e.g. Canada)
  * @param speed Actual upstream speed in mbps, can be tested on speedtest.net
  * @param interval Interval in hours between updates
+ * @param httpEndpoint Endpoint to the http file server (e.g. "abc" means "mcprs.hydev.org/abc")
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-11-01
@@ -22,7 +23,10 @@ public record Mirror(
     int tier,
     String country,
     int speed,
-    int interval
+    int interval,
+
+    // TODO: Add defaults value when parsing for httpEndpoint
+    String httpEndpoint
 )
 {
     /**
@@ -42,8 +46,8 @@ public record Mirror(
      */
     public @Nullable String url()
     {
-        if (protocols.contains("https")) return "https://" + host;
-        else if (protocols.contains("http")) return "http://" + host;
+        if (protocols.contains("https")) return "https://" + host + httpEndpoint();
+        else if (protocols.contains("http")) return "http://" + host + httpEndpoint();
         else return null;
     }
 
@@ -51,5 +55,14 @@ public record Mirror(
     public String toString()
     {
         return host;
+    }
+
+    @Override
+    public String httpEndpoint()
+    {
+        if (httpEndpoint == null) return "/";
+
+        // Ensure leading /
+        return httpEndpoint.startsWith("/") ? httpEndpoint : "/" + httpEndpoint;
     }
 }

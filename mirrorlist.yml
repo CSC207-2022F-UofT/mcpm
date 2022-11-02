@@ -5,6 +5,8 @@
   country: Canada
   speed: 100
   interval: 24
+  httpEndpoint: /
+  rsyncEndpoint: /mcprs
 -
   host: mcprs-bell.hydev.org
   protocols: [http, https, rsyncd]
@@ -12,6 +14,8 @@
   country: Canada
   speed: 750
   interval: 24
+  httpEndpoint: /
+  rsyncEndpoint: /mcprs
 -
   host: mcprs-lux.hydev.org
   protocols: [http, rsyncd]
@@ -19,6 +23,8 @@
   country: Luxembourg
   speed: 200
   interval: 24
+  httpEndpoint: /
+  rsyncEndpoint: /mcprs
 -
   host: mcprs-tokyo.hydev.org
   protocols: [http, https, rsyncd]
@@ -26,3 +32,5 @@
   country: Tokyo
   speed: 200
   interval: 24
+  httpEndpoint: /
+  rsyncEndpoint: /mcprs
