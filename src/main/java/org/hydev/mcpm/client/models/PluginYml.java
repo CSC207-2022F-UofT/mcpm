@@ -3,6 +3,8 @@ package org.hydev.mcpm.client.models;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.error.MarkedYAMLException;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -35,14 +37,16 @@ public record PluginYml(
     Map<String, Object> commands
 )
 {
+    public static class InvalidPluginMetaStructure extends Exception { }
+
     /**
      * Parse plugin.yml from yml string
      *
      * @param yml YML string
      * @return PluginYml object
      */
-    public static PluginYml fromYml(String yml) throws JsonProcessingException
-    {
+    public static PluginYml fromYml(String yml)
+        throws MarkedYAMLException, InvalidPluginMetaStructure, JsonProcessingException {
         // The YAML parser doesn't like \t tab characters
         yml = yml.replace("\t", "    ");
 
@@ -53,7 +57,8 @@ public record PluginYml(
         yml = yml.replaceAll("\nversion +(?=\\d)", "\nversion: ");
 
         // Try to fix mistakes that plugin authors might make
-        var parsed = (ObjectNode) YML.readTree(yml);
+        if (!(YML.readTree(yml) instanceof ObjectNode parsed))
+            throw new InvalidPluginMetaStructure();
 
         if (parsed.has("api-version"))
             parsed.set("apiVersion", parsed.remove("api-version"));

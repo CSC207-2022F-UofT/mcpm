@@ -1,5 +1,6 @@
 package org.hydev.mcpm.utils;
 
+import org.hydev.mcpm.client.models.PluginYml;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ class PluginJarFileTest
     }
 
     @Test
-    void readPluginYaml() throws IOException
+    void readPluginYaml() throws IOException, PluginYml.InvalidPluginMetaStructure
     {
         var meta = jar.readPluginYaml();
 

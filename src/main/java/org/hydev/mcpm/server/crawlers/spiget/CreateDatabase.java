@@ -9,6 +9,7 @@ import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.error.MarkedYAMLException;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -70,6 +71,10 @@ public class CreateDatabase {
             e.printStackTrace();
 
             System.out.println("Failed to write database file.");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            System.out.println("Failure in DB creation.");
         }
     }
 
@@ -150,7 +155,7 @@ public class CreateDatabase {
             var versionId = Long.parseLong(versionDir.getName());
 
             return Optional.of(new PluginVersion(versionId, jarFile.length(), hash, meta));
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | MarkedYAMLException | PluginYml.InvalidPluginMetaStructure e) {
             System.out.println("Failed to parse " + metaFile.toPath());
             e.printStackTrace();
 

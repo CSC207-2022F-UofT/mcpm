@@ -271,7 +271,7 @@ public class SpigetCrawler
                     linkPath.getParentFile().mkdirs();
                     createSymbolicLink(linkPath.toPath(), linkPath.getParentFile().toPath().relativize(ver.toPath()));
                 }
-                catch (IOException | NullPointerException e)
+                catch (IOException | NullPointerException | PluginYml.InvalidPluginMetaStructure e)
                 {
                     // TODO: Better error handling
                     //e.printStackTrace();
