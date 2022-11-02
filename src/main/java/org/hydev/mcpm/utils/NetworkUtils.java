@@ -13,6 +13,18 @@ import java.io.IOException;
  */
 public class NetworkUtils
 {
+    private static final Timeout ONE_S = Timeout.ofSeconds(1);
+
+    static
+    {
+        // Preheat HTTP request module so that subsequent access return similar delay
+        try
+        {
+            Request.head("https://1.1.1.1").connectTimeout(ONE_S).execute();
+        }
+        catch (IOException ignored) {}
+    }
+
     /**
      * Measure the ping (internet connectivity delay) to an url
      *
