@@ -4,17 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.hc.client5.http.fluent.Request;
-import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Map;
-
-import static java.util.Comparator.comparingInt;
-import static org.hydev.mcpm.utils.NetworkUtils.ping;
 
 /**
  * Implementation of mirror select boundary
@@ -51,14 +46,5 @@ public class MirrorSelector implements MirrorSelectBoundary
         // Save yml to local folder
         LOCAL_PATH.getParentFile().mkdirs();
         Files.writeString(LOCAL_PATH.toPath(), yml);
-    }
-
-    @Override
-    public List<Pair<Mirror, Integer>> pingMirrors() throws IOException
-    {
-        return listAvailableMirrors().stream().filter(Mirror::isWeb)
-            .map(m -> new Pair<>(m, ping(m.url())))
-            .sorted(comparingInt(Map.Entry::getValue))
-            .toList();
     }
 }
