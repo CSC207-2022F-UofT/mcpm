@@ -10,6 +10,7 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
+import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
 import java.io.File;
@@ -40,9 +41,9 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
             .filter(f -> {
                 try (var jf = new PluginJarFile(f))
                 {
-                    return jf.readPluginYaml().getName().equalsIgnoreCase(name);
+                    return jf.readPluginYaml().name().equalsIgnoreCase(name);
                 }
-                catch (IOException ignored) { return false; }
+                catch (IOException | PluginYml.InvalidPluginMetaStructure ignored) { return false; }
             }).findFirst().orElseThrow(() -> new PluginNotFoundException(name));
 
         return loadPlugin(file);

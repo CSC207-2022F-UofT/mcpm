@@ -57,7 +57,7 @@ public class PluginJarFile extends ZipFile
      * @return Plugin.yml content
      * @throws IOException Errors on reading the jar/zip file
      */
-    public PluginYml readPluginYaml() throws IOException
+    public PluginYml readPluginYaml() throws IOException, PluginYml.InvalidPluginMetaStructure
     {
         return PluginYml.fromYml(readString("plugin.yml"));
     }

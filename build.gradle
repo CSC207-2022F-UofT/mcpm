@@ -63,12 +63,11 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.0-rc3'
 
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.0-rc3'
+
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation 'com.google.guava:guava:31.1-jre'
-
-    // YAML parser
-    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
 
     // IDE annotations
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
