@@ -1,89 +1,95 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.models.PluginModel;
+import org.hydev.mcpm.client.database.boundary.ListPackagesBoundary;
+import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
+import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
+import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
+import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
+import org.hydev.mcpm.client.database.inputs.ListPackagesResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-/**
- * Loader for our custom database structure
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
- */
-public class DatabaseInteractor
-{
-    /** Name index: map[lower-cased name] = Plugin of that name */
-    private final Map<String, PluginModel> nameIndex;
+public class DatabaseInteractor implements ListPackagesBoundary {
+    private final DatabaseFetcher fetcher;
+    private final DatabaseFetcherListener listener;
 
-    /** Keyword index: map[lower keyword] = List[plugins that contain the keyword either in name or description] */
-    private final Map<String, List<PluginModel>> keywordIndex;
-
-    /** Command index: map[lower command name/alias] = List[plugins that provide the command or alias] */
-    private final Map<String, List<PluginModel>> commandIndex;
-
-    /**
-     * Load database, create index for faster searching through the database
-     *
-     * @param path Database file path
-     */
-    public DatabaseInteractor(String path)
-    {
-        this.nameIndex = new HashMap<>();
-        this.keywordIndex = new HashMap<>();
-        this.commandIndex = new HashMap<>();
-
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+    public DatabaseInteractor(DatabaseFetcher fetcher) {
+        this(fetcher, new ProgressBarFetcherListener());
     }
 
-    /**
-     * Find the plugin by name
-     *
-     * @param name Name of the plugin
-     * @return Plugin of that name, or null if not found
-     */
-    public PluginModel findByName(String name)
-    {
-        if (nameIndex.containsKey(name)) {
-            return nameIndex.get(name);
-        }
-        return null;
+    public DatabaseInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
+        this.fetcher = fetcher;
+        this.listener = listener;
     }
 
-    /**
-     * Search for a plugin by keyword.
-     * <p>
-     * This function should ignore letter case iin searching.
-     * For example, searching "java" would match "Java" as well
-     * <p>
-     * This function implements fuzzy search that doesn't require the exact phrase to be available,
-     * but requires all words in the phrase to be present.
-     * For example, searching "java 11" would match "java jdk 11" but not "java"
-     *
-     * @param keyword Keyword
-     * @return List of packages matching the keyword, or empty list
-     */
-    public List<PluginModel> searchByKeyword(String keyword)
-    {
-        if (keywordIndex.containsKey(keyword)) {
-            return keywordIndex.get(keyword);
+    @Override
+    public ListPackagesResult list(ListPackagesInput input) {
+        var database = fetcher.fetchDatabase(!input.noCache(), listener);
+
+        if (database == null) {
+            return ListPackagesResult.by(ListPackagesResult.State.FailedToFetchDatabase);
         }
-        return List.of();
+
+        if (input.pageNumber() < 0) {
+            return ListPackagesResult.by(ListPackagesResult.State.InvalidInput);
+        }
+
+        var plugins = database.plugins();
+
+        // Request all items.
+        if (input.itemsPerPage() <= 0) {
+            return new ListPackagesResult(
+                ListPackagesResult.State.Success,
+                input.pageNumber(),
+                new ArrayList<>(plugins),
+                database.plugins().size()
+            );
+        }
+
+        var begin = input.itemsPerPage() * input.pageNumber();
+        var end = Math.min(begin + input.itemsPerPage(), plugins.size());
+
+        if (plugins.size() <= begin) {
+            return ListPackagesResult.by(ListPackagesResult.State.NoSuchPage);
+        }
+
+        var result = plugins.subList(begin, end);
+
+        return new ListPackagesResult(
+            ListPackagesResult.State.Success,
+            input.pageNumber(),
+            result,
+            database.plugins().size()
+        );
     }
 
-    /**
-     * Search for a plugin by command or command alias.
-     *
-     * @param command Command name
-     * @return Plugins that provides the command, or empty list
-     */
-    public List<PluginModel> searchByCommand(String command)
-    {
-        if (commandIndex.containsKey(command)) {
-            return commandIndex.get(command);
+    public static void main(String[] args) {
+        var host = URI.create("http://mcpm.hydev.org");
+        var fetcher = new LocalDatabaseFetcher(host);
+        var database = new DatabaseInteractor(fetcher);
+
+        var result = database.list(new ListPackagesInput(20, 0, true));
+
+        if (result.state() != ListPackagesResult.State.Success) {
+            System.out.println("Result Failed With State " + result.state().name());
+            return;
         }
-        return List.of();
+
+        System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
+
+        var text = result
+            .plugins()
+            .stream()
+            .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(value -> "  " + value)
+            .collect(Collectors.joining("\n"));
+
+        System.out.println(text);
     }
 }
