@@ -14,20 +14,40 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Convenience class for quickly hashing data.
+ */
 public class HashUtils {
     private final MessageDigest digest;
 
     public static final String defaultAlgorithm = "SHA-256";
 
+    /**
+     * Default constructor uses the SHA-256 algorithm.
+     *
+     * @throws NoSuchAlgorithmException Thrown in the case that the algorithm doesn't ship with an implementation.
+     */
     public HashUtils() throws NoSuchAlgorithmException {
         this(defaultAlgorithm);
     }
 
+    /**
+     * Constructor initializes a new HashUtils object.
+     *
+     * @param algorithm The algorithm identifier passed to MessageDigest.
+     * @throws NoSuchAlgorithmException Thrown in the case that the algorithm doesn't ship with an implementation.
+     */
     public HashUtils(String algorithm) throws NoSuchAlgorithmException {
         digest = MessageDigest.getInstance(algorithm);
     }
 
-    // After
+    /**
+     * Hashes the data in InputStream and returns the relevant hash.
+     *
+     * @param inputStream The input stream to read data from.
+     * @return The hex-decoded hash string corresponding to the data in inputStream.
+     * @throws IOException Thrown in the case that the inputStream doesn't support a required operation.
+     */
     public String hash(InputStream inputStream) throws IOException {
         try (var stream = new BufferedInputStream(inputStream)) {
             byte[] buffer = new byte[8196];
@@ -42,10 +62,24 @@ public class HashUtils {
         }
     }
 
+
+    /**
+     * Hashes the data in the provided File and returns the relevant hash.
+     *
+     * @param file The input file to read data from.
+     * @return The hex-decoded hash string corresponding to the data in the file.
+     * @throws IOException Thrown in the case that the file doesn't exist or allow certain reading operations.
+     */
     public String hash(File file) throws IOException {
         return hash(new FileInputStream(file));
     }
 
+    /**
+     * Hashes the data contained in the String (encoded as UTF-8).
+     *
+     * @param text The input string which will be hashed.
+     * @return The hex-decoded hash string corresponding to the data in the string.
+     */
     public String hash(String text) {
         try {
             var stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));

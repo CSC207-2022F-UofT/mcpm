@@ -18,6 +18,9 @@ public record ListPackagesResult(
     List<PluginModel> plugins,
     int totalPlugins
 ) {
+    /**
+     * The outcome of the ListPackagesResult.
+     */
     public enum State {
         Success,
         InvalidInput,
@@ -25,6 +28,13 @@ public record ListPackagesResult(
         NoSuchPage,
     }
 
+    /**
+     * Creates an empty ListPackagesResult with the provided state.
+     * The default values are provided in order to easily create objects with failure States (ex. InvalidInput).
+     *
+     * @param state The state of the ListPackagesResult.
+     * @return A ListPackagesResult object with the state property initialized and dummy values for the other elements.
+     */
     public static ListPackagesResult by(State state) {
         return new ListPackagesResult(state, 0, List.of(), 0);
     }

@@ -4,22 +4,33 @@ import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
 
+/**
+ * Handles database download events by forwarding them to a ProgressBar instance.
+ */
 public class ProgressBarFetcherListener implements DatabaseFetcherListener {
     private ProgressBar cachedBar;
     private ProgressRow cachedRow;
 
     private final ProgressBarTheme theme;
 
+    /**
+     * Create a ProgressBar with a default ASCII_THEME.
+     */
     public ProgressBarFetcherListener() {
         this(ProgressBarTheme.ASCII_THEME);
     }
 
+    /**
+     * Create a ProgressBar with the provided them.
+     *
+     * @param theme The theme of the underlying ProgressBar.
+     */
     public ProgressBarFetcherListener(ProgressBarTheme theme) {
         this.theme = theme;
     }
 
     // Writes to cachedBar/cachedRow...
-    void createBar(long total) {
+    private void createBar(long total) {
         var bar = new ProgressBar(theme);
         var row = new ProgressRow(total)
             .desc("Database")
@@ -32,7 +43,7 @@ public class ProgressBarFetcherListener implements DatabaseFetcherListener {
         cachedRow = row;
     }
 
-    ProgressBar getBar(long total) {
+    private ProgressBar getBar(long total) {
         if (cachedBar == null) {
             createBar(total);
         }
@@ -40,7 +51,7 @@ public class ProgressBarFetcherListener implements DatabaseFetcherListener {
         return cachedBar;
     }
 
-    ProgressRow getRow(long total) {
+    private ProgressRow getRow(long total) {
         if (cachedRow == null) {
             createBar(total);
         }
