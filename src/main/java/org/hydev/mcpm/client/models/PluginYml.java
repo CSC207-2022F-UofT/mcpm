@@ -39,6 +39,9 @@ public record PluginYml(
     Map<String, Object> commands
 )
 {
+    /**
+     * Thrown from fromYml when the structure of the formatted YML is not a map.
+     */
     public static class InvalidPluginMetaStructure extends Exception { }
 
     /**

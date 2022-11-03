@@ -1,10 +1,7 @@
 package org.hydev.mcpm.client.database.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.fluent.Request;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
 import org.hydev.mcpm.client.models.Database;
@@ -14,13 +11,15 @@ import org.jetbrains.annotations.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * A database fetcher that has a local persistent cache along and a network fallback.
+ */
 public class LocalDatabaseFetcher implements DatabaseFetcher {
     private final URI host;
     private final Path cacheDirectory;
@@ -32,10 +31,24 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
     public static final String USER_AGENT = "MCPM Client";
 
+    /**
+     * Creates a database fetcher that syncs with a mirror.
+     * The cache directory will default to .mcpm
+     *
+     * @param host The host URL MCPM server mirror that will be used to request database files.
+     *             Example: "http://mcpm.hydev.com"
+     */
     public LocalDatabaseFetcher(URI host) {
         this(host, Path.of(".mcpm/"));
     }
 
+    /**
+     * Creates a database fetcher that syncs with a mirror.
+     *
+     * @param host The host URL MCPM server mirror that will be used to request database files.
+     *             Example: "http://mcpm.hydev.com"
+     * @param cacheDirectory The directory that the cached database and hash file will be stored (as child files).
+     */
     public LocalDatabaseFetcher(URI host, Path cacheDirectory) {
         this.host = host;
         this.cacheDirectory = cacheDirectory;
@@ -45,7 +58,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         return Request
             .get(URI.create(host.toString() + "/" + path))
             .addHeader("Host", host.getHost())
-            .addHeader("User-Agent", "MCPM Client")
+            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Accepts", "application/json");
     }
 

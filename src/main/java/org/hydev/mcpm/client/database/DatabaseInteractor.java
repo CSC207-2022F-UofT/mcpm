@@ -13,19 +13,40 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Handles fetching and performing operations on the plugin database.
+ */
 public class DatabaseInteractor implements ListPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
 
+    /**
+     * Creates a new database with the provided database fetcher.
+     * Consider passing LocalDatabaseFetcher. Defaults to the ProgressBarFetcherListener.
+     *
+     * @param fetcher The fetcher that will be used to request the database object in boundary calls.
+     */
     public DatabaseInteractor(DatabaseFetcher fetcher) {
         this(fetcher, new ProgressBarFetcherListener());
     }
 
+    /**
+     * Creates a new database with the provided fetcher and upload listener.
+     *
+     * @param fetcher The fetcher that will be used to request the database object in boundary calls.
+     * @param listener The listener that will receives updates if the database is downloaded from the internet.
+     */
     public DatabaseInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
         this.listener = listener;
     }
 
+    /**
+     * Lists all plugins in the database with pagination.
+     *
+     * @param input Provided input. See the ListPackagesInput record for more info.
+     * @return Packages result. See the ListPackagesResult record for more info.
+     */
     @Override
     public ListPackagesResult list(ListPackagesInput input) {
         var database = fetcher.fetchDatabase(!input.noCache(), listener);
@@ -67,6 +88,11 @@ public class DatabaseInteractor implements ListPackagesBoundary {
         );
     }
 
+    /**
+     * Demo main method for DatabaseInteractor.
+     *
+     * @param args Arguments are ignored.
+     */
     public static void main(String[] args) {
         var host = URI.create("http://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);

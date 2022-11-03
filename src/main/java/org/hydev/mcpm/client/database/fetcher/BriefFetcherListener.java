@@ -1,5 +1,9 @@
 package org.hydev.mcpm.client.database.fetcher;
 
+/**
+ * Stub implementation of DatabaseFetcherListener.
+ * When the download method is called for the first time, the user will be alerted.
+ */
 public class BriefFetcherListener implements DatabaseFetcherListener {
     boolean startedDownload = false;
 
@@ -14,5 +18,7 @@ public class BriefFetcherListener implements DatabaseFetcherListener {
     }
 
     @Override
-    public void finish() { /* nothing */ }
+    public void finish() {
+        /* nothing */
+    }
 }
