@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ import static org.hydev.mcpm.Constants.YML;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-02
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginYml(
     @NotNull String main,
     @NotNull String name,

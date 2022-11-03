@@ -2,21 +2,18 @@ package org.hydev.mcpm.server.crawlers.spiget;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.hc.client5.http.utils.Hex;
 import org.hydev.mcpm.client.models.Database;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.utils.HashUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +61,7 @@ public class CreateDatabase {
 
             if (versionFile != null) {
                 try {
-                    var hash = generateHash(databaseFile);
+                    var hash = new HashUtils().hash(databaseFile);
 
                     Files.writeString(versionFile.toPath(), hash);
                 } catch (NoSuchAlgorithmException | IOException e) {
@@ -160,9 +157,7 @@ public class CreateDatabase {
                 return Optional.empty();
             }
 
-            String hash;
-
-            hash = generateHash(jarFile);
+            String hash = new HashUtils().hash(jarFile);
 
             var meta = PluginYml.fromYml(Files.readString(metaFile.toPath()));
 
@@ -178,23 +173,6 @@ public class CreateDatabase {
             e.printStackTrace();
 
             return Optional.empty();
-        }
-    }
-
-    @NotNull
-    private static String generateHash(File file) throws NoSuchAlgorithmException, IOException {
-        var digest = MessageDigest.getInstance("SHA-256");
-
-        try (var stream = new BufferedInputStream(new FileInputStream(file))) {
-            byte[] buffer = new byte[8196];
-            int count = stream.read(buffer);
-            while (count > 0) {
-                digest.update(buffer, 0, count);
-
-                count = stream.read(buffer);
-            }
-
-            return Hex.encodeHexString(digest.digest());
         }
     }
 }
