@@ -63,7 +63,7 @@ def update_build(mc_path: Path):
 
 if __name__ == '__main__':
     # Download JDK
-    java = ensure_java("19", 'build/jdk19')
+    java = ensure_java("19")
 
     # Download server tar
     mc_path = Path('build/mc-server')

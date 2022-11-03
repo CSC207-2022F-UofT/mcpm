@@ -56,8 +56,8 @@ public class ProgressBar implements AutoCloseable
         this.frameDelay = 1 / 60d;
 
         // Check if output is a TTY. If not, change frame rate to 0.5 fps to avoid spamming a log.
-        this.istty = isatty(STDOUT_FILENO) == 0;
-        if (istty) this.frameDelay = 1 / 0.5;
+        this.istty = isatty(STDOUT_FILENO) == 1;
+        if (!istty) this.frameDelay = 1 / 0.5;
     }
 
     /**
@@ -92,7 +92,10 @@ public class ProgressBar implements AutoCloseable
     {
         // Roll back to the first line
         if (istty) cu.curUp(activeBars.size());
-        activeBars.forEach(bar -> out.println(bar.toString(theme, cols)));
+        activeBars.forEach(bar -> {
+            cu.eraseLine();
+            out.println(bar.toString(theme, cols));
+        });
     }
 
     /**

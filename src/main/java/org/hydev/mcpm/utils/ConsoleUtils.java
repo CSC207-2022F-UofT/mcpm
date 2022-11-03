@@ -50,6 +50,7 @@ public class ConsoleUtils
      */
     public void eraseLine()
     {
+        curCol1();
         out.print("\033[K");
         out.flush();
     }

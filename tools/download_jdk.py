@@ -25,7 +25,10 @@ print('Detected system:', sys, arch)
 JAVA = Literal['19', '18', '17', '16', '15', '14', '13', '12', '11', '10', '9', '1.8', '1.7']
 
 
-def ensure_java(java_ver: Literal['19', '17'], path: str | Path) -> Path:
+def ensure_java(java_ver: Literal['19', '17'], path: str | Path | None = None) -> Path:
+    # Normalize path
+    if path is None:
+        path = f'build/jdk{java_ver}'
     path = Path(path)
     if not path.is_dir():
         download_oracle(java_ver, path)
