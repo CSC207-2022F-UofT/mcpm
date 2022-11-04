@@ -6,7 +6,7 @@ import org.hydev.mcpm.utils.ConsoleUtils;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static java.lang.String.format;
@@ -27,7 +27,7 @@ public class ProgressBar implements ProgressBarBoundary {
     private int cols;
 
     private final List<ProgressRowBoundary> activeBars;
-    private final Set<Integer> activeIds;
+    private final SortedSet<Integer> activeIds;
 
     private long lastUpdate;
 
@@ -106,13 +106,14 @@ public class ProgressBar implements ProgressBarBoundary {
         // Roll back to the first line
         if (istty) cu.curUp(activeBars.size());
         int prev = -1;
-        for (int i = 0; i < activeBars.size(); i ++){
-            int curdown = i - prev - 1;
+        for (int i : activeIds){
+            int curDown = i - prev - 1;
             prev = i;
-            cu.curUp(-curdown);
+            cu.curUp(-curDown); // move cursor down to next active bar
             cu.eraseLine();
-            out.println(activeBars.get(i).toString(theme, cols));
+            out.println(activeBars.get(i).toString(theme, cols)); // println adds a newline which is why we -1 above
         }
+        cu.curUp(-(activeBars.size() - prev - 1)); // move cursor down to the bottom
     }
 
     @Override
@@ -173,11 +174,24 @@ public class ProgressBar implements ProgressBarBoundary {
                 }
 
                 for (int j = 0; j < all.size(); j ++)
-                    b.incrementBarProgress(j, 4 * j % 11 + 1);
+                    b.incrementBarProgress(j, 1);
                 safeSleep(3);
             }
 
-            System.out.println("Done");
+            System.out.println("Done 1");
+        }
+        try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
+        {
+            for (int i = 0; i < 36; i ++)
+                b.appendBar(1000).unit("MB").desc(String.format("File %s.tar.gz", i)).descLen(30);
+            for (int t = 0; t < 1000; t ++) {
+                for (int i = 0; i < 36; i++) {
+                    double speed = Math.sin(Math.PI / 18 * i);
+                    speed = speed * speed * 5 + 1;
+                    b.incrementBarProgress(i, (long)Math.ceil(speed));
+                }
+                safeSleep(3);
+            }
         }
     }
 }
