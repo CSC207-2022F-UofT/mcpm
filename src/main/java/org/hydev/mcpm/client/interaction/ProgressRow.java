@@ -1,19 +1,16 @@
 package org.hydev.mcpm.client.interaction;
 
-import static java.lang.String.format;
-
 /**
  * Row of a progress bar
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-30
  */
-public class ProgressRow
-{
+public class ProgressRow implements ProgressRowBoundary {
     private final long total;
     private long completed;
     private String unit;
-    private ProgressBar pb;
+    private ProgressBarBoundary pb;
     private String desc;
     private int descLen;
     private String fmt;
@@ -53,6 +50,7 @@ public class ProgressRow
      * @param cols Number of columns (width) of the terminal window
      * @return Formatted string
      */
+    @Override
     public String toString(ProgressBarTheme theme, int cols)
     {
         // Calculate speed. TODO: Use a moving window to calculate speed
@@ -62,13 +60,13 @@ public class ProgressRow
         long etaM = (long) (eta / 60);
 
         // Replace variables
-        var p = format("%3.0f%%", 100d * completed / total);
+        var p = String.format("%3.0f%%", 100d * completed / total);
         var t = fmt.replace("{prefix}", theme.prefix())
             .replace("{suffix}", theme.suffix())
             .replace("{%done}", p)
-            .replace("{eta}", format("%02d:%02d", etaM, etaS))
-            .replace("{speed}", format("%.2f%s/s", speed, unit))
-            .replace("{desc}", descLen != 0 ? format("%-" + descLen + "s", desc) : desc + " ");
+            .replace("{eta}", String.format("%02d:%02d", etaM, etaS))
+            .replace("{speed}", String.format("%.2f%s/s", speed, unit))
+            .replace("{desc}", descLen != 0 ? String.format("%-" + descLen + "s", desc) : desc + " ");
 
         // Add progress bar length
         var len = cols - t.length() + "{progbar}".length();
@@ -87,7 +85,8 @@ public class ProgressRow
         return t.replace("{progbar}", bar);
     }
 
-    public void setPb(ProgressBar pb)
+    @Override
+    public void setPb(ProgressBarBoundary pb)
     {
         this.pb = pb;
     }
@@ -97,6 +96,7 @@ public class ProgressRow
      *
      * @param incr Increase amount
      */
+    @Override
     public void increase(long incr)
     {
         if (this.completed >= total) return;
@@ -111,6 +111,7 @@ public class ProgressRow
      *
      * @param completed Completed so far
      */
+    @Override
     public void set(long completed)
     {
         if (this.completed >= total) return;
@@ -126,7 +127,8 @@ public class ProgressRow
      * @param desc The description to set
      * @return This object for chaining.
      */
-    public ProgressRow desc(String desc)
+    @Override
+    public ProgressRowBoundary desc(String desc)
     {
         this.desc = desc;
         return this;
@@ -138,7 +140,8 @@ public class ProgressRow
      * @param descLen The description length.
      * @return This object for chaining.
      */
-    public ProgressRow descLen(int descLen)
+    @Override
+    public ProgressRowBoundary descLen(int descLen)
     {
         this.descLen = descLen;
         return this;
@@ -150,7 +153,8 @@ public class ProgressRow
      * @param unit A unit string, beginning with an empty space.
      * @return This object for chaining.
      */
-    public ProgressRow unit(String unit)
+    @Override
+    public ProgressRowBoundary unit(String unit)
     {
         // Add leading space
         this.unit = (!unit.isBlank() && !unit.startsWith(" ")) ? " " + unit : unit;
@@ -162,10 +166,11 @@ public class ProgressRow
      * This is specified using indicators like {speed}, {desc}.
      * For a full list see class implementation.
      *
-     * @param fmt The foramt string.
+     * @param fmt The format string.
      * @return This object for chaining.
      */
-    public ProgressRow fmt(String fmt)
+    @Override
+    public ProgressRowBoundary format(String fmt)
     {
         this.fmt = fmt;
         return this;

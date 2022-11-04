@@ -18,14 +18,13 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class ProgressBar implements AutoCloseable
-{
+public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
     private final ConsoleUtils cu;
     private final ProgressBarTheme theme;
     private final PrintStream out;
     private int cols;
 
-    private final List<ProgressRow> activeBars;
+    private final List<ProgressRowBoundary> activeBars;
 
     private long lastUpdate;
 
@@ -66,7 +65,8 @@ public class ProgressBar implements AutoCloseable
      * @param bar Row of the progress bar
      * @return bar for fluent access
      */
-    public ProgressRow appendBar(ProgressRow bar)
+    @Override
+    public ProgressRowBoundary appendBar(ProgressRowBoundary bar)
     {
         this.activeBars.add(bar);
         bar.setPb(this);
@@ -76,7 +76,8 @@ public class ProgressBar implements AutoCloseable
         return bar;
     }
 
-    protected void update()
+    @Override
+    public void update()
     {
         // Check time to limit for framerate (default 60fps)
         // Performance of the update heavily depends on the terminal's escape code handling
@@ -103,7 +104,8 @@ public class ProgressBar implements AutoCloseable
      *
      * @param bar Progress bar
      */
-    public void finishBar(ProgressRow bar)
+    @Override
+    public void finishBar(ProgressRowBoundary bar)
     {
         if (!activeBars.contains(bar)) return;
 
@@ -119,7 +121,8 @@ public class ProgressBar implements AutoCloseable
     {
     }
 
-    public ProgressBar setFrameDelay(double frameDelay)
+    @Override
+    public ProgressBarBoundary setFrameDelay(double frameDelay)
     {
         this.frameDelay = frameDelay;
         return this;
@@ -131,13 +134,15 @@ public class ProgressBar implements AutoCloseable
      * @param fps FPS
      * @return Self for fluent access
      */
-    public ProgressBar setFps(int fps)
+    @Override
+    public ProgressBarBoundary setFps(int fps)
     {
         this.frameDelay = 1d / fps;
         return this;
     }
 
-    public List<ProgressRow> getActiveBars()
+    @Override
+    public List<ProgressRowBoundary> getActiveBars()
     {
         return activeBars;
     }
@@ -151,7 +156,7 @@ public class ProgressBar implements AutoCloseable
     {
         try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
         {
-            var all = new ArrayList<ProgressRow>();
+            var all = new ArrayList<ProgressRowBoundary>();
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0) {
