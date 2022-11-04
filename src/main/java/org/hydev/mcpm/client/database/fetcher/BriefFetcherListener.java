@@ -5,7 +5,7 @@ package org.hydev.mcpm.client.database.fetcher;
  * When the download method is called for the first time, the user will be alerted.
  */
 public class BriefFetcherListener implements DatabaseFetcherListener {
-    boolean startedDownload = false;
+    private boolean startedDownload = false;
 
     @Override
     public void download(long completed, long total) {
