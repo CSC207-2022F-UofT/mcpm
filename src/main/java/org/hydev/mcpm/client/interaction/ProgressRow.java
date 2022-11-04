@@ -8,6 +8,7 @@ package org.hydev.mcpm.client.interaction;
  */
 public class ProgressRow implements ProgressRowBoundary {
     private final long total;
+    private final int id;
     private long completed;
     private String unit;
     private ProgressBarBoundary pb;
@@ -22,9 +23,10 @@ public class ProgressRow implements ProgressRowBoundary {
      *
      * @param total The value that completed has to take to display 100% in this row.
      */
-    public ProgressRow(long total)
+    public ProgressRow(long total, int id)
     {
         this.total = total;
+        this.id = id;
         this.completed = 0;
         this.unit = " it";
         this.desc = "";
@@ -35,6 +37,10 @@ public class ProgressRow implements ProgressRowBoundary {
         this.startTime = System.nanoTime();
     }
 
+    public int getId(){
+        return this.id;
+    }
+
     /**
      * @return Elapsed time in seconds
      */
@@ -43,13 +49,6 @@ public class ProgressRow implements ProgressRowBoundary {
         return (System.nanoTime() - startTime) / 1e9d;
     }
 
-    /**
-     * Get formatted string of the current progress bar
-     *
-     * @param theme Progress bar theme
-     * @param cols Number of columns (width) of the terminal window
-     * @return Formatted string
-     */
     @Override
     public String toString(ProgressBarTheme theme, int cols)
     {
@@ -91,26 +90,17 @@ public class ProgressRow implements ProgressRowBoundary {
         this.pb = pb;
     }
 
-    /**
-     * Increase progress by incr.
-     *
-     * @param incr Increase amount
-     */
     @Override
     public void increase(long incr)
     {
         if (this.completed >= total) return;
 
         this.completed += incr;
+        this.completed = Math.min(total, this.completed); // We don't want to go over
         pb.update();
-        if (completed >= total) pb.finishBar(this);
+        if (completed >= total) pb.finishBar(this.id);
     }
 
-    /**
-     * Update the progress.
-     *
-     * @param completed Completed so far
-     */
     @Override
     public void set(long completed)
     {
@@ -118,15 +108,9 @@ public class ProgressRow implements ProgressRowBoundary {
 
         this.completed = completed;
         pb.update();
-        if (completed >= total) pb.finishBar(this);
+        if (completed >= total) pb.finishBar(this.id);
     }
 
-    /**
-     * Sets the description of this object.
-     *
-     * @param desc The description to set
-     * @return This object for chaining.
-     */
     @Override
     public ProgressRowBoundary desc(String desc)
     {
@@ -134,12 +118,6 @@ public class ProgressRow implements ProgressRowBoundary {
         return this;
     }
 
-    /**
-     * Sets the maximum description length. This value is used for padding.
-     *
-     * @param descLen The description length.
-     * @return This object for chaining.
-     */
     @Override
     public ProgressRowBoundary descLen(int descLen)
     {
@@ -147,12 +125,6 @@ public class ProgressRow implements ProgressRowBoundary {
         return this;
     }
 
-    /**
-     * Sets the unit indicator for the speed indicator.
-     *
-     * @param unit A unit string, beginning with an empty space.
-     * @return This object for chaining.
-     */
     @Override
     public ProgressRowBoundary unit(String unit)
     {
@@ -161,14 +133,6 @@ public class ProgressRow implements ProgressRowBoundary {
         return this;
     }
 
-    /**
-     * Sets the overall format of the progress bar.
-     * This is specified using indicators like {speed}, {desc}.
-     * For a full list see class implementation.
-     *
-     * @param fmt The format string.
-     * @return This object for chaining.
-     */
     @Override
     public ProgressRowBoundary format(String fmt)
     {

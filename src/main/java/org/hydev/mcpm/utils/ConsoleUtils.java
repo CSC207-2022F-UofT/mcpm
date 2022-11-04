@@ -41,7 +41,7 @@ public class ConsoleUtils
         if (lines == 0) return;
 
         if (lines > 0) out.printf("\033[%dA", lines);
-        else out.printf("\033[%dB", lines);
+        else out.printf("\033[%dB", -lines);
         curCol1();
     }
 

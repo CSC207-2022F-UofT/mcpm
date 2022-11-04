@@ -6,6 +6,8 @@ import org.hydev.mcpm.utils.ConsoleUtils;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static java.lang.String.format;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
@@ -18,13 +20,14 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
+public class ProgressBar implements ProgressBarBoundary {
     private final ConsoleUtils cu;
     private final ProgressBarTheme theme;
     private final PrintStream out;
     private int cols;
 
     private final List<ProgressRowBoundary> activeBars;
+    private final Set<Integer> activeIds;
 
     private long lastUpdate;
 
@@ -43,6 +46,7 @@ public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
         this.out = System.out;
         this.cu = new ConsoleUtils(this.out);
         this.activeBars = new ArrayList<>();
+        this.activeIds = new TreeSet<>();
         this.cols = AnsiConsole.getTerminalWidth();
 
         // Default to 70-char width if the width can't be detected (like in a non-tty output)
@@ -59,21 +63,29 @@ public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
         if (!istty) this.frameDelay = 1 / 0.5;
     }
 
-    /**
-     * Append a progress bar at the end
-     *
-     * @param bar Row of the progress bar
-     * @return bar for fluent access
-     */
     @Override
-    public ProgressRowBoundary appendBar(ProgressRowBoundary bar)
+    public ProgressRowBoundary appendBar(long total)
     {
+        int id = this.activeBars.size();
+        this.activeIds.add(id);
+
+        ProgressRowBoundary bar = new ProgressRow(total, id);
         this.activeBars.add(bar);
         bar.setPb(this);
 
         out.println();
         update();
         return bar;
+    }
+
+    @Override
+    public void incrementBarProgress(int id, long inc) {
+        this.activeBars.get(id).increase(inc);
+    }
+
+    @Override
+    public void setBarProgress(int id, long progress) {
+        this.activeBars.get(id).set(progress);
     }
 
     @Override
@@ -93,24 +105,23 @@ public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
     {
         // Roll back to the first line
         if (istty) cu.curUp(activeBars.size());
-        activeBars.forEach(bar -> {
+        int prev = -1;
+        for (int i = 0; i < activeBars.size(); i ++){
+            int curdown = i - prev - 1;
+            prev = i;
+            cu.curUp(-curdown);
             cu.eraseLine();
-            out.println(bar.toString(theme, cols));
-        });
+            out.println(activeBars.get(i).toString(theme, cols));
+        }
     }
 
-    /**
-     * Finish a progress bar
-     *
-     * @param bar Progress bar
-     */
     @Override
-    public void finishBar(ProgressRowBoundary bar)
+    public void finishBar(int id)
     {
-        if (!activeBars.contains(bar)) return;
+        if (!activeIds.contains(id)) return;
 
         forceUpdate();
-        this.activeBars.remove(bar);
+        this.activeIds.remove(id);
     }
 
     /**
@@ -128,12 +139,6 @@ public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
         return this;
     }
 
-    /**
-     * Set frame rate in the unit of frames per second
-     *
-     * @param fps FPS
-     * @return Self for fluent access
-     */
     @Override
     public ProgressBarBoundary setFps(int fps)
     {
@@ -141,7 +146,6 @@ public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
         return this;
     }
 
-    @Override
     public List<ProgressRowBoundary> getActiveBars()
     {
         return activeBars;
@@ -156,19 +160,20 @@ public class ProgressBar implements AutoCloseable, ProgressBarBoundary {
     {
         try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
         {
-            var all = new ArrayList<ProgressRowBoundary>();
+            var all = new ArrayList<Integer>();
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0) {
-                    var row = new ProgressRow(300)
+                    var row = b.appendBar(300)
                         .unit("MB")
                         .desc(format("File %s.tar.gz", all.size()))
                         .descLen(30);
 
-                    all.add(b.appendBar(row));
+                    all.add(row.getId());
                 }
 
-                all.forEach(a -> a.increase(1));
+                for (int j = 0; j < all.size(); j ++)
+                    b.incrementBarProgress(j, 4 * j % 11 + 1);
                 safeSleep(3);
             }
 
