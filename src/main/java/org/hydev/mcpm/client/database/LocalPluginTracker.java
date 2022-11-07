@@ -20,14 +20,9 @@ import javax.naming.NameNotFoundException;
  * @since 2022-09-27
  */
 public class LocalPluginTracker {
-    private String MainLockFile = "TODO: Get this path"; // CSV file storing the list of manually installed plugins
-    private String PluginDirectory = "TODO: Get this path"; // Directory storing the plugins
+    private static String MainLockFile = "TODO: Get this path"; // CSV file storing the list of manually installed plugins
+    private static String PluginDirectory = "TODO: Get this path"; // Directory storing the plugins
 
-    public LocalPluginTracker(String mainLockFile, String pluginDirectory) {
-        this.MainLockFile = mainLockFile;
-        this.PluginDirectory = pluginDirectory;
-    }
-        
     /**
      * Read metadata from a plugin's jar
      *
@@ -78,10 +73,13 @@ public class LocalPluginTracker {
      * Precondition: MainLockFile is a sorted .csv file with the following format:
      * 1st column: Plugin name
      * 2nd column: Manual Dependency (true/false)
+     * Example:
+     * PluginName,true
+     * PluginName2,false
      */
     public void addManuallyInstalled(String name)
     {
-        // Locate the name in the list of installed plugins and add it to the list of manually installed plugins.
+        // Locate the name in the list of installed plugins and mark it as manually installed
         // TODO: Implement this
         Scanner sc = new Scanner(MainLockFile);
         sc.useDelimiter(",");
@@ -92,13 +90,15 @@ public class LocalPluginTracker {
             if (line[0].equals(name)) {
                 line[1] = "true";
                 found = true;
+                // Write the new line to the file TODO
+                
                 sc.close();
             } 
         }
 
         if (!found) {
             // Throw an error if the plugin is not installed
-            throw new IllegalArgumentException("Plugin not installed");
+            throw new IllegalArgumentException("Plugin not found, verify whether installed.");
         }
 
 
