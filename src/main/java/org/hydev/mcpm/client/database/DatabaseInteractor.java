@@ -52,11 +52,11 @@ public class DatabaseInteractor implements ListPackagesBoundary {
         var database = fetcher.fetchDatabase(!input.noCache(), listener);
 
         if (database == null) {
-            return ListPackagesResult.by(ListPackagesResult.State.FailedToFetchDatabase);
+            return ListPackagesResult.by(ListPackagesResult.State.FAILED_TO_FETCH_DATABASE);
         }
 
         if (input.pageNumber() < 0) {
-            return ListPackagesResult.by(ListPackagesResult.State.InvalidInput);
+            return ListPackagesResult.by(ListPackagesResult.State.INVALID_INPUT);
         }
 
         var plugins = database.plugins();
@@ -64,7 +64,7 @@ public class DatabaseInteractor implements ListPackagesBoundary {
         // Request all items.
         if (input.itemsPerPage() <= 0) {
             return new ListPackagesResult(
-                ListPackagesResult.State.Success,
+                ListPackagesResult.State.SUCCESS,
                 input.pageNumber(),
                 new ArrayList<>(plugins),
                 database.plugins().size()
@@ -75,13 +75,13 @@ public class DatabaseInteractor implements ListPackagesBoundary {
         var end = Math.min(begin + input.itemsPerPage(), plugins.size());
 
         if (plugins.size() <= begin) {
-            return ListPackagesResult.by(ListPackagesResult.State.NoSuchPage);
+            return ListPackagesResult.by(ListPackagesResult.State.NO_SUCH_PAGE);
         }
 
         var result = plugins.subList(begin, end);
 
         return new ListPackagesResult(
-            ListPackagesResult.State.Success,
+            ListPackagesResult.State.SUCCESS,
             input.pageNumber(),
             result,
             database.plugins().size()
@@ -100,7 +100,7 @@ public class DatabaseInteractor implements ListPackagesBoundary {
 
         var result = database.list(new ListPackagesInput(20, 0, true));
 
-        if (result.state() != ListPackagesResult.State.Success) {
+        if (result.state() != ListPackagesResult.State.SUCCESS) {
             System.out.println("Result Failed With State " + result.state().name());
             return;
         }
