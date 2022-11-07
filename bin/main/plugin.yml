@@ -1,0 +1,12 @@
+main: org.hydev.mcpm.SpigotEntry
+name: MCPM
+version: @version@
+description: Minecraft Package Manager for Bukkit/Spiget Servers
+api-version: 1.18
+authors: [Hykilpikonna, 1whatleytay, MstrPikachu, kchprog, jerryzhu509, thudoan1706, aanushkasharma]
+website: https://github.com/CSC207-2022F-UofT/mcpm
+commands:
+  mcpm:
+    description: Minecraft package manager
+    usage: /mcpm <install/remove/update/search/load/unload/reload/help>
+    permission: mcpm.use
