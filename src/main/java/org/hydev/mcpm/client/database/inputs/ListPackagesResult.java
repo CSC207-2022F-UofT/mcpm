@@ -22,10 +22,10 @@ public record ListPackagesResult(
      * The outcome of the ListPackagesResult.
      */
     public enum State {
-        Success,
-        InvalidInput,
-        FailedToFetchDatabase,
-        NoSuchPage,
+        SUCCESS,
+        INVALID_INPUT,
+        FAILED_TO_FETCH_DATABASE,
+        NO_SUCH_PAGE,
     }
 
     /**

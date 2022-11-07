@@ -76,7 +76,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     @Nullable
     private String fetchLocalHash() {
         try {
-            return Files.readString(cacheDirectory.resolve(DATABASE_FILE_NAME));
+            return Files.readString(Paths.get(cacheDirectory.toString(), HASH_FILE_NAME));
         } catch (IOException e) {
             return null;
         }
@@ -104,7 +104,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
                 return localDatabase;
             }
 
-            var file = cacheDirectory.resolve(DATABASE_FILE_NAME).toFile();
+            var file = Paths.get(cacheDirectory.toString(), DATABASE_FILE_NAME).toFile();
 
             var database = new ObjectMapper().readValue(file, Database.class);
 
