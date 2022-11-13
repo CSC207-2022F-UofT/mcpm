@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class DatabaseInteractor
+public class DatabaseInteractor implements SearchPluginBoundary
 {
     /** Name index: map[lower-cased name] = Plugin of that name */
     private final Map<String, PluginModel> nameIndex;
@@ -35,15 +35,12 @@ public class DatabaseInteractor
         this.commandIndex = new HashMap<>();
 
         // TODO: Implement this
+
+
         throw new UnsupportedOperationException("TODO");
     }
 
-    /**
-     * Find the plugin by name
-     *
-     * @param name Name of the plugin
-     * @return Plugin of that name, or null if not found
-     */
+    @Override
     public PluginModel findByName(String name)
     {
         if (nameIndex.containsKey(name)) {
@@ -52,19 +49,7 @@ public class DatabaseInteractor
         return null;
     }
 
-    /**
-     * Search for a plugin by keyword.
-     * <p>
-     * This function should ignore letter case iin searching.
-     * For example, searching "java" would match "Java" as well
-     * <p>
-     * This function implements fuzzy search that doesn't require the exact phrase to be available,
-     * but requires all words in the phrase to be present.
-     * For example, searching "java 11" would match "java jdk 11" but not "java"
-     *
-     * @param keyword Keyword
-     * @return List of packages matching the keyword, or empty list
-     */
+    @Override
     public List<PluginModel> searchByKeyword(String keyword)
     {
         if (keywordIndex.containsKey(keyword)) {
@@ -73,12 +58,7 @@ public class DatabaseInteractor
         return List.of();
     }
 
-    /**
-     * Search for a plugin by command or command alias.
-     *
-     * @param command Command name
-     * @return Plugins that provides the command, or empty list
-     */
+    @Override
     public List<PluginModel> searchByCommand(String command)
     {
         if (commandIndex.containsKey(command)) {
