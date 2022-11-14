@@ -6,12 +6,12 @@ package org.hydev.mcpm.client.interaction;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-30
  */
-public class ProgressRow implements ProgressRowBoundary {
+public class ProgressRow {
     private final long total;
-    private final int id;
+    private int id;
     private long completed;
     private String unit;
-    private ProgressBarBoundary pb;
+    private ProgressBar pb;
     private String desc;
     private int descLen;
     private String fmt;
@@ -23,10 +23,9 @@ public class ProgressRow implements ProgressRowBoundary {
      *
      * @param total The value that completed has to take to display 100% in this row.
      */
-    public ProgressRow(long total, int id)
+    public ProgressRow(long total)
     {
         this.total = total;
-        this.id = id;
         this.completed = 0;
         this.unit = " it";
         this.desc = "";
@@ -35,6 +34,10 @@ public class ProgressRow implements ProgressRowBoundary {
 
         // Record start time for speed estimation
         this.startTime = System.nanoTime();
+    }
+
+    void setId(int id){
+        this.id = id;
     }
 
     public int getId(){
@@ -49,7 +52,13 @@ public class ProgressRow implements ProgressRowBoundary {
         return (System.nanoTime() - startTime) / 1e9d;
     }
 
-    @Override
+    /**
+     * Get formatted string of the current progress bar
+     *
+     * @param theme Progress bar theme
+     * @param cols Number of columns (width) of the terminal window
+     * @return Formatted string
+     */
     public String toString(ProgressBarTheme theme, int cols)
     {
         // Calculate speed. TODO: Use a moving window to calculate speed
@@ -84,13 +93,16 @@ public class ProgressRow implements ProgressRowBoundary {
         return t.replace("{progbar}", bar);
     }
 
-    @Override
-    public void setPb(ProgressBarBoundary pb)
+    public void setPb(ProgressBar pb)
     {
         this.pb = pb;
     }
 
-    @Override
+    /**
+     * Increase progress by incr.
+     *
+     * @param incr Increase amount
+     */
     public void increase(long incr)
     {
         if (this.completed >= total) return;
@@ -101,7 +113,11 @@ public class ProgressRow implements ProgressRowBoundary {
         if (completed >= total) pb.finishBar(this.id);
     }
 
-    @Override
+    /**
+     * Update the progress.
+     *
+     * @param completed Completed so far
+     */
     public void set(long completed)
     {
         if (this.completed >= total) return;
@@ -111,30 +127,52 @@ public class ProgressRow implements ProgressRowBoundary {
         if (completed >= total) pb.finishBar(this.id);
     }
 
-    @Override
-    public ProgressRowBoundary desc(String desc)
+    /**
+     * Sets the description of this object.
+     *
+     * @param desc The description to set
+     * @return This object for chaining.
+     */
+    public ProgressRow desc(String desc)
     {
         this.desc = desc;
         return this;
     }
 
-    @Override
-    public ProgressRowBoundary descLen(int descLen)
+    /**
+     * Sets the maximum description length. This value is used for padding.
+     *
+     * @param descLen The description length.
+     * @return This object for chaining.
+     */
+    public ProgressRow descLen(int descLen)
     {
         this.descLen = descLen;
         return this;
     }
 
-    @Override
-    public ProgressRowBoundary unit(String unit)
+    /**
+     * Sets the unit indicator for the speed indicator.
+     *
+     * @param unit A unit string, beginning with an empty space.
+     * @return This object for chaining.
+     */
+    public ProgressRow unit(String unit)
     {
         // Add leading space
         this.unit = (!unit.isBlank() && !unit.startsWith(" ")) ? " " + unit : unit;
         return this;
     }
 
-    @Override
-    public ProgressRowBoundary format(String fmt)
+    /**
+     * Sets the overall format of the progress bar.
+     * This is specified using indicators like {speed}, {desc}.
+     * For a full list see class implementation.
+     *
+     * @param fmt The foramt string.
+     * @return This object for chaining.
+     */
+    public ProgressRow fmt(String fmt)
     {
         this.fmt = fmt;
         return this;

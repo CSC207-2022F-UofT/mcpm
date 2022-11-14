@@ -20,13 +20,14 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class ProgressBar implements ProgressBarBoundary {
+public class ProgressBar implements AutoCloseable
+{
     private final ConsoleUtils cu;
     private final ProgressBarTheme theme;
     private final PrintStream out;
     private int cols;
 
-    private final List<ProgressRowBoundary> activeBars;
+    private final List<ProgressRow> activeBars;
     private final SortedSet<Integer> activeIds;
 
     private long lastUpdate;
@@ -63,13 +64,18 @@ public class ProgressBar implements ProgressBarBoundary {
         if (!istty) this.frameDelay = 1 / 0.5;
     }
 
-    @Override
-    public ProgressRowBoundary appendBar(long total)
+    /**
+     * Append a progress bar at the end
+     *
+     * @param bar Row of the progress bar
+     * @return bar for fluent access
+     */
+    public ProgressRow appendBar(ProgressRow bar)
     {
         int id = this.activeBars.size();
         this.activeIds.add(id);
 
-        ProgressRowBoundary bar = new ProgressRow(total, id);
+        bar.setId(id);
         this.activeBars.add(bar);
         bar.setPb(this);
 
@@ -78,17 +84,17 @@ public class ProgressBar implements ProgressBarBoundary {
         return bar;
     }
 
-    @Override
+
     public void incrementBarProgress(int id, long inc) {
         this.activeBars.get(id).increase(inc);
     }
 
-    @Override
+
     public void setBarProgress(int id, long progress) {
         this.activeBars.get(id).set(progress);
     }
 
-    @Override
+
     public void update()
     {
         // Check time to limit for framerate (default 60fps)
@@ -116,9 +122,17 @@ public class ProgressBar implements ProgressBarBoundary {
         cu.curUp(-(activeBars.size() - prev - 1)); // move cursor down to the bottom
     }
 
-    @Override
-    public void finishBar(int id)
+    /**
+     * Finish a progress bar
+     *
+     * @param bar Progress bar
+     */
+    public void finishBar(ProgressRow bar)
     {
+        finishBar(bar.getId());
+    }
+
+    public void finishBar(int id){
         if (!activeIds.contains(id)) return;
 
         forceUpdate();
@@ -133,21 +147,26 @@ public class ProgressBar implements ProgressBarBoundary {
     {
     }
 
-    @Override
-    public ProgressBarBoundary setFrameDelay(double frameDelay)
+
+    public ProgressBar setFrameDelay(double frameDelay)
     {
         this.frameDelay = frameDelay;
         return this;
     }
 
-    @Override
-    public ProgressBarBoundary setFps(int fps)
+    /**
+     * Set frame rate in the unit of frames per second
+     *
+     * @param fps FPS
+     * @return Self for fluent access
+     */
+    public ProgressBar setFps(int fps)
     {
         this.frameDelay = 1d / fps;
         return this;
     }
 
-    public List<ProgressRowBoundary> getActiveBars()
+    public List<ProgressRow> getActiveBars()
     {
         return activeBars;
     }
@@ -165,11 +184,12 @@ public class ProgressBar implements ProgressBarBoundary {
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0) {
-                    var row = b.appendBar(300)
+                    var row = new ProgressRow(300)
                         .unit("MB")
                         .desc(format("File %s.tar.gz", all.size()))
                         .descLen(30);
 
+                    b.appendBar(row);
                     all.add(row.getId());
                 }
 
@@ -182,11 +202,13 @@ public class ProgressBar implements ProgressBarBoundary {
         }
         try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
         {
-            for (int i = 0; i < 36; i ++)
-                b.appendBar(1000).unit("MB").desc(String.format("File %s.tar.gz", i)).descLen(30);
+            for (int i = 0; i < 36; i ++) {
+                ProgressRow bar = new ProgressRow(300).unit("MB").desc(String.format("File %s.tar.gz", i)).descLen(30);
+                b.appendBar(bar);
+            }
             for (int t = 0; t < 1000; t ++) {
                 for (int i = 0; i < 36; i++) {
-                    double speed = Math.sin(Math.PI / 18 * i);
+                    double speed = Math.cos(Math.PI / 18 * i);
                     speed = speed * speed * 5 + 1;
                     b.incrementBarProgress(i, (long)Math.ceil(speed));
                 }
