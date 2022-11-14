@@ -131,7 +131,7 @@ public class DatabaseInteractor implements ListPackagesBoundary, MatchPluginsBou
                 var updatable = new HashMap<PluginVersionState, PluginModel>();
 
                 for (var state : forInput.states()) {
-                    var value = result.matched().get(state.modelId());
+                    var value = result.matched().getOrDefault(state.modelId(), null);
 
                     if (value == null) {
                         continue;
