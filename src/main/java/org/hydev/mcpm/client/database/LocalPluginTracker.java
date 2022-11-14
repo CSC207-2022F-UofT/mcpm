@@ -84,7 +84,6 @@ public class LocalPluginTracker {
     public void addManuallyInstalled(String name)
     {
         // Locate the name in the list of installed plugins and set the value in the second row as true
-        // TODO: Implement this
 
         String tempfile = "temp.csv";
         File oldFile = new File(MainLockFile);
@@ -97,7 +96,7 @@ public class LocalPluginTracker {
             Scanner scanner = new Scanner(new File(MainLockFile));
             scanner.useDelimiter("[,\n]");
 
-            while (scanner.hasNext()) {
+            while (scanner.hasNext() && scanner.next.hasNext()) {
                 String id = scanner.next();
                 String state = scanner.next();
                 if (id.equals(name)) {
@@ -142,12 +141,11 @@ public class LocalPluginTracker {
             Scanner scanner = new Scanner(new File(MainLockFile));
             scanner.useDelimiter("[,\n]");
 
-            while (scanner.hasNext()) {
+            while (scanner.hasNext() && scanner.next().hasnext()) {
                 String id = scanner.next();
                 String state = scanner.next();
                 if (id.equals(name)) {
                     pw.println(id + "," + "false");
-                    return;
                 }  else {
                     pw.println(id + "," + state);
                 }
@@ -159,6 +157,7 @@ public class LocalPluginTracker {
             oldFile.delete();
             File dump = new File(MainLockFile);
             newFile.renameTo(dump);
+            return;
 
         } catch (Exception e) {
             System.out.printf("Error adding manually installed plugin, Unspecified");
