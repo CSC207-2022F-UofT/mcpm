@@ -95,7 +95,7 @@ public class ProgressBar implements AutoCloseable
     }
 
 
-    public void update()
+    protected void update()
     {
         // Check time to limit for framerate (default 60fps)
         // Performance of the update heavily depends on the terminal's escape code handling
@@ -112,7 +112,7 @@ public class ProgressBar implements AutoCloseable
         // Roll back to the first line
         if (istty) cu.curUp(activeBars.size());
         int prev = -1;
-        for (int i : activeIds){
+        for (int i : activeIds) {
             int curDown = i - prev - 1;
             prev = i;
             cu.curUp(-curDown); // move cursor down to next active bar
@@ -132,7 +132,12 @@ public class ProgressBar implements AutoCloseable
         finishBar(bar.getId());
     }
 
-    public void finishBar(int id){
+    /**
+     * Finish a progress bar
+     *
+     * @param id Progress bar id
+     */
+    public void finishBar(int id) {
         if (!activeIds.contains(id)) return;
 
         forceUpdate();
@@ -193,8 +198,9 @@ public class ProgressBar implements AutoCloseable
                     all.add(row.getId());
                 }
 
-                for (int j = 0; j < all.size(); j ++)
+                for (int j = 0; j < all.size(); j++) {
                     b.incrementBarProgress(j, 1);
+                }
                 safeSleep(3);
             }
 
@@ -202,15 +208,15 @@ public class ProgressBar implements AutoCloseable
         }
         try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
         {
-            for (int i = 0; i < 36; i ++) {
+            for (int i = 0; i < 36; i++) {
                 ProgressRow bar = new ProgressRow(300).unit("MB").desc(String.format("File %s.tar.gz", i)).descLen(30);
                 b.appendBar(bar);
             }
-            for (int t = 0; t < 1000; t ++) {
+            for (int t = 0; t < 1000; t++) {
                 for (int i = 0; i < 36; i++) {
                     double speed = Math.cos(Math.PI / 18 * i);
                     speed = speed * speed * 5 + 1;
-                    b.incrementBarProgress(i, (long)Math.ceil(speed));
+                    b.incrementBarProgress(i, (long) Math.ceil(speed));
                 }
                 safeSleep(3);
             }
