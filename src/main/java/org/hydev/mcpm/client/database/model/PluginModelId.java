@@ -42,7 +42,7 @@ public record PluginModelId(
             return false;
         }
 
-        var optionalMeta = model.latest().map(PluginVersion::meta);
+        var optionalMeta = model.getLatestPluginVersion().map(PluginVersion::meta);
 
         if (optionalMeta.isEmpty()) {
             return false;
@@ -74,7 +74,7 @@ public record PluginModelId(
         return new PluginModelId(OptionalLong.empty(), name, null);
     }
 
-     /**
+    /**
      * Returns a PluginModelId where the only populated field is pluginMain.
      *
      * @param main The value for the main field.

@@ -15,9 +15,7 @@ public class SearcherFactory {
      * @param input Contains the search type in particular. See SearchPackagesInput for details.
      */
     public static Searcher createSearcher(SearchPackagesInput input) {
-
-        return switch(input.type()) {
-
+        return switch (input.type()) {
             case BY_NAME ->
                     new SearcherByName();
 
