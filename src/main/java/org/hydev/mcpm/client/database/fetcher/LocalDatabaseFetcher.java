@@ -1,9 +1,11 @@
 package org.hydev.mcpm.client.database.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.hc.client5.http.fluent.Request;
-import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.hydev.mcpm.client.models.Database;
 import org.hydev.mcpm.utils.HashUtils;
 import org.jetbrains.annotations.Nullable;
@@ -54,20 +56,23 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         this.cacheDirectory = cacheDirectory;
     }
 
-    private Request requestTo(String path) {
-        return Request
-            .get(URI.create(host.toString() + "/" + path))
-            .addHeader("Host", host.getHost())
-            .addHeader("User-Agent", USER_AGENT)
-            .addHeader("Accepts", "application/json");
+    private ClassicHttpRequest requestTo(String path) {
+        var request = new HttpGet(URI.create(host.toString() + "/" + path));
+
+        request.addHeader("Host", host.getHost());
+        request.addHeader("User-Agent", USER_AGENT);
+        request.addHeader("Accepts", "application/json");
+
+        return request;
     }
 
     @Nullable
     private String fetchHostHash() {
-        try {
-            var response = requestTo(HASH_FILE_NAME).execute();
-
-            return response.returnContent().asString().trim();
+        try(var client = HttpClients.createDefault()) {
+            return client.execute(
+                requestTo(HASH_FILE_NAME),
+                response -> EntityUtils.toString(response.getEntity(), "UTF-8")
+            );
         } catch (IOException e) {
             return null;
         }
@@ -148,11 +153,11 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
     @Nullable
     private Database fetchHostDatabase(DatabaseFetcherListener listener) {
-        try {
-            var response = requestTo(DATABASE_FILE_NAME).execute();
-            var httpResponse = (ClassicHttpResponse) response.returnResponse();
-
-            var body = readDatabaseFromContent(httpResponse.getEntity(), listener);
+        try(var client = HttpClients.createDefault()) {
+            var body = client.execute(
+                requestTo(DATABASE_FILE_NAME),
+                request -> readDatabaseFromContent(request.getEntity(), listener)
+            );
 
             var database = new ObjectMapper().readValue(body, Database.class);
 
