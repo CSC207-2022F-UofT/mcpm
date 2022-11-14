@@ -18,7 +18,8 @@ public record SearchPackagesResult(SearchPackagesResult.State state, List<Plugin
     public enum State {
         SUCCESS,
         INVALID_INPUT,
-        FAILED_TO_FETCH_DATABASE
+        FAILED_TO_FETCH_DATABASE,
+        INVALID_SEARCH_TYPE
     }
 
     /**

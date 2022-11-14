@@ -10,4 +10,10 @@ package org.hydev.mcpm.client.database.inputs;
  *
  * @author Jerry Zhu (https://github.com/jerryzhu509)
  */
-public record SearchPackagesInput(int type, String searchStr, boolean noCache) {}
+public record SearchPackagesInput(Type type, String searchStr, boolean noCache) {
+    public enum Type {
+        BY_NAME,
+        BY_COMMAND,
+        BY_KEYWORD
+    }
+}
