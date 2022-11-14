@@ -1,22 +1,27 @@
 package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.boundary.ListPackagesBoundary;
+import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
-import org.hydev.mcpm.client.database.inputs.ListPackagesResult;
+import org.hydev.mcpm.client.database.results.ListPackagesResult;
+import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
+import org.hydev.mcpm.client.database.results.SearchPackagesResult;
+import org.hydev.mcpm.client.models.PluginModel;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * Handles fetching and performing operations on the plugin database.
  */
-public class DatabaseInteractor implements ListPackagesBoundary {
+public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
 
@@ -34,7 +39,7 @@ public class DatabaseInteractor implements ListPackagesBoundary {
      * Creates a new database with the provided fetcher and upload listener.
      *
      * @param fetcher The fetcher that will be used to request the database object in boundary calls.
-     * @param listener The listener that will receives updates if the database is downloaded from the internet.
+     * @param listener The listener that will receive updates if the database is downloaded from the internet.
      */
     public DatabaseInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
@@ -86,6 +91,65 @@ public class DatabaseInteractor implements ListPackagesBoundary {
             result,
             database.plugins().size()
         );
+    }
+
+    /**
+     * Searches for plugins based on the provided name, keyword, or command.
+     * The input contains the type of search.
+     *
+     * @param input Record of inputs as provided in SearchPackagesInput. See it for more info.
+     * @return Packages result. See the SearchPackagesResult record for more info.
+     */
+    public SearchPackagesResult search(SearchPackagesInput input) {
+        var database = fetcher.fetchDatabase(!input.noCache(), listener);
+
+        if (database == null) {
+            return SearchPackagesResult.by(SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE);
+        }
+
+        var searchStr = input.searchStr();
+        if (searchStr.isEmpty())
+            return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_INPUT);
+
+        var plugins = database.plugins();
+        if (input.type() == 1) {
+            return new SearchPackagesResult(
+                    SearchPackagesResult.State.SUCCESS,
+                    searchByName(plugins, searchStr));
+        }
+        else if (input.type() == 2) {
+            return new SearchPackagesResult(
+                    SearchPackagesResult.State.SUCCESS,
+                    searchByCommand(plugins, searchStr));
+        }
+        return new SearchPackagesResult(
+                SearchPackagesResult.State.SUCCESS,
+                searchByKeyword(plugins, searchStr));
+    }
+
+    @Override
+    public List<PluginModel> searchByName(List<PluginModel> plugins, String name)
+    {
+//        for (PluginModel plugin : plugins) {
+//            // Assuming name is the same in every version.
+//            System.out.println(plugin.versions().meta().name());
+//        }
+        // Todo
+        return null;
+    }
+
+    @Override
+    public List<PluginModel> searchByKeyword(List<PluginModel> plugins, String keyword)
+    {
+        // Todo
+        return List.of();
+    }
+
+    @Override
+    public List<PluginModel> searchByCommand(List<PluginModel> plugins, String command)
+    {
+        // Todo
+        return List.of();
     }
 
     /**

@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.database.boundary;
 
 import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
-import org.hydev.mcpm.client.database.inputs.ListPackagesResult;
+import org.hydev.mcpm.client.database.results.ListPackagesResult;
 
 /**
  * Defines how users can interact with a boundary to receive paginated packages.
