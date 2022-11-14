@@ -69,6 +69,33 @@ public class LocalPluginTracker {
         return installedPlugins;
     }
 
+
+    /**
+     * Update CSV by row and column, helper function
+     * 
+     * @param replace Replacement for your cell value
+     * @param row Row for which need to update 
+     * @param col Column for which you need to update
+     * @throws IOException
+     */
+    public static void updateCSV(String replace, int row, int col) throws IOException {
+
+        File inputFile = new File(MainLockFile);
+
+        // Read existing file 
+        CSVReader reader = new CSVReader(new FileReader(inputFile), ',');
+        List<String[]> csvBody = reader.readAll();
+        // get CSV row column  and replace with by using row and column
+        csvBody.get(row)[col] = replace;
+        reader.close();
+
+        // Write to CSV file which is open
+        CSVWriter writer = new CSVWriter(new FileWriter(inputFile), ',');
+        writer.writeAll(csvBody);
+        writer.flush();
+        writer.close();
+    }
+
     /**
      * Mark a plugin as manually installed (as opposed to a dependency)
      * Precondition: MainLockFile is a sorted .csv file with the following format:
@@ -85,37 +112,18 @@ public class LocalPluginTracker {
     {
         // Locate the name in the list of installed plugins and set the value in the second row as true
 
-        String tempfile = "temp.csv";
-        File oldFile = new File(MainLockFile);
-        File newFile = new File(tempfile);
+        // Read the CSV file and find the row with the plugin name.
+        // Then, update the second column to true by calling the updateCSV function
+        // If the plugin is not found, throw an error
 
-        try {
-            FileWriter fw = new FileWriter(tempfile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-            Scanner scanner = new Scanner(new File(MainLockFile));
-            scanner.useDelimiter("[,\n]");
-
-            while (scanner.hasNext() && scanner.next.hasNext()) {
-                String id = scanner.next();
-                String state = scanner.next();
-                if (id.equals(name)) {
-                    pw.println(id + "," + "true");
-                    return;
-                }  else {
-                    pw.println(id + "," + state);
+        for (int i = 0; i < listInstalled().size(); i++) {
+            if (listInstalled().get(i).getName().equals(name)) {
+                try {
+                    updateCSV("true", i, 1);
+                } catch (IOException e) {
+                    System.out.printf("Error updating CSV");
                 }
             }
-
-            scanner.close();
-            pw.flush();
-            pw.close();
-            oldFile.delete();
-            File dump = new File(MainLockFile);
-            newFile.renameTo(dump);
-
-        } catch (Exception e) {
-            System.out.printf("Error adding manually installed plugin, Unspecified");
         }
 
         throw new IllegalArgumentException("Plugin not found, verify whether installed.");
@@ -127,45 +135,19 @@ public class LocalPluginTracker {
      *
      * @param name Plugin name
      */
-    public void removeManuallyInstalled(String name)
-    {
-        // TODO: Implement this
-        String tempfile = "temp.csv";
-        File oldFile = new File(MainLockFile);
-        File newFile = new File(tempfile);
-
-        try {
-            FileWriter fw = new FileWriter(tempfile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-            Scanner scanner = new Scanner(new File(MainLockFile));
-            scanner.useDelimiter("[,\n]");
-
-            while (scanner.hasNext() && scanner.next().hasnext()) {
-                String id = scanner.next();
-                String state = scanner.next();
-                if (id.equals(name)) {
-                    pw.println(id + "," + "false");
-                }  else {
-                    pw.println(id + "," + state);
+    public void removeManuallyInstalled(String name) {
+        for (int i = 0; i < listInstalled().size(); i++) {
+            if (listInstalled().get(i).getName().equals(name)) {
+                try {
+                    updateCSV("false", i, 1);
+                } catch (IOException e) {
+                    System.out.printf("Error updating CSV");
                 }
             }
-
-            scanner.close();
-            pw.flush();
-            pw.close();
-            oldFile.delete();
-            File dump = new File(MainLockFile);
-            newFile.renameTo(dump);
-            return;
-
-        } catch (Exception e) {
-            System.out.printf("Error adding manually installed plugin, Unspecified");
         }
-
         throw new IllegalArgumentException("Plugin not found, verify whether installed.");
     }
-
+    
     /**
      * Get a list of manually installed plugins
      *
@@ -175,24 +157,18 @@ public class LocalPluginTracker {
     {
         List<String> InstalledPlugins = new ArrayList<String>();
 
+        File inputFile = new File(MainLockFile);
 
-        try {
-            FileWriter fw = new FileWriter(tempfile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-            Scanner scanner = new Scanner(new File(MainLockFile));
-            scanner.useDelimiter("[,\n]");
+        // Read existing file 
+        CSVReader reader = new CSVReader(new FileReader(inputFile), ',');
+        List<String[]> csvBody = reader.readAll();
 
-            while (scanner.hasNext() && scanner.next.hasNext()) {
-                String id = scanner.next();
-                String state = scanner.next();
-                if (state.equals("true")) {
-                    InstalledPlugins.add(id);
-                }
+        // Iterate through each row and check if the second column is true
+        // If it is, add the plugin name to the list
+        for (int i = 0; i < csvBody.size(); i++) {
+            if (csvBody.get(i)[1].equals("true")) {
+                InstalledPlugins.add(csvBody.get(i)[0]);
             }
-
-        } catch (Exception e) {
-            System.out.printf("Error reading manually installed plugins, Unspecified.");
         }
 
         return InstalledPlugins;
