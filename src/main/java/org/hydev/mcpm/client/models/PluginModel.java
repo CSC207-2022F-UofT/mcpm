@@ -1,6 +1,8 @@
 package org.hydev.mcpm.client.models;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -17,4 +19,12 @@ public record PluginModel(
     List<PluginVersion> versions
 )
 {
+    /**
+     * Returns the latest version.
+     *
+     * @return The PluginVersion with the greatest id (apparently newer states take higher values?).
+     */
+    public Optional<PluginVersion> latest() {
+        return versions().stream().max(Comparator.comparingLong(PluginVersion::id));
+    }
 }
