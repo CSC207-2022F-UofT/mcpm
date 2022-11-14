@@ -24,9 +24,11 @@ import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -157,47 +159,50 @@ public class DatabaseInteractor
 
         var result = match(matchInput);
 
-        switch (result.state()) {
-            case SUCCESS -> {
-                var mismatchedSet = Set.copyOf(result.mismatched());
-                var mismatched = forInput.states().stream()
-                    .filter(state -> mismatchedSet.contains(state.modelId()))
-                    .toList();
+        return switch (result.state()) {
+            case SUCCESS ->
+                filterUpdatablePlugins(forInput, result);
 
-                var updatable = new HashMap<PluginVersionState, PluginModel>();
+            case INVALID_INPUT ->
+                CheckForUpdatesResult.by(CheckForUpdatesResult.State.INVALID_INPUT);
 
-                for (var state : forInput.states()) {
-                    var value = result.matched().getOrDefault(state.modelId(), null);
+            case FAILED_TO_FETCH_DATABASE ->
+                CheckForUpdatesResult.by(CheckForUpdatesResult.State.FAILED_TO_FETCH_DATABASE);
+        };
+    }
 
-                    if (value == null) {
-                        continue;
-                    }
+    @Nullable
+    private static CheckForUpdatesResult filterUpdatablePlugins(CheckForUpdatesInput forInput,
+                                                                  MatchPluginsResult result) {
+        var mismatchedSet = Set.copyOf(result.mismatched());
+        var mismatched = forInput.states().stream()
+            .filter(state -> mismatchedSet.contains(state.modelId()))
+            .toList();
 
-                    var optionalLatest = value.getLatestPluginVersion();
+        var updatable = new HashMap<PluginVersionState, PluginModel>();
 
-                    // guard let?
-                    if (optionalLatest.isEmpty()) {
-                        return null;
-                    }
+        for (var state : forInput.states()) {
+            var value = result.matched().getOrDefault(state.modelId(), null);
 
-                    var latest = optionalLatest.get();
-
-                    if (!state.versionId().matches(latest)) {
-                        updatable.put(state, value);
-                    }
-                }
-
-                return new CheckForUpdatesResult(CheckForUpdatesResult.State.SUCCESS, updatable, mismatched);
+            if (value == null) {
+                continue;
             }
-            case INVALID_INPUT -> {
-                return CheckForUpdatesResult.by(CheckForUpdatesResult.State.INVALID_INPUT);
+
+            var optionalLatest = value.getLatestPluginVersion();
+
+            // guard let?
+            if (optionalLatest.isEmpty()) {
+                return null;
             }
-            case FAILED_TO_FETCH_DATABASE -> {
-                return CheckForUpdatesResult.by(CheckForUpdatesResult.State.FAILED_TO_FETCH_DATABASE);
+
+            var latest = optionalLatest.get();
+
+            if (!state.versionId().matches(latest)) {
+                updatable.put(state, value);
             }
         }
 
-        return CheckForUpdatesResult.by(CheckForUpdatesResult.State.INVALID_INPUT);
+        return new CheckForUpdatesResult(CheckForUpdatesResult.State.SUCCESS, updatable, mismatched);
     }
 
     /**
@@ -271,6 +276,32 @@ public class DatabaseInteractor
                 SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
 
         System.out.println(formatPluginNames(result3.plugins()));
+
+        var matchInput = new MatchPluginsInput(List.of(
+            PluginModelId.byId(100429),
+            PluginModelId.byMain("com.gestankbratwurst.smilecore.SmileCore"),
+            PluginModelId.byName("JedCore")
+        ), false);
+
+        var matchResult = database.match(matchInput);
+
+        if (matchResult.state() != MatchPluginsResult.State.SUCCESS) {
+            System.out.println("Match Result Failed With State " + result.state().name());
+            return;
+        }
+
+        System.out.println("Match Result (" + matchResult.mismatched().size() + " mismatched):");
+
+        var matchText = matchResult
+            .matched()
+            .values()
+            .stream()
+            .map(PluginModel::id)
+            .map(String::valueOf)
+            .map(value -> "  " + value)
+            .collect(Collectors.joining("\n"));
+
+        System.out.println(matchText);
     }
 
     @NotNull
@@ -283,5 +314,4 @@ public class DatabaseInteractor
             .map(value -> "  " + value)
             .collect(Collectors.joining("\n"));
     }
-
 }
