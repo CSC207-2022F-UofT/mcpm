@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.interaction;
 
+import jline.TerminalFactory;
 import org.fusesource.jansi.AnsiConsole;
 import org.hydev.mcpm.utils.ConsoleUtils;
 
@@ -26,6 +27,7 @@ public class ProgressBar implements AutoCloseable
     private final ProgressBarTheme theme;
     private final PrintStream out;
     private int cols;
+    private final int rows;
 
     private final List<ProgressRow> activeBars;
     private final SortedSet<Integer> activeIds;
@@ -49,6 +51,8 @@ public class ProgressBar implements AutoCloseable
         this.activeBars = new ArrayList<>();
         this.activeIds = new TreeSet<>();
         this.cols = AnsiConsole.getTerminalWidth();
+        this.rows = TerminalFactory.get().getHeight();
+
 
         // Default to 70-char width if the width can't be detected (like in a non-tty output)
         if (this.cols == 0) this.cols = 70;
@@ -110,9 +114,12 @@ public class ProgressBar implements AutoCloseable
     private void forceUpdate()
     {
         // Roll back to the first line
-        if (istty) cu.curUp(activeBars.size());
+        int height = Math.min(activeBars.size(), rows);
+        if (istty) cu.curUp(height);
         int prev = -1;
         for (int i : activeIds) {
+            if (i > height)
+                break;
             int curDown = i - prev - 1;
             prev = i;
             cu.curUp(-curDown); // move cursor down to next active bar
