@@ -4,13 +4,16 @@ import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
+import com.opencsv.CSVWriter;
+
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.*;  
 import java.util.Scanner;
 
-import javax.naming.NameNotFoundException;  
+import javax.naming.NameNotFoundException;
+import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;  
 
 /**
  * This class keeps track of locally installed packages
@@ -21,7 +24,7 @@ import javax.naming.NameNotFoundException;
  */
 public class LocalPluginTracker {
     private static String MainLockFile = "TODO: Get this path"; // CSV file storing the list of manually installed plugins
-    private static String PluginDirectory = "TODO: Get this path"; // Directory storing the plugins
+    private static String PluginDirectory = "TODO: Get this path"; // Directory storing all the plugins
 
     /**
      * Read metadata from a plugin's jar
@@ -70,37 +73,53 @@ public class LocalPluginTracker {
      * Mark a plugin as manually installed (as opposed to a dependency)
      *
      * @param name Plugin name
-     * Precondition: MainLockFile is a sorted .csv file with the following format:
+     * Precondition: MainLockFile is a sorted .xlsx file with the following format:
      * 1st column: Plugin name
-     * 2nd column: Manual Dependency (true/false)
+     * 2nd column: Manually added (true/false)
      * Example:
      * PluginName,true
      * PluginName2,false
      */
+    
     public void addManuallyInstalled(String name)
     {
-        // Locate the name in the list of installed plugins and mark it as manually installed
+        // Locate the name in the list of installed plugins and set the value in the second row as true
         // TODO: Implement this
-        Scanner sc = new Scanner(MainLockFile);
-        sc.useDelimiter(",");
 
-        boolean found = false;
-        while (sc.hasNextLine() && !found) {
-            String[] line = sc.nextLine().split(",");
-            if (line[0].equals(name)) {
-                line[1] = "true";
-                found = true;
-                // Write the new line to the file TODO
-                
-                sc.close();
-            } 
+        String tempfile = "temp.csv";
+        File oldFile = new File(MainLockFile);
+        File newFile = new File(tempfile);
+
+        try {
+            FileWriter fw = new FileWriter(tempfile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            Scanner scanner = new Scanner(new File(MainLockFile));
+            scanner.useDelimiter("[,\n]");
+
+            while (scanner.hasNext()) {
+                String id = scanner.next();
+                String state = scanner.next();
+                if (id.equals(name)) {
+                    pw.println(id + "," + "true");
+                    return;
+                }  else {
+                    pw.println(id + "," + state);
+                }
+            }
+
+            scanner.close();
+            pw.flush();
+            pw.close();
+            oldFile.delete();
+            File dump = new File(MainLockFile);
+            newFile.renameTo(dump);
+
+        } catch (Exception e) {
+            System.out.printf("Error adding manually installed plugin, Unspecified");
         }
 
-        if (!found) {
-            // Throw an error if the plugin is not installed
-            throw new IllegalArgumentException("Plugin not found, verify whether installed.");
-        }
-
+        throw new IllegalArgumentException("Plugin not found, verify whether installed.");
 
     }
 
@@ -112,7 +131,40 @@ public class LocalPluginTracker {
     public void removeManuallyInstalled(String name)
     {
         // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        String tempfile = "temp.csv";
+        File oldFile = new File(MainLockFile);
+        File newFile = new File(tempfile);
+
+        try {
+            FileWriter fw = new FileWriter(tempfile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            Scanner scanner = new Scanner(new File(MainLockFile));
+            scanner.useDelimiter("[,\n]");
+
+            while (scanner.hasNext()) {
+                String id = scanner.next();
+                String state = scanner.next();
+                if (id.equals(name)) {
+                    pw.println(id + "," + "false");
+                    return;
+                }  else {
+                    pw.println(id + "," + state);
+                }
+            }
+
+            scanner.close();
+            pw.flush();
+            pw.close();
+            oldFile.delete();
+            File dump = new File(MainLockFile);
+            newFile.renameTo(dump);
+
+        } catch (Exception e) {
+            System.out.printf("Error adding manually installed plugin, Unspecified");
+        }
+
+        throw new IllegalArgumentException("Plugin not found, verify whether installed.");
     }
 
     /**
@@ -122,8 +174,29 @@ public class LocalPluginTracker {
      */
     public List<String> listManuallyInstalled()
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        List<String> InstalledPlugins = new ArrayList<String>();
+
+
+        try {
+            FileWriter fw = new FileWriter(tempfile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            Scanner scanner = new Scanner(new File(MainLockFile));
+            scanner.useDelimiter("[,\n]");
+
+            while (scanner.hasNext() && scanner.next.hasNext()) {
+                String id = scanner.next();
+                String state = scanner.next();
+                if (state.equals("true")) {
+                    InstalledPlugins.add(id);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.printf("Error reading manually installed plugins, Unspecified.");
+        }
+
+        return InstalledPlugins;
     }
 
     /**
@@ -133,7 +206,26 @@ public class LocalPluginTracker {
      */
     public List<String> listOrphans()
     {
-        // TODO: Implement this
-        throw new UnsupportedOperationException("TODO");
+        
+        list<String> Orphans = new ArrayList<String>();
+        List<String> ManuallyInstalledPlugins = listManuallyInstalled();
+        List<String> RequiredDependencies = new ArrayList<String>();
+
+        // Get all the dependencies of the manually installed plugins
+        for (String plugin : ManuallyInstalledPlugins) {
+            try {
+                RequiredDependencies.addAll(getDependencies(plugin));
+            } catch (Exception e) {
+                System.out.printf("Error getting dependencies of " + plugin);
+            }
+        }
+
+        // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
+        List<String> InstalledPlugins = listInstalled();
+        Orphans = InstalledPlugins;
+        Orphans.removeAll(RequiredDependencies);
+        Orphans.removeAll(ManuallyInstalledPlugins);
+
+        return Orphans;    
     }
 }
