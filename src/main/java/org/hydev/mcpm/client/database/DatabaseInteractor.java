@@ -20,6 +20,7 @@ import org.hydev.mcpm.client.models.PluginModel;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -235,6 +236,31 @@ public class DatabaseInteractor implements ListPackagesBoundary, MatchPluginsBou
             .collect(Collectors.joining("\n"));
 
         System.out.println(text);
-    }
 
+        var matchInput = new MatchPluginsInput(List.of(
+            PluginModelId.byId(100429),
+            PluginModelId.byMain("com.gestankbratwurst.smilecore.SmileCore"),
+            PluginModelId.byName("JedCore")
+        ), false);
+
+        var matchResult = database.match(matchInput);
+
+        if (matchResult.state() != MatchPluginsResult.State.SUCCESS) {
+            System.out.println("Match Result Failed With State " + result.state().name());
+            return;
+        }
+
+        System.out.println("Match Result (" + matchResult.mismatched().size() + " mismatched):");
+
+        var matchText = matchResult
+            .matched()
+            .values()
+            .stream()
+            .map(PluginModel::id)
+            .map(String::valueOf)
+            .map(value -> "  " + value)
+            .collect(Collectors.joining("\n"));
+
+        System.out.println(matchText);
+    }
 }
