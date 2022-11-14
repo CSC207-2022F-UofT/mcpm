@@ -112,23 +112,23 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
             return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_INPUT);
 
         var plugins = database.plugins();
-        if (input.type() == SearchPackagesInput.Type.BY_NAME) {
-            return new SearchPackagesResult(
-                    SearchPackagesResult.State.SUCCESS,
-                    searchByName(plugins, searchStr));
-        }
-        else if (input.type() == SearchPackagesInput.Type.BY_COMMAND) {
-            return new SearchPackagesResult(
-                    SearchPackagesResult.State.SUCCESS,
-                    searchByCommand(plugins, searchStr));
-        }
-        else if (input.type() == SearchPackagesInput.Type.BY_KEYWORD) {
-            return new SearchPackagesResult(
-                    SearchPackagesResult.State.SUCCESS,
-                    searchByKeyword(plugins, searchStr));
-        } else {
-            return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_SEARCH_TYPE);
-        }
+        return switch(input.type()) {
+            case BY_NAME ->
+                new SearchPackagesResult(
+                            SearchPackagesResult.State.SUCCESS,
+                            searchByName(plugins, searchStr));
+
+            case BY_COMMAND ->
+                new SearchPackagesResult(
+                        SearchPackagesResult.State.SUCCESS,
+                        searchByCommand(plugins, searchStr));
+
+            case BY_KEYWORD ->
+                new SearchPackagesResult(
+                        SearchPackagesResult.State.SUCCESS,
+                        searchByKeyword(plugins, searchStr));
+
+        };
     }
 
     @Override
