@@ -68,7 +68,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
     @Nullable
     private String fetchHostHash() {
-        try(var client = HttpClients.createDefault()) {
+        try (var client = HttpClients.createDefault()) {
             return client.execute(
                 requestTo(HASH_FILE_NAME),
                 response -> EntityUtils.toString(response.getEntity(), "UTF-8")
@@ -153,7 +153,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
     @Nullable
     private Database fetchHostDatabase(DatabaseFetcherListener listener) {
-        try(var client = HttpClients.createDefault()) {
+        try (var client = HttpClients.createDefault()) {
             var body = client.execute(
                 requestTo(DATABASE_FILE_NAME),
                 request -> readDatabaseFromContent(request.getEntity(), listener)
