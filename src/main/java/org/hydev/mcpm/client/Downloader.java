@@ -12,7 +12,6 @@ import java.util.Map;
 import java.net.URL;
 
 import static java.lang.String.format;
-import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
 /**
  * File downloader
