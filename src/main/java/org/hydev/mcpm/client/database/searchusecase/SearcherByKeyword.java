@@ -5,33 +5,12 @@ import org.hydev.mcpm.client.models.PluginVersion;
 
 import java.util.*;
 
+/**
+ * Searcher that returns a map based on keywords.
+ *
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
+ */
 public class SearcherByKeyword implements Searcher {
-
-//    /**
-//     * Search for a plugin by keyword.
-//     * <p>
-//     * This function should ignore letter case in searching.
-//     * For example, searching "java" would match "Java" as well
-//     * <p>
-//     * This function implements fuzzy search that doesn't require the exact phrase to be available,
-//     * but requires all words in the phrase to be present.
-//     * For example, searching "java 11" would match "java jdk 11" but not "java"
-//     *
-//     * @param keyword Keyword
-//     * @return List of packages matching the keyword, or empty list
-//     */
-//    @Override
-//    public List<PluginModel> search(List<PluginModel> plugins, String keyword) {
-//        List<PluginModel> models = new ArrayList<>();
-//        for (PluginModel plugin : plugins) {
-//            // Get latest version
-//            var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));
-//            if (v.isPresent())
-//                if (v.get().meta().description().equals(keyword))
-//                    models.add(plugin);
-//        }
-//        return models;
-//    }
 
     /**
      * Returns a dictionary mapping the different keywords to the matching plugins
@@ -45,7 +24,7 @@ public class SearcherByKeyword implements Searcher {
      */
     @Override
     public Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins) {
-        Map<String, List<PluginModel>> models = new HashMap<String, List<PluginModel>>();
+        Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
             var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));

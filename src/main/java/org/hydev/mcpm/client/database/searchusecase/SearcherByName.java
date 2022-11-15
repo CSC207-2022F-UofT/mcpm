@@ -5,26 +5,12 @@ import org.hydev.mcpm.client.models.PluginVersion;
 
 import java.util.*;
 
+/**
+ * Searcher that returns a map based on names.
+ *
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
+ */
 public class SearcherByName implements Searcher {
-
-    /**
-     * Dynamically load a local plugin through JVM reflections and classloader hacks
-     *
-     * @param name Loaded plugin name
-     * @return A list of PluginModels with the given name.
-     */
-//    @Override
-//    public List<PluginModel> search(List<PluginModel> plugins, String name) {
-//        List<PluginModel> models = new ArrayList<>();
-//        for (PluginModel plugin : plugins) {
-//            // Get latest version
-//            var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));
-//            if (v.isPresent())
-//                if (v.get().meta().name().equals(name))
-//                    models.add(plugin);
-//        }
-//        return models;
-//    }
 
     /**
      * Returns a dictionary mapping the different names to the matching plugins.
@@ -34,7 +20,7 @@ public class SearcherByName implements Searcher {
      */
     @Override
     public Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins) {
-        Map<String, List<PluginModel>> models = new HashMap<String, List<PluginModel>>();
+        Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
             var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));

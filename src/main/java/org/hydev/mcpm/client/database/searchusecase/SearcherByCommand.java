@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Searcher that returns a map based on commands.
+ *
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
+ */
 public class SearcherByCommand implements Searcher {
 
     /**
@@ -18,7 +23,7 @@ public class SearcherByCommand implements Searcher {
      */
     @Override
     public Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins) {
-        Map<String, List<PluginModel>> models = new HashMap<String, List<PluginModel>>();
+        Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
             var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));

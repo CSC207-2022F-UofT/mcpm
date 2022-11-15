@@ -1,16 +1,14 @@
 package org.hydev.mcpm.client.database.searchusecase;
 
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.models.PluginModel;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for searching plugins.
+ * Interface for searchers that return Maps based on the list of plugins.
  *
- * @author Jerry Zhu (https://github.com/jerryzhu509)
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public interface Searcher {
 

@@ -8,7 +8,7 @@ package org.hydev.mcpm.client.database.inputs;
  * @param searchStr String containing the name, keyword, or command to search by.
  * @param noCache If true, the ListPackagesBoundary will re-download the database before performing the request.
  *
- * @author Jerry Zhu (https://github.com/jerryzhu509)
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public record SearchPackagesInput(Type type, String searchStr, boolean noCache) {
 
