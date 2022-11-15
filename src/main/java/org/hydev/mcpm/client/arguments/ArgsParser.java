@@ -61,13 +61,8 @@ public class ArgsParser
     }
 
     public static void main(String[] args) {
-        var parser = new ArgsParser(List.of(
-            new EchoParser()
-        ));
-
-        var controller = new Controller(List.of(
-            CommandWrapper.wrap(new EchoCommand())
-        ));
+        var parser = CommandsFactory.serverArgsParser();
+        var controller = CommandsFactory.serverController();
 
         try {
             var entry = parser.parse(args);
