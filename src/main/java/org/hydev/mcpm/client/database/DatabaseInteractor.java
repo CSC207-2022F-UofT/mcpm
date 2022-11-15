@@ -10,12 +10,12 @@ import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
 import org.hydev.mcpm.client.database.results.ListPackagesResult;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
+import org.hydev.mcpm.client.database.searchusecase.SearcherFactory;
 import org.hydev.mcpm.client.models.PluginModel;
+import org.hydev.mcpm.client.models.PluginVersion;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +24,12 @@ import java.util.stream.Collectors;
 public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
+
+    /**
+     * Map associating each search type to the map associating a plugin feature to its
+     * corresponding list of plugins.
+     */
+    private Map<SearchPackagesInput.Type, Map<String, List<PluginModel>>> searchMaps = new HashMap<>();
 
     /**
      * Creates a new database with the provided database fetcher.
@@ -44,6 +50,9 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
     public DatabaseInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
         this.listener = listener;
+        for (SearchPackagesInput.Type type: SearchPackagesInput.Type.values()) {
+            this.searchMaps.put(type, null);
+        }
     }
 
     /**
@@ -111,50 +120,77 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
         if (searchStr.isEmpty())
             return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_INPUT);
 
+
         var plugins = database.plugins();
-        return switch(input.type()) {
-            case BY_NAME ->
-                new SearchPackagesResult(
-                            SearchPackagesResult.State.SUCCESS,
-                            searchByName(plugins, searchStr));
 
-            case BY_COMMAND ->
-                new SearchPackagesResult(
-                        SearchPackagesResult.State.SUCCESS,
-                        searchByCommand(plugins, searchStr));
+        // Make map if null
+        SearcherFactory factory = new SearcherFactory();
+        if (this.searchMaps.get(input.type()) == null)
+            this.searchMaps.put(input.type(), factory.createSearcher(input).constructSearchMaps(plugins));
 
-            case BY_KEYWORD ->
-                new SearchPackagesResult(
-                        SearchPackagesResult.State.SUCCESS,
-                        searchByKeyword(plugins, searchStr));
+        return new SearchPackagesResult(SearchPackagesResult.State.SUCCESS,
+                this.searchMaps.get(input.type()).get(searchStr));
 
-        };
+//        return switch(input.type()) {
+//            case BY_NAME ->
+//                new SearchPackagesResult(
+//                            SearchPackagesResult.State.SUCCESS,
+//                            searchByName(plugins, searchStr));
+//
+//            case BY_COMMAND ->
+//                new SearchPackagesResult(
+//                        SearchPackagesResult.State.SUCCESS,
+//                        searchByCommand(plugins, searchStr));
+//
+//            case BY_KEYWORD ->
+//                new SearchPackagesResult(
+//                        SearchPackagesResult.State.SUCCESS,
+//                        searchByKeyword(plugins, searchStr));
+//
+//        };
     }
 
-    @Override
-    public List<PluginModel> searchByName(List<PluginModel> plugins, String name)
-    {
+//    @Override
+//    private static List<PluginModel> searchByName(List<PluginModel> plugins, String name)
+//    {
+////        List<PluginModel> models = plugins.stream()
+////                .filter(p -> {
+////                    var version = p.versions().stream().max(Comparator.comparingLong(PluginVersion::id)).orElse(null);
+////                    if (version == null) return false;
+////                    return version.meta().name().equals(name);
+////                }).toList();
+//
+//        List<PluginModel> models = new ArrayList<>();
 //        for (PluginModel plugin : plugins) {
-//            // Assuming name is the same in every version.
-//            System.out.println(plugin.versions().meta().name());
+//            // Get latest version
+//            var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));
+//            if (v.isPresent())
+//                if (v.get().meta().name().equals(name))
+//                    models.add(plugin);
 //        }
-        // Todo
-        return null;
-    }
-
-    @Override
-    public List<PluginModel> searchByKeyword(List<PluginModel> plugins, String keyword)
-    {
-        // Todo
-        return List.of();
-    }
-
-    @Override
-    public List<PluginModel> searchByCommand(List<PluginModel> plugins, String command)
-    {
-        // Todo
-        return List.of();
-    }
+//        return models;
+//    }
+//
+//    @Override
+//    private static List<PluginModel> searchByKeyword(List<PluginModel> plugins, String keyword)
+//    {
+//        List<PluginModel> models = new ArrayList<>();
+//        for (PluginModel plugin : plugins) {
+//            // Get latest version
+//            var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));
+//            if (v.isPresent())
+//                if (v.get().meta().description().equals(keyword))
+//                    models.add(plugin);
+//        }
+//        return models;
+//    }
+//
+//    @Override
+//    private static List<PluginModel> searchByCommand(List<PluginModel> plugins, String command)
+//    {
+//        // Todo
+//        return List.of();
+//    }
 
     /**
      * Demo main method for DatabaseInteractor.
