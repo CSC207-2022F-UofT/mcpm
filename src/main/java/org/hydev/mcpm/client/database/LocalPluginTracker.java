@@ -20,8 +20,11 @@ import javax.naming.NameNotFoundException;
  * @since 2022-09-27
  */
 public class LocalPluginTracker {
-    private static String MainLockFile = "TODO: Get this path"; // CSV file storing the list of manually installed plugins
-    private static String PluginDirectory = "TODO: Get this path"; // Directory storing the plugins
+    // CSV file storing the list of manually installed plugins
+    private static String MainLockFile = "TODO: Get this path";
+
+    // Directory storing the plugins
+    private static String PluginDirectory = "TODO: Get this path";
 
     /**
      * Read metadata from a plugin's jar
@@ -32,7 +35,7 @@ public class LocalPluginTracker {
     public PluginYml readMeta(File jar)
     {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
-            return(InstancePluginJarFile.readPluginYaml());
+            return InstancePluginJarFile.readPluginYaml();
         } catch (Exception e) {
             System.out.printf("Error reading plugin.yml from " + jar);
             return null;
@@ -41,20 +44,17 @@ public class LocalPluginTracker {
 
     /**
      * List all currently installed plugins in an ArrayList
-     * 
-     * 
-     * 
      */
     public List<PluginYml> listInstalled()
     {   
-        List<PluginYml>InstalledPlugins = new ArrayList<PluginYml>();
+        List<PluginYml> installedPlugins = new ArrayList<>();
         // Go into the plugin directory and read the metadata of all the plugins
         File dir = new File(PluginDirectory);
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 try {
-                    InstalledPlugins.add(readMeta(child));
+                    installedPlugins.add(readMeta(child));
                 } catch (Exception e) {
                     System.out.printf("Error reading plugin.yml from " + child);
                 }
@@ -63,19 +63,19 @@ public class LocalPluginTracker {
             System.out.printf("Error reading directory");
         }
 
-        return InstalledPlugins;
+        return installedPlugins;
     }
 
     /**
      * Mark a plugin as manually installed (as opposed to a dependency)
-     *
-     * @param name Plugin name
      * Precondition: MainLockFile is a sorted .csv file with the following format:
      * 1st column: Plugin name
      * 2nd column: Manual Dependency (true/false)
      * Example:
      * PluginName,true
      * PluginName2,false
+     *
+     * @param name Plugin name
      */
     public void addManuallyInstalled(String name)
     {
