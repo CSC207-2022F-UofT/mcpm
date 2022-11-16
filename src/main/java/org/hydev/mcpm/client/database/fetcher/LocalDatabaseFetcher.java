@@ -164,6 +164,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
                     //noinspection ResultOfMethodCallIgnored
                     cacheDirectory.toFile().mkdirs();
+
                     Files.writeString(Paths.get(cacheDirectory.toString(), DATABASE_FILE_NAME), body);
                     Files.writeString(Paths.get(cacheDirectory.toString(), HASH_FILE_NAME), hash);
                 } catch (NoSuchAlgorithmException e) {
