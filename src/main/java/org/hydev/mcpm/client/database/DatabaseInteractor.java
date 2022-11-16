@@ -135,7 +135,7 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
             return;
         }
 
-        // System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
+        System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
 
         var text = result
             .plugins()
@@ -146,8 +146,9 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
             .map(value -> "  " + value)
             .collect(Collectors.joining("\n"));
 
-        // System.out.println(text);
-        var result1 = database.search(new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true));
+        System.out.println(text);
+        var result1 = database.search(
+                new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true));
         var text1 = result1
                 .plugins()
                 .stream()
