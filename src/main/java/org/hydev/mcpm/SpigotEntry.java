@@ -58,7 +58,8 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     {
         try {
             var entry = parser.parse(args);
-            controller.queue(entry);
+
+            controller.queue(entry, text -> log.info(text));
         } catch (ArgumentParserException | Controller.NoMatchingCommandException e) {
             /*
              * Ignore incorrect commands?
