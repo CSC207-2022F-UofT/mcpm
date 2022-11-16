@@ -24,7 +24,7 @@ public record PluginModel(
      *
      * @return The latest PluginVersion of itself, if it exists.
      */
-    public Optional<PluginVersion> getLatestPV() {
+    public Optional<PluginVersion> getLatestPluginVersion() {
         return this.versions.stream().max(Comparator.comparingLong(PluginVersion::id));
     }
 }

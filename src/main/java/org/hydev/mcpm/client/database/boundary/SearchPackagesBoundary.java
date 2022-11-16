@@ -1,4 +1,5 @@
 package org.hydev.mcpm.client.database.boundary;
+
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 

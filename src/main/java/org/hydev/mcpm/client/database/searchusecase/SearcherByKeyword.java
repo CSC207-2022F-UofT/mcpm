@@ -20,6 +20,7 @@ public class SearcherByKeyword implements Searcher {
      * This function implements fuzzy search that doesn't require the exact phrase to be available,
      * but requires all words in the phrase to be present.
      * For example, searching "java 11" would match "java jdk 11" but not "java"
+     *
      * @param plugins A list of all plugins in the database.
      * @return A dictionary associating each keyword to the matching plugins.
      */
@@ -28,12 +29,12 @@ public class SearcherByKeyword implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            var v = plugin.getLatestPV();
+            var v = plugin.getLatestPluginVersion();
             if (v.isPresent() && v.get().meta() != null &&
                     v.get().meta().description() != null && !v.get().meta().description().equals("")) {
                 String[] keywords = v.get().meta().description()
                         .replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
-                for (String keyword: keywords) {
+                for (String keyword : keywords) {
                     if (!models.containsKey(keyword))
                         models.put(keyword, new ArrayList<>());
                     models.get(keyword).add(plugin);
@@ -61,7 +62,7 @@ public class SearcherByKeyword implements Searcher {
         String [] keywords = ((String) inp).toLowerCase().split(" "); // Should be a string
         Set<PluginModel> res = new HashSet<>();
         boolean first = true;
-        for (String keyword: keywords) {
+        for (String keyword : keywords) {
             List<PluginModel> pl = SearcherByKeyword.keywordMap.get(keyword);
             if (first) {
                 res.addAll(pl);

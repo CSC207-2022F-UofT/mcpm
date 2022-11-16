@@ -11,7 +11,9 @@ package org.hydev.mcpm.client.database.inputs;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public record SearchPackagesInput(Type type, String searchStr, boolean noCache) {
-
+    /**
+     * The possible types of searching.
+     */
     public enum Type {
         BY_NAME,
         BY_COMMAND,

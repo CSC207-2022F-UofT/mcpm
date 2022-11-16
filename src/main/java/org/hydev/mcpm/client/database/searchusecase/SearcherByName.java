@@ -16,6 +16,7 @@ public class SearcherByName implements Searcher {
     /**
      * Returns a dictionary mapping the different names to the matching plugins.
      * Not case-sensitive.
+     *
      * @param plugins A list of all plugins in the database.
      * @return A dictionary associating the name to the matching plugins.
      */
@@ -24,7 +25,7 @@ public class SearcherByName implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            var v = plugin.getLatestPV();
+            var v = plugin.getLatestPluginVersion();
             if (v.isPresent() && v.get().meta() != null && !v.get().meta().name().equals("")) {
                 String name = v.get().meta().name().toLowerCase();
                 if (!models.containsKey(name))

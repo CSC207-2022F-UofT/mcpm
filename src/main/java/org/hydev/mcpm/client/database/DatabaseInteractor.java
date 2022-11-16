@@ -158,7 +158,8 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
                 .collect(Collectors.joining("\n"));
         System.out.println(text1);
         System.out.println();
-        var result3 = database.search(new SearchPackagesInput(SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
+        var result3 = database.search(new SearchPackagesInput(
+                SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
         var text3 = result3
                 .plugins()
                 .stream()
