@@ -11,7 +11,6 @@ import org.hydev.mcpm.client.database.results.ListPackagesResult;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearcherFactory;
-import org.hydev.mcpm.client.models.PluginModel;
 
 import java.net.URI;
 import java.util.*;
@@ -19,16 +18,13 @@ import java.util.stream.Collectors;
 
 /**
  * Handles fetching and performing operations on the plugin database.
+ *
+ * @author Taylor Whatley
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
-
-    /**
-     * Map associating each search type to the map associating a plugin feature to its
-     * corresponding list of plugins.
-     */
-    private final Map<SearchPackagesInput.Type, Map<String, List<PluginModel>>> searchMaps = new HashMap<>();
 
     /**
      * Creates a new database with the provided database fetcher.
@@ -49,9 +45,6 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
     public DatabaseInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
         this.listener = listener;
-        for (SearchPackagesInput.Type type: SearchPackagesInput.Type.values()) {
-            this.searchMaps.put(type, null);
-        }
     }
 
     /**
@@ -115,19 +108,14 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
             return SearchPackagesResult.by(SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE);
         }
 
-        var searchStr = input.searchStr();
+        var searchStr = input.searchStr().toLowerCase();
         if (searchStr.isEmpty())
             return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_INPUT);
 
         var plugins = database.plugins();
 
-        // Make map if null
-        SearcherFactory factory = new SearcherFactory();
-        if (this.searchMaps.get(input.type()) == null)
-            this.searchMaps.put(input.type(), factory.createSearcher(input).constructSearchMaps(plugins));
-
         return new SearchPackagesResult(SearchPackagesResult.State.SUCCESS,
-                this.searchMaps.get(input.type()).get(searchStr));
+                SearcherFactory.createSearcher(input).getSearchList(searchStr, plugins));
     }
 
     /**
@@ -140,26 +128,15 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
         var fetcher = new LocalDatabaseFetcher(host);
         var database = new DatabaseInteractor(fetcher);
 
-       // var result = database.list(new ListPackagesInput(20, 0, true));
-//
-//        if (result.state() != ListPackagesResult.State.SUCCESS) {
-//            System.out.println("Result Failed With State " + result.state().name());
-//            return;
-//        }
-//
-//        System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
-//
-//        var text = result
-//            .plugins()
-//            .stream()
-//            .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
-//            .filter(Optional::isPresent)
-//            .map(Optional::get)
-//            .map(value -> "  " + value)
-//            .collect(Collectors.joining("\n"));
-//
-//        System.out.println(text);
-        var result = database.search(new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "Bro", true));
+        var result = database.list(new ListPackagesInput(20, 0, true));
+
+        if (result.state() != ListPackagesResult.State.SUCCESS) {
+            System.out.println("Result Failed With State " + result.state().name());
+            return;
+        }
+
+        // System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
+
         var text = result
             .plugins()
             .stream()
@@ -168,6 +145,28 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
             .map(Optional::get)
             .map(value -> "  " + value)
             .collect(Collectors.joining("\n"));
-        System.out.println(text);
+
+        // System.out.println(text);
+        var result1 = database.search(new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true));
+        var text1 = result1
+                .plugins()
+                .stream()
+                .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(value -> "  " + value)
+                .collect(Collectors.joining("\n"));
+        System.out.println(text1);
+        System.out.println();
+        var result3 = database.search(new SearchPackagesInput(SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
+        var text3 = result3
+                .plugins()
+                .stream()
+                .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(value -> "  " + value)
+                .collect(Collectors.joining("\n"));
+        System.out.println(text3);
     }
 }

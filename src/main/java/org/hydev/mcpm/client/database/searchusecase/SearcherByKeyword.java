@@ -1,7 +1,6 @@
 package org.hydev.mcpm.client.database.searchusecase;
 
 import org.hydev.mcpm.client.models.PluginModel;
-import org.hydev.mcpm.client.models.PluginVersion;
 
 import java.util.*;
 
@@ -11,6 +10,8 @@ import java.util.*;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearcherByKeyword implements Searcher {
+
+    private static Map<String, List<PluginModel>> keywordMap = null;
 
     /**
      * Returns a dictionary mapping the different keywords to the matching plugins
@@ -27,16 +28,49 @@ public class SearcherByKeyword implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));
-            if (v.isPresent()) {
-                String[] keywords = v.get().meta().description().toLowerCase().split(" ");
+            var v = plugin.getLatestPV();
+            if (v.isPresent() && v.get().meta() != null &&
+                    v.get().meta().description() != null && !v.get().meta().description().equals("")) {
+                String[] keywords = v.get().meta().description()
+                        .replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
                 for (String keyword: keywords) {
                     if (!models.containsKey(keyword))
-                        models.put(keyword, List.of());
+                        models.put(keyword, new ArrayList<>());
                     models.get(keyword).add(plugin);
                 }
             }
         }
         return models;
+    }
+
+    /**
+     * Searches for plugins based on the provided user input.
+     *
+     * @param inp User input for the search. Should be a name as a non-empty string here.
+     * @param plugins A list of all plugins in the database.
+     * @return A dictionary associating a string feature of the plugins to the matching plugins.
+     */
+    @Override
+    public List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins) {
+
+        // Instantiate if null
+        if (SearcherByKeyword.keywordMap == null) {
+            SearcherByKeyword.keywordMap = constructSearchMaps(plugins);
+        }
+
+        String [] keywords = ((String) inp).toLowerCase().split(" "); // Should be a string
+        Set<PluginModel> res = new HashSet<>();
+        boolean first = true;
+        for (String keyword: keywords) {
+            List<PluginModel> pl = SearcherByKeyword.keywordMap.get(keyword);
+            if (first) {
+                res.addAll(pl);
+                first = false;
+            }
+            else {
+                res.retainAll(pl);
+            }
+        }
+        return new ArrayList<>(res);
     }
 }

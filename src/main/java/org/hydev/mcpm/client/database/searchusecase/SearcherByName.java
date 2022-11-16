@@ -1,7 +1,6 @@
 package org.hydev.mcpm.client.database.searchusecase;
 
 import org.hydev.mcpm.client.models.PluginModel;
-import org.hydev.mcpm.client.models.PluginVersion;
 
 import java.util.*;
 
@@ -11,6 +10,8 @@ import java.util.*;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearcherByName implements Searcher {
+
+    private static Map<String, List<PluginModel>> nameMap = null;
 
     /**
      * Returns a dictionary mapping the different names to the matching plugins.
@@ -23,14 +24,32 @@ public class SearcherByName implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            var v = plugin.versions().stream().max(Comparator.comparingLong(PluginVersion::id));
-            if (v.isPresent()) {
+            var v = plugin.getLatestPV();
+            if (v.isPresent() && v.get().meta() != null && !v.get().meta().name().equals("")) {
                 String name = v.get().meta().name().toLowerCase();
                 if (!models.containsKey(name))
-                    models.put(name, List.of());
+                    models.put(name, new ArrayList<>());
                 models.get(name).add(plugin);
             }
         }
         return models;
+    }
+
+    /**
+     * Searches for plugins based on the provided user input.
+     *
+     * @param inp User input for the search. Should be a name as a string here.
+     * @param plugins A list of all plugins in the database.
+     * @return A dictionary associating a string feature of the plugins to the matching plugins.
+     */
+    @Override
+    public List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins) {
+        // Instantiate if null
+        if (SearcherByName.nameMap == null) {
+            SearcherByName.nameMap = constructSearchMaps(plugins);
+        }
+
+        String name = (String) inp; // Should be a string
+        return SearcherByName.nameMap.get(name);
     }
 }

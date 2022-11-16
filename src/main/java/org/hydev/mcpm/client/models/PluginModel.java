@@ -1,6 +1,8 @@
 package org.hydev.mcpm.client.models;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -10,11 +12,19 @@ import java.util.List;
  * @param versions Current & historical versions (sorted in time order)
  *
  * @author Azalea (https://github.com/hykilpikonna)
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  * @since 2022-09-27
  */
 public record PluginModel(
     long id,
-    List<PluginVersion> versions
-)
+    List<PluginVersion> versions)
 {
+    /**
+     * Gets the latest PluginVersion from all PluginVersions of itself.
+     *
+     * @return The latest PluginVersion of itself, if it exists.
+     */
+    public Optional<PluginVersion> getLatestPV() {
+        return this.versions.stream().max(Comparator.comparingLong(PluginVersion::id));
+    }
 }

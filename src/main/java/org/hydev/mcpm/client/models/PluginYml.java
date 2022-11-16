@@ -36,7 +36,7 @@ public record PluginYml(
     ArrayList<String> softdepend,
     ArrayList<String> loadbefore,
     ArrayList<String> libraries,
-    Map<String, PluginCommand> commands
+    Map<String, Object> commands
 )
 {
     /**
