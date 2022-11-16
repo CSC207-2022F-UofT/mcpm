@@ -1,5 +1,7 @@
 package org.hydev.mcpm.client.commands;
 
+import java.util.function.Consumer;
+
 public class CommandWrapper<T extends CommandEntry> implements CommandResponder {
     private final Command<T> command;
     private final Class<T> type;
@@ -10,9 +12,9 @@ public class CommandWrapper<T extends CommandEntry> implements CommandResponder 
     }
 
     @Override
-    public void run(CommandEntry input) {
+    public void run(CommandEntry input, Consumer<String> log) {
         if (type.isInstance(input)) {
-            command.run(type.cast(input));
+            command.run(type.cast(input), log);
         }
     }
 

@@ -2,6 +2,8 @@ package org.hydev.mcpm.client.commands.entries;
 
 import org.hydev.mcpm.client.commands.Command;
 
+import java.util.function.Consumer;
+
 public class EchoCommand implements Command<EchoEntry> {
     @Override
     public Class<EchoEntry> type() {
@@ -9,8 +11,8 @@ public class EchoCommand implements Command<EchoEntry> {
     }
 
     @Override
-    public void run(EchoEntry input) {
-        System.out.println("Echo: " + input.text());
+    public void run(EchoEntry input, Consumer<String> log) {
+        log.accept("Echo: " + input.text());
     }
 }
 

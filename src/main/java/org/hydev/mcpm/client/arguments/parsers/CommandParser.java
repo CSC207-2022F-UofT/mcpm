@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.arguments;
+package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;

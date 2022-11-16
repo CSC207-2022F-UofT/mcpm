@@ -3,12 +3,9 @@ package org.hydev.mcpm.client.arguments;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.Subparser;
+import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 import org.hydev.mcpm.client.commands.CommandEntry;
-import org.hydev.mcpm.client.commands.CommandWrapper;
 import org.hydev.mcpm.client.commands.Controller;
-import org.hydev.mcpm.client.commands.entries.EchoCommand;
-import org.hydev.mcpm.client.commands.entries.EchoEntry;
 
 import java.util.List;
 
@@ -66,7 +63,8 @@ public class ArgsParser
 
         try {
             var entry = parser.parse(args);
-            controller.queue(entry);
+
+            controller.queue(entry, System.out::println);
         } catch (ArgumentParserException e) {
             parser.fail(e);
         } catch (Controller.NoMatchingCommandException e) {

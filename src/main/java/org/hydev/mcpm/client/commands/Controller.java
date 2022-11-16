@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.commands;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Controller {
     private final List<CommandResponder> commands;
@@ -17,7 +18,7 @@ public class Controller {
         this.commands = commands;
     }
 
-    public void queue(CommandEntry entry) throws NoMatchingCommandException {
+    public void queue(CommandEntry entry, Consumer<String> log) throws NoMatchingCommandException {
         var command = commands
             .stream()
             .filter(c -> c.handles(entry))
@@ -27,6 +28,6 @@ public class Controller {
             throw new NoMatchingCommandException(entry);
         }
 
-        command.get().run(entry);
+        command.get().run(entry, log);
     }
 }
