@@ -86,7 +86,7 @@ public class LocalPluginTracker {
      * @param col Column for which you need to update
      * @throws IOException An IOException is thrown when there is an issue reading from the main lock file.
      */
-    public void updateCSV(String replace, int row, int col) throws IOException {
+    public void updateCsv(String replace, int row, int col) throws IOException {
 
         try {
             File inputFile = new File(mainLockFile);
