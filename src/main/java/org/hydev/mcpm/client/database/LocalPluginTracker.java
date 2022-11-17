@@ -32,7 +32,7 @@ public class LocalPluginTracker {
     private String pluginDirectory = "TODO: Get this path";
 
     // Constructor 
-    public LocalPluginTracker(String mainLockFileURL, String pluginDirectoryURL) {
+    public LocalPluginTracker(String mainLockFileUrl, String pluginDirectoryUrl) {
         this.mainLockFile = mainLockFileURL;
         this.pluginDirectory = pluginDirectoryURL;
     }
