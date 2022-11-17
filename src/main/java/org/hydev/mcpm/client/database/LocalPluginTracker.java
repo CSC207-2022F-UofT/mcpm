@@ -24,7 +24,18 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
  * @since 2022-09-27
  */
 
-public class LocalPluginTracker{
+interface PluginTracker {
+    
+    PluginYml readMeta(File jar) throws Exception;
+    List<PluginYml> listInstalled();
+    void addManuallyInstalled(String name);
+    void removeManuallyInstalled(String name);
+    List<String> listOrphanPlugins(boolean considerSoftDependencies);
+    String getVersion(String name);
+
+}
+
+public class LocalPluginTracker implements PluginTracker {
     // CSV file storing the list of manually installed plugins
     private String mainLockFile = "TODO: Get this path";
 
@@ -36,6 +47,8 @@ public class LocalPluginTracker{
         this.mainLockFile = mainLockFileURL;
         this.pluginDirectory = pluginDirectoryURL;
     }
+
+
     /**
      * Read metadata from a plugin's jar
      *
@@ -72,10 +85,8 @@ public class LocalPluginTracker{
         } else {
             System.out.printf("Error reading directory");
         }
-
         return installedPlugins;
     }
-
 
     /**
      * Update CSV by row and column, helper function
@@ -85,7 +96,7 @@ public class LocalPluginTracker{
      * @param col Column for which you need to update
      * @throws IOException
      */
-    public void updateCSV(String replace, int row, int col) throws IOException {
+    private void updateCSV(String replace, int row, int col) throws IOException {
 
         try {
             File inputFile = new File(mainLockFile);
