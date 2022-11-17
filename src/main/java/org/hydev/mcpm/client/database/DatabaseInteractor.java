@@ -101,6 +101,7 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
      * @param input Record of inputs as provided in SearchPackagesInput. See it for more info.
      * @return Packages result. See the SearchPackagesResult record for more info.
      */
+    @Override
     public SearchPackagesResult search(SearchPackagesInput input) {
         var database = fetcher.fetchDatabase(!input.noCache(), listener);
 

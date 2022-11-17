@@ -50,6 +50,7 @@ public class SearcherByKeyword implements Searcher {
      * @param inp User input for the search. Should be a name as a non-empty string here.
      * @param plugins A list of all plugins in the database.
      * @return A dictionary associating a string feature of the plugins to the matching plugins.
+     *         Returns null if inp is not a string.
      */
     @Override
     public List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins) {
@@ -58,19 +59,13 @@ public class SearcherByKeyword implements Searcher {
         if (SearcherByKeyword.keywordMap == null) {
             SearcherByKeyword.keywordMap = constructSearchMaps(plugins);
         }
-
-        String [] keywords = ((String) inp).toLowerCase().split(" "); // Should be a string
-        Set<PluginModel> res = new HashSet<>();
-        boolean first = true;
-        for (String keyword : keywords) {
-            List<PluginModel> pl = SearcherByKeyword.keywordMap.get(keyword);
-            if (first) {
-                res.addAll(pl);
-                first = false;
-            }
-            else {
-                res.retainAll(pl);
-            }
+        if (!(inp instanceof String input))
+            return null;
+        String [] keywords = input.toLowerCase().split(" "); // Should be a string
+        Set<PluginModel> res = new HashSet<>(SearcherByKeyword.keywordMap.get(keywords[0]));
+        for (int i = 1; i < keywords.length; i++) {
+            List<PluginModel> pl = SearcherByKeyword.keywordMap.get(keywords[i]);
+            res.retainAll(pl);
         }
         return new ArrayList<>(res);
     }

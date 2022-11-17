@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.database.searchusecase;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.hydev.mcpm.client.models.PluginModel;
 
 import java.util.*;
@@ -21,8 +22,7 @@ public class SearcherByCommand implements Searcher {
      */
     @Override
     public Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins) {
-        //TODO
-        return new HashMap<>();
+        throw new NotImplementedException();
     }
 
     /**
@@ -34,7 +34,6 @@ public class SearcherByCommand implements Searcher {
      */
     @Override
     public List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins) {
-        // Todo
-        return List.of();
+        throw new NotImplementedException();
     }
 }
