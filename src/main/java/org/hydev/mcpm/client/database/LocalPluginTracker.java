@@ -242,7 +242,7 @@ public class LocalPluginTracker {
 
     /** 
      *Return the version data of a plugin from the pluginYML file
-     * 
+     *
      * @param name Plugin id
      * @return Version data
      */
