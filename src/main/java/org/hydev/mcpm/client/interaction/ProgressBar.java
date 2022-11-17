@@ -4,8 +4,7 @@ import org.fusesource.jansi.AnsiConsole;
 import org.hydev.mcpm.utils.ConsoleUtils;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.String.format;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
@@ -16,22 +15,26 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
  * Terminal progress bar based on Xterm escape codes
  *
  * @author Azalea (https://github.com/hykilpikonna)
+ * @author Peter (https://github.com/MstrPikachu)
  * @since 2022-09-27
  */
-public class ProgressBar implements AutoCloseable
-{
+public class ProgressBar implements ProgressBarBoundary {
     private final ConsoleUtils cu;
     private final ProgressBarTheme theme;
     private final PrintStream out;
     private int cols;
 
-    private final List<ProgressRow> activeBars;
+    private final List<ProgressRowBoundary> bars;
+    private final ArrayList<ProgressRowBoundary> activeBars;
+    private final Map<ProgressRowBoundary, Integer> id;
 
     private long lastUpdate;
 
     private double frameDelay;
 
     private final boolean istty;
+
+    private boolean closed = false;
 
     /**
      * Create and initialize a progress bar
@@ -43,8 +46,11 @@ public class ProgressBar implements AutoCloseable
         this.theme = theme;
         this.out = System.out;
         this.cu = new ConsoleUtils(this.out);
+        this.bars = new ArrayList<>();
         this.activeBars = new ArrayList<>();
+        this.id = new HashMap<>();
         this.cols = AnsiConsole.getTerminalWidth();
+
 
         // Default to 70-char width if the width can't be detected (like in a non-tty output)
         if (this.cols == 0) this.cols = 70;
@@ -60,15 +66,14 @@ public class ProgressBar implements AutoCloseable
         if (!istty) this.frameDelay = 1 / 0.5;
     }
 
-    /**
-     * Append a progress bar at the end
-     *
-     * @param bar Row of the progress bar
-     * @return bar for fluent access
-     */
-    public ProgressRow appendBar(ProgressRow bar)
+    @Override
+    public ProgressRowBoundary appendBar(ProgressRowBoundary bar)
     {
+        int id = this.bars.size();
         this.activeBars.add(bar);
+
+        this.id.put(bar, id);
+        this.bars.add(bar);
         bar.setPb(this);
 
         out.println();
@@ -76,8 +81,22 @@ public class ProgressBar implements AutoCloseable
         return bar;
     }
 
+
+    public void incrementBarProgress(int id, long inc) {
+        this.bars.get(id).increase(inc);
+    }
+
+
+    public void setBarProgress(int id, long progress) {
+        this.bars.get(id).set(progress);
+    }
+
+
     protected void update()
     {
+        // if the progress bar is closed, don't do anything
+        if (closed)
+            return;
         // Check time to limit for framerate (default 60fps)
         // Performance of the update heavily depends on the terminal's escape code handling
         // implementation, so frequent updates will degrade performance on a bad terminal
@@ -91,6 +110,7 @@ public class ProgressBar implements AutoCloseable
     private void forceUpdate()
     {
         // Roll back to the first line
+        Collections.sort(activeBars, (a, b) -> Double.compare(b.getCompletion(), a.getCompletion()));
         if (istty) cu.curUp(activeBars.size());
         activeBars.forEach(bar -> {
             cu.eraseLine();
@@ -98,12 +118,8 @@ public class ProgressBar implements AutoCloseable
         });
     }
 
-    /**
-     * Finish a progress bar
-     *
-     * @param bar Progress bar
-     */
-    public void finishBar(ProgressRow bar)
+    @Override
+    public void finishBar(ProgressRowBoundary bar)
     {
         if (!activeBars.contains(bar)) return;
 
@@ -111,35 +127,32 @@ public class ProgressBar implements AutoCloseable
         this.activeBars.remove(bar);
     }
 
-    /**
-     * Finalize and close the progress bar (print the final line)
-     */
+
     @Override
     public void close()
     {
+        closed = true;
     }
 
+
+    @Override
     public ProgressBar setFrameDelay(double frameDelay)
     {
         this.frameDelay = frameDelay;
         return this;
     }
 
-    /**
-     * Set frame rate in the unit of frames per second
-     *
-     * @param fps FPS
-     * @return Self for fluent access
-     */
+    @Override
     public ProgressBar setFps(int fps)
     {
         this.frameDelay = 1d / fps;
         return this;
     }
 
-    public List<ProgressRow> getActiveBars()
+    @Override
+    public List<ProgressRowBoundary> getBars()
     {
-        return activeBars;
+        return bars;
     }
 
     /**
@@ -151,7 +164,7 @@ public class ProgressBar implements AutoCloseable
     {
         try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
         {
-            var all = new ArrayList<ProgressRow>();
+            var all = new ArrayList<ProgressRowBoundary>();
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0) {
@@ -160,14 +173,32 @@ public class ProgressBar implements AutoCloseable
                         .desc(format("File %s.tar.gz", all.size()))
                         .descLen(30);
 
-                    all.add(b.appendBar(row));
+                    b.appendBar(row);
+                    all.add(row);
                 }
 
-                all.forEach(a -> a.increase(1));
+                for (int j = 0; j < all.size(); j++) {
+                    b.incrementBarProgress(j, 1);
+                }
                 safeSleep(3);
             }
 
-            System.out.println("Done");
+            System.out.println("Done 1");
+        }
+        try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
+        {
+            for (int i = 0; i < 36; i++) {
+                ProgressRow bar = new ProgressRow(300).unit("MB").desc(String.format("File %s.tar.gz", i)).descLen(30);
+                b.appendBar(bar);
+            }
+            for (int t = 0; t < 300; t++) {
+                for (int i = 0; i < 36; i++) {
+                    double speed = Math.cos(Math.PI / 18 * i);
+                    speed = speed * speed * 5 + 1;
+                    b.incrementBarProgress(i, (long) Math.ceil(speed));
+                }
+                safeSleep(15);
+            }
         }
     }
 }

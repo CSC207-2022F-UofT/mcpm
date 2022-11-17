@@ -1,15 +1,13 @@
 package org.hydev.mcpm.client.database.fetcher;
 
-import org.hydev.mcpm.client.interaction.ProgressBar;
-import org.hydev.mcpm.client.interaction.ProgressBarTheme;
-import org.hydev.mcpm.client.interaction.ProgressRow;
+import org.hydev.mcpm.client.interaction.*;
 
 /**
  * Handles database download events by forwarding them to a ProgressBar instance.
  */
 public class ProgressBarFetcherListener implements DatabaseFetcherListener {
-    private ProgressBar cachedBar;
-    private ProgressRow cachedRow;
+    private ProgressBarBoundary cachedBar;
+    private ProgressRowBoundary cachedRow;
 
     private final ProgressBarTheme theme;
 
@@ -43,7 +41,7 @@ public class ProgressBarFetcherListener implements DatabaseFetcherListener {
         cachedRow = row;
     }
 
-    private ProgressBar getBar(long total) {
+    private ProgressBarBoundary getBar(long total) {
         if (cachedBar == null) {
             createBar(total);
         }
@@ -51,7 +49,7 @@ public class ProgressBarFetcherListener implements DatabaseFetcherListener {
         return cachedBar;
     }
 
-    private ProgressRow getRow(long total) {
+    private ProgressRowBoundary getRow(long total) {
         if (cachedRow == null) {
             createBar(total);
         }
@@ -69,7 +67,7 @@ public class ProgressBarFetcherListener implements DatabaseFetcherListener {
     @Override
     public void finish() {
         if (cachedBar != null) {
-            cachedBar.getActiveBars().forEach(row -> cachedBar.finishBar(row));
+            cachedBar.getBars().forEach(row -> cachedBar.finishBar(row));
             cachedBar.close();
         }
     }
