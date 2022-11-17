@@ -34,6 +34,13 @@ public interface ProgressRowBoundary {
     void set(long completed);
 
     /**
+     * Get how much progress this row has currently completed as a fraction out of 1.
+     *
+     * @return the completion of this row.
+     */
+    double getCompletion();
+
+    /**
      * Sets the description of this object.
      *
      * @param desc The description to set

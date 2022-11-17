@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.interaction;
 
-import jline.TerminalFactory;
 import org.fusesource.jansi.AnsiConsole;
 import org.hydev.mcpm.utils.ConsoleUtils;
 
@@ -24,10 +23,9 @@ public class ProgressBar implements ProgressBarBoundary {
     private final ProgressBarTheme theme;
     private final PrintStream out;
     private int cols;
-    private final int rows;
 
     private final List<ProgressRowBoundary> bars;
-    private final SortedSet<Integer> activeIds;
+    private final ArrayList<ProgressRowBoundary> activeBars;
     private final Map<ProgressRowBoundary, Integer> id;
 
     private long lastUpdate;
@@ -49,10 +47,9 @@ public class ProgressBar implements ProgressBarBoundary {
         this.out = System.out;
         this.cu = new ConsoleUtils(this.out);
         this.bars = new ArrayList<>();
-        this.activeIds = new TreeSet<>();
+        this.activeBars = new ArrayList<>();
         this.id = new HashMap<>();
         this.cols = AnsiConsole.getTerminalWidth();
-        this.rows = TerminalFactory.get().getHeight();
 
 
         // Default to 70-char width if the width can't be detected (like in a non-tty output)
@@ -73,7 +70,7 @@ public class ProgressBar implements ProgressBarBoundary {
     public ProgressRowBoundary appendBar(ProgressRowBoundary bar)
     {
         int id = this.bars.size();
-        this.activeIds.add(id);
+        this.activeBars.add(bar);
 
         this.id.put(bar, id);
         this.bars.add(bar);
@@ -112,49 +109,24 @@ public class ProgressBar implements ProgressBarBoundary {
 
     private void forceUpdate()
     {
-        if (bars.size() <= rows) { // if terminal is tall enough, we can move cursor around freely
-            // Roll back to the first line
-            int height = bars.size();
-            if (istty) cu.curUp(height);
-            int prev = -1;
-            for (int i : activeIds) {
-                if (i > height)
-                    break;
-                int curDown = i - prev - 1;
-                prev = i;
-                cu.curUp(-curDown); // move cursor down to next active bar
-                cu.eraseLine();
-                out.println(bars.get(i).toString(theme, cols)); // println adds a newline which is why we -1 above
-            }
-            cu.curUp(-(bars.size() - prev - 1)); // move cursor down to the bottom
-        }
-        else { // no terminal space, print active ones only
-            int i = 0;
-            for (int id : activeIds) {
-                out.println(bars.get(id).toString(theme, cols));
-                if (++i == rows)
-                    break;
-            }
-        }
+        // Roll back to the first line
+        Collections.sort(activeBars, (a, b) -> Double.compare(b.getCompletion(), a.getCompletion()));
+        if (istty) cu.curUp(activeBars.size());
+        activeBars.forEach(bar -> {
+            cu.eraseLine();
+            out.println(bar.toString(theme, cols));
+        });
     }
 
     @Override
     public void finishBar(ProgressRowBoundary bar)
     {
-        finishBar(id.get(bar));
-    }
-
-    /**
-     * Finish a progress bar
-     *
-     * @param id Progress bar id
-     */
-    public void finishBar(int id) {
-        if (!activeIds.contains(id)) return;
+        if (!activeBars.contains(bar)) return;
 
         forceUpdate();
-        this.activeIds.remove(id);
+        this.activeBars.remove(bar);
     }
+
 
     @Override
     public void close()
@@ -219,13 +191,13 @@ public class ProgressBar implements ProgressBarBoundary {
                 ProgressRow bar = new ProgressRow(300).unit("MB").desc(String.format("File %s.tar.gz", i)).descLen(30);
                 b.appendBar(bar);
             }
-            for (int t = 0; t < 1000; t++) {
+            for (int t = 0; t < 300; t++) {
                 for (int i = 0; i < 36; i++) {
                     double speed = Math.cos(Math.PI / 18 * i);
                     speed = speed * speed * 5 + 1;
                     b.incrementBarProgress(i, (long) Math.ceil(speed));
                 }
-                safeSleep(3);
+                safeSleep(15);
             }
         }
     }

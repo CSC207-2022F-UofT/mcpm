@@ -122,6 +122,11 @@ public class ProgressRow implements ProgressRowBoundary {
         if (completed >= total) pb.finishBar(this);
     }
 
+    @Override
+    public double getCompletion() {
+        return (double) completed / total;
+    }
+
     /**
      * Sets the description of this object.
      *
