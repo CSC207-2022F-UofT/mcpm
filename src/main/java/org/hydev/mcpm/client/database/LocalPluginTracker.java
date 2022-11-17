@@ -22,17 +22,18 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-09-27
  */
-public class LocalPluginTracker {
+
+public class LocalPluginTracker implements PluginTracker {
     // CSV file storing the list of manually installed plugins
-    private String MainLockFile = "TODO: Get this path";
+    private String mainLockFile = "TODO: Get this path";
 
     // Directory storing the plugins
-    private String PluginDirectory = "TODO: Get this path";
+    private String pluginDirectory = "TODO: Get this path";
 
     // Constructor 
-    public LocalPluginTracker(String MainLockFile, String PluginDirectory) {
-        this.MainLockFile = MainLockFile;
-        this.PluginDirectory = PluginDirectory;
+    public LocalPluginTracker(String mainLockFileURL, String pluginDirectoryURL) {
+        this.mainLockFile = mainLockFileURL;
+        this.pluginDirectory = pluginDirectoryURL;
     }
     /**
      * Read metadata from a plugin's jar
@@ -57,7 +58,7 @@ public class LocalPluginTracker {
     {   
         List<PluginYml> installedPlugins = new ArrayList<>();
         // Go into the plugin directory and read the metadata of all the plugins
-        File dir = new File(PluginDirectory);
+        File dir = new File(pluginDirectory);
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File child : directoryListing) {
@@ -85,25 +86,29 @@ public class LocalPluginTracker {
      */
     public void updateCSV(String replace, int row, int col) throws IOException {
 
-        File inputFile = new File(MainLockFile);
+        try {
+            File inputFile = new File(mainLockFile);
 
-        // Read existing file 
-        CSVReader reader = new CSVReader(new FileReader(inputFile), ',');
-        List<String[]> csvBody = reader.readAll();
-        // get CSV row column  and replace with by using row and column
-        csvBody.get(row)[col] = replace;
-        reader.close();
+            // Read existing file 
+            CSVReader reader = new CSVReader(new FileReader(inputFile), ',');
+            List<String[]> csvBody = reader.readAll();
+            // get CSV row column  and replace with by using row and column
+            csvBody.get(row)[col] = replace;
+            reader.close();
 
-        // Write to CSV file which is open
-        CSVWriter writer = new CSVWriter(new FileWriter(inputFile), ',');
-        writer.writeAll(csvBody);
-        writer.flush();
-        writer.close();
+            // Write to CSV file which is open
+            CSVWriter writer = new CSVWriter(new FileWriter(inputFile), ',');
+            writer.writeAll(csvBody);
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            System.out.printf("Error updating CSV");
+        }
     }
 
     /**
      * Mark a plugin as manually installed (as opposed to a dependency)
-     * Precondition: MainLockFile is a sorted .csv file with the following format:
+     * Precondition: mainLockFile is a sorted .csv file with the following format:
      * 1st column: Plugin name
      * 2nd column: Manually added (true/false)
      * Example:
@@ -160,9 +165,9 @@ public class LocalPluginTracker {
      */
     public List<String> listManuallyInstalled()
     {
-        List<String> InstalledPlugins = new ArrayList<String>();
+        List<String> installedPlugins = new ArrayList<String>();
 
-        File inputFile = new File(MainLockFile);
+        File inputFile = new File(mainLockFile);
 
         // Read existing file 
         CSVReader reader = new CSVReader(new FileReader(inputFile), ',');
@@ -172,11 +177,11 @@ public class LocalPluginTracker {
         // If it is, add the plugin name to the list
         for (int i = 0; i < csvBody.size(); i++) {
             if (csvBody.get(i)[1].equals("true")) {
-                InstalledPlugins.add(csvBody.get(i)[0]);
+                installedPlugins.add(csvBody.get(i)[0]);
             }
         }
 
-        return InstalledPlugins;
+        return installedPlugins;
     }
 
     /**
@@ -184,28 +189,29 @@ public class LocalPluginTracker {
      *
      * @return List of plugin names
      */
-    public List<String> listOrphans()
+    public List<String> listOrphanPlugins()
     {
         
-        list<String> Orphans = new ArrayList<String>();
-        List<String> ManuallyInstalledPlugins = listManuallyInstalled();
-        List<String> RequiredDependencies = new ArrayList<String>();
+        list<String> orphanPlugins = new ArrayList<String>();
+        List<String> manuallyinstalledPlugins = listManuallyInstalled();
+        List<String> requiredDependencies = new ArrayList<String>();
 
         // Get all the dependencies of the manually installed plugins
-        for (String plugin : ManuallyInstalledPlugins) {
+        for (String plugin : manuallyinstalledPlugins) {
             try {
-                RequiredDependencies.addAll(getDependencies(plugin));
+                requiredDependencies.addAll(getDependencies(plugin));
             } catch (Exception e) {
                 System.out.printf("Error getting dependencies of " + plugin);
             }
         }
 
         // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
-        List<String> InstalledPlugins = listInstalled();
-        Orphans = InstalledPlugins;
-        Orphans.removeAll(RequiredDependencies);
-        Orphans.removeAll(ManuallyInstalledPlugins);
+        List<String> installedPlugins = listInstalled();
+        orphanPlugins = installedPlugins;
+        orphanPlugins.removeAll(requiredDependencies);
+        orphanPlugins.removeAll(manuallyinstalledPlugins);
 
-        return Orphans;    
+        return orphanPlugins;    
     }
+
 }
