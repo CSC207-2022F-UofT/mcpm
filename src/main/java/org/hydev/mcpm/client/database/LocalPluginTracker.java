@@ -277,12 +277,12 @@ public class LocalPluginTracker implements PluginTracker
     }
 
     /**
-     * Compares the hash of the locally-installed plugin of a specified version with the hash of the plugin of that version on the server
-     *
+     * Compares the hash of the locally-installed plugin of a specified 
+     * version with the hash of the plugin of that version on the server
      * @return True if the hashes match, false otherwise
-     */
-    /*
-    public boolean compareHash(File local, String remote) {
+    */
+    
+    /* public boolean compareHash(File local, String remote) {
         // Get the hash of the plugin with name name and version version from the server
         // Get the hash of the plugin with name name and version version from the local plugin directory
         // Compare the two hashes and return the result
