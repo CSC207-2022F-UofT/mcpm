@@ -76,6 +76,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.fusesource.jansi/jansi
     implementation 'org.fusesource.jansi:jansi:2.4.0'
 
+    // https://mvnrepository.com/artifact/jline/jline
+    implementation 'jline:jline:2.14.6'
+
     // https://mvnrepository.com/artifact/com.opencsv/opencsv/5.7.1
     implementation 'com.opencsv:opencsv:5.7.1'
 
