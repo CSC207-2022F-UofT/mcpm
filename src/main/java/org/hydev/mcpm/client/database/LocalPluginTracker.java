@@ -221,7 +221,8 @@ public class LocalPluginTracker {
             }
         }
 
-        // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
+        // Get the difference between the set of manually installed plugins,
+        // the set of required dependencies, and the set of all installed plugins.
         List<PluginYml> installedPluginsYML = listInstalled();
 
         // Create a list of all installed plugin names in string format from the installedPluginsYML list
