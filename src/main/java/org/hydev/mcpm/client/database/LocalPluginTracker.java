@@ -84,7 +84,7 @@ public class LocalPluginTracker {
      * @param replace Replacement for your cell value
      * @param row Row for which need to update 
      * @param col Column for which you need to update
-     * @throws IOException
+     * @throws IOException An IOException is thrown when there is an issue reading from the main lock file.
      */
     public void updateCSV(String replace, int row, int col) throws IOException {
 
