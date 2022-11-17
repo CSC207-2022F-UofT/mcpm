@@ -1,5 +1,7 @@
 package org.hydev.mcpm.client.interaction;
 
+import java.util.List;
+
 /**
  * Terminal progress bar based on Xterm escape codes
  *
@@ -38,4 +40,11 @@ public interface ProgressBarBoundary extends AutoCloseable {
      * @return Self for fluent access
      */
     ProgressBar setFps(int fps);
+
+    /**
+     * Return a list of ProgressRowBoundary that this ProgressBarBoundary uses
+     *
+     * @return the bars attached to this object
+     */
+    List<ProgressRowBoundary> getBars();
 }

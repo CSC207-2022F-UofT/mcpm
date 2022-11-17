@@ -8,7 +8,6 @@ package org.hydev.mcpm.client.interaction;
  */
 public class ProgressRow implements ProgressRowBoundary {
     private final long total;
-    private int id;
     private long completed;
     private String unit;
     private ProgressBar pb;
@@ -34,14 +33,6 @@ public class ProgressRow implements ProgressRowBoundary {
 
         // Record start time for speed estimation
         this.startTime = System.nanoTime();
-    }
-
-    void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return this.id;
     }
 
     /**
@@ -113,7 +104,7 @@ public class ProgressRow implements ProgressRowBoundary {
         this.completed += incr;
         this.completed = Math.min(total, this.completed); // We don't want to go over
         pb.update();
-        if (completed >= total) pb.finishBar(this.id);
+        if (completed >= total) pb.finishBar(this);
     }
 
     /**
@@ -128,7 +119,7 @@ public class ProgressRow implements ProgressRowBoundary {
 
         this.completed = completed;
         pb.update();
-        if (completed >= total) pb.finishBar(this.id);
+        if (completed >= total) pb.finishBar(this);
     }
 
     /**

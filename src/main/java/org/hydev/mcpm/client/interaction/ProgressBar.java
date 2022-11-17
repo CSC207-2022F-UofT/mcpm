@@ -26,7 +26,7 @@ public class ProgressBar implements ProgressBarBoundary {
     private int cols;
     private final int rows;
 
-    private final List<ProgressRowBoundary> activeBars;
+    private final List<ProgressRowBoundary> bars;
     private final SortedSet<Integer> activeIds;
     private final Map<ProgressRowBoundary, Integer> id;
 
@@ -48,7 +48,7 @@ public class ProgressBar implements ProgressBarBoundary {
         this.theme = theme;
         this.out = System.out;
         this.cu = new ConsoleUtils(this.out);
-        this.activeBars = new ArrayList<>();
+        this.bars = new ArrayList<>();
         this.activeIds = new TreeSet<>();
         this.id = new HashMap<>();
         this.cols = AnsiConsole.getTerminalWidth();
@@ -72,11 +72,11 @@ public class ProgressBar implements ProgressBarBoundary {
     @Override
     public ProgressRowBoundary appendBar(ProgressRowBoundary bar)
     {
-        int id = this.activeBars.size();
+        int id = this.bars.size();
         this.activeIds.add(id);
 
         this.id.put(bar, id);
-        this.activeBars.add(bar);
+        this.bars.add(bar);
         bar.setPb(this);
 
         out.println();
@@ -86,12 +86,12 @@ public class ProgressBar implements ProgressBarBoundary {
 
 
     public void incrementBarProgress(int id, long inc) {
-        this.activeBars.get(id).increase(inc);
+        this.bars.get(id).increase(inc);
     }
 
 
     public void setBarProgress(int id, long progress) {
-        this.activeBars.get(id).set(progress);
+        this.bars.get(id).set(progress);
     }
 
 
@@ -112,20 +112,30 @@ public class ProgressBar implements ProgressBarBoundary {
 
     private void forceUpdate()
     {
-        // Roll back to the first line
-        int height = Math.min(activeBars.size(), rows);
-        if (istty) cu.curUp(height);
-        int prev = -1;
-        for (int i : activeIds) {
-            if (i > height)
-                break;
-            int curDown = i - prev - 1;
-            prev = i;
-            cu.curUp(-curDown); // move cursor down to next active bar
-            cu.eraseLine();
-            out.println(activeBars.get(i).toString(theme, cols)); // println adds a newline which is why we -1 above
+        if (bars.size() <= rows) { // if terminal is tall enough, we can move cursor around freely
+            // Roll back to the first line
+            int height = bars.size();
+            if (istty) cu.curUp(height);
+            int prev = -1;
+            for (int i : activeIds) {
+                if (i > height)
+                    break;
+                int curDown = i - prev - 1;
+                prev = i;
+                cu.curUp(-curDown); // move cursor down to next active bar
+                cu.eraseLine();
+                out.println(bars.get(i).toString(theme, cols)); // println adds a newline which is why we -1 above
+            }
+            cu.curUp(-(bars.size() - prev - 1)); // move cursor down to the bottom
         }
-        cu.curUp(-(activeBars.size() - prev - 1)); // move cursor down to the bottom
+        else { // no terminal space, print active ones only
+            int i = 0;
+            for (int id : activeIds) {
+                out.println(bars.get(id).toString(theme, cols));
+                if (++i == rows)
+                    break;
+            }
+        }
     }
 
     @Override
@@ -167,9 +177,10 @@ public class ProgressBar implements ProgressBarBoundary {
         return this;
     }
 
-    public List<ProgressRowBoundary> getActiveBars()
+    @Override
+    public List<ProgressRowBoundary> getBars()
     {
-        return activeBars;
+        return bars;
     }
 
     /**
@@ -181,7 +192,7 @@ public class ProgressBar implements ProgressBarBoundary {
     {
         try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
         {
-            var all = new ArrayList<Integer>();
+            var all = new ArrayList<ProgressRowBoundary>();
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0) {
@@ -191,7 +202,7 @@ public class ProgressBar implements ProgressBarBoundary {
                         .descLen(30);
 
                     b.appendBar(row);
-                    all.add(row.getId());
+                    all.add(row);
                 }
 
                 for (int j = 0; j < all.size(); j++) {

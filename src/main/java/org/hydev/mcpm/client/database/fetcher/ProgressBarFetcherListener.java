@@ -67,6 +67,7 @@ public class ProgressBarFetcherListener implements DatabaseFetcherListener {
     @Override
     public void finish() {
         if (cachedBar != null) {
+            cachedBar.getBars().forEach(row -> cachedBar.finishBar(row));
             cachedBar.close();
         }
     }
