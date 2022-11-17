@@ -17,7 +17,6 @@ import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearcherFactory;
 
 import java.net.URI;
-import java.util.*;
 import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
 import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
 import org.hydev.mcpm.client.database.model.PluginModelId;
