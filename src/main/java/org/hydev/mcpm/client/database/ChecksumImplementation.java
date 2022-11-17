@@ -18,7 +18,8 @@ import javax.naming.NameNotFoundException;
 import javax.swing.plaf.metal.MetalIconFactory.FileIcon16; 
 
 public class ChecksumImplementation {
-    private String onlineDatabasePath = "TODO: Get this path"; // Default path for the github database where things are hosted
+    // Default path for the github database where things are hosted
+    private String onlineDatabasePath = "TODO: Get this path";
     private String localDatabasePath = "TODO: Get this path"; // Default path for local database
 
     // Constructor
