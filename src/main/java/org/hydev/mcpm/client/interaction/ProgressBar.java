@@ -5,10 +5,7 @@ import org.fusesource.jansi.AnsiConsole;
 import org.hydev.mcpm.utils.ConsoleUtils;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import static java.lang.String.format;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
@@ -19,24 +16,27 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
  * Terminal progress bar based on Xterm escape codes
  *
  * @author Azalea (https://github.com/hykilpikonna)
+ * @author Peter (https://github.com/MstrPikachu)
  * @since 2022-09-27
  */
-public class ProgressBar implements AutoCloseable
-{
+public class ProgressBar implements ProgressBarBoundary {
     private final ConsoleUtils cu;
     private final ProgressBarTheme theme;
     private final PrintStream out;
     private int cols;
     private final int rows;
 
-    private final List<ProgressRow> activeBars;
+    private final List<ProgressRowBoundary> activeBars;
     private final SortedSet<Integer> activeIds;
+    private final Map<ProgressRowBoundary, Integer> id;
 
     private long lastUpdate;
 
     private double frameDelay;
 
     private final boolean istty;
+
+    private boolean closed = false;
 
     /**
      * Create and initialize a progress bar
@@ -50,6 +50,7 @@ public class ProgressBar implements AutoCloseable
         this.cu = new ConsoleUtils(this.out);
         this.activeBars = new ArrayList<>();
         this.activeIds = new TreeSet<>();
+        this.id = new HashMap<>();
         this.cols = AnsiConsole.getTerminalWidth();
         this.rows = TerminalFactory.get().getHeight();
 
@@ -68,18 +69,13 @@ public class ProgressBar implements AutoCloseable
         if (!istty) this.frameDelay = 1 / 0.5;
     }
 
-    /**
-     * Append a progress bar at the end
-     *
-     * @param bar Row of the progress bar
-     * @return bar for fluent access
-     */
-    public ProgressRow appendBar(ProgressRow bar)
+    @Override
+    public ProgressRowBoundary appendBar(ProgressRowBoundary bar)
     {
         int id = this.activeBars.size();
         this.activeIds.add(id);
 
-        bar.setId(id);
+        this.id.put(bar, id);
         this.activeBars.add(bar);
         bar.setPb(this);
 
@@ -101,6 +97,9 @@ public class ProgressBar implements AutoCloseable
 
     protected void update()
     {
+        // if the progress bar is closed, don't do anything
+        if (closed)
+            return;
         // Check time to limit for framerate (default 60fps)
         // Performance of the update heavily depends on the terminal's escape code handling
         // implementation, so frequent updates will degrade performance on a bad terminal
@@ -129,14 +128,10 @@ public class ProgressBar implements AutoCloseable
         cu.curUp(-(activeBars.size() - prev - 1)); // move cursor down to the bottom
     }
 
-    /**
-     * Finish a progress bar
-     *
-     * @param bar Progress bar
-     */
-    public void finishBar(ProgressRow bar)
+    @Override
+    public void finishBar(ProgressRowBoundary bar)
     {
-        finishBar(bar.getId());
+        finishBar(id.get(bar));
     }
 
     /**
@@ -151,34 +146,28 @@ public class ProgressBar implements AutoCloseable
         this.activeIds.remove(id);
     }
 
-    /**
-     * Finalize and close the progress bar (print the final line)
-     */
     @Override
     public void close()
     {
+        closed = true;
     }
 
 
+    @Override
     public ProgressBar setFrameDelay(double frameDelay)
     {
         this.frameDelay = frameDelay;
         return this;
     }
 
-    /**
-     * Set frame rate in the unit of frames per second
-     *
-     * @param fps FPS
-     * @return Self for fluent access
-     */
+    @Override
     public ProgressBar setFps(int fps)
     {
         this.frameDelay = 1d / fps;
         return this;
     }
 
-    public List<ProgressRow> getActiveBars()
+    public List<ProgressRowBoundary> getActiveBars()
     {
         return activeBars;
     }

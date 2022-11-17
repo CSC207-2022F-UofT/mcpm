@@ -6,7 +6,7 @@ package org.hydev.mcpm.client.interaction;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-30
  */
-public class ProgressRow {
+public class ProgressRow implements ProgressRowBoundary {
     private final long total;
     private int id;
     private long completed;
@@ -59,6 +59,7 @@ public class ProgressRow {
      * @param cols Number of columns (width) of the terminal window
      * @return Formatted string
      */
+    @Override
     public String toString(ProgressBarTheme theme, int cols)
     {
         // Calculate speed. TODO: Use a moving window to calculate speed
@@ -93,6 +94,7 @@ public class ProgressRow {
         return t.replace("{progbar}", bar);
     }
 
+    @Override
     public void setPb(ProgressBar pb)
     {
         this.pb = pb;
@@ -103,6 +105,7 @@ public class ProgressRow {
      *
      * @param incr Increase amount
      */
+    @Override
     public void increase(long incr)
     {
         if (this.completed >= total) return;
@@ -118,6 +121,7 @@ public class ProgressRow {
      *
      * @param completed Completed so far
      */
+    @Override
     public void set(long completed)
     {
         if (this.completed >= total) return;
@@ -133,6 +137,7 @@ public class ProgressRow {
      * @param desc The description to set
      * @return This object for chaining.
      */
+    @Override
     public ProgressRow desc(String desc)
     {
         this.desc = desc;
@@ -145,6 +150,7 @@ public class ProgressRow {
      * @param descLen The description length.
      * @return This object for chaining.
      */
+    @Override
     public ProgressRow descLen(int descLen)
     {
         this.descLen = descLen;
@@ -157,6 +163,7 @@ public class ProgressRow {
      * @param unit A unit string, beginning with an empty space.
      * @return This object for chaining.
      */
+    @Override
     public ProgressRow unit(String unit)
     {
         // Add leading space
@@ -172,6 +179,7 @@ public class ProgressRow {
      * @param fmt The foramt string.
      * @return This object for chaining.
      */
+    @Override
     public ProgressRow fmt(String fmt)
     {
         this.fmt = fmt;
