@@ -26,7 +26,6 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
 
 
 interface PluginTracker {
-    PluginYml readMeta(File jar);
     List<PluginYml> listInstalled();
     void addManuallyInstalled(String name);
     void removeManuallyInstalled(String name);
@@ -56,7 +55,7 @@ public class LocalPluginTracker implements PluginTracker
      * @param jar Local plugin jar path
      * @return Metadata
      */
-    public PluginYml readMeta(File jar) {
+    private PluginYml readMeta(File jar) {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
         } catch (Exception e) {
