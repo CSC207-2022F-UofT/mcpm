@@ -36,6 +36,7 @@ public class LocalPluginTracker {
         this.mainLockFile = mainLockFileURL;
         this.pluginDirectory = pluginDirectoryURL;
     }
+
     /**
      * Read metadata from a plugin's jar
      *
