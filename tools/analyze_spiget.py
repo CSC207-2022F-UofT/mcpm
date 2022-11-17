@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import numpy as np
 from hypy_utils.scientific_utils import calc_col_stats
