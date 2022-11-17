@@ -179,6 +179,8 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
             return database;
         } catch (IOException e) {
+            e.printStackTrace();
+
             return null;
         }
     }
