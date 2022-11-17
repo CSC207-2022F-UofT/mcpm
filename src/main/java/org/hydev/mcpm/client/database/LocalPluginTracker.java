@@ -2,6 +2,7 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.utils.HashUtils;
 import org.hydev.mcpm.utils.PluginJarFile;
 
 import com.opencsv.CSVWriter;
@@ -23,16 +24,6 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-09-27
  */
-
-
-interface PluginTracker {
-    List<PluginYml> listInstalled();
-    void addManuallyInstalled(String name);
-    void removeManuallyInstalled(String name);
-    List<String> listManuallyInstalled();
-    List<String> listOrphanPlugins(boolean considerSoftDependencies);
-    String getVersion(String name);
-}
 
 public class LocalPluginTracker implements PluginTracker 
 {
@@ -285,4 +276,32 @@ public class LocalPluginTracker implements PluginTracker
         return "";
     }
 
+    /**
+     * Compares the hash of the locally-installed plugin of a specified version with the hash of the plugin of that version on the server
+     *
+     * @return True if the hashes match, false otherwise
+     */
+    /*
+    public boolean compareHash(File local, String remote) {
+        // Get the hash of the plugin with name name and version version from the server
+        // Get the hash of the plugin with name name and version version from the local plugin directory
+        // Compare the two hashes and return the result
+
+        try {
+            HashUtils hashUtils = new HashUtils();
+            String localHash = hashUtils.hash(local);
+
+            
+
+            // Download the plugin from the server into a temporary directory, get its hash, and delete it
+            // String remoteHash = hashUtils.hash(new File("temp/" + name + "-" + version + ".jar"));
+            String remoteHash = remote;
+
+            return localHash.equals(remoteHash);
+        } catch (Exception e) {
+            System.out.printf("Error getting hash");
+            return false;
+        }
+    }
+    */ 
 }
