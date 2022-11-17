@@ -24,7 +24,19 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
  * @since 2022-09-27
  */
 
-public class LocalPluginTracker {
+
+interface PluginTracker {
+    PluginYml readMeta(File jar);
+    List<PluginYml> listInstalled();
+    void addManuallyInstalled(String name);
+    void removeManuallyInstalled(String name);
+    List<String> listManuallyInstalled();
+    List<String> listOrphanPlugins(boolean considerSoftDependencies);
+    String getVersion(String name);
+}
+
+public class LocalPluginTracker implements PluginTracker 
+{
     // CSV file storing the list of manually installed plugins
     private String mainLockFile = "TODO: Get this path";
 
@@ -32,7 +44,8 @@ public class LocalPluginTracker {
     private String pluginDirectory = "TODO: Get this path";
 
     // Constructor 
-    public LocalPluginTracker(String mainLockFileUrl, String pluginDirectoryUrl) {
+    public LocalPluginTracker(String mainLockFileUrl, String pluginDirectoryUrl) 
+    {
         this.mainLockFile = mainLockFileUrl;
         this.pluginDirectory = pluginDirectoryUrl;
     }
@@ -43,8 +56,7 @@ public class LocalPluginTracker {
      * @param jar Local plugin jar path
      * @return Metadata
      */
-    public PluginYml readMeta(File jar)
-    {
+    public PluginYml readMeta(File jar) {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
         } catch (Exception e) {
@@ -77,7 +89,6 @@ public class LocalPluginTracker {
         return installedPlugins;
     }
 
-
     /**
      * Update CSV by row and column, helper function
      *
@@ -86,7 +97,7 @@ public class LocalPluginTracker {
      * @param col Column for which you need to update
      * @throws IOException An IOException is thrown when there is an issue reading from the main lock file.
      */
-    public void updateCsv(String replace, int row, int col) throws IOException {
+    private void updateCsv(String replace, int row, int col) throws IOException {
 
         try {
             File inputFile = new File(mainLockFile);
