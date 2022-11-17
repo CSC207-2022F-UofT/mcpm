@@ -8,6 +8,9 @@ import org.hydev.mcpm.client.commands.entries.LoadEntry;
 import org.hydev.mcpm.client.commands.entries.UnloadEntry;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Argument parser for UnloadCommand. See UnloadEntry.
+ */
 public class UnloadParser implements CommandParser {
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {
