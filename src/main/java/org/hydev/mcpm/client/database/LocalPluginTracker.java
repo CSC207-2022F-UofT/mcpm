@@ -125,13 +125,13 @@ public class LocalPluginTracker {
         // Locate the name in the list of installed plugins and set the value in the second row as true
 
         // Read the CSV file and find the row with the plugin name.
-        // Then, update the second column to true by calling the updateCSV function
+        // Then, update the second column to true by calling the updateCsv function
         // If the plugin is not found, throw an error
 
         for (int i = 0; i < listInstalled().size(); i++) {
             if (listInstalled().get(i).name().equals(name)) {
                 try {
-                    updateCSV("true", i, 1);
+                    updateCsv("true", i, 1);
                 } catch (IOException e) {
                     System.out.printf("Error updating CSV");
                 }
@@ -151,7 +151,7 @@ public class LocalPluginTracker {
         for (int i = 0; i < listInstalled().size(); i++) {
             if (listInstalled().get(i).name().equals(name)) {
                 try {
-                    updateCSV("false", i, 1);
+                    updateCsv("false", i, 1);
                 } catch (IOException e) {
                     System.out.printf("Error updating CSV");
                 }
