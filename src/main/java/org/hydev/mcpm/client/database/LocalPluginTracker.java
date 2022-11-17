@@ -231,7 +231,8 @@ public class LocalPluginTracker {
             installedPlugins.add(plugin.name());
         }
 
-        // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
+        // Get the difference between the set of manually installed plugins,
+        // the set of required dependencies, and the set of all installed plugins
 
         orphanPlugins = installedPlugins;
         orphanPlugins.removeAll(requiredDependencies);
