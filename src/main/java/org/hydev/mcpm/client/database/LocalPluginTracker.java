@@ -5,6 +5,7 @@ import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
 import com.opencsv.CSVWriter;
+import com.opencsv.CSVReader;
 
 import java.io.File;
 import java.util.List;
@@ -23,11 +24,11 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
  * @since 2022-09-27
  */
 
-public class LocalPluginTracker implements PluginTracker {
+public class LocalPluginTracker{
     // CSV file storing the list of manually installed plugins
     private String mainLockFile = "TODO: Get this path";
 
-    // Directory storing the plugins
+    // Directory containing the plugins
     private String pluginDirectory = "TODO: Get this path";
 
     // Constructor 
@@ -90,14 +91,14 @@ public class LocalPluginTracker implements PluginTracker {
             File inputFile = new File(mainLockFile);
 
             // Read existing file 
-            CSVReader reader = new CSVReader(new FileReader(inputFile), ',');
+            CSVReader reader = new CSVReader(new FileReader(inputFile));
             List<String[]> csvBody = reader.readAll();
             // get CSV row column  and replace with by using row and column
             csvBody.get(row)[col] = replace;
             reader.close();
 
             // Write to CSV file which is open
-            CSVWriter writer = new CSVWriter(new FileWriter(inputFile), ',');
+            CSVWriter writer = new CSVWriter(new FileWriter(inputFile));
             writer.writeAll(csvBody);
             writer.flush();
             writer.close();
@@ -127,7 +128,7 @@ public class LocalPluginTracker implements PluginTracker {
         // If the plugin is not found, throw an error
 
         for (int i = 0; i < listInstalled().size(); i++) {
-            if (listInstalled().get(i).getName().equals(name)) {
+            if (listInstalled().get(i).name().equals(name)) {
                 try {
                     updateCSV("true", i, 1);
                 } catch (IOException e) {
@@ -147,7 +148,7 @@ public class LocalPluginTracker implements PluginTracker {
      */
     public void removeManuallyInstalled(String name) {
         for (int i = 0; i < listInstalled().size(); i++) {
-            if (listInstalled().get(i).getName().equals(name)) {
+            if (listInstalled().get(i).name().equals(name)) {
                 try {
                     updateCSV("false", i, 1);
                 } catch (IOException e) {
@@ -165,23 +166,27 @@ public class LocalPluginTracker implements PluginTracker {
      */
     public List<String> listManuallyInstalled()
     {
-        List<String> installedPlugins = new ArrayList<String>();
+        try {
+            FileReader filereader = new FileReader(mainLockFile);
 
-        File inputFile = new File(mainLockFile);
 
-        // Read existing file 
-        CSVReader reader = new CSVReader(new FileReader(inputFile), ',');
-        List<String[]> csvBody = reader.readAll();
+            CSVReader csvReader = new CSVReader(filereader);
+            String[] nextRecord;
+            List<String> manuallyInstalledPlugins = new ArrayList<>();
 
-        // Iterate through each row and check if the second column is true
-        // If it is, add the plugin name to the list
-        for (int i = 0; i < csvBody.size(); i++) {
-            if (csvBody.get(i)[1].equals("true")) {
-                installedPlugins.add(csvBody.get(i)[0]);
+            // Read data 
+            while ((nextRecord = csvReader.readNext()) != null) {
+                if (nextRecord[1].equals("true")) {
+                    manuallyInstalledPlugins.add(nextRecord[0]);
+                }
             }
-        }
 
-        return installedPlugins;
+            csvReader.close();
+            return manuallyInstalledPlugins;
+        } catch (Exception e) {
+            System.out.printf("Error reading CSV");
+            return null;
+        }
     }
 
     /**
@@ -189,29 +194,82 @@ public class LocalPluginTracker implements PluginTracker {
      *
      * @return List of plugin names
      */
-    public List<String> listOrphanPlugins()
+    public List<String> listOrphanPlugins(boolean considerSoftDependencies)
     {
         
-        list<String> orphanPlugins = new ArrayList<String>();
+        List<String> orphanPlugins = new ArrayList<String>();
         List<String> manuallyinstalledPlugins = listManuallyInstalled();
         List<String> requiredDependencies = new ArrayList<String>();
 
         // Get all the dependencies of the manually installed plugins
-        for (String plugin : manuallyinstalledPlugins) {
+        for (String name : manuallyinstalledPlugins) {
             try {
-                requiredDependencies.addAll(getDependencies(plugin));
+                // Find the pluginYml file of the plugin with name name from the plugin directory
+                String pluginYmlPath = pluginDirectory + "/" + name + "/plugin.yml";
+                PluginYml currPlugin = readMeta(new File(pluginYmlPath));
+                // Add the dependencies of the plugin to the list of required dependencies
+                requiredDependencies.addAll(currPlugin.depend());
+
+                // If considerSoftDependencies is true, add the soft dependencies to the list of required dependencies
+                if (considerSoftDependencies) {
+                    requiredDependencies.addAll(currPlugin.softdepend());
+                }
+
             } catch (Exception e) {
-                System.out.printf("Error getting dependencies of " + plugin);
+                System.out.printf("Error getting dependencies of " + name);
             }
         }
 
         // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
-        List<String> installedPlugins = listInstalled();
+        List<PluginYml> installedPluginsYML = listInstalled();
+
+        // Create a list of all installed plugin names in string format from the installedPluginsYML list
+        List<String> installedPlugins = new ArrayList<String>();
+        for (PluginYml plugin : installedPluginsYML) {
+            installedPlugins.add(plugin.name());
+        }
+
+        // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
+
         orphanPlugins = installedPlugins;
         orphanPlugins.removeAll(requiredDependencies);
         orphanPlugins.removeAll(manuallyinstalledPlugins);
 
         return orphanPlugins;    
+    }
+
+    /** 
+     *Return the version data of a plugin from the pluginYML file
+     * 
+     * @param name Plugin id
+     * @return Version data
+     */
+
+    public String getVersion(String name) {
+        // Locate the file in the plugin directory and read the version from the plugin.yml
+        // If the plugin is not found, throw an error
+
+        try {
+            File dir = new File(pluginDirectory);
+            File[] directoryListing = dir.listFiles();
+            if (directoryListing != null) {
+                for (File child : directoryListing) {
+                    if (child.getName().equals(name)) {
+                        try {
+                            return readMeta(child).version();
+                        } catch (Exception e) {
+                            System.out.printf("Error reading plugin.yml version from " + child);
+                        }
+                    }
+                }
+            } else {
+                System.out.printf("Plugin with id " + name + " not found");
+                return "";
+            }
+        } catch (Exception e) {
+            System.out.printf("Error reading plugin.yml from " + name);
+        } 
+        return "";
     }
 
 }
