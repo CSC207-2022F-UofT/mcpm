@@ -290,9 +290,7 @@ public class LocalPluginTracker implements PluginTracker
         try {
             HashUtils hashUtils = new HashUtils();
             String localHash = hashUtils.hash(local);
-
-            
-
+    
             // Download the plugin from the server into a temporary directory, get its hash, and delete it
             // String remoteHash = hashUtils.hash(new File("temp/" + name + "-" + version + ".jar"));
             String remoteHash = remote;
