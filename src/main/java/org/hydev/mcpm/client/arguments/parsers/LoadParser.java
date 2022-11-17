@@ -7,6 +7,10 @@ import org.hydev.mcpm.client.commands.CommandEntry;
 import org.hydev.mcpm.client.commands.entries.LoadEntry;
 import org.jetbrains.annotations.Nullable;
 
+
+/**
+ * Argument parser for LoadCommand. See LoadEntry.
+ */
 public class LoadParser implements CommandParser {
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {

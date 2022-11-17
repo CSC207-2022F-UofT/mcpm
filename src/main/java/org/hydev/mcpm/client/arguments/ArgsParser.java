@@ -10,7 +10,8 @@ import org.hydev.mcpm.client.commands.Controller;
 import java.util.List;
 
 /**
- * Static collection of argument parsers for the command line
+ * Handles parsing command arguments into CommandEntry objects (to be dispatched to Controller).
+ * For steps to add a new command, see Command.java.
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-30
@@ -19,6 +20,11 @@ public class ArgsParser
 {
     private final ArgumentParser parser;
 
+    /**
+     * Creates a new ArgsParser object with a list of CommandParsers.
+     *
+     * @param allParsers A list of all CommandParser objects that this ArgsParser can parse.
+     */
     public ArgsParser(List<CommandParser> allParsers) {
         parser = ArgumentParsers
             .newFor("loader")
@@ -37,6 +43,16 @@ public class ArgsParser
         }
     }
 
+    /**
+     * Parses arguments into a CommandEntry object.
+     *
+     * @param arguments A list of string arguments.
+     *                  Example: [ "load", "pluginA", "pluginB" ].
+     * @return A command entry object corresponding to the inputs.
+     *         Example: LoadEntry { pluginNames = [ "pluginA", "pluginB" ] }
+     * @throws ArgumentParserException Thrown when arguments are not parsed correctly.
+     *                                 For default handling, pass this to ArgsParser#fail.
+     */
     public CommandEntry parse(String[] arguments) throws ArgumentParserException {
         var namespace = parser.parseArgs(arguments);
 
@@ -49,14 +65,29 @@ public class ArgsParser
         return handler.build(namespace);
     }
 
+    /**
+     * Writes the error message to stdout (along with help details if needed).
+     *
+     * @param e The error object that was caught from #parse.
+     */
     public void fail(ArgumentParserException e) {
         parser.handleError(e);
     }
 
+    /**
+     * Default help string that can be presented to the user if help dialog is needed.
+     *
+     * @return A string containing help information on each command.
+     */
     public String help() {
         return parser.formatHelp();
     }
 
+    /**
+     * ArgsParser demo main.
+     *
+     * @param args Arguments are ignored.
+     */
     public static void main(String[] args) {
         var parser = CommandsFactory.serverArgsParser();
         var controller = CommandsFactory.serverController();

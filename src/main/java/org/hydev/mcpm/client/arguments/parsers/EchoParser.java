@@ -7,6 +7,14 @@ import org.hydev.mcpm.client.commands.CommandEntry;
 import org.hydev.mcpm.client.commands.entries.EchoEntry;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Demo parser object. EchoParser has one argument "text."
+ * When the user runs the echo command, the "text" argument that the user entered is passed through
+ * to the build method, which returns an EchoEntry object!
+ * <p>
+ * The EchoEntry object is then passed to Controller, which will pass it to EchoCommand
+ * (since EchoCommand extends Command&lt;EchoEntry&gt;).
+ */
 public class EchoParser implements CommandParser {
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {

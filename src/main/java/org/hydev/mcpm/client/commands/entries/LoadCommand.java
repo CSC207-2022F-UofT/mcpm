@@ -6,9 +6,17 @@ import org.hydev.mcpm.client.injector.PluginNotFoundException;
 
 import java.util.function.Consumer;
 
+/**
+ * A command that handles plugin loading operations. See LoadEntry and LoadParser.
+ */
 public class LoadCommand implements Command<LoadEntry> {
     private final LoadBoundary loader;
 
+    /**
+     * Creates a LoadCommand object with this specified LoadBoundary to use when dispatched.
+     *
+     * @param loader The load boundary to use in Command operation.
+     */
     public LoadCommand(LoadBoundary loader) {
         this.loader = loader;
     }
