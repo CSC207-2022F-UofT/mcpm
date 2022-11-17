@@ -24,7 +24,7 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
  * @since 2022-09-27
  */
 
-public class LocalPluginTracker{
+public class LocalPluginTracker {
     // CSV file storing the list of manually installed plugins
     private String mainLockFile = "TODO: Get this path";
 
