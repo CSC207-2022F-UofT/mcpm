@@ -24,18 +24,7 @@ import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
  * @since 2022-09-27
  */
 
-interface PluginTracker {
-    
-    PluginYml readMeta(File jar) throws Exception;
-    List<PluginYml> listInstalled();
-    void addManuallyInstalled(String name);
-    void removeManuallyInstalled(String name);
-    List<String> listOrphanPlugins(boolean considerSoftDependencies);
-    String getVersion(String name);
-
-}
-
-public class LocalPluginTracker implements PluginTracker {
+public class LocalPluginTracker {
     // CSV file storing the list of manually installed plugins
     private String mainLockFile = "TODO: Get this path";
 
@@ -43,11 +32,10 @@ public class LocalPluginTracker implements PluginTracker {
     private String pluginDirectory = "TODO: Get this path";
 
     // Constructor 
-    public LocalPluginTracker(String mainLockFileURL, String pluginDirectoryURL) {
-        this.mainLockFile = mainLockFileURL;
-        this.pluginDirectory = pluginDirectoryURL;
+    public LocalPluginTracker(String mainLockFileUrl, String pluginDirectoryUrl) {
+        this.mainLockFile = mainLockFileUrl;
+        this.pluginDirectory = pluginDirectoryUrl;
     }
-
 
     /**
      * Read metadata from a plugin's jar
@@ -85,18 +73,20 @@ public class LocalPluginTracker implements PluginTracker {
         } else {
             System.out.printf("Error reading directory");
         }
+
         return installedPlugins;
     }
 
+
     /**
      * Update CSV by row and column, helper function
-     * 
+     *
      * @param replace Replacement for your cell value
      * @param row Row for which need to update 
      * @param col Column for which you need to update
-     * @throws IOException
+     * @throws IOException An IOException is thrown when there is an issue reading from the main lock file.
      */
-    private void updateCSV(String replace, int row, int col) throws IOException {
+    public void updateCsv(String replace, int row, int col) throws IOException {
 
         try {
             File inputFile = new File(mainLockFile);
@@ -135,13 +125,13 @@ public class LocalPluginTracker implements PluginTracker {
         // Locate the name in the list of installed plugins and set the value in the second row as true
 
         // Read the CSV file and find the row with the plugin name.
-        // Then, update the second column to true by calling the updateCSV function
+        // Then, update the second column to true by calling the updateCsv function
         // If the plugin is not found, throw an error
 
         for (int i = 0; i < listInstalled().size(); i++) {
             if (listInstalled().get(i).name().equals(name)) {
                 try {
-                    updateCSV("true", i, 1);
+                    updateCsv("true", i, 1);
                 } catch (IOException e) {
                     System.out.printf("Error updating CSV");
                 }
@@ -161,7 +151,7 @@ public class LocalPluginTracker implements PluginTracker {
         for (int i = 0; i < listInstalled().size(); i++) {
             if (listInstalled().get(i).name().equals(name)) {
                 try {
-                    updateCSV("false", i, 1);
+                    updateCsv("false", i, 1);
                 } catch (IOException e) {
                     System.out.printf("Error updating CSV");
                 }
@@ -231,16 +221,18 @@ public class LocalPluginTracker implements PluginTracker {
             }
         }
 
-        // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
-        List<PluginYml> installedPluginsYML = listInstalled();
+        // Get the difference between the set of manually installed plugins,
+        // the set of required dependencies, and the set of all installed plugins.
+        List<PluginYml> installedPluginsYml = listInstalled();
 
         // Create a list of all installed plugin names in string format from the installedPluginsYML list
         List<String> installedPlugins = new ArrayList<String>();
-        for (PluginYml plugin : installedPluginsYML) {
+        for (PluginYml plugin : installedPluginsYml) {
             installedPlugins.add(plugin.name());
         }
 
-        // Get the difference between the set of manually installed plugins and the set of required dependencies, and the set of all installed plugins
+        // Get the difference between the set of manually installed plugins,
+        // the set of required dependencies, and the set of all installed plugins
 
         orphanPlugins = installedPlugins;
         orphanPlugins.removeAll(requiredDependencies);
@@ -251,7 +243,7 @@ public class LocalPluginTracker implements PluginTracker {
 
     /** 
      *Return the version data of a plugin from the pluginYML file
-     * 
+     *
      * @param name Plugin id
      * @return Version data
      */
