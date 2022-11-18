@@ -3,15 +3,22 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-import org.hydev.mcpm.client.commands.CommandEntry;
-import org.hydev.mcpm.client.commands.entries.LoadEntry;
-import org.hydev.mcpm.client.commands.entries.ReloadEntry;
+import org.hydev.mcpm.client.commands.entries.ReloadController;
+import org.hydev.mcpm.client.injector.ReloadBoundary;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * Argument parser for ReloadCommand. See ReloadEntry.
  */
 public class ReloadParser implements CommandParser {
+    private final ReloadController controller;
+
+    public ReloadParser(ReloadController controller) {
+        this.controller = controller;
+    }
+
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {
         var parser = parsers
@@ -26,9 +33,7 @@ public class ReloadParser implements CommandParser {
     }
 
     @Override
-    public CommandEntry build(Namespace details) {
-        return new ReloadEntry(
-            details.getList("plugins")
-        );
+    public void run(Namespace details, Consumer<String> log) {
+        controller.reload(details.get("plugins"), log);
     }
 }

@@ -1,15 +1,15 @@
 package org.hydev.mcpm.client.commands.entries;
 
-import org.hydev.mcpm.client.commands.Command;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.injector.UnloadBoundary;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * A command that handles plugin unloading operations. See UnloadEntry and UnloadParser.
  */
-public class UnloadCommand implements Command<UnloadEntry> {
+public class UnloadController {
     private final UnloadBoundary unloader;
 
     /**
@@ -17,18 +17,18 @@ public class UnloadCommand implements Command<UnloadEntry> {
      *
      * @param loader The "unload boundary" to use in Command operation.
      */
-    public UnloadCommand(UnloadBoundary loader) {
+    public UnloadController(UnloadBoundary loader) {
         this.unloader = loader;
     }
 
-    @Override
-    public Class<UnloadEntry> type() {
-        return UnloadEntry.class;
-    }
-
-    @Override
-    public void run(UnloadEntry input, Consumer<String> log) {
-        for (var name : input.pluginNames()) {
+    /**
+     * Unload plugins and output status to log.
+     *
+     * @param pluginNames A list of all plugin names to be unloaded.
+     * @param log Callback for status for log events.
+     */
+    public void unload(List<String> pluginNames, Consumer<String> log) {
+        for (var name : pluginNames) {
             try {
                 unloader.unloadPlugin(name);
 
