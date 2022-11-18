@@ -4,6 +4,10 @@ import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.HashUtils;
 import org.hydev.mcpm.utils.PluginJarFile;
+import org.hydev.mcpm.client.database.inputs.*;
+import org.hydev.mcpm.client.database.results.SearchPackagesResult;
+import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.models.PluginModel;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.CSVReader;
@@ -13,6 +17,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.*;  
 import java.util.Scanner;
+import java.net.URI;
+
 
 import javax.naming.NameNotFoundException;
 import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;  
@@ -34,6 +40,9 @@ public class LocalPluginTracker implements PluginTracker
     private String pluginDirectory = "TODO: Get this path";
 
     // Constructor 
+    public LocalPluginTracker() {
+    }
+
     public LocalPluginTracker(String mainLockFileUrl, String pluginDirectoryUrl) 
     {
         this.mainLockFile = mainLockFileUrl;
@@ -170,8 +179,6 @@ public class LocalPluginTracker implements PluginTracker
     {
         try {
             FileReader filereader = new FileReader(mainLockFile);
-
-
             CSVReader csvReader = new CSVReader(filereader);
             String[] nextRecord;
             List<String> manuallyInstalledPlugins = new ArrayList<>();
@@ -207,8 +214,9 @@ public class LocalPluginTracker implements PluginTracker
         for (String name : manuallyinstalledPlugins) {
             try {
                 // Find the pluginYml file of the plugin with name name from the plugin directory
-                String pluginYmlPath = pluginDirectory + "/" + name + "/plugin.yml";
-                PluginYml currPlugin = readMeta(new File(pluginYmlPath));
+
+                File pluginYmlPath = getPluginFile(name);
+                PluginYml currPlugin = readMeta(pluginYmlPath);
                 // Add the dependencies of the plugin to the list of required dependencies
                 requiredDependencies.addAll(currPlugin.depend());
 
@@ -277,29 +285,76 @@ public class LocalPluginTracker implements PluginTracker
     }
 
     /**
-     * Compares the hash of the locally-installed plugin of a specified 
-     * version with the hash of the plugin of that version on the server
+     * Compare whether the locally installed version of the plugin matches the version on the server. 
+     * If yes, return true. If no, return false.
      * @return True if the hashes match, false otherwise
     */
-    
-    /* public boolean compareHash(File local, String remote) {
-        // Get the hash of the plugin with name name and version version from the server
-        // Get the hash of the plugin with name name and version version from the local plugin directory
-        // Compare the two hashes and return the result
+
+    public boolean compareVersion(String name) {
 
         try {
-            HashUtils hashUtils = new HashUtils();
-            String localHash = hashUtils.hash(local);
-    
-            // Download the plugin from the server into a temporary directory, get its hash, and delete it
-            // String remoteHash = hashUtils.hash(new File("temp/" + name + "-" + version + ".jar"));
-            String remoteHash = remote;
+            File pluginYmlPath = getPluginFile(name);
+            PluginYml currPlugin = readMeta(pluginYmlPath);
+            String localVersion = currPlugin.version();
+            
+            
 
-            return localHash.equals(remoteHash);
+            var host = URI.create("http://mcpm.hydev.org");
+            var fetcher = new LocalDatabaseFetcher(host);
+
+            DatabaseInteractor myDatabaseInteractor = new DatabaseInteractor(fetcher);
+            SearchPackagesInput searchPackagesInput = new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, name, true);
+            SearchPackagesResult searchPackagesResult = myDatabaseInteractor.search(searchPackagesInput);
+
+            // Get the version of the plugin from the server: Query for all, see if there's a match
+            if (searchPackagesResult.state() == SearchPackagesResult.State.SUCCESS) {
+               for (PluginModel plugin : searchPackagesResult.plugins()) {
+                    for (PluginVersion pluginVer : plugin.versions()) {
+                        if (pluginVer.meta().name() == name && pluginVer.meta().version() == localVersion) {
+                            return true;
+                        }
+                    }
+               }
+            } else {
+                System.out.printf("Error getting hash from server");
+                return false;
+            }
+
         } catch (Exception e) {
-            System.out.printf("Error getting hash");
+            System.out.printf("Error fetching local plugin version");
             return false;
         }
+        return false;
     }
-    */ 
+
+    /**
+     * Retrieves the file path of a plugin with a specified name as a File
+     * 
+     * @return True if the hashes match, false otherwise
+    */
+
+    private File getPluginFile(String name) {
+        // Get the file path of the plugin with name name from the local plugin directory
+        // Return the file path as a File
+        try {
+            // Find the file from the plugin directory
+            File dir = new File(pluginDirectory);
+            File[] directoryListing = dir.listFiles();
+            if (directoryListing != null) {
+                for (File child : directoryListing) {
+                    if (child.getName().equals(name)) {
+                        return child;
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("Plugin not found, verify whether installed.");
+            }
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Plugin not found, verify whether installed.");
+        }
+        return null;
+    }
+
+
 }
