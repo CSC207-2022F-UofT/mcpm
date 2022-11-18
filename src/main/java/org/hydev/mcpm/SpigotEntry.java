@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.hydev.mcpm.client.arguments.ArgsParser;
 import org.hydev.mcpm.client.arguments.CommandsFactory;
-import org.hydev.mcpm.client.commands.Controller;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
@@ -21,7 +20,6 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
     private Logger log;
     private ArgsParser parser;
-    private Controller controller;
 
     /**
      * onEnable() is called when our plugin is loaded on a Spigot server.
@@ -34,8 +32,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
         log.info("Enabled!");
 
         // Initialize controller
-        parser = CommandsFactory.serverArgsParser();
-        controller = CommandsFactory.serverController();
+        parser = CommandsFactory.serverArgsParser(text -> log.info(text));
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
@@ -57,10 +54,8 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
                              @NotNull String[] args)
     {
         try {
-            var entry = parser.parse(args);
-
-            controller.queue(entry, text -> log.info(text));
-        } catch (ArgumentParserException | Controller.NoMatchingCommandException e) {
+            parser.parse(args);
+        } catch (ArgumentParserException e) {
             /*
              * Ignore incorrect commands?
              * Not sure if I'm supposed to complain here.

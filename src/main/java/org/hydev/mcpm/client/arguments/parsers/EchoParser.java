@@ -3,9 +3,10 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-import org.hydev.mcpm.client.commands.CommandEntry;
-import org.hydev.mcpm.client.commands.entries.EchoEntry;
+import org.hydev.mcpm.client.commands.entries.EchoController;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * Demo parser object. EchoParser has one argument "text."
@@ -16,6 +17,12 @@ import org.jetbrains.annotations.Nullable;
  * (since EchoCommand extends Command&lt;EchoEntry&gt;).
  */
 public class EchoParser implements CommandParser {
+    private final EchoController controller;
+
+    public EchoParser(EchoController controller) {
+        this.controller = controller;
+    }
+
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {
         var parser = parsers.addParser("echo");
@@ -28,7 +35,7 @@ public class EchoParser implements CommandParser {
     }
 
     @Override
-    public CommandEntry build(Namespace details) {
-        return new EchoEntry(details.getString("text"));
+    public void run(Namespace details, Consumer<String> log) {
+        controller.echo(details.getString("text"), log);
     }
 }

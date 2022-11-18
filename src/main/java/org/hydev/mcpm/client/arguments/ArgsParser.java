@@ -4,10 +4,11 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
-import org.hydev.mcpm.client.commands.CommandEntry;
-import org.hydev.mcpm.client.commands.Controller;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Handles parsing command arguments into CommandEntry objects (to be dispatched to Controller).
@@ -19,13 +20,16 @@ import java.util.List;
 public class ArgsParser
 {
     private final ArgumentParser parser;
+    private final Consumer<String> log;
 
     /**
      * Creates a new ArgsParser object with a list of CommandParsers.
      *
      * @param allParsers A list of all CommandParser objects that this ArgsParser can parse.
      */
-    public ArgsParser(List<CommandParser> allParsers) {
+    public ArgsParser(List<CommandParser> allParsers, Consumer<String> log) {
+        this.log = log;
+
         parser = ArgumentParsers
             .newFor("loader")
             .build()
@@ -48,12 +52,10 @@ public class ArgsParser
      *
      * @param arguments A list of string arguments.
      *                  Example: [ "load", "pluginA", "pluginB" ].
-     * @return A command entry object corresponding to the inputs.
-     *         Example: LoadEntry { pluginNames = [ "pluginA", "pluginB" ] }
      * @throws ArgumentParserException Thrown when arguments are not parsed correctly.
      *                                 For default handling, pass this to ArgsParser#fail.
      */
-    public CommandEntry parse(String[] arguments) throws ArgumentParserException {
+    public void parse(String[] arguments) throws ArgumentParserException {
         var namespace = parser.parseArgs(arguments);
 
         Object handleObject = namespace.get("handler");
@@ -62,7 +64,7 @@ public class ArgsParser
             throw new ArgumentParserException("Unrecognized command.", parser);
         }
 
-        return handler.build(namespace);
+        handler.run(namespace, log);
     }
 
     /**
@@ -71,7 +73,12 @@ public class ArgsParser
      * @param e The error object that was caught from #parse.
      */
     public void fail(ArgumentParserException e) {
-        parser.handleError(e);
+        StringWriter writer = new StringWriter();
+        PrintWriter printer = new PrintWriter(writer);
+
+        parser.handleError(e, printer);
+
+        log.accept(writer.toString());
     }
 
     /**
@@ -89,17 +96,12 @@ public class ArgsParser
      * @param args Arguments are ignored.
      */
     public static void main(String[] args) {
-        var parser = CommandsFactory.serverArgsParser();
-        var controller = CommandsFactory.serverController();
+        var parser = CommandsFactory.serverArgsParser(System.out::println);
 
         try {
-            var entry = parser.parse(args);
-
-            controller.queue(entry, System.out::println);
+            parser.parse(args);
         } catch (ArgumentParserException e) {
             parser.fail(e);
-        } catch (Controller.NoMatchingCommandException e) {
-            e.printStackTrace();
         }
     }
 }

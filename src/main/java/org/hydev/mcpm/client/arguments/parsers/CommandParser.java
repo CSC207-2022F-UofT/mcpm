@@ -3,8 +3,9 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-import org.hydev.mcpm.client.commands.CommandEntry;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * Implemented by parsers that define methods to "configure" ArgsParse4j and then "build" a CommandEntry object.
@@ -47,7 +48,6 @@ public interface CommandParser {
      * </pre>
      *
      * @param details A details object that contains all the arguments that the user executed this command with.
-     * @return A command entry object containing the details that the user is trying to execute.
      */
-    CommandEntry build(Namespace details);
+    void run(Namespace details, Consumer<String> log);
 }

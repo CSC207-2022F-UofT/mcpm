@@ -3,15 +3,22 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-import org.hydev.mcpm.client.commands.CommandEntry;
-import org.hydev.mcpm.client.commands.entries.LoadEntry;
+import org.hydev.mcpm.client.commands.entries.LoadController;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 
 /**
  * Argument parser for LoadCommand. See LoadEntry.
  */
 public class LoadParser implements CommandParser {
+    private final LoadController controller;
+
+    public LoadParser(LoadController controller) {
+        this.controller = controller;
+    }
+
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {
         var parser = parsers
@@ -26,9 +33,7 @@ public class LoadParser implements CommandParser {
     }
 
     @Override
-    public CommandEntry build(Namespace details) {
-        return new LoadEntry(
-            details.getList("plugins")
-        );
+    public void run(Namespace details, Consumer<String> log) {
+        controller.load(details.getList("plugins"), log);
     }
 }
