@@ -217,6 +217,9 @@ public class LocalPluginTracker implements PluginTracker
 
                 File pluginYmlPath = getPluginFile(name);
                 PluginYml currPlugin = readMeta(pluginYmlPath);
+               
+                // String pluginYmlPath = pluginDirectory + "/" + name + "/plugin.yml";
+                // PluginYml currPlugin = readMeta(new File(pluginYmlPath));
                 // Add the dependencies of the plugin to the list of required dependencies
                 requiredDependencies.addAll(currPlugin.depend());
 
@@ -346,14 +349,14 @@ public class LocalPluginTracker implements PluginTracker
                         return child;
                     }
                 }
-            } else {
                 throw new IllegalArgumentException("Plugin not found, verify whether installed.");
+            } else {
+                throw new Exception("Empty Directory.");
             }
 
         } catch (Exception e) {
             throw new IllegalArgumentException("Plugin not found, verify whether installed.");
         }
-        return null;
     }
 
 
