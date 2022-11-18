@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # Use this with python3 -m tools.run
+from __future__ import annotations
+
 import argparse
 import subprocess
 from subprocess import run, check_call

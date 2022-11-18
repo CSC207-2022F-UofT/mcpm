@@ -1,22 +1,45 @@
 package org.hydev.mcpm.client.database;
 
+import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.database.boundary.ListPackagesBoundary;
+import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
+import org.hydev.mcpm.client.database.boundary.MatchPluginsBoundary;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
+import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
+import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
 import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
-import org.hydev.mcpm.client.database.inputs.ListPackagesResult;
+import org.hydev.mcpm.client.database.results.ListPackagesResult;
+import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
+import org.hydev.mcpm.client.database.results.SearchPackagesResult;
+import org.hydev.mcpm.client.database.searchusecase.SearcherFactory;
 
 import java.net.URI;
+import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
+import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
+import org.hydev.mcpm.client.database.model.PluginModelId;
+import org.hydev.mcpm.client.database.model.PluginVersionState;
+import org.hydev.mcpm.client.models.PluginModel;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Handles fetching and performing operations on the plugin database.
+ *
+ * @author Taylor Whatley
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
-public class DatabaseInteractor implements ListPackagesBoundary {
+public class DatabaseInteractor
+    implements ListPackagesBoundary, SearchPackagesBoundary, MatchPluginsBoundary, CheckForUpdatesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
 
@@ -34,7 +57,7 @@ public class DatabaseInteractor implements ListPackagesBoundary {
      * Creates a new database with the provided fetcher and upload listener.
      *
      * @param fetcher The fetcher that will be used to request the database object in boundary calls.
-     * @param listener The listener that will receives updates if the database is downloaded from the internet.
+     * @param listener The listener that will receive updates if the database is downloaded from the internet.
      */
     public DatabaseInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
@@ -89,6 +112,141 @@ public class DatabaseInteractor implements ListPackagesBoundary {
     }
 
     /**
+     * Searches for plugins based on the provided name, keyword, or command.
+     * The input contains the type of search.
+     *
+     * @param input Record of inputs as provided in SearchPackagesInput. See it for more info.
+     * @return Packages result. See the SearchPackagesResult record for more info.
+     */
+    @Override
+    public SearchPackagesResult search(SearchPackagesInput input) {
+        var database = fetcher.fetchDatabase(!input.noCache(), listener);
+
+        if (database == null) {
+            return SearchPackagesResult.by(SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE);
+        }
+
+        var searchStr = input.searchStr().toLowerCase();
+        if (searchStr.isEmpty())
+            return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_INPUT);
+
+        var plugins = database.plugins();
+
+        return new SearchPackagesResult(SearchPackagesResult.State.SUCCESS,
+            SearcherFactory.createSearcher(input).getSearchList(searchStr, plugins));
+    }
+
+    /**
+     * Checks for plugin updates.
+     *
+     * @param forInput A list of all plugins + plugin version identifiers that will be checked for updates.
+     * @return A list of plugins that needs updates in CheckForUpdatesResult#updates.
+     */
+    @Override
+    public CheckForUpdatesResult updates(CheckForUpdatesInput forInput) {
+        var isVersionsValid = forInput.states().stream()
+            .allMatch(state -> state.versionId().valid());
+
+        if (!isVersionsValid) {
+            return CheckForUpdatesResult.by(CheckForUpdatesResult.State.INVALID_INPUT);
+        }
+
+        var matchInput = new MatchPluginsInput(
+            forInput.states().stream().map(PluginVersionState::modelId).toList(),
+            forInput.noCache()
+        );
+
+        var result = match(matchInput);
+
+        return switch (result.state()) {
+            case SUCCESS ->
+                filterUpdatablePlugins(forInput, result);
+
+            case INVALID_INPUT ->
+                CheckForUpdatesResult.by(CheckForUpdatesResult.State.INVALID_INPUT);
+
+            case FAILED_TO_FETCH_DATABASE ->
+                CheckForUpdatesResult.by(CheckForUpdatesResult.State.FAILED_TO_FETCH_DATABASE);
+        };
+    }
+
+    @Nullable
+    private static CheckForUpdatesResult filterUpdatablePlugins(CheckForUpdatesInput forInput,
+                                                                  MatchPluginsResult result) {
+        var mismatchedSet = Set.copyOf(result.mismatched());
+        var mismatched = forInput.states().stream()
+            .filter(state -> mismatchedSet.contains(state.modelId()))
+            .toList();
+
+        var updatable = new HashMap<PluginVersionState, PluginModel>();
+
+        for (var state : forInput.states()) {
+            var value = result.matched().getOrDefault(state.modelId(), null);
+
+            if (value == null) {
+                continue;
+            }
+
+            var optionalLatest = value.getLatestPluginVersion();
+
+            // guard let?
+            if (optionalLatest.isEmpty()) {
+                return null;
+            }
+
+            var latest = optionalLatest.get();
+
+            if (!state.versionId().matches(latest)) {
+                updatable.put(state, value);
+            }
+        }
+
+        return new CheckForUpdatesResult(CheckForUpdatesResult.State.SUCCESS, updatable, mismatched);
+    }
+
+    /**
+     * Checks for plugins that match the provided identifiers.
+     *
+     * @param input A list of plugin identifiers that will be searched for in the database.
+     * @return A list of plugins that match the identifiers in MatchPluginsResult#matched.
+     */
+    @Override
+    public MatchPluginsResult match(MatchPluginsInput input) {
+        // Fail fast.
+        var validState = input.pluginIds().stream()
+            .allMatch(PluginModelId::valid);
+
+        if (!validState) {
+            return MatchPluginsResult.by(MatchPluginsResult.State.INVALID_INPUT);
+        }
+
+        var database = fetcher.fetchDatabase(!input.noCache(), listener);
+
+        if (database == null) {
+            return MatchPluginsResult.by(MatchPluginsResult.State.FAILED_TO_FETCH_DATABASE);
+        }
+
+        var matched = new HashMap<PluginModelId, PluginModel>();
+        var unmatched = new ArrayList<PluginModelId>();
+
+        for (var id : input.pluginIds()) {
+            var match = database
+                .plugins()
+                .stream()
+                .filter(id::matches)
+                .findFirst();
+
+            if (match.isEmpty()) {
+                unmatched.add(id);
+            } else {
+                matched.put(id, match.get());
+            }
+        }
+
+        return new MatchPluginsResult(MatchPluginsResult.State.SUCCESS, matched, unmatched);
+    }
+
+    /**
      * Demo main method for DatabaseInteractor.
      *
      * @param args Arguments are ignored.
@@ -106,16 +264,53 @@ public class DatabaseInteractor implements ListPackagesBoundary {
         }
 
         System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
+        System.out.println(formatPluginNames(result.plugins()));
 
-        var text = result
-            .plugins()
+        var searchInput = new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true);
+        var result1 = database.search(searchInput);
+
+        System.out.println(formatPluginNames(result1.plugins()) + "\n");
+
+        var result3 = database.search(new SearchPackagesInput(
+                SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
+
+        System.out.println(formatPluginNames(result3.plugins()));
+
+        var matchInput = new MatchPluginsInput(List.of(
+            PluginModelId.byId(100429),
+            PluginModelId.byMain("com.gestankbratwurst.smilecore.SmileCore"),
+            PluginModelId.byName("JedCore")
+        ), false);
+
+        var matchResult = database.match(matchInput);
+
+        if (matchResult.state() != MatchPluginsResult.State.SUCCESS) {
+            System.out.println("Match Result Failed With State " + result.state().name());
+            return;
+        }
+
+        System.out.println("Match Result (" + matchResult.mismatched().size() + " mismatched):");
+
+        var matchText = matchResult
+            .matched()
+            .values()
+            .stream()
+            .map(PluginModel::id)
+            .map(String::valueOf)
+            .map(value -> "  " + value)
+            .collect(Collectors.joining("\n"));
+
+        System.out.println(matchText);
+    }
+
+    @NotNull
+    private static String formatPluginNames(List<PluginModel> result3) {
+        return result3
             .stream()
             .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .map(value -> "  " + value)
             .collect(Collectors.joining("\n"));
-
-        System.out.println(text);
     }
 }
