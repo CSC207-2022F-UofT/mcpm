@@ -53,6 +53,6 @@ public class SearcherByName implements Searcher {
         if (SearcherByName.nameMap == null) {
             SearcherByName.nameMap = constructSearchMaps(plugins);
         }
-        return SearcherByName.nameMap.get(inp);
+        return SearcherByName.nameMap.get(inp.toLowerCase());
     }
 }

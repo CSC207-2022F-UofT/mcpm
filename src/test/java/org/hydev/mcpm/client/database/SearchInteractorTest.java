@@ -34,42 +34,43 @@ public class SearchInteractorTest {
                 .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(value -> "  " + value)
                 .collect(Collectors.joining(delim));
     }
 
     @Test
-    void testSearchByNameSUCCESS() {
+    void testSearchByNameSuccess() {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
-        var text = formatStr(result, ",");
-        assert text.equals("SkinsRestorer,SkinsRestorer");
+        var text = formatStr(result, ", ");
+        System.out.println(text);
+        assert text.equals("SkinsRestorer, SkinsRestorer");
     }
 
     @Test
-    void testSearchByKeywordSUCCESS() {
+    void testSearchByKeywordSuccess() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesInput.Type.BY_COMMAND, "SkinsRestorer", true));
+                new SearchPackagesInput(SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
-        var text = formatStr(result, ",");
-        assert text.equals("CoordsOffline,StatusSigns,SkinsRestorer,PetShop,InventorySafe,SkinsRestorer");
+        var text = formatStr(result, ", ");
+        System.out.println(text);
+        assert text.equals("CoordsOffline, StatusSigns, SkinsRestorer, PetShop, InventorySafe, SkinsRestorer");
     }
 
     @Test
-    void testSearchByCommandSUCCESS() {
+    void testSearchByCommandSuccess() {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesInput.Type.BY_COMMAND, "al", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
-        var text = formatStr(result, ",");
+        var text = formatStr(result, ", ");
 
         System.out.println(text);
-        assert text.equals("SkinsRestorer,SkinsRestorer");
+        assert text.equals("AnimatedLeaves");
     }
 }

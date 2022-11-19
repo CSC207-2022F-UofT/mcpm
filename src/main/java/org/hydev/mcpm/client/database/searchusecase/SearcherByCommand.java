@@ -33,10 +33,10 @@ public class SearcherByCommand implements Searcher {
                 List<String> aliases = v.get().meta()
                         .commands().keySet().stream()
                         .map(String::toLowerCase).toList();
-                for (String alias: aliases) {
-                    if (!models.containsKey(alias))
-                        models.put(alias, new ArrayList<>());
-                    models.get(alias).add(plugin);
+                for (String alias : aliases) {
+                    if (!models.containsKey(alias.toLowerCase()))
+                        models.put(alias.toLowerCase(), new ArrayList<>());
+                    models.get(alias.toLowerCase()).add(plugin);
                 }
             }
         }
@@ -56,6 +56,6 @@ public class SearcherByCommand implements Searcher {
         if (SearcherByCommand.commandMap == null) {
             SearcherByCommand.commandMap = constructSearchMaps(plugins);
         }
-        return SearcherByCommand.commandMap.get(inp);
+        return SearcherByCommand.commandMap.get(inp.toLowerCase());
     }
 }
