@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from collections import Counter
 from hypy_utils.tqdm_utils import pmap
