@@ -29,7 +29,6 @@ public class ProgressBar implements ProgressBarBoundary {
     private final Map<ProgressRowBoundary, Integer> id;
 
     private long lastUpdate;
-
     private double frameDelay;
 
     private final boolean istty;
