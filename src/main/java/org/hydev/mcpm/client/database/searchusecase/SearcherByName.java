@@ -29,7 +29,8 @@ public class SearcherByName implements Searcher {
         for (PluginModel plugin : plugins) {
             // Get latest version
             var v = plugin.getLatestPluginVersion();
-            if (v.isPresent() && v.get().meta() != null && !v.get().meta().name().equals("")) {
+            if (v.isPresent() && v.get().meta() != null &&
+                    v.get().meta().name() != null && !v.get().meta().name().equals("")) {
                 String name = v.get().meta().name().toLowerCase();
                 if (!models.containsKey(name))
                     models.put(name, new ArrayList<>());

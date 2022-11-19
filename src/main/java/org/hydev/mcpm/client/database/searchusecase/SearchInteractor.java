@@ -98,6 +98,7 @@ public class SearchInteractor implements SearchPackagesBoundary {
 
         System.out.println(text);
         System.out.println();
+        
         var result3 = database.search(new SearchPackagesInput(
                 SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
         var text3 = result3
