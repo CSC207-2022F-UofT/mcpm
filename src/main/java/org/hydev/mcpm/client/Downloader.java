@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client;
 
+import org.hydev.mcpm.client.adaptor.DownloaderProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
@@ -30,9 +32,11 @@ public class Downloader
     /** Number of simultaneous downloads */
     private int threads = 5;
 
-    private final ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
+    private ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
-    private final ArrayList<ProgressRow> allRows = new ArrayList<>();
+    private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
+
+
 
     /**
      * Download one file from the internet to local storage through HTTP request
