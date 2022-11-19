@@ -165,8 +165,7 @@ public class CreateDatabase {
 
             return Optional.of(new PluginVersion(versionId, jarFile.length(), hash, meta));
         } catch (JsonProcessingException | MarkedYAMLException | PluginYml.InvalidPluginMetaStructure e) {
-            System.out.println("Failed to parse " + metaFile.toPath());
-            e.printStackTrace();
+            System.err.printf("Cannot read plugin.yml for %s: %s\n", metaFile.toPath(), e);
 
             return Optional.empty();
         } catch (NumberFormatException | NoSuchAlgorithmException | IOException e) {

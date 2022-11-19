@@ -21,6 +21,8 @@ import java.util.stream.StreamSupport;
 import static java.lang.String.format;
 import static java.nio.file.Files.createSymbolicLink;
 import static org.hydev.mcpm.Constants.JACKSON;
+import static org.hydev.mcpm.server.crawlers.spiget.CreateDatabase.packageStore;
+import static org.hydev.mcpm.server.crawlers.spiget.CreateDatabase.writeDatabase;
 import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
 
 /**
@@ -276,8 +278,6 @@ public class SpigetCrawler
                 }
                 catch (IOException | NullPointerException | PluginYml.InvalidPluginMetaStructure e)
                 {
-                    // TODO: Better error handling
-                    //e.printStackTrace();
                     System.err.printf("Cannot read plugin.yml for %s: %s\n", ver, e);
                     errors.getAndIncrement();
                 }
@@ -308,6 +308,15 @@ public class SpigetCrawler
             //safeSleep(crawler.mtDelay);
         });
 
+        // Create links
         crawler.links();
+
+        // Create database
+        writeDatabase(
+            new File(packageStore, "pkgs/spiget"),
+            new File(packageStore, "db"),
+            new File(packageStore, "db.hash"),
+            new File(packageStore, "db.timestamp")
+        );
     }
 }
