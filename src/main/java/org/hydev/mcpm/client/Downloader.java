@@ -13,6 +13,7 @@ import java.util.Map;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
@@ -33,6 +34,8 @@ public class Downloader
     private ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
     private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
+
+
 
     /**
      * Download one file from the internet to local storage through HTTP request
@@ -84,7 +87,7 @@ public class Downloader
     public void downloadFiles(Map<String, File> urls, boolean progress, int threads) throws IOException {
         ExecutorService executor = Executors.newFixedThreadPool(threads);
         var files = urls.keySet().stream().toList();
-        if (files.size() > 1) {
+        if (files.size() > 0) {
             for (int i = 0; i < files.size(); i++) {
                 executor.submit(new Processor(i, urls, files));
             }
