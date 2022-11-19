@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.database.searchusecase;
 
-import org.hydev.mcpm.client.database.DatabaseInteractor;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.arguments.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.arguments.fetcher.DatabaseFetcherListener;
@@ -13,9 +12,15 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Handles searching within the database.
+ *
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
+ */
 public class SearchInteractor implements SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
+
 
     /**
      * Creates a new database with the provided database fetcher.
@@ -36,6 +41,7 @@ public class SearchInteractor implements SearchPackagesBoundary {
     public SearchInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
         this.listener = listener;
+
     }
 
     /**
@@ -71,7 +77,7 @@ public class SearchInteractor implements SearchPackagesBoundary {
     public static void main(String[] args) {
         var host = URI.create("http://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
-        var database = new DatabaseInteractor(fetcher);
+        var database = new SearchInteractor(fetcher);
 
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true));
