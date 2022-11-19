@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.*;  
 import java.util.Scanner;
+import java.util.Arrays;
 
 import javax.naming.NameNotFoundException;
 import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;  
@@ -28,6 +29,13 @@ public class ListAllController {
     }
 
     List<String> listAll(String parameter) {
-        return listAllBoundary.listBoundary(parameter);
+
+        String[] validIn = {"all", "manual", "outdated"};
+
+        if (Arrays.asList(validIn).contains(parameter)) {
+            return listAllBoundary.listBoundary(parameter);
+        } else {
+            throw new IllegalArgumentException("Invalid parameter");
+        }
     }
 }
