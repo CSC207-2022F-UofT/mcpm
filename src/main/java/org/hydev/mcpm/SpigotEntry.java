@@ -56,11 +56,9 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
         try {
             parser.parse(args, sender::sendMessage);
         } catch (ArgumentParserException e) {
-            /*
-             * Ignore incorrect commands?
-             * Not sure if I'm supposed to complain here.
-             * Previous code seemed to silently fail I think.
-             */
+            // Incorrect commands, print help.
+            // TODO: Use arg parser's help
+            return false;
         }
 
         return true;
