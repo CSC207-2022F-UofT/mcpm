@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
@@ -250,6 +251,8 @@ public class SpigetCrawler
         var files = resourcesPath.listFiles();
         if (files == null) return;
 
+        AtomicInteger errors = new AtomicInteger();
+
         Arrays.stream(files).forEach(res -> {
             // Loop through each version
             var versions = res.listFiles();
@@ -275,10 +278,13 @@ public class SpigetCrawler
                 {
                     // TODO: Better error handling
                     //e.printStackTrace();
-                    System.out.printf("Cannot read plugin.yml for %s: %s\n", ver, e);
+                    System.err.printf("Cannot read plugin.yml for %s: %s\n", ver, e);
+                    errors.getAndIncrement();
                 }
             });
         });
+
+        System.out.println("Errors: " + errors.get());
     }
 
     /**
