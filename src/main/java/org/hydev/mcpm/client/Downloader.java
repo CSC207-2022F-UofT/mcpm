@@ -35,8 +35,6 @@ public class Downloader
 
     private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
 
-
-
     /**
      * Download one file from the internet to local storage through HTTP request
      *
@@ -47,8 +45,8 @@ public class Downloader
     {
         try (FileOutputStream fileos = new FileOutputStream(to)) {
             URL link = new URL(url);
-            HttpURLConnection http = (HttpURLConnection)link.openConnection();
-            long fileSize = (long)http.getContentLengthLong();
+            HttpURLConnection http = (HttpURLConnection) link.openConnection();
+            long fileSize = (long) http.getContentLengthLong();
 
 
             BufferedInputStream in = new BufferedInputStream(http.getInputStream());
@@ -87,19 +85,14 @@ public class Downloader
     public void downloadFiles(Map<String, File> urls, boolean progress, int threads) throws IOException {
         ExecutorService executor = Executors.newFixedThreadPool(threads);
         var files = urls.keySet().stream().toList();
-        if (files.size() > 0) {
-            for (int i=0; i<files.size(); i++) {
+        if (files.size() > 1) {
+            for (int i = 0; i < files.size(); i++) {
                 executor.submit(new Processor(i, urls, files));
             }
             executor.shutdown();
             // All files submitted for downloading
 
-
-            try{
-                executor.awaitTermination(20, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            while (!executor.isTerminated()) {}
             // All files are completely downloaded
         }
 
