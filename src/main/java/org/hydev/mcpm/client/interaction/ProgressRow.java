@@ -1,9 +1,13 @@
 package org.hydev.mcpm.client.interaction;
 
+import org.hydev.mcpm.utils.UnitConverter;
+
 import java.util.function.Function;
 
 /**
- * Row of a progress bar
+ * Row of a progress bar. By default, it treats total and completed as Bytes and automatically formats the speed as
+ * a download speed. If this class is used outside downloading context, please use unit(string) function to set the
+ * unit.
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-30
@@ -11,7 +15,6 @@ import java.util.function.Function;
 public class ProgressRow implements ProgressRowBoundary {
     private final long total;
     private long completed;
-    private String unit;
     private ProgressBar pb;
     private String desc;
     private int descLen;
@@ -29,11 +32,10 @@ public class ProgressRow implements ProgressRowBoundary {
     {
         this.total = total;
         this.completed = 0;
-        this.unit = " it";
         this.desc = "";
         this.descLen = 20;
         this.fmt = "{desc}{speed} {eta} {prefix}{progbar}{suffix} {%done}";
-        this.speedFormatter = speed -> String.format("%.2f%s/s", speed, unit);
+        this.speedFormatter = UnitConverter.binarySpeedFormatter();
 
         // Record start time for speed estimation
         this.startTime = System.nanoTime();
@@ -167,8 +169,8 @@ public class ProgressRow implements ProgressRowBoundary {
     public ProgressRow unit(String unit)
     {
         // Add leading space
-        this.unit = (!unit.isBlank() && !unit.startsWith(" ")) ? " " + unit : unit;
-        return this;
+        var finalUnit = (!unit.isBlank() && !unit.startsWith(" ")) ? " " + unit : unit;
+        return speedFormatter(speed -> String.format("%.2f%s/s", speed, finalUnit));
     }
 
     /**

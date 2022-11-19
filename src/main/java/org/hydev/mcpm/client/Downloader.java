@@ -54,7 +54,6 @@ public class Downloader
             int read;
 
             var row = new ProgressRow(fileSize)
-                    .unit("Byte")
                     .desc(format("Download %s", allRows.size()))
                     .descLen(30);
             bar.appendBar(row);
