@@ -2,7 +2,12 @@ package org.hydev.mcpm.client.database.searchusecase;
 
 import org.hydev.mcpm.client.models.PluginModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Searcher that returns a map based on keywords.
@@ -45,23 +50,20 @@ public class SearcherByKeyword implements Searcher {
     }
 
     /**
-     * Searches for plugins based on the provided user input.
+     * Searches for plugins based on the keywords the user provides.
      *
      * @param inp User input for the search. Should be a name as a non-empty string here.
      * @param plugins A list of all plugins in the database.
-     * @return A dictionary associating a string feature of the plugins to the matching plugins.
-     *         Returns null if inp is not a string.
+     * @return A list of plugins associated to inp.
      */
     @Override
-    public List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins) {
+    public List<PluginModel> getSearchList(String inp, List<PluginModel> plugins) {
 
         // Instantiate if null
         if (SearcherByKeyword.keywordMap == null) {
             SearcherByKeyword.keywordMap = constructSearchMaps(plugins);
         }
-        if (!(inp instanceof String input))
-            return null;
-        String [] keywords = input.toLowerCase().split(" "); // Should be a string
+        String [] keywords = inp.toLowerCase().split(" "); // Should be a string
         Set<PluginModel> res = new HashSet<>(SearcherByKeyword.keywordMap.get(keywords[0]));
         for (int i = 1; i < keywords.length; i++) {
             List<PluginModel> pl = SearcherByKeyword.keywordMap.get(keywords[i]);

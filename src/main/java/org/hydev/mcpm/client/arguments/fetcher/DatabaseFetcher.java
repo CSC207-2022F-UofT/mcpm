@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database.fetcher;
+package org.hydev.mcpm.client.arguments.fetcher;
 
 import org.hydev.mcpm.client.models.Database;
 import org.jetbrains.annotations.Nullable;

@@ -2,10 +2,10 @@ package org.hydev.mcpm.client.database.searchusecase;
 
 import org.hydev.mcpm.client.database.DatabaseInteractor;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
-import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
-import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
+import org.hydev.mcpm.client.arguments.fetcher.DatabaseFetcher;
+import org.hydev.mcpm.client.arguments.fetcher.DatabaseFetcherListener;
+import org.hydev.mcpm.client.arguments.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.arguments.fetcher.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 

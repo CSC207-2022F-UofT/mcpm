@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database.fetcher;
+package org.hydev.mcpm.client.arguments.fetcher;
 
 /**
  * Stub implementation of DatabaseFetcherListener.

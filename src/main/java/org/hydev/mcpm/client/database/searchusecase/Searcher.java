@@ -13,19 +13,20 @@ import java.util.Map;
 public interface Searcher {
 
     /**
-     * Constructs a dictionary associating a string feature of the plugins to the matching plugins.
+     * Constructs a dictionary associating a feature (e.g. name, keyword, command)
+     * of the plugins to the matching plugins.
      *
      * @param plugins A list of all plugins in the database.
-     * @return A dictionary associating a string feature of the plugins to the matching plugins.
+     * @return A dictionary associating a feature of the plugins to the matching plugins.
      */
     Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins);
 
     /**
      * Searches for plugins based on the provided user input.
      *
-     * @param inp User input for the search.
+     * @param inp User input for the search, as a string.
      * @param plugins A list of all plugins in the database.
-     * @return A dictionary associating a string feature of the plugins to the matching plugins.
+     * @return A list of plugins based on inp.
      */
-    List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins);
+    List<PluginModel> getSearchList(String inp, List<PluginModel> plugins);
 }

@@ -2,7 +2,10 @@ package org.hydev.mcpm.client.database.searchusecase;
 
 import org.hydev.mcpm.client.models.PluginModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Searcher that returns a map based on names.
@@ -37,21 +40,18 @@ public class SearcherByName implements Searcher {
     }
 
     /**
-     * Searches for plugins based on the provided user input.
+     * Searches for plugins based on the name the user provides.
      *
      * @param inp User input for the search. Should be a name as a string here.
      * @param plugins A list of all plugins in the database.
-     * @return A dictionary associating a string feature of the plugins to the matching plugins.
-     *         Returns null if inp is not a string.
+     * @return A list of plugins associated to inp.
      */
     @Override
-    public List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins) {
+    public List<PluginModel> getSearchList(String inp, List<PluginModel> plugins) {
         // Instantiate if null
         if (SearcherByName.nameMap == null) {
             SearcherByName.nameMap = constructSearchMaps(plugins);
         }
-        if (!(inp instanceof String name))
-            return null;
-        return SearcherByName.nameMap.get(name);
+        return SearcherByName.nameMap.get(inp);
     }
 }

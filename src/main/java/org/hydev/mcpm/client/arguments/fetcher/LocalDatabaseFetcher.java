@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database.fetcher;
+package org.hydev.mcpm.client.arguments.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
