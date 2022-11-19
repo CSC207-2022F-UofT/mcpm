@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.adaptor.DownloaderProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
