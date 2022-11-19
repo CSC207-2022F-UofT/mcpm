@@ -32,7 +32,7 @@ public class Downloader
     /** Number of simultaneous downloads */
     private int threads = 5;
 
-    private ProgressBar bar = new DownloaderProgressBar(ProgressBarTheme.ASCII_THEME);
+    private ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
     private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
 
@@ -46,14 +46,13 @@ public class Downloader
      */
     public void downloadFile(String url, File to)
     {
-        try {
+        try (FileOutputStream fileos = new FileOutputStream(to)) {
             URL link = new URL(url);
             HttpURLConnection http = (HttpURLConnection)link.openConnection();
             long fileSize = (long)http.getContentLengthLong();
 
 
             BufferedInputStream in = new BufferedInputStream(http.getInputStream());
-            FileOutputStream fileos = new FileOutputStream(to);
             BufferedOutputStream bout = new BufferedOutputStream(fileos, 1024);
             byte[] buffer = new byte[1024];
             int read = 0;
@@ -144,7 +143,7 @@ public class Downloader
          *
          * @param files List of remote urls
          * @param urls Mapping of remote urls to local file paths
-         * @param id id for each thread
+         * @param id id for each file
          */
         public Processor(int id, Map<String, File> urls, List<String> files) {
             this.id = id;
@@ -168,6 +167,7 @@ public class Downloader
      * @param args Arguments are ignored.
      */
     public static void main(String[] args) throws IOException {
+        // Remember to chang link to test
         String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
         File out = new File("./Introduction_to_Algorithms_Third_Edition.pdf");
         String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
