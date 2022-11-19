@@ -14,7 +14,6 @@ public record PluginVersion(
     long id,
     long size,
     String sha256,
-
     PluginYml meta
 )
 {
