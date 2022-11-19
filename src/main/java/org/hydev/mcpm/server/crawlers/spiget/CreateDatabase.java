@@ -105,7 +105,7 @@ public class CreateDatabase {
             return null;
         }
 
-        List<PluginModel> plugins = Arrays.stream(files)
+        List<PluginModel> plugins = Arrays.stream(files).parallel()
             .map(CreateDatabase::createPluginModel)
             .filter(Optional::isPresent)
             .map(Optional::get)
