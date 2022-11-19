@@ -13,6 +13,7 @@ package org.hydev.mcpm.client.database.inputs;
 public record SearchPackagesInput(Type type, String searchStr, boolean noCache) {
     /**
      * The possible types of searching.
+     * Currently consists of BY_NAME, BY_COMMAND, BY_KEYWORD.
      */
     public enum Type {
         BY_NAME,

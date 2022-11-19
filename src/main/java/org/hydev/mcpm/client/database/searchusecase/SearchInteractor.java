@@ -1,28 +1,19 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.database.searchusecase;
 
-import org.hydev.mcpm.client.database.boundary.ListPackagesBoundary;
+import org.hydev.mcpm.client.database.DatabaseInteractor;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
-import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
-import org.hydev.mcpm.client.database.results.ListPackagesResult;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.searchusecase.SearcherFactory;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Handles fetching and performing operations on the plugin database.
- *
- * @author Taylor Whatley
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
- */
-public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesBoundary {
+public class SearchInteractor implements SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
 
@@ -32,7 +23,7 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
      *
      * @param fetcher The fetcher that will be used to request the database object in boundary calls.
      */
-    public DatabaseInteractor(DatabaseFetcher fetcher) {
+    public SearchInteractor(DatabaseFetcher fetcher) {
         this(fetcher, new ProgressBarFetcherListener());
     }
 
@@ -42,56 +33,9 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
      * @param fetcher The fetcher that will be used to request the database object in boundary calls.
      * @param listener The listener that will receive updates if the database is downloaded from the internet.
      */
-    public DatabaseInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
+    public SearchInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
         this.listener = listener;
-    }
-
-    /**
-     * Lists all plugins in the database with pagination.
-     *
-     * @param input Provided input. See the ListPackagesInput record for more info.
-     * @return Packages result. See the ListPackagesResult record for more info.
-     */
-    @Override
-    public ListPackagesResult list(ListPackagesInput input) {
-        var database = fetcher.fetchDatabase(!input.noCache(), listener);
-
-        if (database == null) {
-            return ListPackagesResult.by(ListPackagesResult.State.FAILED_TO_FETCH_DATABASE);
-        }
-
-        if (input.pageNumber() < 0) {
-            return ListPackagesResult.by(ListPackagesResult.State.INVALID_INPUT);
-        }
-
-        var plugins = database.plugins();
-
-        // Request all items.
-        if (input.itemsPerPage() <= 0) {
-            return new ListPackagesResult(
-                ListPackagesResult.State.SUCCESS,
-                input.pageNumber(),
-                new ArrayList<>(plugins),
-                database.plugins().size()
-            );
-        }
-
-        var begin = input.itemsPerPage() * input.pageNumber();
-        var end = Math.min(begin + input.itemsPerPage(), plugins.size());
-
-        if (plugins.size() <= begin) {
-            return ListPackagesResult.by(ListPackagesResult.State.NO_SUCH_PAGE);
-        }
-
-        var result = plugins.subList(begin, end);
-
-        return new ListPackagesResult(
-            ListPackagesResult.State.SUCCESS,
-            input.pageNumber(),
-            result,
-            database.plugins().size()
-        );
     }
 
     /**
@@ -129,22 +73,35 @@ public class DatabaseInteractor implements ListPackagesBoundary, SearchPackagesB
         var fetcher = new LocalDatabaseFetcher(host);
         var database = new DatabaseInteractor(fetcher);
 
-        var result = database.list(new ListPackagesInput(20, 0, true));
+        var result = database.search(
+                new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true));
 
-        if (result.state() != ListPackagesResult.State.SUCCESS) {
+        if (result.state() != SearchPackagesResult.State.SUCCESS) {
             System.out.println("Result Failed With State " + result.state().name());
             return;
         }
 
-        System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
-
         var text = result
-            .plugins()
-            .stream()
-            .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(value -> "  " + value)
-            .collect(Collectors.joining("\n"));
+                .plugins()
+                .stream()
+                .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(value -> "  " + value)
+                .collect(Collectors.joining("\n"));
+
+        System.out.println(text);
+        System.out.println();
+        var result3 = database.search(new SearchPackagesInput(
+                SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
+        var text3 = result3
+                .plugins()
+                .stream()
+                .map(x -> x.versions().stream().findFirst().map(value -> value.meta().name()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(value -> "  " + value)
+                .collect(Collectors.joining("\n"));
+        System.out.println(text3);
     }
 }
