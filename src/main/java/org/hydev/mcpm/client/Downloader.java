@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client;
 
+import org.hydev.mcpm.client.adaptor.DownloaderProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
@@ -7,9 +8,13 @@ import org.hydev.mcpm.client.interaction.ProgressRow;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
@@ -27,6 +32,11 @@ public class Downloader
     /** Number of simultaneous downloads */
     private int threads = 5;
 
+    private ProgressBar bar = new DownloaderProgressBar(ProgressBarTheme.ASCII_THEME);
+
+    private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
+
+
 
     /**
      * Download one file from the internet to local storage through HTTP request
@@ -34,11 +44,8 @@ public class Downloader
      * @param url Remote file URL
      * @param to Local file path
      */
-
     public void downloadFile(String url, File to)
     {
-        // TODO: Implement this
-        // throw new UnsupportedOperationException("TODO");
         try {
             URL link = new URL(url);
             HttpURLConnection http = (HttpURLConnection)link.openConnection();
@@ -51,17 +58,15 @@ public class Downloader
             byte[] buffer = new byte[1024];
             int read = 0;
 
-            var b = new ProgressBar(ProgressBarTheme.ASCII_THEME);
-            var all = new ArrayList<ProgressRow>();
             var row = new ProgressRow(fileSize)
-                    .unit("MB")
-                    .desc(format("Downloaded", all.size()))
+                    .unit("Byte")
+                    .desc(format("Downloaded", allRows.size()))
                     .descLen(30);
-            all.add(b.appendBar(row));
+            bar.appendBar(row);
+            allRows.add(row);
             while ((read = in.read(buffer, 0, 1024)) >= 0) {
-
                 bout.write(buffer, 0, read);
-                all.forEach(a -> a.increase(1024));
+                allRows.forEach(a -> a.increase(1024));
             }
             bout.close();
             in.close();
@@ -81,47 +86,25 @@ public class Downloader
      * @param progress Show progress or not
      * @param threads Number of simultaneous downloads
      */
-    public void downloadFiles(Map<String, File> urls, boolean progress, int threads)
-    {
-        Thread[] threadss = new Thread[threads];
-        final int UrlPerThread = urls.size() / threads;
-        final int remainingUrl = urls.size() % threads;
-
-        for (int t = 0; t < threads; t++) {
-            final int thread = t;
-            threadss[t] = new Thread() {
-                @Override
-                public void run() {
-                    runThread(urls, threads, thread, UrlPerThread, remainingUrl);
-                }
-            };
-        }
-
-        for (Thread t: threadss) {
-            t.start();
-        }
-    }
-    private void runThread(Map<String, File> urls, int threads, int thread, int UrlPerThread, int remainingUrl) {
-        // Store all urls into a list
-        List<String> files = new ArrayList<>();
-        for (Map.Entry<String, File> url:urls.entrySet()) {
-            files.add(url.getKey());
-        }
-        // Store urls per thread
-        List<String> inFiles = new ArrayList<>();
-
-        for (int i=thread*UrlPerThread; i < (thread + 1) * UrlPerThread; i++) {
-            inFiles.add(files.get(i));
-        }
-        if (thread == threads-1 && remainingUrl > 0) {
-            for (int j = files.size() - remainingUrl; j < files.size(); j++) {
-                inFiles.add(files.get(j));
+    public void downloadFiles(Map<String, File> urls, boolean progress, int threads) throws IOException {
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
+        var files = urls.keySet().stream().toList();
+        if (files.size() > 0) {
+            for (int i=0; i<files.size(); i++) {
+                executor.submit(new Processor(i, urls, files));
             }
+            executor.shutdown();
+            // All files submitted for downloading
+
+
+            try{
+                executor.awaitTermination(300, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            // All files are completely downloaded
         }
 
-        for (String url:inFiles) {
-            downloadFile(url, urls.get(url));
-            }
     }
 
     /**
@@ -146,5 +129,53 @@ public class Downloader
     {
         this.threads = threads;
         return this;
+    }
+
+    class Processor implements Runnable {
+
+        private List<String> files;
+        private Map<String, File> urls;
+        private int id;
+
+        /**
+         * Download multiple files from the internet to local storage through HTTP requests
+         * <p>
+         * The implementation must use multithreading
+         *
+         * @param files List of remote urls
+         * @param urls Mapping of remote urls to local file paths
+         * @param id id for each thread
+         */
+        public Processor(int id, Map<String, File> urls, List<String> files) {
+            this.id = id;
+            this.urls = urls;
+            this.files = files;
+        }
+
+        // Process downloading each file from multithreading
+        @Override
+        public void run() {
+            String url = files.get(id);
+            File to = urls.get(url);
+            downloadFile(url, to);
+        }
+    }
+
+
+    /**
+     * Displays a demo for.
+     *
+     * @param args Arguments are ignored.
+     */
+    public static void main(String[] args) throws IOException {
+        String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
+        File out = new File("./Introduction_to_Algorithms_Third_Edition.pdf");
+        String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
+        File out1 = new File("./Math.pdf");
+        Downloader downloader = new Downloader();
+        Map<String, File> urls = new HashMap<>();
+        urls.put(link, out);
+        urls.put(link1, out1);
+        downloader.downloadFiles(urls, true, 2);
     }
 }
