@@ -1,5 +1,8 @@
 package org.hydev.mcpm.client.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +18,7 @@ import java.util.Optional;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  * @since 2022-09-27
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginModel(
     long id,
     List<PluginVersion> versions)
@@ -24,6 +28,7 @@ public record PluginModel(
      *
      * @return The latest PluginVersion of itself, if it exists.
      */
+    @JsonIgnore
     public Optional<PluginVersion> getLatestPluginVersion() {
         return versions.stream().max(Comparator.comparingLong(PluginVersion::id));
     }
