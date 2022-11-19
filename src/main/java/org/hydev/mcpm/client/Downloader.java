@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.adaptor.DownloaderProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
@@ -48,8 +47,8 @@ public class Downloader
     {
         try (FileOutputStream fileos = new FileOutputStream(to)) {
             URL link = new URL(url);
-            HttpURLConnection http = (HttpURLConnection)link.openConnection();
-            long fileSize = (long)http.getContentLengthLong();
+            HttpURLConnection http = (HttpURLConnection) link.openConnection();
+            long fileSize = (long) http.getContentLengthLong();
 
 
             BufferedInputStream in = new BufferedInputStream(http.getInputStream());
@@ -89,14 +88,14 @@ public class Downloader
         ExecutorService executor = Executors.newFixedThreadPool(threads);
         var files = urls.keySet().stream().toList();
         if (files.size() > 0) {
-            for (int i=0; i<files.size(); i++) {
+            for (int i = 0; i < files.size(); i++) {
                 executor.submit(new Processor(i, urls, files));
             }
             executor.shutdown();
             // All files submitted for downloading
 
 
-            try{
+            try {
                 executor.awaitTermination(20, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
