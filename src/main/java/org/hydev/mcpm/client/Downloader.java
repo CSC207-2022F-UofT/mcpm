@@ -47,8 +47,8 @@ public class Downloader
     {
         try (FileOutputStream fileos = new FileOutputStream(to)) {
             URL link = new URL(url);
-            HttpURLConnection http = (HttpURLConnection)link.openConnection();
-            long fileSize = (long)http.getContentLengthLong();
+            HttpURLConnection http = (HttpURLConnection) link.openConnection();
+            long fileSize = (long) http.getContentLengthLong();
 
 
             BufferedInputStream in = new BufferedInputStream(http.getInputStream());
@@ -88,7 +88,7 @@ public class Downloader
         ExecutorService executor = Executors.newFixedThreadPool(threads);
         var files = urls.keySet().stream().toList();
         if (files.size() > 0) {
-            for (int i=0; i<files.size(); i++) {
+            for (int i = 0; i < files.size(); i++) {
                 executor.submit(new Processor(i, urls, files));
             }
             executor.shutdown();
