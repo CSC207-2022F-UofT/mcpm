@@ -97,7 +97,7 @@ public class Downloader
 
 
             try{
-                executor.awaitTermination(300, TimeUnit.SECONDS);
+                executor.awaitTermination(20, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
