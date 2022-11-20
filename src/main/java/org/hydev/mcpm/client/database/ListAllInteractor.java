@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.database;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.hydev.mcpm.*;
 import org.hydev.mcpm.client.models.PluginYml;
 
@@ -30,8 +31,7 @@ public class ListAllInteractor {
                     return manualList;
                     
                 case "outdated":
-                    List<String> outdatedList = pluginYmlListToString(localPluginTracker.listOutdatedPluginYml());
-                    return outdatedList;
+                    throw new NotImplementedException("Method to print outdated plugins not implemented yet");
                 default:
                     return null;
             }

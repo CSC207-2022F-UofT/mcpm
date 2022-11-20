@@ -13,7 +13,7 @@ import java.io.*;
 interface PluginTracker {
     List<PluginYml> listInstalled();
 
-    void addManuallyInstalled(String name);
+    void setManuallyInstalled(String name);
 
     void removeManuallyInstalled(String name);
 
