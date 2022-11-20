@@ -8,6 +8,9 @@ package org.hydev.mcpm.client.database.results;
 public record ExportPluginsResult(
         State state
 ) {
+    /**
+     * State of the plugin export
+     */
     public enum State {
         SUCCESS,
         FAILED_TO_FETCH_DATABASE

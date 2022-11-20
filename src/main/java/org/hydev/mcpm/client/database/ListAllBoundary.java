@@ -1,29 +1,23 @@
 package org.hydev.mcpm.client.database;
 
 
-import org.hydev.mcpm.*;
-
-import com.opencsv.CSVWriter;
-import com.opencsv.CSVReader;
-
-import java.io.File;
 import java.util.List;
-import java.util.ArrayList;
-import java.io.*;  
-import java.util.Scanner;
 
-import javax.naming.NameNotFoundException;
-import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;  
+/**
+ * Interface for listing all plugins
+ *
+ * @author Kevin (https://github.com/kchprog)
+ * @since 2022-11-20
+ */
+public interface ListAllBoundary {
 
-public class ListAllBoundary {
-    ListAllInteractor listAllInteractor;
-
-    public List<String> listBoundary(String parameter) {
-        try {
-            return listAllInteractor.listAll(parameter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    /**
+     * listAllInteractor interacts with the LocalPluginTracker to get the list of plugins, according to a specified
+     * parameter
+     *
+     * @param parameter The parameter for the ListAll use case. 'All' denotes a request to list all manually
+     *     installed plugins, 'manual' denotes a request to list all manually installed plugins, and 'outdated' denotes
+     *     a request to list all manually installed plugins that are outdated.
+     */
+    List<String> listAll(String parameter);
 }

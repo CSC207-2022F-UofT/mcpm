@@ -1,46 +1,27 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.models.PluginVersion;
-import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.utils.HashUtils;
-import org.hydev.mcpm.utils.PluginJarFile;
-import org.hydev.mcpm.client.database.inputs.*;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
+import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.models.PluginModel;
+import org.hydev.mcpm.client.models.PluginVersion;
+import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.utils.PluginJarFile;
 
-import com.opencsv.CSVWriter;
-import com.opencsv.CSVReader;
-
-import java.util.List;
-import java.util.ArrayList;
 import java.io.*;
-import java.util.Scanner;
-import java.util.Set;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Iterator;
-import java.util.HashSet;
-
-import com.opencsv.exceptions.CsvException;
-
-import javax.naming.NameNotFoundException;
-import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
 
 /**
  * This class keeps track of locally installed packages
  *
- * @author Azalea (https://github.com/hykilpikonna)
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-09-27
  */
-
 public class LocalPluginTracker implements PluginTracker {
     // CSV file storing the list of manually installed plugins
     private String mainLockFile = "plugins/mcpm.lock.csv";
@@ -56,13 +37,13 @@ public class LocalPluginTracker implements PluginTracker {
 
     /**
      * Instantiates a LocalPluginTracker with custom parameters for testing or
-     * 
+     *
      * @param mainLockFile    The path to the main lock file
      * @param pluginDirectory The path to the plugin directory
      */
-    public LocalPluginTracker(String mainLockFileUrl, String pluginDirectoryUrl) {
-        this.mainLockFile = mainLockFileUrl;
-        this.pluginDirectory = pluginDirectoryUrl;
+    public LocalPluginTracker(String mainLockFile, String pluginDirectory) {
+        this.mainLockFile = mainLockFile;
+        this.pluginDirectory = pluginDirectory;
     }
 
     /**
@@ -75,7 +56,7 @@ public class LocalPluginTracker implements PluginTracker {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
         } catch (Exception e) {
-            System.out.printf("Error reading plugin.yml from " + jar);
+            System.out.println("Error reading plugin.yml from " + jar);
             return null;
         }
     }
@@ -87,7 +68,7 @@ public class LocalPluginTracker implements PluginTracker {
      * @return Mapping between plugin name and boolean status
      */
     private Map<String, Boolean> readCsv() {
-        Map<String, Boolean> map = new HashMap<String, Boolean>();
+        Map<String, Boolean> map = new HashMap<>();
         try {
             CSVReader reader = new CSVReader(new FileReader(mainLockFile));
             String[] line;
@@ -98,9 +79,7 @@ public class LocalPluginTracker implements PluginTracker {
             return map;
         } catch (FileNotFoundException e) {
             return map;
-        } catch (CsvException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (CsvException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -113,30 +92,20 @@ public class LocalPluginTracker implements PluginTracker {
      */
     private void saveCsv(Map<String, Boolean> map) {
         String csvFile = mainLockFile;
-        CSVWriter writer = null;
-        try {
-            writer = new CSVWriter(new FileWriter(csvFile));
+        try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
             for (Map.Entry<String, Boolean> entry : map.entrySet()) {
-                String[] line = { entry.getKey(), entry.getValue().toString() };
+                String[] line = {entry.getKey(), entry.getValue().toString()};
                 writer.writeNext(line);
             }
-            writer.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
     /**
      * Add a plugin to the CSV file
-     * 
+     *
      * @param name   Plugin name
      * @param status Plugin status (true = manual, false = auto)
      */
@@ -148,9 +117,8 @@ public class LocalPluginTracker implements PluginTracker {
 
     /**
      * Remove a plugin with the given name from the CSV file
-     * 
+     *
      * @param name Plugin name
-     * 
      */
     public void removeEntry(String name) {
         Map<String, Boolean> map = readCsv();
@@ -174,21 +142,13 @@ public class LocalPluginTracker implements PluginTracker {
 
         ArrayList<Pair<String, Boolean>> toAdd = new ArrayList<>();
 
-        // If a key value pair exists in installedMap but not in the csv map, add its
-        // representation to toAdd.
-        // If a kvp exists in both, add it with toAdd, keeping the value from the csv
-        // map.
-
+        // If a key value pair exists in installedMap but not in the csv map, add its representation to toAdd.
+        // If a kvp exists in both, add it with toAdd, keeping the value from the csv map.
         for (String entry : installedMap) {
-            if (csvMap.containsKey(entry)) {
-                toAdd.add(Pair.of(entry, csvMap.get(entry)));
-            } else {
-                toAdd.add(Pair.of(entry, false));
-            }
+            toAdd.add(Pair.of(entry, csvMap.getOrDefault(entry, false)));
         }
 
         // Return a new map containing all of temp's elements, turned into a map.
-
         Map<String, Boolean> newMap = toAdd.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
         // Save the new map to the csv file.
@@ -208,11 +168,11 @@ public class LocalPluginTracker implements PluginTracker {
                 try {
                     installedPlugins.add(readMeta(child));
                 } catch (Exception e) {
-                    System.out.printf("Error reading plugin.yml from " + child);
+                    System.out.println("Error reading plugin.yml from " + child);
                 }
             }
         } else {
-            System.out.printf("Error reading directory");
+            System.out.println("Error reading directory");
         }
 
         return installedPlugins;
@@ -277,7 +237,7 @@ public class LocalPluginTracker implements PluginTracker {
             csvReader.close();
             return manuallyInstalledPlugins;
         } catch (Exception e) {
-            System.out.printf("Error reading CSV");
+            System.out.println("Error reading CSV");
             return null;
         }
     }
@@ -290,9 +250,9 @@ public class LocalPluginTracker implements PluginTracker {
      */
     public List<String> listOrphanPlugins(boolean considerSoftDependencies) {
 
-        List<String> orphanPlugins = new ArrayList<String>();
+        List<String> orphanPlugins = new ArrayList<>();
         List<String> manuallyinstalledPlugins = listManuallyInstalled();
-        List<String> requiredDependencies = new ArrayList<String>();
+        List<String> requiredDependencies = new ArrayList<>();
 
         // Get all the dependencies of the manually installed plugins
         for (String name : manuallyinstalledPlugins) {
@@ -301,21 +261,22 @@ public class LocalPluginTracker implements PluginTracker {
                 // directory
 
                 File pluginYmlPath = getPluginFile(name);
-                PluginYml currPlugin = readMeta(pluginYmlPath);
+                PluginYml p = readMeta(pluginYmlPath);
+                if (p == null) continue;
 
                 // String pluginYmlPath = pluginDirectory + "/" + name + "/plugin.yml";
                 // PluginYml currPlugin = readMeta(new File(pluginYmlPath));
                 // Add the dependencies of the plugin to the list of required dependencies
-                requiredDependencies.addAll(currPlugin.depend());
+                if (p.depend() != null) requiredDependencies.addAll(p.depend());
 
                 // If considerSoftDependencies is true, add the soft dependencies to the list of
                 // required dependencies
                 if (considerSoftDependencies) {
-                    requiredDependencies.addAll(currPlugin.softdepend());
+                    if (p.softdepend() != null) requiredDependencies.addAll(p.softdepend());
                 }
 
             } catch (Exception e) {
-                System.out.printf("Error getting dependencies of " + name);
+                System.out.println("Error getting dependencies of " + name);
             }
         }
 
@@ -325,14 +286,13 @@ public class LocalPluginTracker implements PluginTracker {
 
         // Create a list of all installed plugin names in string format from the
         // installedPluginsYML list
-        List<String> installedPlugins = new ArrayList<String>();
+        List<String> installedPlugins = new ArrayList<>();
         for (PluginYml plugin : installedPluginsYml) {
             installedPlugins.add(plugin.name());
         }
 
         // Get the difference between the set of manually installed plugins,
         // the set of required dependencies, and the set of all installed plugins
-
         orphanPlugins = installedPlugins;
         orphanPlugins.removeAll(requiredDependencies);
         orphanPlugins.removeAll(manuallyinstalledPlugins);
@@ -361,16 +321,16 @@ public class LocalPluginTracker implements PluginTracker {
                         try {
                             return readMeta(child).version();
                         } catch (Exception e) {
-                            System.out.printf("Error reading plugin.yml version from " + child);
+                            System.out.println("Error reading plugin.yml version from " + child);
                         }
                     }
                 }
             } else {
-                System.out.printf("Plugin with id " + name + " not found");
+                System.out.println("Plugin with id " + name + " not found");
                 return "";
             }
         } catch (Exception e) {
-            System.out.printf("Error reading plugin.yml from " + name);
+            System.out.println("Error reading plugin.yml from " + name);
         }
         return "";
     }
@@ -394,7 +354,7 @@ public class LocalPluginTracker implements PluginTracker {
      * outdatedPlugins.add(plugin.name());
      * }
      * } catch (Exception e) {
-     * System.out.printf("Error checking if plugin " + plugin.name() +
+     * System.out.println("Error checking if plugin " + plugin.name() +
      * " is outdated");
      * }
      * }
@@ -421,7 +381,7 @@ public class LocalPluginTracker implements PluginTracker {
                     outdatedPlugins.add(plugin);
                 }
             } catch (Exception e) {
-                System.out.printf("Error checking if plugin " + plugin.name() + " is outdated");
+                System.out.println("Error checking if plugin " + plugin.name() + " is outdated");
             }
         }
 
@@ -432,7 +392,7 @@ public class LocalPluginTracker implements PluginTracker {
      * Compare whether the locally installed version of the plugin matches the
      * version on the server.
      * If yes, return true. If no, return false.
-     * 
+     *
      * @return True if the local version of plugin with name name is outdated, false
      *         otherwise
      */
@@ -459,12 +419,12 @@ public class LocalPluginTracker implements PluginTracker {
 
                 }
             } else {
-                System.out.printf("Error getting hash from server");
+                System.out.println("Error getting hash from server");
                 return false;
             }
 
         } catch (Exception e) {
-            System.out.printf("Error fetching local plugin version");
+            System.out.println("Error fetching local plugin version");
             return false;
         }
         return false;
@@ -474,8 +434,8 @@ public class LocalPluginTracker implements PluginTracker {
      * Get whether a local plugin File matches the version of the plugin on the
      * server
      *
-     * @param local,  the local plugin File
-     * @param remote, a PluginModel object representing the plugin on the server
+     * @param local  the local plugin File
+     * @param remote a PluginModel object representing the plugin on the server
      * @return List of plugin names
      */
     public Boolean compareVersionNew(File local, PluginModel remote) {
@@ -485,7 +445,7 @@ public class LocalPluginTracker implements PluginTracker {
             String remoteVersion = remote.versions().get(0).meta().version();
             return localVersion.equals(remoteVersion);
         } catch (Exception e) {
-            System.out.printf("Error comparing versions");
+            System.out.println("Error comparing versions");
             return false;
         }
     }
@@ -520,6 +480,11 @@ public class LocalPluginTracker implements PluginTracker {
         }
     }
 
+    /**
+     * Tests. TODO: Move this to tests
+     *
+     * @param args Arguments (not used)
+     */
     public static void main(String[] args) {
         LocalPluginTracker myLocalPluginTracker = new LocalPluginTracker();
 
@@ -532,5 +497,4 @@ public class LocalPluginTracker implements PluginTracker {
         // Test listOutdated
 
     }
-
 }
