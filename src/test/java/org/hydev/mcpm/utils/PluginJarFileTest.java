@@ -49,7 +49,6 @@ class PluginJarFileTest
         // Obtain all command names and aliases of a plugin meta
         var cmds = Stream.concat(meta.commands().values().stream().flatMap(c -> c.aliases().stream()),
             meta.commands().keySet().stream()).toList();
-        System.out.println("here");
         System.out.println(cmds);
     }
 }
