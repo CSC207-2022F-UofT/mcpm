@@ -136,6 +136,7 @@ public class LocalPluginTracker implements PluginTracker
                 } catch (IOException e) {
                     System.out.printf("Error updating CSV");
                 }
+                return;
             }
         }
 
@@ -276,10 +277,10 @@ public class LocalPluginTracker implements PluginTracker
         return "";
     }
 
-    /**
-     * Compares the hash of the locally-installed plugin of a specified 
-     * version with the hash of the plugin of that version on the server
-     * @return True if the hashes match, false otherwise
+    /*
+      Compares the hash of the locally-installed plugin of a specified
+      version with the hash of the plugin of that version on the server
+      @return True if the hashes match, false otherwise
     */
     
     /* public boolean compareHash(File local, String remote) {
