@@ -15,7 +15,7 @@ import java.io.File;
  * @author Rena (https://github.com/thudoan1706)
  * @author Taylor (https://github.com/1whatleytay)
  * @since 2022-11-20
- */
+ * */
 
 public class InstallInteractor implements InstallBoundary {
     private final DatabaseManager databaseManager;
@@ -37,6 +37,7 @@ public class InstallInteractor implements InstallBoundary {
     {
         // 1. Search the name and get a list of plugins
         SearchPackagesResult searchResult = databaseManager.getSearchResult(installInput);
+
 
         if (searchResult.plugins().isEmpty()) {
             throw new InstallException(Type.NOT_FOUND);
