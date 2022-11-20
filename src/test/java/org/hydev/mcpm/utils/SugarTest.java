@@ -3,6 +3,7 @@ package org.hydev.mcpm.utils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * TODO: Write a description for this class!
@@ -47,5 +48,13 @@ class SugarTest
         assert Arrays.equals(Sugar.subTo(a, 4), new Integer[] {1, 2, 3, 4});
         assert Arrays.equals(Sugar.subTo(a, -2), new Integer[] {1, 2, 3});
         assert Sugar.subTo(a, -99).length == 0;
+    }
+
+    @Test
+    void uncheckedMapOf()
+    {
+        Map<String, Integer> map = Sugar.uncheckedMapOf("a", 1, "b", 2);
+        assert map.containsKey("a") && map.containsKey("b");
+        assert map.get("a") == 1 && map.get("b") == 2;
     }
 }
