@@ -7,4 +7,5 @@ package org.hydev.mcpm.client.uninstallUseCase;
  */
 
 public record UninstallInput(String name) {
+    //
 }

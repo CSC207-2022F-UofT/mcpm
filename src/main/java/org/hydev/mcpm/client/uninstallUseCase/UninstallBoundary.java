@@ -8,7 +8,7 @@ import org.hydev.mcpm.client.injector.PluginNotFoundException;
 public interface UninstallBoundary {
     /**
      * Uninstalls plugin based on given name
-     * @param name given name of plugin
+     * @param name given name of the plugin
      */
 
     public void uninstall(String name) throws PluginNotFoundException;
