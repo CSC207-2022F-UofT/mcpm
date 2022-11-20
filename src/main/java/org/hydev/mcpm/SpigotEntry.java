@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
     private Logger log;
+
     private ArgsParser parser;
 
     /**
@@ -49,17 +50,22 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull Command command,
-                             @NotNull String label,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
                              @NotNull String[] args)
     {
-        try {
-            parser.parse(args, ColorLogger.toMinecraft(sender));
-        } catch (ArgumentParserException e) {
+        var log = ColorLogger.toMinecraft(sender);
+
+        try
+        {
+            parser.parse(args, log);
+        }
+        catch (ArgumentParserException e)
+        {
+            if (e.getMessage().toLowerCase().contains("help screen")) return true;
+
             // Incorrect commands, print help.
-            // TODO: Use arg parser's help
-            return false;
+            System.out.println(e.getMessage());
+            log.accept(parser.help());
         }
 
         return true;

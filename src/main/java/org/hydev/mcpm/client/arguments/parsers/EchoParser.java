@@ -27,9 +27,8 @@ public class EchoParser implements CommandParser {
     public @Nullable Subparser configure(Subparsers parsers) {
         var parser = parsers.addParser("echo");
 
-        parser
-            .addArgument("text")
-            .dest("text");
+        parser.addArgument("text").dest("text")
+            .help("Text to echo");
 
         return parser;
     }

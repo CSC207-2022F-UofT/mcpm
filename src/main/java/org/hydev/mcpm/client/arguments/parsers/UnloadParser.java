@@ -20,13 +20,10 @@ public class UnloadParser implements CommandParser {
 
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {
-        var parser = parsers
-            .addParser("unload");
+        var parser = parsers.addParser("unload");
 
-        parser
-            .addArgument("plugins")
-            .dest("plugins")
-            .nargs("+");
+        parser.addArgument("plugins").dest("plugins").nargs("+")
+            .help("Name of the plugins to unload");
 
         return parser;
     }
