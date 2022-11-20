@@ -11,7 +11,13 @@ import java.util.function.Function;
  */
 public class UnitConverter
 {
-    public record UnitSize(String unit, Double size) {};
+    /**
+     * Pair of unit and size
+     *
+     * @param unit Unit (string)
+     * @param size Size (decimal number) in that unit
+     */
+    public record UnitSize(String unit, Double size) {}
 
     /**
      * Automatically selects the best unit to represent binary size.
