@@ -12,7 +12,6 @@ import org.hydev.mcpm.client.models.PluginModel;
 import com.opencsv.CSVWriter;
 import com.opencsv.CSVReader;
 
-import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.*;  
@@ -159,16 +158,23 @@ public class LocalPluginTracker implements PluginTracker
      * @param name Plugin name
      */
     public void removeManuallyInstalled(String name) {
-        for (int i = 0; i < listInstalled().size(); i++) {
-            if (listInstalled().get(i).name().equals(name)) {
-                try {
+        // Locate the name in the list of installed plugins and set the value in the second row as false
+
+        String line = "";
+        int i = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(mainLockFile))) {
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values[0].equals(name)) {
                     updateCsv("false", i, 1);
-                } catch (IOException e) {
-                    System.out.printf("Error updating CSV");
                 }
+                i++;
             }
+            br.close();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Plugin not found, verify whether installed.");
         }
-        throw new IllegalArgumentException("Plugin not found, verify whether installed.");
     }
     
     /**
