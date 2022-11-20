@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  * Controller for the export plugins use case.
  */
 public class ExportPluginsController {
-    private ExportPluginsBoundary boundary;
+    private final ExportPluginsBoundary boundary;
 
     public ExportPluginsController(ExportPluginsBoundary boundary) {
         this.boundary = boundary;
