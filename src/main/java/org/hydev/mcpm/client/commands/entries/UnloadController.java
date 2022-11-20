@@ -30,11 +30,11 @@ public class UnloadController {
     public void unload(List<String> pluginNames, Consumer<String> log) {
         for (var name : pluginNames) {
             try {
+                log.accept(String.format("&6Unloading %s...", name));
                 unloader.unloadPlugin(name);
-
-                log.accept(String.format("Plugin %s loaded", name));
+                log.accept(String.format("&aPlugin %s unloaded!", name));
             } catch (PluginNotFoundException e) {
-                log.accept(String.format("Plugin %s not found", name));
+                log.accept(String.format("&cError: Plugin %s not found", name));
             }
         }
     }
