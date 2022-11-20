@@ -8,6 +8,7 @@ import org.hydev.mcpm.client.injector.PluginNotFoundException;
 public class Uninstaller implements UninstallBoundary{
     private boolean remove_depen;
 
+
     public void uninstall(String name) throws PluginNotFoundException {
         PluginLoader pil = new PluginLoader();
         pil.unloadPlugin(name);
