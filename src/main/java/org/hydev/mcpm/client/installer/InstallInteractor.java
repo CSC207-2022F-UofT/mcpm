@@ -19,7 +19,14 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation to the InstallBoundary, handles installation of plugins
+ *
+ * @author Rena (https://github.com/thudoan1706)
+ * @since 2022-11-20
+ */
 public class InstallInteractor implements InstallBoundary {
+
     @Override
     public void installPlugin(InstallInput installInput) {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(installInput.type(), installInput.name(), false);
@@ -34,7 +41,7 @@ public class InstallInteractor implements InstallBoundary {
 
         PluginModel latestPluginModel = searchPackageResult.plugins().get(0);
         long id = latestPluginModel.id();
-        for (PluginModel plugin: searchPackageResult.plugins()) {
+        for (var plugin : searchResult.plugins()) {
             if (plugin.id() > id) {
                 id = plugin.id();
                 latestPluginModel = plugin;
@@ -69,8 +76,8 @@ public class InstallInteractor implements InstallBoundary {
         installInput.pluginDownloader().download(id, pluginVersion.id(), "plugins/" + pluginVersion.meta().name() + ".jar");
         installInput.pluginTracker().addManuallyInstalled(pluginVersion.meta().name());
 
-        if (pluginVersion.meta().depend()!= null) {
-            for (String dependency:pluginVersion.meta().depend()) {
+        if (pluginVersion.meta().depend() != null) {
+            for (String dependency : pluginVersion.meta().depend()) {
                 InstallInput dependencyInput = new InstallInput(dependency,
                         SearchPackagesType.BY_NAME,
                         installInput.filePath(),

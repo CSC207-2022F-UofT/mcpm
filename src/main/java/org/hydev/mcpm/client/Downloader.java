@@ -92,9 +92,9 @@ public class Downloader
             executor.shutdown();
             // All files submitted for downloading
 
-            try{
+            try {
                 executor.awaitTermination(30, TimeUnit.SECONDS);
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             // All files are completely downloaded

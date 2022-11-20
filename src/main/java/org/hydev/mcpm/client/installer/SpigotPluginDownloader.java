@@ -4,29 +4,33 @@ import org.hydev.mcpm.client.Downloader;
 
 import java.io.File;
 
+/**
+ * Plugin downloader for the MCPM Plugin Repository
+ *
+ * @author Rena (https://github.com/thudoan1706)
+ * @since 2022-11-20
+ */
 public class SpigotPluginDownloader implements PluginDownloader {
 
     private final Downloader downloader;
-    private final String baseURL;
+    private final String baseUrl;
 
     public SpigotPluginDownloader(Downloader downloader) {
-        this.downloader = downloader;
-        this.baseURL = "https://mcpm.hydev.org";
+        this(downloader, "https://mcpm.hydev.org");
     }
 
-    public SpigotPluginDownloader(Downloader downloader, String baseURL) {
+    public SpigotPluginDownloader(Downloader downloader, String baseUrl) {
         this.downloader = downloader;
-        this.baseURL = baseURL;
+        this.baseUrl = baseUrl;
     }
 
     @Override
     public void download(long pluginId, long pluginVersion, String destination) {
-        String url = constructURL(pluginId, pluginVersion);
+        String url = constructUrl(pluginId, pluginVersion);
         downloader.downloadFile(url, new File(destination));
     }
 
-    public String constructURL(long pluginId, long pluginVersion) {
-        String url = baseURL + "/pkgs/spiget/" + pluginId + "/" + pluginVersion + "/release.jar";
-        return url;
+    private String constructUrl(long pluginId, long pluginVersion) {
+        return String.format("%s/pkgs/spiget/%s/%s/release.jar", baseUrl, pluginId, pluginVersion);
     }
 }

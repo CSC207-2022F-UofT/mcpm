@@ -16,6 +16,10 @@ import org.hydev.mcpm.client.installer.input.InstallInput;
 
 public interface InstallBoundary {
 
-    // install Plugin
-    void installPlugin(InstallInput installInput);
+    /**
+     * Install a plugin
+     *
+     * @param installInput Options
+     */
+    void installPlugin(InstallInput installInput) throws InstallException;
 }
