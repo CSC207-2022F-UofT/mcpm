@@ -2,7 +2,6 @@ package org.hydev.mcpm.client.database.export;
 
 import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.boundary.ExportPluginsBoundary;
-import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.database.inputs.ExportPluginsInput;
 import org.hydev.mcpm.client.database.results.ExportPluginsResult;
 
