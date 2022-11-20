@@ -1,27 +1,13 @@
 package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.Downloader;
-import org.hydev.mcpm.client.database.DatabaseInteractor;
-import org.hydev.mcpm.client.database.LocalPluginTracker;
-import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.results.ListPackagesResult;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult.State;
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.installer.InstallException.Type;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.models.PluginModel;
-import org.hydev.mcpm.client.models.PluginVersion;
-import org.hydev.mcpm.client.models.PluginYml;
 
 import java.io.File;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementation to the InstallBoundary, handles installation of plugins
@@ -30,12 +16,11 @@ import java.util.Optional;
  * @author Taylor (https://github.com/1whatleytay)
  * @since 2022-11-20
  */
-public class InstallInteractor implements InstallBoundary {
 
+public class InstallInteractor implements InstallBoundary {
     private final DatabaseManager databaseManager;
     private final SpigotPluginDownloader spigotPluginDownloader;
     private final Downloader downloader;
-
 
     public InstallInteractor() {
         this.databaseManager = new DatabaseManager();
@@ -97,4 +82,3 @@ public class InstallInteractor implements InstallBoundary {
         installInteractor.installPlugin(installInput);
     }
 }
-

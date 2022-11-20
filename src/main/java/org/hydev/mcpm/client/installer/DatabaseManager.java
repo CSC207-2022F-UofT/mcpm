@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 /*
- * An interactor that communicates with database and returns the plugin source for installation
+ * A manager that communicates with database and returns the plugin source for installation
  * */
 public class DatabaseManager {
     private final DatabaseInteractor databaseInteractor;
