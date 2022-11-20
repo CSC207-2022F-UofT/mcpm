@@ -142,8 +142,9 @@ public class LocalPluginTracker implements PluginTracker
             if (listInstalled().get(i).name().equals(name)) {
                 try {
                     updateCsv("true", i, 1);
+                    return;
                 } catch (IOException e) {
-                    System.out.printf("Error updating CSV");
+                    System.out.printf("Error adding Manually Installed");
                 }
             }
         }
@@ -287,20 +288,68 @@ public class LocalPluginTracker implements PluginTracker
         return "";
     }
 
+
+    /**
+     * Get a list of plugins that are outdated
+     *
+     * @return List of plugin names
+     */
+    /*
+    public List<String> listOutdated() {
+        List<String> outdatedPlugins = new ArrayList<String>();
+        List<PluginYml> installedPlugins = listInstalled();
+
+        // For each plugin in the list of installed plugins, check if the version in the plugin.yml file is outdated
+        // If it is, add the plugin name to the list of outdated plugins
+        for (PluginYml plugin : installedPlugins) {
+            try {
+                if (compareVersion(mainLockFile)) {
+                    outdatedPlugins.add(plugin.name());
+                }
+            } catch (Exception e) {
+                System.out.printf("Error checking if plugin " + plugin.name() + " is outdated");
+            }
+        }
+
+        return outdatedPlugins;
+    }
+     */
+
+    /**
+     * Get a list of plugin (as pluginYml) that are outdated
+     *
+     * @return List of plugin names
+     */
+    public List<PluginYml> listOutdatedPluginYml() {
+        List<PluginYml> outdatedPlugins = new ArrayList<PluginYml>();
+        List<PluginYml> installedPlugins = listInstalled();
+
+        // For each plugin in the list of installed plugins, check if the version in the plugin.yml file is outdated
+        // If it is, add the plugin name to the list of outdated plugins
+        for (PluginYml plugin : installedPlugins) {
+            try {
+                if (compareVersion(plugin.name())) {
+                    outdatedPlugins.add(plugin);
+                }
+            } catch (Exception e) {
+                System.out.printf("Error checking if plugin " + plugin.name() + " is outdated");
+            }
+        }
+
+        return outdatedPlugins;
+    }
+
     /**
      * Compare whether the locally installed version of the plugin matches the version on the server. 
      * If yes, return true. If no, return false.
-     * @return True if the hashes match, false otherwise
+     * @return True if the local version of plugin with name name is outdated, false otherwise
     */
 
     public boolean compareVersion(String name) {
-
         try {
             File pluginYmlPath = getPluginFile(name);
             PluginYml currPlugin = readMeta(pluginYmlPath);
             String localVersion = currPlugin.version();
-            
-            
 
             var host = URI.create("http://mcpm.hydev.org");
             var fetcher = new LocalDatabaseFetcher(host);
@@ -330,12 +379,33 @@ public class LocalPluginTracker implements PluginTracker
         return false;
     }
 
+
+    /**
+     * Get whether a local plugin File matches the version of the plugin on the server
+     *
+     * @param local, the local plugin File
+     * @param remote, a PluginModel object representing the plugin on the server
+     * @return List of plugin names
+     */
+    public Boolean compareVersion(File local, PluginModel remote) {
+        try {
+            PluginYml localPlugin = readMeta(local);
+            String localVersion = localPlugin.version();
+            String remoteVersion = remote.versions().get(0).meta().version();
+            return localVersion.equals(remoteVersion);
+        } catch (Exception e) {
+            System.out.printf("Error comparing versions");
+            return false;
+        }
+    }
+
+
     /**
      * Retrieves the file path of a plugin with a specified name as a File
-     * 
-     * @return True if the hashes match, false otherwise
+     *
+     * @param name Plugin name
+     * @return A File object representation of the plugin
     */
-
     private File getPluginFile(String name) {
         // Get the file path of the plugin with name name from the local plugin directory
         // Return the file path as a File
@@ -355,7 +425,7 @@ public class LocalPluginTracker implements PluginTracker
             }
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("Plugin not found, verify whether installed.");
+            throw new IllegalArgumentException("Plugin not found, error with directory iteration.");
         }
     }
 

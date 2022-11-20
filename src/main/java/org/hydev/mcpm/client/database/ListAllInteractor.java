@@ -9,7 +9,15 @@ import java.util.List;
 public class ListAllInteractor {
     LocalPluginTracker localPluginTracker = new LocalPluginTracker();
 
-    public List<String> listAll(String parameter) {
+    /**
+     * listAllInteractor interacts with the LocalPluginTracker to get the list of plugins, according to a specified parameter
+     * 
+     * @param parameter The parameter for the ListAll use case. 'All' denotes a request to list all manually installed plugins, 
+     * 'manual' denotes a request to list all manually installed plugins, 
+     * and 'outdated' denotes a request to list all manually installed plugins that are outdated.
+     * @throws Exception
+     */
+    public List<String> listAll(String parameter) throws Exception {
         try {
             switch (parameter) {
                 case "all":
@@ -20,14 +28,16 @@ public class ListAllInteractor {
                 case "manual":
                     List<String> manualList = localPluginTracker.listManuallyInstalled();
                     return manualList;
+                    
                 case "outdated":
-                    return null;
+                    List<String> outdatedList = pluginYmlListToString(localPluginTracker.listOutdatedPluginYml());
+                    return outdatedList;
                 default:
                     return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new Exception("Error in ListAllInteractor while fetching from LocalPluginTracker");
         }
 
     }
