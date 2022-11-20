@@ -85,14 +85,18 @@ public class Downloader
     public void downloadFiles(Map<String, File> urls, boolean progress, int threads) throws IOException {
         ExecutorService executor = Executors.newFixedThreadPool(threads);
         var files = urls.keySet().stream().toList();
-        if (files.size() > 1) {
+        if (files.size() > 0) {
             for (int i = 0; i < files.size(); i++) {
                 executor.submit(new Processor(i, urls, files));
             }
             executor.shutdown();
             // All files submitted for downloading
 
-            while (!executor.isTerminated()) {}
+            try{
+                executor.awaitTermination(30, TimeUnit.SECONDS);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
             // All files are completely downloaded
         }
 

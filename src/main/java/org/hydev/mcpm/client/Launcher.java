@@ -6,5 +6,8 @@ package org.hydev.mcpm.client;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class Launcher
-{ public static void main(String[] args) {System.out.println("Meow");}}
+public class Launcher {
+    public static void main(String[] args) {
+        System.out.println("Meow");
+    }
+}
