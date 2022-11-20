@@ -7,7 +7,6 @@ package org.hydev.mcpm.client.installer;
  * @since 2022-11-20
  */
 public interface PluginDownloader {
-
     /**
      * Download a plugin
      *
@@ -17,3 +16,4 @@ public interface PluginDownloader {
      */
     void download(long pluginId, long pluginVersion, String destination);
 }
+

@@ -14,12 +14,14 @@ import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.installer.InstallException.Type;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.models.PluginModel;
+import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation to the InstallBoundary, handles installation of plugins
@@ -29,17 +31,26 @@ import java.util.List;
  */
 public class InstallInteractor implements InstallBoundary {
 
+    private final DatabaseManager databaseManager;
+    private final SpigotPluginDownloader spigotPluginDownloader;
+    private final Downloader downloader;
+
+
+    public InstallInteractor() {
+        this.databaseManager = new DatabaseManager();
+        this.downloader = new Downloader();
+        this.spigotPluginDownloader = new SpigotPluginDownloader(this.downloader);
+    }
+
+    /*
+     * Install the plugin
+     * @param installInput: the plugin submitted by the user for installing
+     * */
     @Override
-    public void installPlugin(InstallInput input) throws InstallException
+    public void installPlugin(InstallInput installInput) throws InstallException
     {
         // 1. Search the name and get a list of plugins
-        var searchInput = new SearchPackagesInput(input.type(), input.name(), false);
-        var searchResult = input.searchPackage().search(searchInput);
-        if (searchResult.state() != State.SUCCESS) {
-            throw new InstallException(
-                searchResult.state() == State.FAILED_TO_FETCH_DATABASE ? Type.SEARCH_FAILED_TO_FETCH_DATABASE :
-                Type.SEARCH_INVALID_INPUT);
-        }
+        SearchPackagesResult searchResult = databaseManager.getSearchResult(installInput);
 
         if (searchResult.plugins().isEmpty()) {
             throw new InstallException(Type.NOT_FOUND);
@@ -57,38 +68,35 @@ public class InstallInteractor implements InstallBoundary {
         }
 
         var pluginVersion = latestPluginModel.getLatestPluginVersion()
-            .orElseThrow(() -> new InstallException(Type.NO_VERSION_AVAILABLE));
+                .orElseThrow(() -> new InstallException(Type.NO_VERSION_AVAILABLE));
+        databaseManager.checkPluginInstalled(pluginVersion);
 
         // 3. Download it
-        var name = pluginVersion.meta().name();
-        List<PluginYml> pluginInstalled = input.pluginTracker().listInstalled();
-        for (PluginYml pluginYml : pluginInstalled) {
-            if (pluginYml != null && pluginYml.name() != null && pluginYml.name().equals(name)) {
-                throw new InstallException(Type.PLUGIN_EXISTS);
-            }
+        spigotPluginDownloader.download(id, pluginVersion.id(), "plugins/" + pluginVersion.meta().name() + ".jar");
 
-        }
+        // TODO Add manual install
 
-        // 4. Add it to the plugin tracker
-        new File("plugins").mkdirs();
-        input.pluginDownloader().download(id, pluginVersion.id(), "plugins/" + name + ".jar");
-        input.pluginTracker().addEntry(name, true);
+        //        if (pluginVersion != null) {
+        //        installInteractor.addManualInstalled(pluginVersion);}
 
-        // 5. Install the dependencies
-        if (pluginVersion.meta().depend() != null) {
-            for (String dependency : pluginVersion.meta().depend()) {
+        // 4. Installing the depency of that plugin
+        if (pluginVersion.meta().depend()!= null) {
+            for (String dependency:pluginVersion.meta().depend()) {
                 InstallInput dependencyInput = new InstallInput(dependency,
                         SearchPackagesType.BY_NAME,
-                        input.filePath(),
-                        input.load(),
-                        input.searchPackage(),
-                        input.pluginDownloader(),
-                        input.pluginTracker());
+                        installInput.filePath(),
+                        installInput.load());
                 installPlugin(dependencyInput);
-                input.pluginTracker().removeManuallyInstalled(name);
+//                input.pluginTracker().removeManuallyInstalled(name);
             }
         }
     }
-}
 
+    public static void main(String[] args) throws InstallException {
+        new File("plugins").mkdirs();
+        InstallInteractor installInteractor = new InstallInteractor();
+        InstallInput installInput = new InstallInput("JedCore", SearchPackagesType.BY_NAME, "", true);
+        installInteractor.installPlugin(installInput);
+    }
+}
 
