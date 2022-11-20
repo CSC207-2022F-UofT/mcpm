@@ -33,11 +33,7 @@ public class Downloader
 
     private ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
-    private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
-
-
-
-
+    private ArrayList<ProgressRow> allRows = new ArrayList<>();
 
     /**
      * Download one file from the internet to local storage through HTTP request
