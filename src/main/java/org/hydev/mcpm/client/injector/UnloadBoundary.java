@@ -13,5 +13,5 @@ public interface UnloadBoundary
      *
      * @param name Loaded plugin name
      */
-    public void unloadPlugin(String name) throws PluginNotFoundException;
+    void unloadPlugin(String name) throws PluginNotFoundException;
 }

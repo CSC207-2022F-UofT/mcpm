@@ -1,9 +1,12 @@
 package org.hydev.mcpm;
 
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.hydev.mcpm.client.arguments.ArgsParser;
+import org.hydev.mcpm.client.arguments.CommandsFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
@@ -16,7 +19,7 @@ import static java.util.Objects.requireNonNull;
 public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
     private Logger log;
-    private Controller controller;
+    private ArgsParser parser;
 
     /**
      * onEnable() is called when our plugin is loaded on a Spigot server.
@@ -29,7 +32,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
         log.info("Enabled!");
 
         // Initialize controller
-        controller = new Controller();
+        parser = CommandsFactory.serverArgsParser(text -> log.info(text));
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
@@ -50,7 +53,14 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
                              @NotNull String label,
                              @NotNull String[] args)
     {
-        controller.runCommand(args, sender::sendMessage);
+        try {
+            parser.parse(args, sender::sendMessage);
+        } catch (ArgumentParserException e) {
+            // Incorrect commands, print help.
+            // TODO: Use arg parser's help
+            return false;
+        }
+
         return true;
     }
 }
