@@ -37,6 +37,8 @@ public class Downloader
 
 
 
+
+
     /**
      * Download one file from the internet to local storage through HTTP request
      *
@@ -85,7 +87,7 @@ public class Downloader
         try (ExecutorService executor = Executors.newFixedThreadPool(threads))
         {
             var files = urls.keySet().stream().toList();
-            if (files.size() > 1)
+            if (files.size() > 0)
             {
                 for (String url : files)
                 {
