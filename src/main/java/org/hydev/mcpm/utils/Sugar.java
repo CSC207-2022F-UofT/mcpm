@@ -62,9 +62,9 @@ public class Sugar
      * values of the correct type to the function.
      *
      * @param values Map content (Precondition: len(values) % 2 == 0, and each key K is followed by its value V)
-     * @return Hashmap of values
      * @param <K> Type of the key
      * @param <V> Type of the value
+     * @return Hashmap of values
      */
     public static <K, V> Map<K, V> uncheckedMapOf(Object... values)
     {

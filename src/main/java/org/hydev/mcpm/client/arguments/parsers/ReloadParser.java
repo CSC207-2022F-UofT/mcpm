@@ -21,13 +21,10 @@ public class ReloadParser implements CommandParser {
 
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {
-        var parser = parsers
-            .addParser("reload");
+        var parser = parsers.addParser("reload");
 
-        parser
-            .addArgument("plugins")
-            .dest("plugins")
-            .nargs("+");
+        parser.addArgument("plugins").dest("plugins").nargs("+")
+            .help("Name of the plugins to reload");
 
         return parser;
     }

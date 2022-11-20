@@ -30,10 +30,7 @@ public class ArgsParser
     public ArgsParser(List<CommandParser> allParsers, Consumer<String> log) {
         this.log = log;
 
-        parser = ArgumentParsers
-            .newFor("loader")
-            .build()
-            .defaultHelp(true);
+        parser = ArgumentParsers.newFor("mcpm").build().defaultHelp(true);
 
         var parsers = parser.addSubparsers();
 

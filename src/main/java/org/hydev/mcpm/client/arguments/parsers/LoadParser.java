@@ -21,13 +21,10 @@ public class LoadParser implements CommandParser {
 
     @Override
     public @Nullable Subparser configure(Subparsers parsers) {
-        var parser = parsers
-            .addParser("load");
+        var parser = parsers.addParser("load");
 
-        parser
-            .addArgument("plugins")
-            .dest("plugins")
-            .nargs("+");
+        parser.addArgument("plugins").dest("plugins").nargs("+")
+            .help("Name of the plugins to load");
 
         return parser;
     }
