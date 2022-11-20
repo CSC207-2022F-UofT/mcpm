@@ -25,8 +25,9 @@ import java.util.Optional;
 
 /**
  * Implementation to the InstallBoundary, handles installation of plugins
- *
+ * @author Azalea (https://github.com/hykilpikonna)
  * @author Rena (https://github.com/thudoan1706)
+ * @author Taylor (https://github.com/1whatleytay)
  * @since 2022-11-20
  */
 public class InstallInteractor implements InstallBoundary {
@@ -74,10 +75,7 @@ public class InstallInteractor implements InstallBoundary {
         // 3. Download it
         spigotPluginDownloader.download(id, pluginVersion.id(), "plugins/" + pluginVersion.meta().name() + ".jar");
 
-        // TODO Add manual install
-
-        //        if (pluginVersion != null) {
-        //        installInteractor.addManualInstalled(pluginVersion);}
+        // TODO: Add manual install
 
         // 4. Installing the depency of that plugin
         if (pluginVersion.meta().depend()!= null) {
