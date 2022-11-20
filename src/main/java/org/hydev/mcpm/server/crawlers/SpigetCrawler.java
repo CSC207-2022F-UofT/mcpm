@@ -14,12 +14,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 import static java.lang.String.format;
 import static java.nio.file.Files.createSymbolicLink;
 import static org.hydev.mcpm.Constants.JACKSON;
+import static org.hydev.mcpm.server.crawlers.spiget.CreateDatabase.packageStore;
+import static org.hydev.mcpm.server.crawlers.spiget.CreateDatabase.writeDatabase;
 import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
 
 /**
@@ -250,6 +253,8 @@ public class SpigetCrawler
         var files = resourcesPath.listFiles();
         if (files == null) return;
 
+        AtomicInteger errors = new AtomicInteger();
+
         Arrays.stream(files).forEach(res -> {
             // Loop through each version
             var versions = res.listFiles();
@@ -273,12 +278,13 @@ public class SpigetCrawler
                 }
                 catch (IOException | NullPointerException | PluginYml.InvalidPluginMetaStructure e)
                 {
-                    // TODO: Better error handling
-                    //e.printStackTrace();
-                    System.out.printf("Cannot read plugin.yml for %s: %s\n", ver, e);
+                    System.err.printf("Cannot read plugin.yml for %s: %s\n", ver, e);
+                    errors.getAndIncrement();
                 }
             });
         });
+
+        System.out.println("Errors: " + errors.get());
     }
 
     /**
@@ -302,6 +308,15 @@ public class SpigetCrawler
             //safeSleep(crawler.mtDelay);
         });
 
+        // Create links
         crawler.links();
+
+        // Create database
+        writeDatabase(
+            new File(packageStore, "pkgs/spiget"),
+            new File(packageStore, "db"),
+            new File(packageStore, "db.hash"),
+            new File(packageStore, "db.timestamp")
+        );
     }
 }
