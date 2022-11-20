@@ -142,16 +142,27 @@ public class Downloader
      *
      * @param args Arguments are ignored.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException
+    {
         // Remember to chang link to test
         String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
         File out = new File("./Introduction_to_Algorithms_Third_Edition.pdf");
         String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
         File out1 = new File("./Math.pdf");
+        String link2 = "https://ouopentextbooks.org/mathematics/files/2015/07/1503.pdf";
+        File out2 = new File("./1503");
+        String link3 = "https://faculty.math.illinois.edu/~aydin/math220/lecturenotes/m220_Sec1_4.pdf";
+        File out3 = new File("./m220_Sec1_4");
+        String link4 = "https://ocw.mit.edu/ans7870/9/9.00SC/MIT9_00SCF11_text.pdf";
+        File out4 = new File("./MIT9_00SCF11_text");
+
         Downloader downloader = new Downloader();
         Map<String, File> urls = new HashMap<>();
         urls.put(link, out);
         urls.put(link1, out1);
+        urls.put(link2, out2);
+        urls.put(link3, out3);
+        urls.put(link4, out4);
         downloader.downloadFiles(urls);
     }
 }
