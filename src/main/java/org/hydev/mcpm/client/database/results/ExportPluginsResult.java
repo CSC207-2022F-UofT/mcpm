@@ -13,6 +13,6 @@ public record ExportPluginsResult(
      */
     public enum State {
         SUCCESS,
-        FAILED_TO_FETCH_PLUGINS
+        FAILED_TO_FETCH_DATABASE
     }
 }

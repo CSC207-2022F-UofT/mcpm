@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.*;  
 
-interface PluginTracker {
+public interface PluginTracker {
     List<PluginYml> listInstalled();
 
     void addManuallyInstalled(String name);

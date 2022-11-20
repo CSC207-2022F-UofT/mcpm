@@ -31,9 +31,11 @@ public class Downloader
     /** Number of simultaneous downloads */
     private int threads = 5;
 
-    private final ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
+    private ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
-    private final ArrayList<ProgressRow> allRows = new ArrayList<>();
+    private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
+
+
 
 
 
@@ -48,7 +50,7 @@ public class Downloader
         try (FileOutputStream fileos = new FileOutputStream(to)) {
             URL link = new URL(url);
             HttpURLConnection http = (HttpURLConnection) link.openConnection();
-            long fileSize = http.getContentLengthLong();
+            long fileSize = (long) http.getContentLengthLong();
 
 
             BufferedInputStream in = new BufferedInputStream(http.getInputStream());

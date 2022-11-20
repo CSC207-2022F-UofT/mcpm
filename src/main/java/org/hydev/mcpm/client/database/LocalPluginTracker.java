@@ -136,6 +136,7 @@ public class LocalPluginTracker implements PluginTracker
                 } catch (IOException e) {
                     System.out.printf("Error updating CSV");
                 }
+                return;
             }
         }
 
