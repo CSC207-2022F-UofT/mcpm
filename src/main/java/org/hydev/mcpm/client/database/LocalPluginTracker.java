@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.io.*;  
 import java.util.Scanner;
 import java.net.URI;
-
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import com.opencsv.exceptions.CsvException;
 
 import javax.naming.NameNotFoundException;
 import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;  
@@ -62,6 +65,63 @@ public class LocalPluginTracker implements PluginTracker
             return null;
         }
     }
+
+    /**
+     * Read the hash of a plugin's jar
+     *
+     * @param jar Local plugin jar path
+     * @return Hash
+     */
+    private Map<String, Boolean> readCSV(String csvFile) {
+        Map<String, Boolean> map = new HashMap<String, Boolean>();
+        try {
+            CSVReader reader = new CSVReader(new FileReader(csvFile));
+            String[] line;
+            while ((line = reader.readNext()) != null) {
+                map.put(line[0], Boolean.parseBoolean(line[1]));
+            }
+            reader.close();
+            return map;
+        } catch (FileNotFoundException e) {
+            return map;
+        } catch (CsvException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * Save a hashmap's contents, overwriting a CSV file
+     *
+     * @param map Hashmap to save
+     *
+    */
+    private void saveCSV(Map<String, Boolean> map) {
+        String csvFile = mainLockFile;
+        CSVWriter writer = null;
+        try {
+            writer = new CSVWriter(new FileWriter(csvFile));
+            for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+                String[] line = {entry.getKey(), entry.getValue().toString()};
+                writer.writeNext(line);
+            }
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
 
     /**
      * List all currently installed plugins in an ArrayList
@@ -163,6 +223,8 @@ public class LocalPluginTracker implements PluginTracker
         String line = "";
         int i = 0;
 
+
+    
         try (BufferedReader br = new BufferedReader(new FileReader(mainLockFile))) {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
