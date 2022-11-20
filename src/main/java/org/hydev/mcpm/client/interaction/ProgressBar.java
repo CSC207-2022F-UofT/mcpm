@@ -199,7 +199,7 @@ public class ProgressBar implements ProgressBarBoundary {
             }
         }
 
-        try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME)) {
+        try (var b = new ProgressBar(ProgressBarTheme.FLOWER_THEME)) {
             for (int i = 0; i < 36; i++) {
                 ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
                 b.appendBar(bar);

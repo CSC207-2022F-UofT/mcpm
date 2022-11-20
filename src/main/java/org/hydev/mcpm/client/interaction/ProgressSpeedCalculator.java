@@ -35,7 +35,7 @@ public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
             sum -= e.v(); // update sliding window sum
         }
         long dt = Math.min(window, time - start);
-        return (double) sum / dt * 1e9;
+        return sum / (dt / 1e9);
     }
 
     @Override
