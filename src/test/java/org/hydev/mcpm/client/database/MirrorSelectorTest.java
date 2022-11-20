@@ -42,7 +42,7 @@ class MirrorSelectorTest
         System.out.println(pings);
         for (int i = 0; i < pings.size() - 1; i++)
         {
-            assert pings.get(i).v() < pings.get(i + 1).v();
+            assert pings.get(i).v() <= pings.get(i + 1).v();
         }
     }
 }

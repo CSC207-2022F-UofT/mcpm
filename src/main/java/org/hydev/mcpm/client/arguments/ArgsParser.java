@@ -47,15 +47,20 @@ public class ArgsParser
         }
     }
 
+    public void parse(String[] arguments) throws ArgumentParserException {
+        parse(arguments, log);
+    }
+
     /**
      * Parses arguments into a CommandEntry object.
      *
      * @param arguments A list of string arguments.
      *                  Example: [ "load", "pluginA", "pluginB" ].
+     * @param log Logger
      * @throws ArgumentParserException Thrown when arguments are not parsed correctly.
      *                                 For default handling, pass this to ArgsParser#fail.
      */
-    public void parse(String[] arguments) throws ArgumentParserException {
+    public void parse(String[] arguments, Consumer<String> log) throws ArgumentParserException {
         var namespace = parser.parseArgs(arguments);
 
         Object handleObject = namespace.get("handler");
