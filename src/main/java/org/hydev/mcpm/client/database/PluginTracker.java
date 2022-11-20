@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.*;
 
-interface PluginTracker {
+public interface PluginTracker {
     void addEntry(String name, boolean status);
 
     void removeEntry(String name);
