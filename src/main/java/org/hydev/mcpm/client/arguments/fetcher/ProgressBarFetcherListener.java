@@ -32,8 +32,7 @@ public class ProgressBarFetcherListener implements DatabaseFetcherListener {
         var bar = new ProgressBar(theme);
         var row = new ProgressRow(total)
             .desc("Database")
-            .descLen(20)
-            .unit(" bytes");
+            .descLen(20);
 
         bar.appendBar(row);
 
