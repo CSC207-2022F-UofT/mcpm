@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.arguments.fetcher;
+package org.hydev.mcpm.client.database.fetcher;
 
 /**
  * Receives events on database download progress for DatabaseFetcher classes.

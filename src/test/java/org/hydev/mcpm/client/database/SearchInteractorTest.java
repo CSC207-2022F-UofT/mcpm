@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.arguments.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
