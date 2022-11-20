@@ -10,7 +10,7 @@ import java.util.Queue;
  *
  */
 public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
-    private final Queue<Pair<Long, Long>> q = new ArrayDeque<>();
+    private final Queue<Pair<Long, Long>> queue = new ArrayDeque<>();
     private final long window;
     private final long start;
 
@@ -30,8 +30,8 @@ public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
     @Override
     public double getSpeed() {
         long time = System.nanoTime();
-        while (!q.isEmpty() && q.peek().k() < time - window) { // remove all elements that are too old
-            var e = q.remove();
+        while (!queue.isEmpty() && queue.peek().k() < time - window) { // remove all elements that are too old
+            var e = queue.remove();
             sum -= e.v(); // update sliding window sum
         }
         long dt = Math.min(window, time - start);
@@ -47,7 +47,7 @@ public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
 
     @Override
     public void incProgress(long inc) {
-        q.add(new Pair<>(System.nanoTime(), inc));
+        queue.add(new Pair<>(System.nanoTime(), inc));
         sum += inc;
     }
 }
