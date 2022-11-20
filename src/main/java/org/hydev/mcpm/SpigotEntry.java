@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.hydev.mcpm.client.arguments.ArgsParser;
 import org.hydev.mcpm.client.arguments.CommandsFactory;
+import org.hydev.mcpm.utils.ColorLogger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
@@ -54,7 +55,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
                              @NotNull String[] args)
     {
         try {
-            parser.parse(args, sender::sendMessage);
+            parser.parse(args, ColorLogger.toMinecraft(sender));
         } catch (ArgumentParserException e) {
             // Incorrect commands, print help.
             // TODO: Use arg parser's help
