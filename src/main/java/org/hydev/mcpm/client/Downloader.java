@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.adaptor.DownloaderProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
@@ -49,7 +48,7 @@ public class Downloader
         try (FileOutputStream fileos = new FileOutputStream(to)) {
             URL link = new URL(url);
             HttpURLConnection http = (HttpURLConnection) link.openConnection();
-            long fileSize = http.getContentLengthLong();
+            long fileSize = (long) http.getContentLengthLong();
 
 
             BufferedInputStream in = new BufferedInputStream(http.getInputStream());
