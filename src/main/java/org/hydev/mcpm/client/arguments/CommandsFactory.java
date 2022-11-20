@@ -2,8 +2,8 @@ package org.hydev.mcpm.client.arguments;
 
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
-import org.hydev.mcpm.client.database.export.Export;
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.LocalPluginTracker;
+import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.injector.PluginLoader;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class CommandsFactory {
      */
     public static List<CommandParser> baseParsers() {
         var echoController = new EchoController();
-        var exportPluginsController = new ExportPluginsController(null); // do I have to instantiate the entire thing ??
+        var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker(null, null))); // idk man
 
         /*
          * Add general parsers to this list!
@@ -34,7 +34,8 @@ public class CommandsFactory {
          * If you're not sure if your command is server-only, add it to this list!
          */
         return List.of(
-            new EchoParser(echoController), new ExportPluginsParser(exportPluginsController)
+                new EchoParser(echoController),
+                new ExportPluginsParser(exportPluginsController)
         );
     }
 
