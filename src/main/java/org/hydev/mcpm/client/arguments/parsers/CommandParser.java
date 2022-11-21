@@ -12,28 +12,28 @@ import java.util.function.Consumer;
  */
 public interface CommandParser {
     /**
+     * Name of the command
+     *
+     * @return Name
+     */
+    String name();
+
+    /**
      * Usually, the body of this command goes as follows:
      *
      * <pre>
-     *   var parser = parsers.addParser("search");
-     *
      *   parser.addArgument("searchParameter").dest("searchText");
      *   parser.addArgument("searchType").dest("searchType");
-     *
-     *   return parser;
      * </pre>
      *
      * See <a href="https://argparse4j.github.io/usage.html">usage</a> for how to add arguments.
      * <p>
-     * Return the Subparser you created object when possible!
      * This will ensure that your build method gets called when your subcommand is executed.
      * Just do it!
      *
-     * @param parsers A subparsers
-     * @return A Subparser that will be configured so that if this command is executed, the build method will be called.
+     * @param parser A subparser
      */
-    @Nullable
-    Subparser configure(Subparsers parsers);
+    void configure(Subparser parser);
 
     /**
      * Called when the user executed the Subparser command in configure.

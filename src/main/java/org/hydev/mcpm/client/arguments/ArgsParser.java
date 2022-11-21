@@ -1,13 +1,14 @@
 package org.hydev.mcpm.client.arguments;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.*;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -35,12 +36,31 @@ public class ArgsParser
         var parsers = parser.addSubparsers();
 
         for (var parser : allParsers) {
-            var subparser = parser.configure(parsers);
+            var subparser = parsers.addParser(parser.name(), false);
+            parser.configure(subparser);
 
-            if (subparser != null) {
-                subparser
-                    .setDefault("handler", parser);
+            subparser.setDefault("handler", parser);
+
+            class PrintHelpAction implements ArgumentAction
+            {
+                @Override
+                public void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
+                                String flag, Object value) {
+                    log.accept(subparser.formatHelp());
+                }
+
+                @Override
+                public void onAttach(Argument arg) {
+                    /* nothing */
+                }
+
+                @Override
+                public boolean consumeArgument() {
+                    return false;
+                }
             }
+
+            subparser.addArgument("-h", "--help").action(new PrintHelpAction());
         }
     }
 
