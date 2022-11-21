@@ -8,19 +8,19 @@ import java.util.Objects;
 
 class HashUtilsTest
 {
-    HashUtils u = new HashUtils();
+    HashUtils hashUtils = new HashUtils();
 
     @Test
     void hashString()
     {
-        assert u.hash("hello world")
+        assert hashUtils.hash("hello world")
             .equals("b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9");
     }
 
     @Test
     void hashFile() throws IOException
     {
-        assert u.hash(Objects.requireNonNull(GeneralUtils.getResourceFile("test-plugin-activelist.jar")))
+        assert hashUtils.hash(Objects.requireNonNull(GeneralUtils.getResourceFile("test-plugin-activelist.jar")))
             .equals("6b51b4a80419843f522f0a612288c7f50cf405f5ab7dd9bb1d050cc6e80a725f");
     }
 
@@ -32,6 +32,6 @@ class HashUtilsTest
             var a = new HashUtils("a nonexistant algorithm");
             assert false;
         }
-        catch (NoSuchAlgorithmException ignored) {}
+        catch (NoSuchAlgorithmException ignored) { }
     }
 }

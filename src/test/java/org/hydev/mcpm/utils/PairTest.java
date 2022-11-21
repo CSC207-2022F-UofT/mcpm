@@ -24,7 +24,7 @@ class PairTest
             p.setValue(2);
             assert false;
         }
-        catch (Pair.UnmodifiableException ignored) {}
+        catch (Pair.UnmodifiableException ignored) { }
     }
 
     @Test
