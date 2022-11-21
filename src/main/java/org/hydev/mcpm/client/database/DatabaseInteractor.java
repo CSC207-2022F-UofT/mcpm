@@ -2,19 +2,19 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.database.boundary.ListPackagesBoundary;
-import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.database.boundary.MatchPluginsBoundary;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
-import org.hydev.mcpm.client.database.inputs.*;
+import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
+import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
+import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
 import org.hydev.mcpm.client.database.results.ListPackagesResult;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.searchusecase.SearcherFactory;
 
 import java.net.URI;
-
+import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
+import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
 import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class DatabaseInteractor
-    implements ListPackagesBoundary, SearchPackagesBoundary, MatchPluginsBoundary, CheckForUpdatesBoundary {
+    implements ListPackagesBoundary, MatchPluginsBoundary, CheckForUpdatesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
 
@@ -105,31 +105,6 @@ public class DatabaseInteractor
             result,
             database.plugins().size()
         );
-    }
-
-    /**
-     * Searches for plugins based on the provided name, keyword, or command.
-     * The input contains the type of search.
-     *
-     * @param input Record of inputs as provided in SearchPackagesInput. See it for more info.
-     * @return Packages result. See the SearchPackagesResult record for more info.
-     */
-    @Override
-    public SearchPackagesResult search(SearchPackagesInput input) {
-        var database = fetcher.fetchDatabase(!input.noCache(), listener);
-
-        if (database == null) {
-            return SearchPackagesResult.by(SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE);
-        }
-
-        var searchStr = input.searchStr().toLowerCase();
-        if (searchStr.isEmpty())
-            return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_INPUT);
-
-        var plugins = database.plugins();
-
-        return new SearchPackagesResult(SearchPackagesResult.State.SUCCESS,
-            SearcherFactory.createSearcher(input).getSearchList(searchStr, plugins));
     }
 
     /**
@@ -261,16 +236,6 @@ public class DatabaseInteractor
 
         System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
         System.out.println(formatPluginNames(result.plugins()));
-
-        var searchInput = new SearchPackagesInput(SearchPackagesType.BY_NAME, "SkinsRestorer", true);
-        var result1 = database.search(searchInput);
-
-        System.out.println(formatPluginNames(result1.plugins()) + "\n");
-
-        var result3 = database.search(new SearchPackagesInput(
-                SearchPackagesType.BY_KEYWORD, "offline online", true));
-
-        System.out.println(formatPluginNames(result3.plugins()));
 
         var matchInput = new MatchPluginsInput(List.of(
             PluginModelId.byId(100429),

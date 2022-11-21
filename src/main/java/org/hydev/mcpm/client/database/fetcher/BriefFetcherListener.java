@@ -6,12 +6,23 @@ package org.hydev.mcpm.client.database.fetcher;
  */
 public class BriefFetcherListener implements DatabaseFetcherListener {
     private boolean startedDownload = false;
+    private boolean quiet = false;
+
+    public BriefFetcherListener(boolean quiet) {
+        this.quiet = quiet;
+    }
+
+    public BriefFetcherListener() {
+        this(false);
+    }
 
     @Override
     public void download(long completed, long total) {
         if (!startedDownload) {
             // Should be passed up to a parent class.
-            System.out.println("Downloading database...");
+            if (!quiet) {
+                System.out.println("Downloading database...");
+            }
 
             startedDownload = true;
         }

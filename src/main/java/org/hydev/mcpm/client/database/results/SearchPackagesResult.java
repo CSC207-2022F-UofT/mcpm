@@ -14,6 +14,8 @@ import java.util.List;
 public record SearchPackagesResult(SearchPackagesResult.State state, List<PluginModel> plugins) {
     /**
      * The outcome of the SearchPackagesResult.
+     *
+     * For INVALID_INPUT, check that your string is non-empty.
      */
     public enum State {
         SUCCESS,

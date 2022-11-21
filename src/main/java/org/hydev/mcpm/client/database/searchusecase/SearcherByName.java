@@ -47,13 +47,11 @@ public class SearcherByName implements Searcher {
      *         Returns null if inp is not a string.
      */
     @Override
-    public List<PluginModel> getSearchList(Object inp, List<PluginModel> plugins) {
+    public List<PluginModel> getSearchList(String inp, List<PluginModel> plugins) {
         // Instantiate if null
         if (SearcherByName.nameMap == null) {
             SearcherByName.nameMap = constructSearchMaps(plugins);
         }
-        if (!(inp instanceof String name))
-            return null;
-        return SearcherByName.nameMap.get(name);
+        return SearcherByName.nameMap.get(inp.toLowerCase());
     }
 }
