@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.database;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.OptionalLong;
 
@@ -14,12 +13,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the DatabaseInteractor's update method.
+ */
 public class DatabaseInteractorUpdateTest {
-    static DatabaseInteractor emptyInteractor;
-    static DatabaseInteractor smallInteractor;
+    private static DatabaseInteractor emptyInteractor;
+    private static DatabaseInteractor smallInteractor;
 
+    /**
+     * Create relevant interactors for tests.
+     */
     @BeforeAll
-    static void setup() {
+    public static void setup() {
         emptyInteractor = PluginMockFactory.interactor(List.of());
 
         smallInteractor = PluginMockFactory.interactor(List.of(
@@ -30,8 +35,11 @@ public class DatabaseInteractorUpdateTest {
         ));
     }
 
+    /**
+     * Test the update method with an up-to-date version id.
+     */
     @Test
-    void updateUpToDateByVersionId() {
+    public void updateUpToDateByVersionId() {
         var id = new PluginVersionState(PluginModelId.byId(4), PluginVersionId.byId(2));
 
         var input = new CheckForUpdatesInput(List.of(id), false);
@@ -42,8 +50,11 @@ public class DatabaseInteractorUpdateTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the update method with an up-to-date version string.
+     */
     @Test
-    void updateUpToDateByVersionString() {
+    public void updateUpToDateByVersionString() {
         var id = new PluginVersionState(PluginModelId.byId(4), PluginVersionId.byString("3.0"));
 
         var input = new CheckForUpdatesInput(List.of(id), false);
@@ -54,8 +65,11 @@ public class DatabaseInteractorUpdateTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the update method with an outdated version id.
+     */
     @Test
-    void updateByVersionId() {
+    public void updateByVersionId() {
         var id = new PluginVersionState(PluginModelId.byId(4), PluginVersionId.byId(1));
 
         var input = new CheckForUpdatesInput(List.of(id), false);
@@ -67,8 +81,11 @@ public class DatabaseInteractorUpdateTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the update method with an outdated version string.
+     */
     @Test
-    void updateByVersionString() {
+    public void updateByVersionString() {
         var id = new PluginVersionState(PluginModelId.byId(4), PluginVersionId.byString("2.0"));
 
         var input = new CheckForUpdatesInput(List.of(id), false);
@@ -80,8 +97,11 @@ public class DatabaseInteractorUpdateTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the update method with a mixture of latest, outdated and mismatched version identifiers.
+     */
     @Test
-    void updateMixed() {
+    public void updateMixed() {
         var latest = new PluginVersionState(PluginModelId.byId(2), PluginVersionId.byString("ver.2"));
         var outdated = new PluginVersionState(PluginModelId.byId(3), PluginVersionId.byString("update"));
         var mismatched = new PluginVersionState(PluginModelId.byId(7), PluginVersionId.byId(2));
@@ -96,8 +116,11 @@ public class DatabaseInteractorUpdateTest {
         assertEquals(result.mismatched().get(0), mismatched);
     }
 
+    /**
+     * Test the update method with an empty set of versions.
+     */
     @Test
-    void updateEmptyVersions() {
+    public void updateEmptyVersions() {
         var id = new PluginVersionState(PluginModelId.byId(1), PluginVersionId.byString("ver.2"));
 
         var input = new CheckForUpdatesInput(List.of(id), false);
@@ -108,8 +131,11 @@ public class DatabaseInteractorUpdateTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the update method with an empty database.
+     */
     @Test
-    void updateEmptyDatabase() {
+    public void updateEmptyDatabase() {
         var id = new PluginVersionState(PluginModelId.byId(4), PluginVersionId.byId(1));
 
         var input = new CheckForUpdatesInput(List.of(id), false);
@@ -121,8 +147,11 @@ public class DatabaseInteractorUpdateTest {
         assertTrue(result.mismatched().contains(id));
     }
 
+    /**
+     * Test the update method with an invalid plugin id (returns INVALID_INPUT).
+     */
     @Test
-    void updateInvalidPluginId() {
+    public void updateInvalidPluginId() {
         var invalid = new PluginModelId(OptionalLong.empty(), null, null);
         var id = new PluginVersionState(invalid, PluginVersionId.byId(1));
 
@@ -134,8 +163,11 @@ public class DatabaseInteractorUpdateTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the update method with an invalid version id (returns INVALID_INPUT).
+     */
     @Test
-    void updateInvalidVersionId() {
+    public void updateInvalidVersionId() {
         var invalid = new PluginVersionId(OptionalLong.empty(), null);
         var id = new PluginVersionState(PluginModelId.byId(3), invalid);
 
@@ -145,8 +177,11 @@ public class DatabaseInteractorUpdateTest {
         assertEquals(result.state(), CheckForUpdatesResult.State.INVALID_INPUT);
     }
 
+    /**
+     * Test the update method with a mismatched (plugin that doesn't exist).
+     */
     @Test
-    void updateMismatched() {
+    public void updateMismatched() {
         var id = new PluginVersionState(PluginModelId.byId(7), PluginVersionId.byId(1));
 
         var input = new CheckForUpdatesInput(List.of(id), false);
