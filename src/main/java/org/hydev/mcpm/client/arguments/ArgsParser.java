@@ -57,8 +57,7 @@ public class ArgsParser
      *                                 For default handling, pass this to ArgsParser#fail.
      */
     public void parse(String[] arguments, Consumer<String> log) throws ArgumentParserException {
-        try
-        {
+        try {
             var namespace = parser.parseArgs(arguments);
 
             Object handleObject = namespace.get("handler");
@@ -69,8 +68,7 @@ public class ArgsParser
 
             handler.run(namespace, log);
         }
-        catch (HelpException e)
-        {
+        catch (HelpException e) {
             log.accept(e.help());
         }
     }
@@ -81,12 +79,21 @@ public class ArgsParser
      * @param e The error object that was caught from #parse.
      */
     public void fail(ArgumentParserException e) {
+        this.fail(e, log);
+    }
+
+    /**
+     * Writes the error message to stdout (along with help details if needed).
+     *
+     * @param e The error object that was caught from #parse.
+     */
+    public void fail(ArgumentParserException e, Consumer<String> log) {
         StringWriter writer = new StringWriter();
         PrintWriter printer = new PrintWriter(writer);
 
         parser.handleError(e, printer);
 
-        log.accept(writer.toString());
+        log.accept("&c" + writer);
     }
 
     /**
