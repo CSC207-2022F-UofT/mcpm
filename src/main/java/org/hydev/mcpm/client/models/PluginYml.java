@@ -77,4 +77,14 @@ public record PluginYml(
 
         return YML.treeToValue(parsed, PluginYml.class);
     }
+
+    /**
+     * Get the first author
+     *
+     * @return Either the author specified in author field, or the first entry in authors.
+     */
+    public String getFirstAuthor()
+    {
+        return author != null ? author : authors != null && !authors.isEmpty() ? authors.get(0) : "Unknown";
+    }
 }
