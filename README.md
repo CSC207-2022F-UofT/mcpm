@@ -1,186 +1,205 @@
-# CSC207
+# mcpm
 
-Final Project for CSC207
+MCPM is a package manager for Minecraft Server plugins.
+The goal of this project is to enable users to quickly set up and configure mods on their new Minecraft Server.
 
-## Links
+On our team, we've had some rough experiences trying to get the
+right combination of plugins and mods that gets our server working just right.
+MCPM provides a bunch of utilities to get just the right plugins
+you need to deliver a great Minecraft experience to your players.
 
-* [Course Overview](https://q.utoronto.ca/courses/278453/pages/course-project)
-* [Task List (Projects)](https://github.com/orgs/CSC207-2022F-UofT/projects/18)
-* [Repo in CSC207 Organization](https://github.com/CSC207-2022F-UofT/mcpm)
-* [File Server Backend](https://mcpm.hydev.org)
+MCPM allows you to:
 
-## Development
+ - Install many plugins super quickly with one simple command!
+ - Keep track of and uninstall unnecessary plugins easily!
+ - Make sure all your plugins are patched and up to their latest version!
+ - Take a look under the hood and quickly see a list of installed plugins!
+ - Search for plugins by relevant commands and purposes, instead of just names and descriptions!
+ - Hot Reload your plugins while everyone is playing. No need to restart your server to test something new! 
+ - Export and share your best plugin configurations with others!
 
-### Setup and start a testing minecraft server:
+# Getting Started
+MCPM requires Java 19, which can be installed [here](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html).
 
-1. `pip install -r requirements.txt`
-2. `python3 -m tools.start_server`
+MCPM runs in two environments:
 
-If you want to rebuild & update our MCPM plugin while the server is running:
+ - The **CLI** environment, where you can search, download, update and configure plugins from the command line.
+ - The **In-Game** environment, where you can configure your server in-game.
 
-1. `python3 -m tools.update_build`
-2. `plugman reload mcpm` (Inside the server's command prompt)
+To access the CLI environment on a Unix machine, you can use the `./mcpm` shortcut in the root directory.
 
-### Run a specific class in an external terminal
-
-This is very useful to test terminal operations since the Gradle running environment isn't a tty, and IntelliJ IDEA's built-in terminal barely supports Xterm escape sequences.
-
-You can use `python3 -m tools.run <class reference>` to build and run a specific main class externally.
-
-<details>
-    <summary>How does it work</summary>
-
-For this, I've set up a custom gradle task `printCp` that will print out the classpath needed to run the classes with dependencies. It will print in stderr instead of stdout in order for bash to easily separate out the classpath. You can obtain the classpath in a bash variable by:
-
-`cp="$(./gradlew classes testClasses printCp 2>&1 > /dev/null)" && echo "$cp"`
-
-(Unfortunately since Windows doesn't support Bash, you'll need to use a Bash-compatible environment on Windows, either cygwin / git bash or WSL)
-
-Then, you can run your class with:
-
-`java19 -cp "$cp" org.hydev.mcpm.<class>`
-
-For example, you can test the progress bar with:
-
-`java19 -cp "$cp" org.hydev.mcpm.client.interaction.ProgressBar`
-
-</details>
-
-
-## MCPRS - Plugin Repository Server
-
-The downloadable Spigot plugins and their meta info are stored on our server, hosted in Toronto 🇨🇦. If you live far from Canada, please consider switching to one of the mirrors below:
-
-**North America** 🇺🇸
-
-| Mirror URL (HTTPS)   | Hosted By | Provider    | Location      | Speed    | Update |
-|----------------------|-----------|-------------|---------------|----------|--------|
-| mcprs.hydev.org      | HyDEV     | OVH Hosting | 🇨🇦 Montreal | 100 Mbps | 1 day  |
-| mcprs-bell.hydev.org | HyDEV     | Bell Canada | 🇨🇦 Toronto  | 750 Mbps | 1 day  |
-
-**Europe** 🇪🇺
-
-| Mirror URL (HTTPS)   | Hosted By | Provider   | Location        | Speed    | Update |
-|----------------------|-----------|------------|-----------------|----------|-------|
-| mcprs-lux.hydev.org  | HyDEV     | GCore Labs | 🇱🇺 Luxembourg | 200 Mbps | 1 day |
-
-**Asia**
-
-| Mirror URL (HTTPS)    | Hosted By | Provider | Location   | Speed    | Update |
-|-----------------------|-----------|----------|------------|----------|--------|
-| mcprs-tokyo.hydev.org | HyDEV     | Vultr    | 🇯🇵 Tokyo | 200 Mbps | 1 day  |
-
-If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#how-to-set-up-a-mirror)
-
-### How to set up a mirror
-
-The MCPRS server is hosted with a plain file server that supports both http and rsync. The official server is hosted using Nginx, but any file server with such compatibility would work. You can follow one of the approaches below to set up a mirror.
-
-After setting up a mirror, if you want to add it to our mirror list, you can submit a pull request to this repo editing the [mirrorlist.yml](mirrorlist.yml) file.
-
-#### Setup Mirror using Docker Compose
-
-For convenience, we created a docker image so that you can set up a mirror using Docker.
-It will automatically set up:
-
-1. `mcprs-sync`: Script to automatically sync updates every 24 hours (configurable)
-2. `mcprs-rsyncd`: rsync server
-3. `mcprs-nginx`: HTTP server (without SSL). This is only recommended if you don't have any other HTTP services set up
-
-You need to install docker and docker-compose, then you need to run:
-
-```bash
-git clone https://github.com/CSC207-2022F-UofT/mcpm
-cd mcpm/tools/mirror
-
-# Then, you should review or edit the docker-compose.yml script. After that:
-
-sudo mkdir -p /data/mcprs
-
-# If you want to start everything (including nginx):
-sudo docker-compose up -d
-
-# Or if you want to start sync and rsyncd but want to use your own HTTP server, do:
-sudo docker-compose up mcprs-sync mcprs-rsyncd -d
+```shell
+mcpm search JedCore # Look for plugins named JedCore
+mcpm install JedCore # Install it to our local directory!
 ```
 
-Note: If `docker-compose` says command not found, try `docker compose` instead
+On a windows machine, I recommend executing the shortcut via a bash emulator (Git Bash),
+launching the app yourself using `java`, or investigating the scripts in the /tools folder (run.py).
 
-#### Setup Mirror Manually
+The In-Game environment is more involved and requires a server with our MCPM plugin.
 
-You can sync all files from an existing mirror by using `rsync`, run rsync automatically using `crontab` or systemd timer, and hosting the synchronized local directory using `nginx`.
+You can quickly set up a test server using the `tools/start_server.py` script.
+This script will automatically download the proper JDK to build and run the server environment.
 
-```bash
-# Use rsync to sync 
-alias rsync1="rsync -rlptH --info=progress2 --safe-links --delete-delay --delay-updates --timeout=600 --contimeout=60 --no-motd"
-rsync1 "SOURCE_URL" "LOCAL_DIR"
+```shell
+pip install -r requirements.txt
+python -m tools.start_server
 ```
 
-```nginx.conf
-# /etc/nginx/conf.d/mcprs.conf
-# Make sure to include this sub-config in your /etc/nginx/nginx.conf
-# You can do "include /etc/nginx/conf.d/*.conf;"
-# After testing the http server works, you can use certbot to obtain a HTTPS certificate
-server
-{
-    listen 443 ssl;
-    listen [::]:443 ssl;
-    server_name mcprs.example.com; # TODO: Change this to your domain
+When in-game, use the `/mcpm ...` slash command to start configuring plugins.
 
-    root LOCAL_DIR; # TODO: Change this to your filesystem location
+For example, if you wanted to search for plugins named `JedCore`, type `/mcpm search JedCore` in chat.
 
-    location / {
-        autoindex on;
-    }
-}
+# Getting Help
 
-# HTTPS Redirect
-server
-{
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name default;
-    return 301 https://$host$request_uri;
-}
+If you need a reminder of what mcpm provides, you can use the `-h` or `--help` argument to learn more.
+
+```
+> mcpm --help
+
+usage: mcpm [-h] {echo,export} ...
+
+positional arguments:
+    echo: This is a dummy echo command that...
+    export: This command allows you to export...
+    
+named arguments:
+  -h, --help             show this help message and exit
 ```
 
-```rsyncd.conf
-# /etc/rsyncd.conf
-uid = nobody
-gid = nobody
-use chroot = no
-max connections = 4
-syslog facility = local5
-pid file = /run/rsyncd.pid
+You can also learn more about the options that each subcommand provides by passing `-h` to them!
 
-[mcprs]
-        path = /ws/mcpm/.mcpm
-        comment = MCPM Plugin Repository Server
+```
+> mcpm export --help
+
+usage: mcpm export [-h] [-c {true,false}] outfile
+
+positional arguments:
+  outfile
+
+named arguments:
+  -h, --help             show this help message and exit
+  -c {true,false}, --cache {true,false}
 ```
 
-### How does the server work?
+# Search
 
-Server file/endpoint structure:
+With MCPM you can search for new plugins using the search command.
+There's 3 different ways you can search for new plugins:
 
-`/db` : Database sync  
-`/db/core.json` : Core database (plain text)  
-`/db/core.zst` : Core database (compressed)  
-`/pkgs` : List of packages  
-`/pkgs/spiget` : Raw Spiget packages indexed by resource ids and version ids  
-`/pkgs/spiget/{resource-id}` : One Spiget resource  
-`/pkgs/spiget/{resource-id}/{version-id}` : One Spiget version  
-`/pkgs/spiget/{resource-id}/{version-id}/release.jar` : Jar published by the developer   
-`/pkgs/spiget/{resource-id}/{version-id}/plugin.yml` : Meta info  
-`/pkgs/links` : Generated symbolic links indexed by names and version names  
-`/pkgs/links/{name}` : One package  
-`/pkgs/links/{name}/{version}` : One version  
-`/pkgs/links/{name}/{version}/release.jar` : Prebuilt jar for the version of a package  
-`/pkgs/links/{name}/{version}/plugin.yml` : Meta info for the version of a package  
+ - By plugin name. The simplest and most precise way to search.
+ - By keyword. Searches plugin names and descriptions for matches.
+ - By command. For when you're looking for a plugin with the one command you need.
 
-Internal server file structure:
+You can execute these commands in any environment using the `search` subcommand:
+```shell
+mcpm search JedCore # Search for a plugin with the name "JedCore"
+mcpm search --by-keyword "protect land" # Search for a plugin that has protect in its description.
+mcpm search --by-command claim # Search for a plugin that provides a /claim command.
+```
 
-`/crawler` : Crawler cache / data storage  
-`/crawler/spiget` : Spiget crawler  
-`/crawler/spiget/resources.json` : List of all resources on SpigotMC  
-`/crawler/spiget/backups/resources.{timestamp}.json` : Older resources  
-`/cralwer/spiget/versions/{resource_id}.json` : Resource versions info
+# Install Plugins
+
+This is feature is in-progress and does not have a CommandParser yet.
+
+With MCPM you can install a variety of plugins from the Spigot database.
+
+This is done via our host mirrors that intermittently scrape and provide a list of plugins to download. 
+You can take a look at the underlying structure of the server [here](https://mcpm.hydev.org).
+
+You can install plugins using the same method you use to search plugins!
+For example, you can install a plugin that provides a `claim` command using the `--by-command` option!
+
+```shell
+mcpm install JedCore # Installs the latest version of the JedCore plugin.
+mcpm install --by-keyword "protect land" # This is also provided for consistency with search.
+mcpm install --by-command claim # This will install the latest version of a command that provides claim!
+```
+
+We recommend you use the search command before installing anything,
+however the option to install by keyword and command are still provided.
+
+# Uninstall Plugins
+
+This is feature is in-progress and does not have a CommandParser yet.
+
+MCPM keeps track of locally installed plugins for you so you
+don't need to worry about accidentally breaking your plugin installs.
+
+You can easily uninstall a plugin by name using the `uninstall` subcommand.
+
+The uninstall command will automatically get rid of all dependencies if possible.
+
+If you are attempting to get rid of a plugin that's required for another
+plugin to work, then MCPM will ask you to uninstall the other plugin first.
+
+This is to prevent you from creating invalid setups with your server
+(e.g. cases where your server can't start because a plugin is missing a dependency).
+
+```shell
+mcpm uninstall JedCore # Remove JedCore and its dependencies.
+```
+
+# Update Plugins
+
+This is feature is in-progress and does not have a CommandParser yet.
+
+MCPM also enables you to easily update all your locally installed plugins.
+
+You can pass it a list of names if you only want to update certain plugins,
+or pass a specific version string to force MCPM to download a specific version of the plugin.
+
+```shell
+mcpm update # Updates all plugins to their latest versions
+mcpm update JedCore CoreProtect # Update ONLY JedCore & CoreProtect
+mcpm update JedCore --version "2.10.0-Spigot1.18-PK1.9.3" # Install only the 2.10.0 version of JedCore
+```
+
+# List Installed Plugins
+
+MCPM allows you to easily see a list of all the plugins you currently have enabled.
+
+To do this, just call the list command:
+
+```shell
+mcpm list # Prints a list of all installed commands in a table
+mcpm list manual # Prints a list of all manually installed commands (excludes plugins installed as dependencies)
+mcpm list outdated # Prints a list of all commands that need updates
+```
+
+# Hot Reload Plugins
+
+MCPM allows you to quickly reload plugins on the fly.
+
+Often admins need to restart their server between tweaking plugins in order for the tweaks to take effect.
+
+With MCPM, you're able to skip this step and reload and unload plugins while in game.
+
+These commands are only accessible in the _In-Game_ environment. You must run them in a valid MCPM server.
+
+```shell
+mcpm load JedCore # Loads the JedCore plugin on the fly.
+mcpm reload JedCore # Unloads the JedCore plugin and loads it again.
+mcpm unload JedCore # Unload the JedCore plugin on the fly.
+```
+
+After a plugin is loaded, the plugin should start taking effect without the need for restarting your server.
+
+# Export/Import Plugin Configurations
+
+This is feature is in-progress and does not have a CommandParser for all components yet.
+
+MCPM allows you to export your current plugin configuration out into a file that you can then share with your friends.
+
+Sometimes you can find great set of plugins that work for your server, and you want to save it for later.
+
+Using the `export` subcommand command, you can quickly create a list of all installed plugins.
+You can then use the `import` command later to quickly reinstall that list of plugins.
+
+This allows plugins to be shared across servers and admins.
+You can also keep configurations for later and improve them as you learn more about the plugin landscape.
+
+```
+mcpm export plugins.txt # Export a list of all currently installed plugins into a file called plugins.txt.
+mcpm import plugins.txt # Import (install) every plugin contained in the plugins.txt file.
+```
