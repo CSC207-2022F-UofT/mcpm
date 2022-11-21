@@ -1,11 +1,6 @@
 package org.hydev.mcpm.client.arguments.parsers;
 
-import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import net.sourceforge.argparse4j.inf.Subparsers;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 /**
  * Implemented by parsers that define methods to "configure" ArgsParse4j and then "build" a CommandEntry object.
@@ -24,13 +19,6 @@ public interface CommandParser extends CommandHandler {
      * @return Description
      */
     String description();
-
-    /**
-     * Name of the command
-     *
-     * @return Name
-     */
-    String name();
 
     /**
      * Usually, the body of this command goes as follows:
