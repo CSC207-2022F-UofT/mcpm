@@ -1,12 +1,13 @@
 package org.hydev.mcpm.client.commands.entries;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.injector.LoadBoundary;
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
+import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
+import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 
 import java.util.List;
 import java.util.function.Consumer;
+
+import static org.hydev.mcpm.utils.FormatUtils.tabulate;
 
 /**
  * Handles the user input for a search.
@@ -16,9 +17,9 @@ public class SearchPackagesController {
     private final SearchPackagesBoundary searcher;
 
     /**
-     * Creates a LoadCommand object with this specified LoadBoundary to use when dispatched.
+     * Creates a searcher object with this specified SearchPackagesBoundary to use when dispatched.
      *
-     * @param searcher The load boundary to use in Command operation.
+     * @param searcher The search boundary to use in Search operation.
      */
     public SearchPackagesController(SearchPackagesBoundary searcher) {
         this.searcher = searcher;
@@ -28,10 +29,25 @@ public class SearchPackagesController {
     /**
      * Load plugins and output status to log.
      *
-     * @param pluginNames A list of all plugin names to be loaded.
+     * @param type String that specifies the type of search.
+     * @param text String that secifies the search text.
+     * @param noCache Specifies whether to use local cache or not.
      * @param log Callback for status for log events.
      */
-    public void searchPackages(List<String> pluginNames, Consumer<String> log) {
-        throw new NotImplementedException();
+    public void searchPackages(String type, String text, boolean noCache, Consumer<String> log) {
+        SearchPackagesInput inp = new SearchPackagesInput(
+                SearchPackagesType.valueOf(type),
+                text,
+                noCache);
+        var result = searcher.search(inp);
+        log.accept("Search State: " + result.state().toString());
+
+        // Print the plugins found
+        var list = result.plugins().stream()
+                .map(it -> it.getLatestPluginVersion().get().meta()).toList();
+        var table = tabulate(list.stream().map(p -> List.of(
+                "&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList(),
+                List.of(":Name", "Author", "Version:"));
+        log.accept(table);
     }
 }

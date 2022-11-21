@@ -15,6 +15,7 @@ import java.util.function.Consumer;
  * Handles parsing command arguments into CommandEntry objects (to be dispatched to Controller).
  * For steps to add a new command, see Command.java.
  *
+ * @author Taylor
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-10-30
  */
