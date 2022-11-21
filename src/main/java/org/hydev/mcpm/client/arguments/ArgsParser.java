@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.arguments;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.helper.HelpScreenException;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
@@ -45,14 +46,14 @@ public class ArgsParser
             {
                 @Override
                 public void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
-                                String flag, Object value) {
+                                String flag, Object value) throws HelpScreenException
+                {
                     log.accept(subparser.formatHelp());
+                    throw new HelpScreenException(parser);
                 }
 
                 @Override
-                public void onAttach(Argument arg) {
-                    /* nothing */
-                }
+                public void onAttach(Argument arg) {}
 
                 @Override
                 public boolean consumeArgument() {
