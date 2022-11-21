@@ -2,6 +2,7 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
+import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class SearchInteractorTest {
     @Test
     void testSearchByNameSuccess() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true));
+                new SearchPackagesInput(SearchPackagesType.BY_NAME, "SkinsRestorer", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
@@ -52,7 +53,7 @@ public class SearchInteractorTest {
     @Test
     void testSearchByKeywordSuccess() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
+                new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "offline online", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
@@ -64,7 +65,7 @@ public class SearchInteractorTest {
     @Test
     void testSearchByCommandSuccess() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesInput.Type.BY_COMMAND, "al", true));
+                new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "al", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
