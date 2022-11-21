@@ -29,7 +29,6 @@ public class ProgressBar implements ProgressBarBoundary {
     private final Map<ProgressRowBoundary, Integer> id;
 
     private long lastUpdate;
-
     private double frameDelay;
 
     private final boolean istty;
@@ -82,12 +81,12 @@ public class ProgressBar implements ProgressBarBoundary {
     }
 
 
-    public void incrementBarProgress(int id, long inc) {
+    private void incrementBarProgress(int id, long inc) {
         this.bars.get(id).increase(inc);
     }
 
 
-    public void setBarProgress(int id, long progress) {
+    private void setBarProgress(int id, long progress) {
         this.bars.get(id).set(progress);
     }
 
@@ -168,8 +167,7 @@ public class ProgressBar implements ProgressBarBoundary {
             for (int i = 0; i < 1300; i++)
             {
                 if (i < 1000 && i % 100 == 0) {
-                    var row = new ProgressRow(300)
-                        .unit("MB")
+                    var row = new ProgressRow(300 * 1_000_000)
                         .desc(format("File %s.tar.gz", all.size()))
                         .descLen(30);
 
@@ -178,7 +176,7 @@ public class ProgressBar implements ProgressBarBoundary {
                 }
 
                 for (int j = 0; j < all.size(); j++) {
-                    b.incrementBarProgress(j, 1);
+                    b.incrementBarProgress(j, 1_000_000);
                 }
                 safeSleep(3);
             }
@@ -188,16 +186,32 @@ public class ProgressBar implements ProgressBarBoundary {
         try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
         {
             for (int i = 0; i < 36; i++) {
-                ProgressRow bar = new ProgressRow(300).unit("MB").desc(String.format("File %s.tar.gz", i)).descLen(30);
+                ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
                 b.appendBar(bar);
             }
             for (int t = 0; t < 300; t++) {
                 for (int i = 0; i < 36; i++) {
                     double speed = Math.cos(Math.PI / 18 * i);
                     speed = speed * speed * 5 + 1;
-                    b.incrementBarProgress(i, (long) Math.ceil(speed));
+                    b.incrementBarProgress(i, (long) Math.ceil(speed) * 1_000_000);
                 }
                 safeSleep(15);
+            }
+        }
+
+        try (var b = new ProgressBar(ProgressBarTheme.FLOWER_THEME)) {
+            for (int i = 0; i < 36; i++) {
+                ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
+                b.appendBar(bar);
+            }
+
+            for (int t = 0; t < 400; t++) {
+                for (int i = 0; i < 36; i++) {
+                    double speed = Math.cos(Math.PI / 18 * (i + t * 36 / 150));
+                    speed = Math.abs(speed) * 5;
+                    b.incrementBarProgress(i, (long) Math.ceil(speed * 1_000_000));
+                }
+                safeSleep(30);
             }
         }
     }

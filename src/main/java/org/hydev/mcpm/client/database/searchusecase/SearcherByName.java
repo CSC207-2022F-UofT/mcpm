@@ -25,13 +25,15 @@ public class SearcherByName implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            var v = plugin.getLatestPluginVersion();
-            if (v.isPresent() && v.get().meta() != null && !v.get().meta().name().equals("")) {
-                String name = v.get().meta().name().toLowerCase();
-                if (!models.containsKey(name))
-                    models.put(name, new ArrayList<>());
-                models.get(name).add(plugin);
-            }
+            plugin.getLatestPluginVersion().ifPresent(p ->
+            {
+                if (p.meta() != null && p.meta().name() != null && !p.meta().name().isBlank()) {
+                    String name = p.meta().name().toLowerCase();
+                    if (!models.containsKey(name))
+                        models.put(name, new ArrayList<>());
+                    models.get(name).add(plugin);
+                }
+            });
         }
         return models;
     }

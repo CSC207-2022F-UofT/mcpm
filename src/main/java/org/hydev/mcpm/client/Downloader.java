@@ -33,9 +33,7 @@ public class Downloader
 
     private ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
-    private ArrayList<ProgressRow> allRows = new ArrayList<ProgressRow>();
-
-
+    private ArrayList<ProgressRow> allRows = new ArrayList<>();
 
     /**
      * Download one file from the internet to local storage through HTTP request
@@ -54,11 +52,10 @@ public class Downloader
             BufferedInputStream in = new BufferedInputStream(http.getInputStream());
             BufferedOutputStream bout = new BufferedOutputStream(fileos, 1024);
             byte[] buffer = new byte[1024];
-            int read = 0;
+            int read;
 
             var row = new ProgressRow(fileSize)
-                    .unit("Byte")
-                    .desc(format("Downloaded", allRows.size()))
+                    .desc(format("Download %s", allRows.size()))
                     .descLen(30);
             bar.appendBar(row);
             allRows.add(row);
@@ -68,7 +65,6 @@ public class Downloader
             }
             bout.close();
             in.close();
-            System.out.println("Download completed");
         }
         catch (IOException ex) {
             ex.printStackTrace();
@@ -81,28 +77,29 @@ public class Downloader
      * The implementation must use multithreading
      *
      * @param urls Mapping of remote urls to local file paths
-     * @param progress Show progress or not
-     * @param threads Number of simultaneous downloads
      */
-    public void downloadFiles(Map<String, File> urls, boolean progress, int threads) throws IOException {
-        ExecutorService executor = Executors.newFixedThreadPool(threads);
-        var files = urls.keySet().stream().toList();
-        if (files.size() > 0) {
-            for (int i = 0; i < files.size(); i++) {
-                executor.submit(new Processor(i, urls, files));
-            }
-            executor.shutdown();
-            // All files submitted for downloading
+    public void downloadFiles(Map<String, File> urls)
+    {
+        try (ExecutorService executor = Executors.newFixedThreadPool(threads))
+        {
+            var files = urls.keySet().stream().toList();
+            if (files.size() > 0)
+            {
+                for (String url : files)
+                {
+                    executor.submit(() ->
+                    {
+                        File to = urls.get(url);
+                        downloadFile(url, to);
+                    });
+                }
+                executor.shutdown();
+                // All files submitted for downloading
 
-
-            try {
-                executor.awaitTermination(20, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                while (!executor.isTerminated()) {}
+                // All files are completely downloaded
             }
-            // All files are completely downloaded
         }
-
     }
 
     /**
@@ -129,37 +126,6 @@ public class Downloader
         return this;
     }
 
-    class Processor implements Runnable {
-
-        private List<String> files;
-        private Map<String, File> urls;
-        private int id;
-
-        /**
-         * Download multiple files from the internet to local storage through HTTP requests
-         * <p>
-         * The implementation must use multithreading
-         *
-         * @param files List of remote urls
-         * @param urls Mapping of remote urls to local file paths
-         * @param id id for each file
-         */
-        public Processor(int id, Map<String, File> urls, List<String> files) {
-            this.id = id;
-            this.urls = urls;
-            this.files = files;
-        }
-
-        // Process downloading each file from multithreading
-        @Override
-        public void run() {
-            String url = files.get(id);
-            File to = urls.get(url);
-            downloadFile(url, to);
-        }
-    }
-
-
     /**
      * Displays a demo for.
      *
@@ -175,6 +141,6 @@ public class Downloader
         Map<String, File> urls = new HashMap<>();
         urls.put(link, out);
         urls.put(link1, out1);
-        downloader.downloadFiles(urls, true, 2);
+        downloader.downloadFiles(urls);
     }
 }

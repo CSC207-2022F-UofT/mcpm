@@ -8,17 +8,13 @@ import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
-import org.hydev.mcpm.client.database.inputs.ListPackagesInput;
+import org.hydev.mcpm.client.database.inputs.*;
 import org.hydev.mcpm.client.database.results.ListPackagesResult;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearcherFactory;
 
 import java.net.URI;
-import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
-import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
+
 import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
@@ -266,13 +262,13 @@ public class DatabaseInteractor
         System.out.println("Result (" + result.pageNumber() + " for " + result.plugins().size() + " plugins):");
         System.out.println(formatPluginNames(result.plugins()));
 
-        var searchInput = new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, "SkinsRestorer", true);
+        var searchInput = new SearchPackagesInput(SearchPackagesType.BY_NAME, "SkinsRestorer", true);
         var result1 = database.search(searchInput);
 
         System.out.println(formatPluginNames(result1.plugins()) + "\n");
 
         var result3 = database.search(new SearchPackagesInput(
-                SearchPackagesInput.Type.BY_KEYWORD, "offline online", true));
+                SearchPackagesType.BY_KEYWORD, "offline online", true));
 
         System.out.println(formatPluginNames(result3.plugins()));
 

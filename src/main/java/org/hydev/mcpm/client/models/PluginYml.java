@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public record PluginYml(
     ArrayList<String> softdepend,
     ArrayList<String> loadbefore,
     ArrayList<String> libraries,
-    Map<String, Object> commands
+    Map<String, PluginCommand> commands
 )
 {
     /**
@@ -75,10 +74,6 @@ public record PluginYml(
         // Same goes for the reverse, some developers put a single name under "authors"
         if (parsed.has("authors") && !parsed.get("authors").isArray() && parsed.get("authors").isTextual())
             parsed.set("author", parsed.remove("authors"));
-
-        // Some people put [PLUGIN] as their prefix without realizing that it will be parsed as an array
-        if (parsed.has("prefix") && parsed.get("prefix").isArray())
-            parsed.set("prefix", parsed.get("prefix").get(0));
 
         return YML.treeToValue(parsed, PluginYml.class);
     }

@@ -49,7 +49,7 @@ public class ListAllController {
         String[] validIn = {"all", "manual", "outdated"};
         try {
             if (Arrays.asList(validIn).contains(parameter)) {
-                return listAllBoundary.listBoundary(parameter);
+                return listAllBoundary.listAll(parameter);
             } else {
                 throw new IllegalArgumentException("Invalid parameter");
             }

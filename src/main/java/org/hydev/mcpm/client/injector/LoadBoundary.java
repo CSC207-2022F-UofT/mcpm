@@ -17,7 +17,7 @@ public interface LoadBoundary
      * @return True if success, false if failed
      * @throws PluginNotFoundException Plugin of the name is not found in the plugins directory
      */
-    public boolean loadPlugin(String name) throws PluginNotFoundException;
+    boolean loadPlugin(String name) throws PluginNotFoundException;
 
     /**
      * Dynamically load a local plugin through JVM reflections and classloader hacks
@@ -25,5 +25,5 @@ public interface LoadBoundary
      * @param jar Local jar file path
      * @return True if success, false if failed
      */
-    public boolean loadPlugin(File jar);
+    boolean loadPlugin(File jar);
 }
