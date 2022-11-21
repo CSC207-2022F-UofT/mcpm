@@ -45,13 +45,12 @@ def start(java: Path, mc_path: Path):
             print('Server stops.')
             exit(0)
 
-
 def update_build(mc_path: Path):
     # Build project
     print('Building project...')
     build_jar = Path('build/libs')
     shutil.rmtree(build_jar, ignore_errors=True)
-    check_call('./gradlew shadow', shell=True)
+    check_call('./gradlew shadowJar', shell=True)
 
     # Install plugin
     print('Installing our MCPM plugin...')
