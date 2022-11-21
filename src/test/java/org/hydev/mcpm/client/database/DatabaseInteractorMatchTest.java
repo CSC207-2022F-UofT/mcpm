@@ -12,12 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.OptionalLong;
 
+/**
+ * Tests the DatabaseInteractor's match method.
+ */
 public class DatabaseInteractorMatchTest {
-    static DatabaseInteractor emptyInteractor;
-    static DatabaseInteractor smallInteractor;
+    private static DatabaseInteractor emptyInteractor;
+    private static DatabaseInteractor smallInteractor;
 
+    /**
+     * Create relevant interactors for tests.
+     */
     @BeforeAll
-    static void setup() {
+    public static void setup() {
         emptyInteractor = PluginMockFactory.interactor(List.of());
 
         smallInteractor = PluginMockFactory.interactor(List.of(
@@ -27,6 +33,9 @@ public class DatabaseInteractorMatchTest {
         ));
     }
 
+    /**
+     * Test the match command for an empty search (search for nothing).
+     */
     @Test
     void matchEmptyInput() {
         var input = new MatchPluginsInput(List.of(), false);
@@ -37,6 +46,9 @@ public class DatabaseInteractorMatchTest {
         assertTrue(result.matched().isEmpty());
     }
 
+    /**
+     * Test the match command for an PluginModelId object.
+     */
     @Test
     void matchInvalidIdentifier() {
         var input = new MatchPluginsInput(List.of(
@@ -47,6 +59,9 @@ public class DatabaseInteractorMatchTest {
         assertEquals(result.state(), MatchPluginsResult.State.INVALID_INPUT);
     }
 
+    /**
+     * Test the match command to find one plugin by plugin id.
+     */
     @Test
     void matchOneById() {
         var id = PluginModelId.byId(2);
@@ -60,6 +75,9 @@ public class DatabaseInteractorMatchTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the match command to find many plugins by plugin id.
+     */
     @Test
     void matchManyById() {
         var first = PluginModelId.byId(2);
@@ -76,6 +94,9 @@ public class DatabaseInteractorMatchTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the match command to properly classify unknown plugins as mismatched.
+     */
     @Test
     void matchMismatchedOnly() {
         var id = PluginModelId.byId(6);
@@ -89,6 +110,9 @@ public class DatabaseInteractorMatchTest {
         assertEquals(result.mismatched().size(), 1);
     }
 
+    /**
+     * Test the match command to properly sort many plugins into matched/mismatched.
+     */
     @Test
     void matchMismatchedAndMatched() {
         var first = PluginModelId.byId(2);
@@ -104,6 +128,9 @@ public class DatabaseInteractorMatchTest {
         assertEquals(result.mismatched().size(), 1);
     }
 
+    /**
+     * Test the match command to properly find plugins by plugin name.
+     */
     @Test
     void matchByName() {
         var id = PluginModelId.byName("hello");
@@ -117,6 +144,9 @@ public class DatabaseInteractorMatchTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the match command to properly find plugins by plugin main class.
+     */
     @Test
     void matchByMain() {
         var id = PluginModelId.byMain("org.hello"); // Mock Generates main by prefixing org.
@@ -130,6 +160,9 @@ public class DatabaseInteractorMatchTest {
         assertTrue(result.mismatched().isEmpty());
     }
 
+    /**
+     * Test the match command to properly return nothing from an empty database.
+     */
     @Test
     void matchEmptyDatabase() {
         var id = PluginModelId.byId(6);
