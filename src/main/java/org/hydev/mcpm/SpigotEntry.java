@@ -61,11 +61,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
         }
         catch (ArgumentParserException e)
         {
-            if (e.getMessage().toLowerCase().contains("help screen")) return true;
-
-            // Incorrect commands, print help.
-            System.out.println(e.getMessage());
-            log.accept(parser.help());
+            parser.fail(e, log);
         }
 
         return true;
