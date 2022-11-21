@@ -19,6 +19,13 @@ public interface CommandParser {
     String name();
 
     /**
+     * Description of the command
+     *
+     * @return Description
+     */
+    String description();
+
+    /**
      * Usually, the body of this command goes as follows:
      *
      * <pre>

@@ -23,6 +23,12 @@ public record ListParser(ListController controller) implements CommandParser
     }
 
     @Override
+    public String description()
+    {
+        return "List installed plugins";
+    }
+
+    @Override
     public void configure(Subparser parser)
     {
         parser.addArgument("type").choices("all", "manual", "outdated").setDefault("all").nargs("?");

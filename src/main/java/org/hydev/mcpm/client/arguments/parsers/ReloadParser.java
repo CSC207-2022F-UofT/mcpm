@@ -19,6 +19,12 @@ public class ReloadParser implements CommandParser
     }
 
     @Override
+    public String description()
+    {
+        return "Reload a currently loaded plugin";
+    }
+
+    @Override
     public String name()
     {
         return "reload";

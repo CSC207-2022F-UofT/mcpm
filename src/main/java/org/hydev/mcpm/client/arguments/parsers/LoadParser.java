@@ -26,6 +26,12 @@ public class LoadParser implements CommandParser
     }
 
     @Override
+    public String description()
+    {
+        return "Load a plugin in the plugins folder";
+    }
+
+    @Override
     public void configure(Subparser parser)
     {
         parser.addArgument("plugins").dest("plugins").nargs("+")

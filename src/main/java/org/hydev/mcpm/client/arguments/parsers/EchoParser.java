@@ -29,6 +29,12 @@ public class EchoParser implements CommandParser
     }
 
     @Override
+    public String description()
+    {
+        return "Testing command to echo what you say";
+    }
+
+    @Override
     public void configure(Subparser parser)
     {
         parser.addArgument("text").dest("text")

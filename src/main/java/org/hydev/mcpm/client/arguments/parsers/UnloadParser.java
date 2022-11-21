@@ -27,6 +27,12 @@ public class UnloadParser implements CommandParser
     }
 
     @Override
+    public String description()
+    {
+        return "Unload a currently loaded plugin";
+    }
+
+    @Override
     public void configure(Subparser parser)
     {
         parser.addArgument("plugins").dest("plugins").nargs("+")
