@@ -6,14 +6,11 @@ import org.hydev.mcpm.client.interaction.ProgressRow;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
@@ -124,23 +121,5 @@ public class Downloader
     {
         this.threads = threads;
         return this;
-    }
-
-    /**
-     * Displays a demo for.
-     *
-     * @param args Arguments are ignored.
-     */
-    public static void main(String[] args) throws IOException {
-        // Remember to chang link to test
-        String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
-        File out = new File("./Introduction_to_Algorithms_Third_Edition.pdf");
-        String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
-        File out1 = new File("./Math.pdf");
-        Downloader downloader = new Downloader();
-        Map<String, File> urls = new HashMap<>();
-        urls.put(link, out);
-        urls.put(link1, out1);
-        downloader.downloadFiles(urls);
     }
 }
