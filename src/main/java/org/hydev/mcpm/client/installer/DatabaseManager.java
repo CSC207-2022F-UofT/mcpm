@@ -1,14 +1,18 @@
 package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.Downloader;
+import org.hydev.mcpm.client.commands.entries.SearchPackagesController;
 import org.hydev.mcpm.client.database.DatabaseInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
+import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.results.ListPackagesResult;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
+import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.models.PluginModel;
@@ -28,12 +32,15 @@ public class DatabaseManager {
     private final DatabaseInteractor databaseInteractor;
     private final LocalPluginTracker localPluginTracker;
 
+    private final SearchInteractor searchInteractor;
+
     /**
      * Initialize an database manager
      */
     public DatabaseManager() {
         this.databaseInteractor = new DatabaseInteractor(new LocalDatabaseFetcher(URI.create("http://mcpm.hydev.org")));
         this.localPluginTracker = new LocalPluginTracker("lock", "plugins");
+        this.searchInteractor = new SearchInteractor(new LocalDatabaseFetcher(URI.create("http://mcpm.hydev.org")));
     }
 
     /**
@@ -43,7 +50,7 @@ public class DatabaseManager {
      */
     public SearchPackagesResult getSearchResult(InstallInput input) throws InstallException {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);
-        SearchPackagesResult searchPackageResult = databaseInteractor.search(searchPackagesInput);
+        SearchPackagesResult searchPackageResult = searchInteractor.search(searchPackagesInput);
         if (searchPackageResult.state() != SearchPackagesResult.State.SUCCESS) {
             throw new InstallException(
                     searchPackageResult.state() == SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE ? InstallException.Type.SEARCH_FAILED_TO_FETCH_DATABASE :
@@ -72,8 +79,9 @@ public class DatabaseManager {
      * @param pluginVersion: The version of the installed plugin
      * */
     public void addManualInstalled(PluginVersion pluginVersion) {
+        String pluginName = pluginVersion.meta().name();
         if (pluginVersion != null) {
-            localPluginTracker.addManuallyInstalled(pluginVersion.meta().name());
+            localPluginTracker.addEntry(pluginName, true);
         }
     }
 }
