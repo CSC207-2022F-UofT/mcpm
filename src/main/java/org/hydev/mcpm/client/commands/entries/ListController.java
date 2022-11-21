@@ -35,7 +35,7 @@ public class ListController
         var list = listAllBoundary.listAll(parameter);
 
         // Tabulate result
-        var table = tabulate(list.stream().map(p -> List.of("&a" + p.name(), p.getFirstAuthor(), p.version())).toList(),
+        var table = tabulate(list.stream().map(p -> List.of("&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList(),
             List.of(":Name", "Author", "Version:"));
 
         log.accept(table);
