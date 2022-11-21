@@ -29,7 +29,7 @@ public interface FixedWindowSum {
 
     /**
      * Query the sum of all values that have an index within the window size (exclusive)
-     * that ends at the index of the most recent addition.
+     * that ends at the index of the most recent addition / query.
      *
      * @return the result of the query
      */
