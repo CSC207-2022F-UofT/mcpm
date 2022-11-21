@@ -5,10 +5,14 @@ import org.hydev.mcpm.client.Downloader;
 import java.io.File;
 
 /**
+<<<<<<< HEAD
  * Plugin downloader for the MCPM Plugin Repository
  *
  * @author Rena (https://github.com/thudoan1706)
  * @since 2022-11-20
+=======
+ * Spigot downloader
+>>>>>>> bec5e2f (add documentation)
  */
 public class SpigotPluginDownloader implements PluginDownloader {
 
@@ -26,18 +30,30 @@ public class SpigotPluginDownloader implements PluginDownloader {
     /**
      * Initialize the Spigot Plugin Downloader
      * @param downloader: The file downloader
+<<<<<<< HEAD
      * @param baseUrl: base URL for web brower
      * */
     public SpigotPluginDownloader(Downloader downloader, String baseUrl) {
+=======
+     * @param baseURL: base URL for web brower
+     * */
+    public SpigotPluginDownloader(Downloader downloader, String baseURL) {
+>>>>>>> bec5e2f (add documentation)
         this.downloader = downloader;
         this.baseUrl = baseUrl;
     }
 
     /**
      * Download the plugin according to its filepath
+<<<<<<< HEAD
      * @param pluginId: Spigot Plugin ID
      * @param pluginVersion: Spigot Plugin Version ID
      * @param destination: File path to write to
+=======
+     * @param pluginId: The Id of the plugin
+     * @param pluginVersion: the plugin Version
+     * @param destination: The filepath where the plugin will be installed to
+>>>>>>> bec5e2f (add documentation)
      * */
     @Override
     public void download(long pluginId, long pluginVersion, String destination) {
@@ -47,11 +63,20 @@ public class SpigotPluginDownloader implements PluginDownloader {
 
     /**
      * Construct Url as a plugin source for installation
+<<<<<<< HEAD
      * @param pluginId: Spigot Plugin ID
      * @param pluginVersion: Spigot Plugin Version ID
      * */
     private String constructUrl(long pluginId, long pluginVersion) {
         return String.format("%s/pkgs/spiget/%s/%s/release.jar", baseUrl, pluginId, pluginVersion);
 
+=======
+     * @param pluginId: The Id of the plugin
+     * @param pluginVersion: the plugin Version
+     * */
+    public String constructURL(long pluginId, long pluginVersion) {
+        String url = baseURL + "/pkgs/spiget/" + pluginId + "/" + pluginVersion + "/release.jar";
+        return url;
+>>>>>>> bec5e2f (add documentation)
     }
 }

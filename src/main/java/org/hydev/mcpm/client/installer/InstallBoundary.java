@@ -9,9 +9,6 @@ import org.hydev.mcpm.client.installer.input.InstallInput;
 
 /**
  * Interface for installing plugin to the jar file.
- *
- * @author Rena (https://github.com/thudoan1706)
- * @since 2022-11-18
  */
 
 public interface InstallBoundary {
