@@ -9,10 +9,10 @@ public record ExportPluginsResult(
         State state
 ) {
     /**
-     * State of the plugin export
+     * Outcome of the plugin export
      */
     public enum State {
         SUCCESS,
-        FAILED_TO_FETCH_DATABASE
+        FAILED_TO_FETCH_PLUGINS
     }
 }

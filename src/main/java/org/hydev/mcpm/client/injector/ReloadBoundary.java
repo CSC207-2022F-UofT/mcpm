@@ -13,5 +13,5 @@ public interface ReloadBoundary
      *
      * @param name Loaded plugin name
      */
-    public void reloadPlugin(String name) throws PluginNotFoundException;
+    void reloadPlugin(String name) throws PluginNotFoundException;
 }
