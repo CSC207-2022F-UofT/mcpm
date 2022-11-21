@@ -37,7 +37,6 @@ public class SearchInteractor implements SearchPackagesBoundary {
     public SearchInteractor(DatabaseFetcher fetcher, DatabaseFetcherListener listener) {
         this.fetcher = fetcher;
         this.listener = listener;
-
     }
 
     /**
