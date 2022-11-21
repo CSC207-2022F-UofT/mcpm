@@ -95,4 +95,16 @@ public class ColorLogger
     {
         return toPrint(System.out);
     }
+
+    /**
+     * Calculate string length removing color escape codes
+     *
+     * @param in Input string
+     * @return True length
+     */
+    public static int lengthNoColor(String in)
+    {
+        for (var key : ansiReplacements.keySet()) in = in.replace(key, "");
+        return in.length();
+    }
 }
