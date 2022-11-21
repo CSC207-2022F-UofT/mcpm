@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.installer.input;
 
-import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.PluginTracker;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;

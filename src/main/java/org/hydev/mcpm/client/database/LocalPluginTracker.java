@@ -6,6 +6,7 @@ import com.opencsv.exceptions.CsvException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
+import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
@@ -402,7 +403,7 @@ public class LocalPluginTracker implements PluginTracker {
             PluginYml currPlugin = readMeta(pluginYmlPath);
             String localVersion = currPlugin.version();
 
-            SearchPackagesInput searchPackagesInput = new SearchPackagesInput(SearchPackagesInput.Type.BY_NAME, name,
+            SearchPackagesInput searchPackagesInput = new SearchPackagesInput(SearchPackagesType.BY_NAME, name,
                     false);
             SearchPackagesResult searchPackagesResult = searchPackagesBoundary.search(searchPackagesInput);
 
