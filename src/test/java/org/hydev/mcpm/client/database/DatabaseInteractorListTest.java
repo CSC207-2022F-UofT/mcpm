@@ -10,12 +10,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Tests the DatabaseInteractor's list method.
+ */
 public class DatabaseInteractorListTest {
-    static DatabaseInteractor emptyInteractor;
-    static DatabaseInteractor smallInteractor;
+    private static DatabaseInteractor emptyInteractor;
+    private static DatabaseInteractor smallInteractor;
 
+    /**
+     * Create relevant interactors for tests.
+     */
     @BeforeAll
-    static void setup() {
+    public static void setup() {
         emptyInteractor = PluginMockFactory.interactor(List.of());
 
         smallInteractor = PluginMockFactory.interactor(List.of(
@@ -25,16 +31,23 @@ public class DatabaseInteractorListTest {
         ));
     }
 
+    /**
+     * Test the list command for an empty database (nothing to list).
+     */
     @Test
-    void listEmptyPlugins() {
+    public void listEmptyPlugins() {
         var input = new ListPackagesInput(20, 0, false);
         var result = emptyInteractor.list(input);
 
         assertEquals(result.state(), ListPackagesResult.State.NO_SUCH_PAGE);
     }
 
+    /**
+     * Test the list command for listing more commands than available in the database.
+     * Ex. This is a page boundary overflow.
+     */
     @Test
-    void listOverPageBoundaryPluginCount() {
+    public void listOverPageBoundaryPluginCount() {
         var input = new ListPackagesInput(20, 0, false);
         var result = smallInteractor.list(input);
 
@@ -42,16 +55,22 @@ public class DatabaseInteractorListTest {
         assertEquals(result.plugins().size(), 3);
     }
 
+    /**
+     * Test the list command for a request of a page that does not exist.
+     */
     @Test
-    void listNoSuchPage() {
+    public void listNoSuchPage() {
         var input = new ListPackagesInput(20, 1, false);
         var result = smallInteractor.list(input);
 
         assertEquals(result.state(), ListPackagesResult.State.NO_SUCH_PAGE);
     }
 
+    /**
+     * Test the list command for the correct total plugin count of a 2-page database.
+     */
     @Test
-    void listPageSubsetHasCorrectTotalPlugins() {
+    public void listPageSubsetHasCorrectTotalPlugins() {
         var input = new ListPackagesInput(2, 0, false);
         var result = smallInteractor.list(input);
 
@@ -59,8 +78,11 @@ public class DatabaseInteractorListTest {
         assertEquals(result.totalPlugins(), 3);
     }
 
+    /**
+     * Test the list command for the correct first page plugin count of a 2-page database.
+     */
     @Test
-    void listPageSubsetHasCorrectPluginCount() {
+    public void listPageSubsetHasCorrectPluginCount() {
         var input = new ListPackagesInput(2, 0, false);
         var result = smallInteractor.list(input);
 
@@ -68,8 +90,11 @@ public class DatabaseInteractorListTest {
         assertEquals(result.plugins().size(), 2);
     }
 
+    /**
+     * Test the list command for the correct plugins of the first page of a 2-page database.
+     */
     @Test
-    void listPageSubset() {
+    public void listPageSubset() {
         var input = new ListPackagesInput(2, 0, false);
         var result = smallInteractor.list(input);
 
@@ -82,8 +107,11 @@ public class DatabaseInteractorListTest {
         ));
     }
 
+    /**
+     * Test the list command for the correct plugins of the second page of a 2-page database.
+     */
     @Test
-    void listNextPageSubset() {
+    public void listNextPageSubset() {
         var input = new ListPackagesInput(2, 1, false);
         var result = smallInteractor.list(input);
 
@@ -96,8 +124,11 @@ public class DatabaseInteractorListTest {
         ));
     }
 
+    /**
+     * Test the list command for the correct plugin count of the second page of a 2-page database.
+     */
     @Test
-    void listNextPageSubsetHasCorrectPluginCount() {
+    public void listNextPageSubsetHasCorrectPluginCount() {
         var input = new ListPackagesInput(2, 1, false);
         var result = smallInteractor.list(input);
 
@@ -105,16 +136,22 @@ public class DatabaseInteractorListTest {
         assertEquals(result.plugins().size(), 1);
     }
 
+    /**
+     * Test the list command for an invalid input during a negative page number.
+     */
     @Test
-    void listNegativePageCount() {
+    public void listNegativePageNumber() {
         var input = new ListPackagesInput(2, -1, false);
         var result = smallInteractor.list(input);
 
         assertEquals(result.state(), ListPackagesResult.State.INVALID_INPUT);
     }
 
+    /**
+     * Test the list command to return all plugins with a negative items per page.
+     */
     @Test
-    void listNegativeItemsPerPage() {
+    public void listNegativeItemsPerPage() {
         var input = new ListPackagesInput(-1, 0, false);
         var result = smallInteractor.list(input);
 
