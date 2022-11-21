@@ -51,7 +51,7 @@ def update_build(mc_path: Path):
     print('Building project...')
     build_jar = Path('build/libs')
     shutil.rmtree(build_jar, ignore_errors=True)
-    check_call('./gradlew shadow', shell=True)
+    check_call('./gradlew shadowJar', shell=True)
 
     # Install plugin
     print('Installing our MCPM plugin...')

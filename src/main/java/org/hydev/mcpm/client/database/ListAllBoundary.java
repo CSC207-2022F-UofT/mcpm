@@ -1,6 +1,8 @@
 package org.hydev.mcpm.client.database;
 
 
+import org.hydev.mcpm.client.models.PluginYml;
+
 import java.util.List;
 
 /**
@@ -19,5 +21,5 @@ public interface ListAllBoundary {
      *     installed plugins, 'manual' denotes a request to list all manually installed plugins, and 'outdated' denotes
      *     a request to list all manually installed plugins that are outdated.
      */
-    List<String> listAll(String parameter);
+    List<PluginYml> listAll(String parameter);
 }

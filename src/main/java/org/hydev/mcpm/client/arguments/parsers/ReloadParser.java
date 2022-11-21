@@ -2,38 +2,44 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import net.sourceforge.argparse4j.inf.Subparsers;
 import org.hydev.mcpm.client.commands.entries.ReloadController;
-import org.hydev.mcpm.client.injector.ReloadBoundary;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
 /**
  * Argument parser for ReloadCommand. See ReloadEntry.
  */
-public class ReloadParser implements CommandParser {
+public class ReloadParser implements CommandParser
+{
     private final ReloadController controller;
 
-    public ReloadParser(ReloadController controller) {
+    public ReloadParser(ReloadController controller)
+    {
         this.controller = controller;
     }
 
     @Override
-    public @Nullable Subparser configure(Subparsers parsers) {
-        var parser = parsers
-            .addParser("reload");
-
-        parser
-            .addArgument("plugins")
-            .dest("plugins")
-            .nargs("+");
-
-        return parser;
+    public String description()
+    {
+        return "Reload a currently loaded plugin";
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log) {
+    public String name()
+    {
+        return "reload";
+    }
+
+    @Override
+    public void configure(Subparser parser)
+    {
+        parser.addArgument("plugins").dest("plugins").nargs("+")
+            .help("Name of the plugins to reload");
+    }
+
+    @Override
+    public void run(Namespace details, Consumer<String> log)
+    {
         controller.reload(details.get("plugins"), log);
     }
 }

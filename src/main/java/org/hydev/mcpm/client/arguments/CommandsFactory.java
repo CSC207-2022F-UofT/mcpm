@@ -2,9 +2,11 @@ package org.hydev.mcpm.client.arguments;
 
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
+import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.injector.PluginLoader;
+import org.hydev.mcpm.utils.ColorLogger;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -27,6 +29,7 @@ public class CommandsFactory {
     public static List<CommandParser> baseParsers() {
         var echoController = new EchoController();
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker()));
+        var listController = new ListController(new ListAllInteractor());
 
         /*
          * Add general parsers to this list!
@@ -34,8 +37,9 @@ public class CommandsFactory {
          * If you're not sure if your command is server-only, add it to this list!
          */
         return List.of(
-                new EchoParser(echoController),
-                new ExportPluginsParser(exportPluginsController)
+            new EchoParser(echoController),
+            new ExportPluginsParser(exportPluginsController),
+            new ListParser(listController)
         );
     }
 
@@ -71,7 +75,7 @@ public class CommandsFactory {
      * @return An ArgsParser object. Invoke ArgsParser#parse to see more.
      */
     public static ArgsParser baseArgsParser() {
-        return new ArgsParser(baseParsers(), System.out::println);
+        return new ArgsParser(baseParsers(), ColorLogger.toStdOut());
     }
 
     /**

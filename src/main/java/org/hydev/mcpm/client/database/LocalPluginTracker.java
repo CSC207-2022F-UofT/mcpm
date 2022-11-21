@@ -18,8 +18,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This class keeps track of locally installed packages
- *
+ * This class keeps track of locally installed packages, providing a variety of
+ * functions
+ * 
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-09-27
  */
@@ -165,28 +166,15 @@ public class LocalPluginTracker implements PluginTracker {
      * List all currently installed plugins in an ArrayList
      */
     public List<PluginYml> listInstalled() {
-        List<PluginYml> installedPlugins = new ArrayList<>();
-        // Go into the plugin directory and read the metadata of all the plugins
+        // Go into the plugin directory and list files
         File dir = new File(pluginDirectory);
-        File[] directoryListing = dir.listFiles();
-        if (directoryListing != null) {
-            for (File child : directoryListing) {
-                try {
-                    if (child.getName().endsWith(".jar")) {
-                        PluginYml plugin = readMeta(child);
-                        if (plugin != null) {
-                            installedPlugins.add(plugin);
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error reading plugin.yml from " + child);
-                }
-            }
-        } else {
-            System.out.printf("Could not read directory.");
-        }
+        File[] list = dir.listFiles();
+        if (list == null)
+            return new ArrayList<>();
 
-        return installedPlugins;
+        // Filter only java files, return all metadata that's not null
+        return Arrays.stream(list).filter(f -> f.isFile() && f.getName().endsWith(".jar"))
+                .map(this::readMeta).filter(Objects::nonNull).toList();
     }
 
     /**
@@ -233,15 +221,19 @@ public class LocalPluginTracker implements PluginTracker {
      */
     public List<String> listManuallyInstalled() {
         Map<String, Boolean> mainLock = readCsv();
-        List<String> manuallyInstalled = new ArrayList<>();
+
+        ArrayList<String> accumulator = new ArrayList<>();
 
         for (Map.Entry<String, Boolean> entry : mainLock.entrySet()) {
             if (entry.getValue()) {
-                manuallyInstalled.add(entry.getKey());
+                accumulator.add(entry.getKey());
             }
         }
 
-        return manuallyInstalled;
+        // Sorts the list alphabetically
+        Collections.sort(accumulator);
+
+        return accumulator;
     }
 
     /**

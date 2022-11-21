@@ -5,7 +5,6 @@ import org.hydev.mcpm.*;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListAllInteractor {
@@ -23,27 +22,27 @@ public class ListAllInteractor {
      *                  installed plugins that are outdated.
      * @throws Exception
      */
-    public List<String> listAll(String parameter) throws Exception {
-        try {
-            switch (parameter) {
-                case "all":
-                    List<PluginYml> pluginList = localPluginTracker.listInstalled();
-                    List<String> pluginNames = pluginYmlListToString(pluginList);
-                    return pluginNames;
+    public List<PluginYml> listAll(String parameter) {
+        var installed = localPluginTracker.listInstalled();
+        switch (parameter) {
+            case "all":
+                return installed;
 
-                case "manual":
-                    List<String> manualList = localPluginTracker.listManuallyInstalled();
-                    return manualList;
+            case "manual":
+                return localPluginTracker.listManuallyInstalled();
 
-                case "outdated":
-                    throw new NotImplementedException("Method to print outdated plugins not implemented yet");
-                default:
-                    return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("Error in ListAllInteractor while fetching from LocalPluginTracker");
+            case "outdated":
+                throw new NotImplementedException("Method to print outdated plugins not implemented yet");
+            default:
+                return null;
         }
+    }catch(
+
+    Exception e)
+    {
+        e.printStackTrace();
+        throw new Exception("Error in ListAllInteractor while fetching from LocalPluginTracker");
+    }
 
     }
 
