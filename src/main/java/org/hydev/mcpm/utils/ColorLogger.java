@@ -61,7 +61,10 @@ public class ColorLogger
     private static String encodeAnsiString(String in)
     {
         // Add &r (color reset) after each line
-        in = String.join("\n", Arrays.stream(in.split("\n")).map(line -> line + "&r").toList());
+        //in = String.join("\n", Arrays.stream(in.split("\n")).map(line -> line + "&r").toList());
+
+        // Add &r to the end
+        in += "&r";
 
         // Replace colors
         for (var entry : ansiReplacements.entrySet())

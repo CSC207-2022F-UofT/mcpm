@@ -69,7 +69,7 @@ public class ArgsParser
             handler.run(namespace, log);
         }
         catch (HelpException e) {
-            log.accept(e.help());
+            log.accept("&e" + e.help());
         }
     }
 
