@@ -33,9 +33,7 @@ public class ExportInteractor implements ExportPluginsBoundary {
         }
 
         PrintStream ps = new PrintStream(input.out());
-        plugins.forEach(p -> {
-                    ps.printf("%s %s\n", p.name(), p.version());
-        });
+        plugins.forEach(p -> ps.printf("%s %s\n", p.name(), p.version()));
         return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS);
     }
 }

@@ -72,7 +72,7 @@ public class InstallInteractor implements InstallBoundary {
         // 4. Add it to the plugin tracker
         new File("plugins").mkdirs();
         input.pluginDownloader().download(id, pluginVersion.id(), "plugins/" + name + ".jar");
-        input.pluginTracker().addManuallyInstalled(name);
+        input.pluginTracker().addEntry(name, true);
 
         // 5. Install the dependencies
         if (pluginVersion.meta().depend() != null) {
@@ -85,6 +85,7 @@ public class InstallInteractor implements InstallBoundary {
                         input.pluginDownloader(),
                         input.pluginTracker());
                 installPlugin(dependencyInput);
+                input.pluginTracker().removeManuallyInstalled(name);
             }
         }
     }
