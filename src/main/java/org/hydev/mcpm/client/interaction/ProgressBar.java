@@ -81,12 +81,12 @@ public class ProgressBar implements ProgressBarBoundary {
     }
 
 
-    public void incrementBarProgress(int id, long inc) {
+    private void incrementBarProgress(int id, long inc) {
         this.bars.get(id).increase(inc);
     }
 
 
-    public void setBarProgress(int id, long progress) {
+    private void setBarProgress(int id, long progress) {
         this.bars.get(id).set(progress);
     }
 
@@ -196,6 +196,22 @@ public class ProgressBar implements ProgressBarBoundary {
                     b.incrementBarProgress(i, (long) Math.ceil(speed) * 1_000_000);
                 }
                 safeSleep(15);
+            }
+        }
+
+        try (var b = new ProgressBar(ProgressBarTheme.FLOWER_THEME)) {
+            for (int i = 0; i < 36; i++) {
+                ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
+                b.appendBar(bar);
+            }
+
+            for (int t = 0; t < 400; t++) {
+                for (int i = 0; i < 36; i++) {
+                    double speed = Math.cos(Math.PI / 18 * (i + t * 36 / 150));
+                    speed = Math.abs(speed) * 5;
+                    b.incrementBarProgress(i, (long) Math.ceil(speed * 1_000_000));
+                }
+                safeSleep(30);
             }
         }
     }

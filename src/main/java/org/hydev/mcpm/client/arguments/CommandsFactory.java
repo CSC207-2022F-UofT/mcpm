@@ -26,7 +26,7 @@ public class CommandsFactory {
      */
     public static List<CommandParser> baseParsers() {
         var echoController = new EchoController();
-        var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker(null, null))); // idk man
+        var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker()));
 
         /*
          * Add general parsers to this list!

@@ -2,7 +2,6 @@ package org.hydev.mcpm.client.database.export;
 
 import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.boundary.ExportPluginsBoundary;
-import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.database.inputs.ExportPluginsInput;
 import org.hydev.mcpm.client.database.results.ExportPluginsResult;
 
@@ -34,9 +33,7 @@ public class ExportInteractor implements ExportPluginsBoundary {
         }
 
         PrintStream ps = new PrintStream(input.out());
-        plugins.forEach(p -> {
-                    ps.printf("%s %s\n", p.name(), p.version());
-        });
+        plugins.forEach(p -> ps.printf("%s %s\n", p.name(), p.version()));
         return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS);
     }
 }

@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * Parser for the ExportPluginsBoundary interface.
  */
 public class ExportPluginsParser implements CommandParser {
-    private ExportPluginsController controller;
+    private final ExportPluginsController controller;
 
     public ExportPluginsParser(ExportPluginsController controller) {
         this.controller = controller;

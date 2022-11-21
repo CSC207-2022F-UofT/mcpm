@@ -9,7 +9,7 @@ public record ExportPluginsResult(
         State state
 ) {
     /**
-     * Outcome of the result
+     * Outcome of the plugin export
      */
     public enum State {
         SUCCESS,
