@@ -18,4 +18,10 @@ class ColorLoggerTest
         var log = ColorLogger.toStdOut();
         log.accept("&aGreen! &cRed! &bBlue! &rDefault!");
     }
+
+    @Test
+    void lengthNoColor()
+    {
+        assert ColorLogger.lengthNoColor("&bBlue!") == "Blue!".length();
+    }
 }
