@@ -11,17 +11,19 @@ import java.util.TreeSet;
 
 /**
  * Implementation of VariableWindowProgressRowBoundary using a prefix sum array.
+ *
+ *
  */
 public class VariableWindowProgressSpeedCalculator implements VariableWindowProgressSpeedBoundary {
     private final ArrayList<Long> psa = new ArrayList<>();
     // psa of progress, where each element is total progress within the same millisecond
     // milliseconds are not necessarily consecutive, for example, if no progress was made at t=22ms
     // then psa will not contain 0 for this instance of time
-    // in other words we use coordinate compression
+    // in other words we use coordinate compression, to reduce memory usage
 
-    private final TreeMap<Long, Integer> map = new TreeMap<>(); // maps time in nanoseconds to psa indices
+    private final TreeMap<Long, Integer> map = new TreeMap<>(); // maps time in milliseconds to psa indices
     private long total = 0;
-    private long start = 0; // start time
+    private long start; // start time
     private final long defaultWindow;
 
     /**
