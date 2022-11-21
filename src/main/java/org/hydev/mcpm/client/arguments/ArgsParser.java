@@ -8,6 +8,7 @@ import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -24,6 +25,7 @@ public class ArgsParser
     private final String help;
     private final ArgumentParser parser;
     private final Consumer<String> log;
+    private final List<CommandParser> subparsers;
 
     /**
      * Creates a new ArgsParser object with a list of CommandParsers.
@@ -32,6 +34,7 @@ public class ArgsParser
      */
     public ArgsParser(List<CommandParser> allParsers, Consumer<String> log) {
         this.log = log;
+        this.subparsers = allParsers;
 
         parser = ArgumentParsers.newFor("mcpm").addHelp(false).build();
 
@@ -116,6 +119,10 @@ public class ArgsParser
      */
     public String help() {
         return help;
+    }
+
+    public List<CommandParser> getRawSubparsers() {
+        return subparsers;
     }
 
     /**
