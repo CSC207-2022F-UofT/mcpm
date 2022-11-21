@@ -2,7 +2,8 @@ package org.hydev.mcpm.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hydev.mcpm.utils.ColorLogger.printc;
+import static org.hydev.mcpm.utils.ColorLogger.printfc;
 
 /**
  * Tests for ColorLogger
@@ -17,6 +18,8 @@ class ColorLoggerTest
     {
         var log = ColorLogger.toStdOut();
         log.accept("&aGreen! &cRed! &bBlue! &rDefault!");
+        printc("&aPrintc!");
+        printfc("&aPrintfc! %.2f", 0.031f);
     }
 
     @Test
