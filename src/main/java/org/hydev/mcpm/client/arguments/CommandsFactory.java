@@ -5,6 +5,7 @@ import org.hydev.mcpm.client.commands.entries.*;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.injector.PluginLoader;
+import org.hydev.mcpm.utils.ColorLogger;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -71,7 +72,7 @@ public class CommandsFactory {
      * @return An ArgsParser object. Invoke ArgsParser#parse to see more.
      */
     public static ArgsParser baseArgsParser() {
-        return new ArgsParser(baseParsers(), System.out::println);
+        return new ArgsParser(baseParsers(), ColorLogger.toStdOut());
     }
 
     /**
