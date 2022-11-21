@@ -11,25 +11,31 @@ import java.util.function.Consumer;
 /**
  * Argument parser for UnloadCommand. See UnloadEntry.
  */
-public class UnloadParser implements CommandParser {
+public class UnloadParser implements CommandParser
+{
     private final UnloadController controller;
 
-    public UnloadParser(UnloadController controller) {
+    public UnloadParser(UnloadController controller)
+    {
         this.controller = controller;
     }
 
     @Override
-    public @Nullable Subparser configure(Subparsers parsers) {
-        var parser = parsers.addParser("unload");
-
-        parser.addArgument("plugins").dest("plugins").nargs("+")
-            .help("Name of the plugins to unload");
-
-        return parser;
+    public String name()
+    {
+        return "unload";
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log) {
+    public void configure(Subparser parser)
+    {
+        parser.addArgument("plugins").dest("plugins").nargs("+")
+            .help("Name of the plugins to unload");
+    }
+
+    @Override
+    public void run(Namespace details, Consumer<String> log)
+    {
         controller.unload(details.getList("plugins"), log);
     }
 }
