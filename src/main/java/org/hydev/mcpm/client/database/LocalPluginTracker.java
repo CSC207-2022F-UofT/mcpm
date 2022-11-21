@@ -95,11 +95,10 @@ public class LocalPluginTracker implements PluginTracker {
         String csvFile = mainLockFile;
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
             for (Map.Entry<String, Boolean> entry : map.entrySet()) {
-                String[] line = {entry.getKey(), entry.getValue().toString()};
+                String[] line = { entry.getKey(), entry.getValue().toString() };
                 writer.writeNext(line);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -133,7 +132,7 @@ public class LocalPluginTracker implements PluginTracker {
     public void syncMainLockFile() {
         Map<String, Boolean> csvMap = readCsv();
 
-        Set<String> installedMap = new HashSet<String>();
+        Set<String> installedMap = new HashSet<>();
 
         List<PluginYml> installedPlugins = listInstalled();
 
@@ -143,8 +142,10 @@ public class LocalPluginTracker implements PluginTracker {
 
         ArrayList<Pair<String, Boolean>> toAdd = new ArrayList<>();
 
-        // If a key value pair exists in installedMap but not in the csv map, add its representation to toAdd.
-        // If a kvp exists in both, add it with toAdd, keeping the value from the csv map.
+        // If a key value pair exists in installedMap but not in the csv map, add its
+        // representation to toAdd.
+        // If a kvp exists in both, add it with toAdd, keeping the value from the csv
+        // map.
         for (String entry : installedMap) {
             toAdd.add(Pair.of(entry, csvMap.getOrDefault(entry, false)));
         }
@@ -160,23 +161,15 @@ public class LocalPluginTracker implements PluginTracker {
      * List all currently installed plugins in an ArrayList
      */
     public List<PluginYml> listInstalled() {
-        List<PluginYml> installedPlugins = new ArrayList<>();
-        // Go into the plugin directory and read the metadata of all the plugins
+        // Go into the plugin directory and list files
         File dir = new File(pluginDirectory);
-        File[] directoryListing = dir.listFiles();
-        if (directoryListing != null) {
-            for (File child : directoryListing) {
-                try {
-                    installedPlugins.add(readMeta(child));
-                } catch (Exception e) {
-                    System.out.println("Error reading plugin.yml from " + child);
-                }
-            }
-        } else {
-            System.out.println("Error reading directory");
-        }
+        File[] list = dir.listFiles();
+        if (list == null)
+            return new ArrayList<>();
 
-        return installedPlugins;
+        // Filter only java files, return all metadata that's not null
+        return Arrays.stream(list).filter(f -> f.isFile() && f.getName().endsWith(".jar"))
+                .map(this::readMeta).filter(Objects::nonNull).toList();
     }
 
     /**
@@ -222,25 +215,20 @@ public class LocalPluginTracker implements PluginTracker {
      * @return List of plugin names
      */
     public List<String> listManuallyInstalled() {
-        try {
-            FileReader filereader = new FileReader(mainLockFile);
-            CSVReader csvReader = new CSVReader(filereader);
-            String[] nextRecord;
-            List<String> manuallyInstalledPlugins = new ArrayList<>();
+        Map<String, Boolean> mainLock = readCsv();
 
-            // Read data
-            while ((nextRecord = csvReader.readNext()) != null) {
-                if (nextRecord[1].equals("true")) {
-                    manuallyInstalledPlugins.add(nextRecord[0]);
-                }
+        ArrayList<String> accumulator = new ArrayList<>();
+
+        for (Map.Entry<String, Boolean> entry : mainLock.entrySet()) {
+            if (entry.getValue()) {
+                accumulator.add(entry.getKey());
             }
-
-            csvReader.close();
-            return manuallyInstalledPlugins;
-        } catch (Exception e) {
-            System.out.println("Error reading CSV");
-            return null;
         }
+
+        // Sorts the list alphabetically
+        Collections.sort(accumulator);
+
+        return accumulator;
     }
 
     /**
@@ -263,17 +251,20 @@ public class LocalPluginTracker implements PluginTracker {
 
                 File pluginYmlPath = getPluginFile(name);
                 PluginYml p = readMeta(pluginYmlPath);
-                if (p == null) continue;
+                if (p == null)
+                    continue;
 
                 // String pluginYmlPath = pluginDirectory + "/" + name + "/plugin.yml";
                 // PluginYml currPlugin = readMeta(new File(pluginYmlPath));
                 // Add the dependencies of the plugin to the list of required dependencies
-                if (p.depend() != null) requiredDependencies.addAll(p.depend());
+                if (p.depend() != null)
+                    requiredDependencies.addAll(p.depend());
 
                 // If considerSoftDependencies is true, add the soft dependencies to the list of
                 // required dependencies
                 if (considerSoftDependencies) {
-                    if (p.softdepend() != null) requiredDependencies.addAll(p.softdepend());
+                    if (p.softdepend() != null)
+                        requiredDependencies.addAll(p.softdepend());
                 }
 
             } catch (Exception e) {
@@ -336,7 +327,7 @@ public class LocalPluginTracker implements PluginTracker {
         return "";
     }
 
-    ///**
+    /// **
     // * Get a list of plugins that are outdated
     // *
     // * @return List of plugin names

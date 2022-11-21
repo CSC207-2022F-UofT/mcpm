@@ -17,6 +17,11 @@ class ColorLoggerTest
     {
         var log = ColorLogger.toStdOut();
         log.accept("&aGreen! &cRed! &bBlue! &rDefault!");
-        log.accept("&&a escaped! &&&a not escaped!");
+    }
+
+    @Test
+    void lengthNoColor()
+    {
+        assert ColorLogger.lengthNoColor("&bBlue!") == "Blue!".length();
     }
 }

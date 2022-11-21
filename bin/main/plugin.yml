@@ -8,5 +8,5 @@ website: https://github.com/CSC207-2022F-UofT/mcpm
 commands:
   mcpm:
     description: Minecraft package manager
-    usage: /mcpm <install/remove/update/search/load/unload/reload/help>
+    usage: "View help: /mcpm -h"
     permission: mcpm.use

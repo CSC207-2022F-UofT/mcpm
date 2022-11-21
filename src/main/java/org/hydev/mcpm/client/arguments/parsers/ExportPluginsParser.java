@@ -27,6 +27,12 @@ public class ExportPluginsParser implements CommandParser
     }
 
     @Override
+    public String description()
+    {
+        return "Export plugin configuration";
+    }
+
+    @Override
     public void configure(Subparser parser)
     {
         parser.addArgument("outfile") // add optional output file

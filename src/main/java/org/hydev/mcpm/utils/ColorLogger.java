@@ -42,6 +42,27 @@ public class ColorLogger
     );
 
     /**
+     * Println to stdout with colors
+     *
+     * @param text Text with color codes
+     */
+    public static void printc(String text)
+    {
+        System.out.println(encodeAnsiString(text));
+    }
+
+    /**
+     * Println to stdout with colors and formatting
+     *
+     * @param format Format string
+     * @param args Format arguments
+     */
+    public static void printfc(String format, Object... args)
+    {
+        printc(String.format(format, args));
+    }
+
+    /**
      * Create a logger that sends colored messages to a minecraft player
      *
      * @param sender Minecraft CommandSender
@@ -98,5 +119,17 @@ public class ColorLogger
     public static Consumer<String> toStdOut()
     {
         return toPrint(System.out);
+    }
+
+    /**
+     * Calculate string length removing color escape codes
+     *
+     * @param in Input string
+     * @return True length
+     */
+    public static int lengthNoColor(String in)
+    {
+        for (var key : ansiReplacements.keySet()) in = in.replace(key, "");
+        return in.length();
     }
 }
