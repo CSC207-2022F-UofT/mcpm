@@ -13,6 +13,14 @@ import java.util.stream.IntStream;
 public class PluginMockFactory {
     private PluginMockFactory() { }
 
+    /**
+     * Creates a mock PluginYml object.
+     *
+     * @param name The name of the plugin.
+     * @param version The version string for the plugin.
+     * @param description The description for the plugin.
+     * @return A PluginYml object.
+     */
     public static PluginYml meta(String name, String version, String description) {
         return new PluginYml(
             "org." + name,
@@ -33,15 +41,37 @@ public class PluginMockFactory {
         );
     }
 
+    /**
+     * Creates a mock PluginVersion object.
+     *
+     * @param id The version id.
+     * @param name The plugin name (for meta).
+     * @param string The version string (for meta).
+     * @return A PluginVersion object.
+     */
     public static PluginVersion version(long id, String name, String string) {
         return new PluginVersion(id, 0, "", meta(name, string, null));
     }
 
 
+    /**
+     * Creates a mock PluginModel object (with no versions).
+     *
+     * @param id The plugin id.
+     * @return A PluginModel object.
+     */
     public static PluginModel model(long id) {
         return new PluginModel(id, List.of());
     }
 
+    /**
+     * Creates a mock PluginModel object (with one version).
+     * Thhe one version will have the version string `ver.{name}`
+     *
+     * @param id The plugin id.
+     * @param name The plugin name.
+     * @return A PluginModel object.
+     */
     public static PluginModel model(long id, String name) {
         return new PluginModel(
             id,
@@ -49,6 +79,15 @@ public class PluginMockFactory {
         );
     }
 
+    /**
+     * Creates a mock PluginModel object.
+     * The first version in versionNames will have id 0, the next will have id 1, and so on...
+     *
+     * @param id The plugin id.
+     * @param name The plugin name.
+     * @param versionNames The individual version strings for each version.
+     * @return A PluginModel object.
+     */
     public static PluginModel model(long id, String name, List<String> versionNames) {
         return new PluginModel(
             id,
@@ -58,6 +97,12 @@ public class PluginMockFactory {
         );
     }
 
+    /**
+     * Creates a mock DatabaseInteractor object with the provided plugin list.
+     *
+     * @param plugins A list of plugins that the DatabaseInteractor will have access to.
+     * @return A DatabaseInteractor object.
+     */
     public static DatabaseInteractor interactor(List<PluginModel> plugins) {
         var fetcher = new ConstantFetcher(plugins);
         var listener = new BriefFetcherListener(true);
