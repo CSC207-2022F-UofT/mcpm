@@ -26,6 +26,13 @@ public interface CommandParser extends CommandHandler {
     String description();
 
     /**
+     * Name of the command
+     *
+     * @return Name
+     */
+    String name();
+
+    /**
      * Usually, the body of this command goes as follows:
      *
      * <pre>

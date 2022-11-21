@@ -87,13 +87,17 @@ public class ColorLogger
         // Add &r to the end
         in += "&r";
 
+        // Escape ampersand
+        var ampEscape = "[gFk38N EsCaPeD AmPeRsAnD f47Svw]";
+        in = in.replace("&&", ampEscape);
+
         // Replace colors
         for (var entry : ansiReplacements.entrySet())
         {
             in = in.replace(entry.getKey(), entry.getValue());
         }
 
-        return in;
+        return in.replace(ampEscape, "&");
     }
 
     /**
