@@ -63,7 +63,7 @@ public class FormatUtils
      */
     public static String tabulate(List<List<String>> rows1, List<String> headers)
     {
-        return tabulate(rows1, headers, " | ");
+        return tabulate(rows1, headers, "&r | ");
     }
 
     /**
@@ -93,7 +93,7 @@ public class FormatUtils
             .mapToInt(r -> lengthNoColor(r.get(col))).max().orElse(0)).toArray();
 
         // Format string
-        var lines = rows.stream().map(row -> String.join(" | ", Streams.mapWithIndex(row.stream(),
+        var lines = rows.stream().map(row -> String.join(sep, Streams.mapWithIndex(row.stream(),
             (v, col) -> justify(v, justify.get((int) col), lens[(int) col])).toList())).toList();
 
         // Join

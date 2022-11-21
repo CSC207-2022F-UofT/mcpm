@@ -3,6 +3,9 @@ package org.hydev.mcpm.client.commands.entries;
 import org.hydev.mcpm.client.database.ListAllBoundary;
 
 import java.util.List;
+import java.util.function.Consumer;
+
+import static org.hydev.mcpm.utils.FormatUtils.tabulate;
 
 /**
  * Controller class for the ListAll use case.
@@ -26,9 +29,15 @@ public class ListController
      * Executes the ListAll use case.
      *
      * @param parameter The parameter for the ListAll use case.
-     * @return The list of plugins.
+     * @param log Logger
      */
-    public void listAll(String parameter) {
-        System.out.println(listAllBoundary.listAll(parameter));
+    public void listAll(String parameter, Consumer<String> log) {
+        var list = listAllBoundary.listAll(parameter);
+
+        // Tabulate result
+        var table = tabulate(list.stream().map(p -> List.of("&a" + p.name(), p.getFirstAuthor(), p.version())).toList(),
+            List.of(":Name", "Author", "Version:"));
+
+        log.accept(table);
     }
 }

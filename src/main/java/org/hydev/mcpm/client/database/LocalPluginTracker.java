@@ -133,7 +133,7 @@ public class LocalPluginTracker implements PluginTracker {
     public void syncMainLockFile() {
         Map<String, Boolean> csvMap = readCsv();
 
-        Set<String> installedMap = new HashSet<String>();
+        Set<String> installedMap = new HashSet<>();
 
         List<PluginYml> installedPlugins = listInstalled();
 

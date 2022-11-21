@@ -31,6 +31,6 @@ public record ListParser(ListController controller) implements CommandParser
     @Override
     public void run(Namespace details, Consumer<String> log)
     {
-        controller.listAll(details.getString("type"));
+        controller.listAll(details.getString("type"), log);
     }
 }
