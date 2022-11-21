@@ -1,6 +1,8 @@
 package org.hydev.mcpm.client.interaction;
 
 import org.hydev.mcpm.utils.Pair;
+import org.hydev.mcpm.utils.arrays.FixedWindowSum;
+import org.hydev.mcpm.utils.arrays.SlidingWindow;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -10,7 +12,7 @@ import java.util.Queue;
  *
  */
 public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
-    private final Queue<Pair<Long, Long>> queue = new ArrayDeque<>();
+    private final FixedWindowSum windowSum;
     private final long window;
     private final long start;
 
@@ -18,22 +20,32 @@ public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
     private long sum = 0; // sliding window sum
 
     /**
+     * Construct a ProgressSpeedCalculator with a window size.
      *
      * @param window Time length of the window to calculate speed over, in nanoseconds
      */
     public ProgressSpeedCalculator(long window) {
-        start = System.nanoTime();
+        this(window, new SlidingWindow().setWindowSize(window));
+    }
+
+    /**
+     * Construct a ProgressSpeedCalculator with the specified FixedWindowSum to calculate speed.
+     * Window speed should be in nanoseconds.
+     *
+     * @param window window size of the given windowSum
+     * @param windowSum the FixedWindowSum used to calculate speed
+     */
+    public ProgressSpeedCalculator(long window, FixedWindowSum windowSum) {
         this.window = window;
+        start = System.nanoTime();
+        this.windowSum = windowSum;
     }
 
 
     @Override
     public double getSpeed() {
         long time = System.nanoTime();
-        while (!queue.isEmpty() && queue.peek().k() < time - window) { // remove all elements that are too old
-            var e = queue.remove();
-            sum -= e.v(); // update sliding window sum
-        }
+        long sum = windowSum.sum(time);
         long dt = Math.min(window, time - start);
         return sum / (dt / 1e9);
     }
@@ -47,7 +59,6 @@ public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
 
     @Override
     public void incProgress(long inc) {
-        queue.add(new Pair<>(System.nanoTime(), inc));
-        sum += inc;
+        windowSum.add(System.nanoTime(), inc);
     }
 }
