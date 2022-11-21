@@ -206,13 +206,18 @@ public class LocalPluginTracker implements PluginTracker {
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 try {
-                    installedPlugins.add(readMeta(child));
+                    if (child.getName().endsWith(".jar")) {
+                        PluginYml plugin = readMeta(child);
+                        if (plugin != null) {
+                            installedPlugins.add(plugin);
+                        }
+                    }
                 } catch (Exception e) {
                     System.out.printf("Error reading plugin.yml from " + child);
                 }
             }
         } else {
-            System.out.printf("Error reading directory");
+            System.out.printf("Could not read directory.");
         }
 
         return installedPlugins;
