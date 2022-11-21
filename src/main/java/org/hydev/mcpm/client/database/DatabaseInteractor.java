@@ -141,7 +141,6 @@ public class DatabaseInteractor
         };
     }
 
-    @Nullable
     private static CheckForUpdatesResult filterUpdatablePlugins(CheckForUpdatesInput forInput,
                                                                   MatchPluginsResult result) {
         var mismatchedSet = Set.copyOf(result.mismatched());
@@ -162,7 +161,7 @@ public class DatabaseInteractor
 
             // guard let?
             if (optionalLatest.isEmpty()) {
-                return null;
+                continue;
             }
 
             var latest = optionalLatest.get();
