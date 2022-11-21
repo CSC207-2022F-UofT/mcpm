@@ -228,25 +228,16 @@ public class LocalPluginTracker implements PluginTracker {
      * @return List of plugin names
      */
     public List<String> listManuallyInstalled() {
-        try {
-            FileReader filereader = new FileReader(mainLockFile);
-            CSVReader csvReader = new CSVReader(filereader);
-            String[] nextRecord;
-            List<String> manuallyInstalledPlugins = new ArrayList<>();
+        Map<String, Boolean> mainLock = readCsv();
+        List<String> manuallyInstalled = new ArrayList<>();
 
-            // Read data
-            while ((nextRecord = csvReader.readNext()) != null) {
-                if (nextRecord[1].equals("true")) {
-                    manuallyInstalledPlugins.add(nextRecord[0]);
-                }
+        for (Map.Entry<String, Boolean> entry : mainLock.entrySet()) {
+            if (entry.getValue()) {
+                manuallyInstalled.add(entry.getKey());
             }
-
-            csvReader.close();
-            return manuallyInstalledPlugins;
-        } catch (Exception e) {
-            System.out.println("Error reading CSV");
-            return null;
         }
+
+        return manuallyInstalled;
     }
 
     /**
