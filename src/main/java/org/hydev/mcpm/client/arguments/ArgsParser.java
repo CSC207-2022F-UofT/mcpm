@@ -1,8 +1,6 @@
 package org.hydev.mcpm.client.arguments;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.helper.HelpScreenException;
-import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 
@@ -41,27 +39,7 @@ public class ArgsParser
             parser.configure(subparser);
 
             subparser.setDefault("handler", parser);
-
-            class PrintHelpAction implements ArgumentAction
-            {
-                @Override
-                public void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
-                                String flag, Object value) throws HelpScreenException
-                {
-                    log.accept(subparser.formatHelp());
-                    throw new HelpScreenException(parser);
-                }
-
-                @Override
-                public void onAttach(Argument arg) {}
-
-                @Override
-                public boolean consumeArgument() {
-                    return false;
-                }
-            }
-
-            subparser.addArgument("-h", "--help").action(new PrintHelpAction());
+            subparser.addArgument("-h", "--help").action(new PrintHelpAction(subparser));
         }
     }
 
@@ -79,15 +57,22 @@ public class ArgsParser
      *                                 For default handling, pass this to ArgsParser#fail.
      */
     public void parse(String[] arguments, Consumer<String> log) throws ArgumentParserException {
-        var namespace = parser.parseArgs(arguments);
+        try
+        {
+            var namespace = parser.parseArgs(arguments);
 
-        Object handleObject = namespace.get("handler");
+            Object handleObject = namespace.get("handler");
 
-        if (!(handleObject instanceof CommandParser handler)) {
-            throw new ArgumentParserException("Unrecognized command.", parser);
+            if (!(handleObject instanceof CommandParser handler)) {
+                throw new ArgumentParserException("Unrecognized command.", parser);
+            }
+
+            handler.run(namespace, log);
         }
-
-        handler.run(namespace, log);
+        catch (HelpException e)
+        {
+            log.accept(e.help());
+        }
     }
 
     /**
