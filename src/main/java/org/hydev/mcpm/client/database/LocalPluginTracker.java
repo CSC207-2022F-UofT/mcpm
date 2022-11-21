@@ -128,6 +128,8 @@ public class LocalPluginTracker implements PluginTracker {
 
     /**
      * Synchronize locally installed plugins at pluginDirectory with the CSV file
+     * 
+     * 
      */
     public void syncMainLockFile() {
         Map<String, Boolean> csvMap = readCsv();
@@ -136,6 +138,7 @@ public class LocalPluginTracker implements PluginTracker {
 
         List<PluginYml> installedPlugins = listInstalled();
 
+        // reads the names of installed files from the plugin directory
         for (PluginYml plugin : installedPlugins) {
             installedMap.add(plugin.name());
         }
@@ -151,7 +154,8 @@ public class LocalPluginTracker implements PluginTracker {
         }
 
         // Return a new map containing all of temp's elements, turned into a map.
-        Map<String, Boolean> newMap = toAdd.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+        Map<String, Boolean> newMap = toAdd.stream()
+                .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
         // Save the new map to the csv file.
         saveCsv(newMap);
