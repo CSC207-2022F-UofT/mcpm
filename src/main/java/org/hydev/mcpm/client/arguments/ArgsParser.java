@@ -1,16 +1,14 @@
 package org.hydev.mcpm.client.arguments;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.inf.*;
-import org.apache.hc.core5.reactor.Command;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.parsers.CommandHandler;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -71,7 +69,10 @@ public class ArgsParser
      */
     public void parse(String[] arguments, Consumer<String> log) throws ArgumentParserException {
         // If no args are present, add help
-        if (arguments.length == 0) arguments = new String[]{"help"};
+        if (arguments.length == 0) {
+            log.accept(help());
+            return;
+        }
 
         try {
             var namespace = parser.parseArgs(arguments);
