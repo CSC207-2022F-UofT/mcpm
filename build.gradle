@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
+    id 'application'
     id 'maven-publish'
     id 'checkstyle'
     id "com.github.johnrengelman.shadow" version "7.1.2"
@@ -9,6 +10,10 @@ plugins {
 
 group 'org.hydev.csc207'
 version '0.1.0.51'
+
+application {
+    mainClass = 'org.hydev.mcpm.client.arguments.ArgsParser'
+}
 
 repositories {
     mavenCentral()

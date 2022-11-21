@@ -20,6 +20,7 @@ public class ProgressRow implements ProgressRowBoundary {
     private int descLen;
     private String fmt;
     private Function<Double, String> speedFormatter;
+    private ProgressSpeedBoundary speedCalculator;
 
     private final long startTime;
 
@@ -36,6 +37,7 @@ public class ProgressRow implements ProgressRowBoundary {
         this.descLen = 20;
         this.fmt = "{desc}{speed} {eta} {prefix}{progbar}{suffix} {%done}";
         this.speedFormatter = UnitConverter.binarySpeedFormatter();
+        this.speedCalculator = new ProgressSpeedCalculator((long) 2e9); // 2 seconds
 
         // Record start time for speed estimation
         this.startTime = System.nanoTime();
@@ -59,9 +61,8 @@ public class ProgressRow implements ProgressRowBoundary {
     @Override
     public String toString(ProgressBarTheme theme, int cols)
     {
-        // Calculate speed. TODO: Use a moving window to calculate speed
-        double speed = completed / elapsed();
-        double eta = total / speed;
+        double speed = speedCalculator.getSpeed();
+        double eta = (total - completed) / speed;
         long etaS = (long) (eta % 60);
         long etaM = (long) (eta / 60);
 
@@ -107,6 +108,8 @@ public class ProgressRow implements ProgressRowBoundary {
     {
         if (this.completed >= total) return;
 
+        speedCalculator.incProgress(incr);
+
         this.completed += incr;
         this.completed = Math.min(total, this.completed); // We don't want to go over
         pb.update();
@@ -122,6 +125,8 @@ public class ProgressRow implements ProgressRowBoundary {
     public void set(long completed)
     {
         if (this.completed >= total) return;
+
+        speedCalculator.setProgress(completed);
 
         this.completed = completed;
         pb.update();
