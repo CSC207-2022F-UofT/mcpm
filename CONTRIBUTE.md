@@ -80,8 +80,7 @@ After setting up a mirror, if you want to add it to our mirror list, you can sub
 
 #### Setup Mirror using Docker Compose
 
-For convenience, we created a docker image so that you can set up a mirror using Docker.
-It will automatically set up:
+For convenience, we created a docker image so that you can set up a mirror using Docker. It will automatically set up:
 
 1. `mcprs-sync`: Script to automatically sync updates every 24 hours (configurable)
 2. `mcprs-rsyncd`: rsync server
@@ -104,7 +103,7 @@ sudo docker-compose up -d
 sudo docker-compose up mcprs-sync mcprs-rsyncd -d
 ```
 
-Note: If `docker-compose` says command not found, try `docker compose` instead
+Note: If `docker-compose` says command not found, try `docker compose` instead.
 
 #### Setup Mirror Manually
 
