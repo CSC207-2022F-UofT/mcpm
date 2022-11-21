@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -42,7 +41,7 @@ class PluginJarFileTest
         assert meta.main().equals("org.hydev.mc.ActiveList");
         assert meta.name().equals("ActiveList");
         assert meta.version().equals("1.1");
-        assert meta.author().equals("Hykilpikonna");
+        assert meta.getFirstAuthor().equals("Hykilpikonna");
         assert meta.commands().containsKey("activelist");
         assert meta.commands().get("activelist").aliases().equals(List.of("al", "ll"));
 
