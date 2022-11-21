@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 
 import static org.hydev.mcpm.Constants.JACKSON;
 
@@ -176,17 +175,13 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
             if (database != null) {
                 localDatabase = database;
 
-                try {
-                    var hash = new HashUtils().hash(body);
+                var hash = new HashUtils().hash(body);
 
-                    //noinspection ResultOfMethodCallIgnored
-                    cacheDirectory.toFile().mkdirs();
+                //noinspection ResultOfMethodCallIgnored
+                cacheDirectory.toFile().mkdirs();
 
-                    Files.writeString(Paths.get(cacheDirectory.toString(), DATABASE_FILE_NAME), body);
-                    Files.writeString(Paths.get(cacheDirectory.toString(), HASH_FILE_NAME), hash);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
+                Files.writeString(Paths.get(cacheDirectory.toString(), DATABASE_FILE_NAME), body);
+                Files.writeString(Paths.get(cacheDirectory.toString(), HASH_FILE_NAME), hash);
             }
 
             return database;

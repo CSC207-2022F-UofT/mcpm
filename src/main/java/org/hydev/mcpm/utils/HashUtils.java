@@ -1,15 +1,8 @@
 package org.hydev.mcpm.utils;
 
 import org.apache.hc.client5.http.utils.Hex;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,11 +17,14 @@ public class HashUtils {
 
     /**
      * Default constructor uses the SHA-256 algorithm.
-     *
-     * @throws NoSuchAlgorithmException Thrown in the case that the algorithm doesn't ship with an implementation.
      */
-    public HashUtils() throws NoSuchAlgorithmException {
-        this(defaultAlgorithm);
+    public HashUtils() {
+        try {
+            digest = MessageDigest.getInstance(defaultAlgorithm);
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
