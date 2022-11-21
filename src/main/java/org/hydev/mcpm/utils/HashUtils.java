@@ -23,6 +23,7 @@ public class HashUtils {
             digest = MessageDigest.getInstance(defaultAlgorithm);
         }
         catch (NoSuchAlgorithmException e) {
+            // Would never happen
             throw new RuntimeException(e);
         }
     }

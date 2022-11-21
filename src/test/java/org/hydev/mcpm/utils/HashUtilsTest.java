@@ -3,6 +3,7 @@ package org.hydev.mcpm.utils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 class HashUtilsTest
@@ -21,5 +22,16 @@ class HashUtilsTest
     {
         assert u.hash(Objects.requireNonNull(GeneralUtils.getResourceFile("test-plugin-activelist.jar")))
             .equals("6b51b4a80419843f522f0a612288c7f50cf405f5ab7dd9bb1d050cc6e80a725f");
+    }
+
+    @Test
+    void constructorFailTest()
+    {
+        try
+        {
+            var a = new HashUtils("a nonexistant algorithm");
+            assert false;
+        }
+        catch (NoSuchAlgorithmException ignored) {}
     }
 }
