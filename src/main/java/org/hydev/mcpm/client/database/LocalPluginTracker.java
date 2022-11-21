@@ -160,23 +160,14 @@ public class LocalPluginTracker implements PluginTracker {
      * List all currently installed plugins in an ArrayList
      */
     public List<PluginYml> listInstalled() {
-        List<PluginYml> installedPlugins = new ArrayList<>();
-        // Go into the plugin directory and read the metadata of all the plugins
+        // Go into the plugin directory and list files
         File dir = new File(pluginDirectory);
-        File[] directoryListing = dir.listFiles();
-        if (directoryListing != null) {
-            for (File child : directoryListing) {
-                try {
-                    installedPlugins.add(readMeta(child));
-                } catch (Exception e) {
-                    System.out.println("Error reading plugin.yml from " + child);
-                }
-            }
-        } else {
-            System.out.println("Error reading directory");
-        }
+        File[] list = dir.listFiles();
+        if (list == null) return new ArrayList<>();
 
-        return installedPlugins;
+        // Filter only java files, return all metadata that's not null
+        return Arrays.stream(list).filter(f -> f.isFile() && f.getName().endsWith(".jar"))
+            .map(this::readMeta).filter(Objects::nonNull).toList();
     }
 
     /**
