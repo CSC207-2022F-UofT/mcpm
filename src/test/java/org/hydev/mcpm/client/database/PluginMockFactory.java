@@ -7,6 +7,7 @@ import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -63,5 +64,14 @@ public class PluginMockFactory {
         var listener = new BriefFetcherListener(true);
 
         return new DatabaseInteractor(fetcher, listener);
+    }
+
+    public static List<PluginModel> generatePlugins() {
+        List<PluginModel> plugins = new ArrayList<>();
+        String[] names = {"WorldGuard"};
+        String [] descriptions = {"Protect your server!\n" +
+                "WorldGuard lets you and players guard areas of land against griefers and undesirables\n" +
+                "as well as tweak and disable various gameplay features of Minecraft."};
+        return plugins;
     }
 }
