@@ -2,11 +2,8 @@ package org.hydev.mcpm.utils;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.color.ICC_ProfileGray;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Ref;
 
 /**
  * Utility for Zstd-jni
@@ -43,7 +40,7 @@ public class ZstdUtils
             var compress = cl.getMethod("compress", byte[].class);
             return new ReflectedZstd(cl, decompress, decompressedSize, compress);
         }
-        catch (Exception e)
+        catch (Throwable e)
         {
             // Any exception here would mean that it isn't supported
             return null;
