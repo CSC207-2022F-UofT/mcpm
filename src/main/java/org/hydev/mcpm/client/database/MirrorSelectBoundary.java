@@ -48,4 +48,18 @@ public interface MirrorSelectBoundary
             .sorted(comparingInt(Map.Entry::getValue))
             .toList();
     }
+
+    /**
+     * Get the mirror that the user has selected, or the default mirror
+     *
+     * @return A selected mirror
+     */
+    Mirror getSelectedMirror() throws IOException;
+
+    /**
+     * Set a mirror as user-selected
+     * 
+     * @param mirror A selected mirror
+     */
+    void setSelectedMirror(Mirror mirror) throws IOException;
 }
