@@ -18,7 +18,7 @@ public class ZstdTest
      */
     public static void main(String[] args) throws ZstdException
     {
-        System.out.printf("Detected ZSTD support: %s\n", ZstdUtils.isSupported());
+        System.out.printf("Detected ZSTD support: %s\n", ZstdUtils.nativeSupport());
 
         var cb = ZstdUtils.compress("Zstd compression/decompression works!".getBytes());
         System.out.println(new String(ZstdUtils.decompress(cb)));
