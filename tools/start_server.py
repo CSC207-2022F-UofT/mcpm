@@ -15,7 +15,7 @@ from tempfile import TemporaryDirectory
 from hypy_utils import ensure_dir
 from hypy_utils.downloader import download_file
 
-from .download_jdk import download_oracle, ensure_java
+from .download_jdk import ensure_java
 
 MAX_RAM = '16384M'
 MIN_RAM = MAX_RAM
@@ -45,19 +45,23 @@ def start(java: Path, mc_path: Path):
             print('Server stops.')
             exit(0)
 
+
 def update_build(mc_path: Path):
     # Build project
     print('Building project...')
     build_jar = Path('build/libs')
     shutil.rmtree(build_jar, ignore_errors=True)
-    check_call('./gradlew shadowJar', shell=True)
+    check_call('./gradlew jar', shell=True)
+    # check_call('./gradlew shadowJar', shell=True)
 
     # Install plugin
     print('Installing our MCPM plugin...')
     plugin_path = mc_path / 'plugins/mcpm.jar'
     shutil.rmtree(plugin_path, ignore_errors=True)
     ensure_dir(plugin_path.parent)
-    shutil.copy2(build_jar / str([f for f in os.listdir(build_jar) if f.endswith("-all.jar")][0]), plugin_path)
+
+    fname = str([f for f in os.listdir(build_jar) if f.endswith(".jar") and not f.endswith("-all.jar")][0])
+    shutil.copy2(build_jar / fname, plugin_path)
 
 
 if __name__ == '__main__':
