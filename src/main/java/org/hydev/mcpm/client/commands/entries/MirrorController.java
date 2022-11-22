@@ -78,6 +78,7 @@ public record MirrorController(MirrorSelectBoundary boundary)
                 .orElseThrow(() -> new AssertionError(String.format("No mirror of the host %s is found", host)));
 
             boundary.setSelectedMirror(mirror);
+            log.accept(String.format("&aSuccessfully selected %s as the mirror source", host));
         }
         catch (IOException e)
         {
