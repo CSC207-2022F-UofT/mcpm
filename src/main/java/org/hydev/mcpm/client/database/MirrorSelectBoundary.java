@@ -58,7 +58,7 @@ public interface MirrorSelectBoundary
 
     /**
      * Set a mirror as user-selected
-     * 
+     *
      * @param mirror A selected mirror
      */
     void setSelectedMirror(Mirror mirror) throws IOException;
