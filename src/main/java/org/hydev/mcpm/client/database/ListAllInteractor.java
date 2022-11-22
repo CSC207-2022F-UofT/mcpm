@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.database;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.hydev.mcpm.client.models.PluginYml;
 
 import java.util.List;
@@ -36,7 +35,8 @@ public class ListAllInteractor implements ListAllBoundary
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
 
             case "outdated":
-                throw new NotImplementedException("Method to print outdated plugins not implemented yet");
+                // TODO: Implement this
+                throw new UnsupportedOperationException("TODO");
 
             default:
                 return null;

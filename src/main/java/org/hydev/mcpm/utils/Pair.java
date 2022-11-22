@@ -46,6 +46,18 @@ public record Pair<K, V>(K k, V v) implements Map.Entry<K, V>
         return Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue);
     }
 
+    /**
+     * Simpler constructor
+     *
+     * @param k Key
+     * @param v Value
+     * @return Pair[K, V]
+     */
+    public static <K, V> Pair<K, V> of(K k, V v)
+    {
+        return new Pair<>(k, v);
+    }
+
     @Override
     public String toString()
     {
