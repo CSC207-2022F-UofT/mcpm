@@ -3,9 +3,9 @@ Description=Crawl MCPRS packages
 
 [Service]
 Type=oneshot
-ExecStart=bash ./crawl.sh
-User=root
-Group=root
+ExecStart=bash /ws/mcpm/crawl.sh
+User=azalea
+Group=azalea
 
 [Install]
 WantedBy=multi-user.target

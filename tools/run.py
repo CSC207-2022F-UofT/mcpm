@@ -6,7 +6,7 @@ import argparse
 import subprocess
 from subprocess import run, check_call
 
-from tools import download_jdk
+from . import download_jdk
 
 ALIAS = {
     "Launcher": "org.hydev.mcpm.client.Launcher",
