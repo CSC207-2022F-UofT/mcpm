@@ -30,7 +30,8 @@ public class SearchParser implements CommandParser {
 
     @Override
     public void configure(Subparser parser) {
-        parser.addArgument("by").choices("name", "keyword", "command").dest("type")
+        parser.addArgument("by").choices("name", "keyword", "command")
+                .setDefault("name").dest("type")
                 .help("Specifies the Type of Search");
         parser.addArgument("text").dest("text").nargs("+")
                 .help("Specifies the search text.");
@@ -40,7 +41,8 @@ public class SearchParser implements CommandParser {
 
     @Override
     public void run(Namespace details, Consumer<String> log) {
-        controller.searchPackages("BY_" + details.getString("type").toUpperCase(),
+        var t = details.getList("text");
+        controller.searchPackages(details.getString("type"),
                 String.join(" ", details.getList("text")),
                 !details.getBoolean("noCache"), log);
     }

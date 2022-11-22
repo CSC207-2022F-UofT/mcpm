@@ -36,7 +36,7 @@ public class SearchPackagesController {
      */
     public void searchPackages(String type, String text, boolean noCache, Consumer<String> log) {
         SearchPackagesInput inp = new SearchPackagesInput(
-                SearchPackagesType.valueOf(type),
+                SearchPackagesType.valueOf("BY_" + type.toUpperCase()),
                 text,
                 noCache);
         var result = searcher.search(inp);
