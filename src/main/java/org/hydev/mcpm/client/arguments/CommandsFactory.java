@@ -4,6 +4,8 @@ import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
 import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
+import org.hydev.mcpm.client.database.Mirror;
+import org.hydev.mcpm.client.database.MirrorSelector;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
@@ -35,6 +37,7 @@ public class CommandsFactory {
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker()));
         var listController = new ListController(new ListAllInteractor());
         var searchController = new SearchPackagesController(new SearchInteractor(fetcher));
+        var mirrorController = new MirrorController(new MirrorSelector());
 
         /*
          * Add general parsers to this list!
@@ -44,7 +47,8 @@ public class CommandsFactory {
         return List.of(
             new ExportPluginsParser(exportPluginsController),
             new ListParser(listController),
-            new SearchParser(searchController)
+            new SearchParser(searchController),
+            new MirrorParser(mirrorController)
         );
     }
 
