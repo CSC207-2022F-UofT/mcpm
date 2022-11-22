@@ -3,6 +3,8 @@ package org.hydev.mcpm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import java.io.File;
+
 import static com.fasterxml.jackson.databind.DeserializationFeature.*;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 
@@ -21,4 +23,6 @@ public class Constants
         .disable(FAIL_ON_UNKNOWN_PROPERTIES).disable(FAIL_ON_INVALID_SUBTYPE)
         .enable(ACCEPT_SINGLE_VALUE_AS_ARRAY).enable(UNWRAP_SINGLE_VALUE_ARRAYS)
         .enable(INDENT_OUTPUT);
+
+    public static final File CFG_PATH = new File(System.getProperty("user.home"), ".config/mcpm");
 }
