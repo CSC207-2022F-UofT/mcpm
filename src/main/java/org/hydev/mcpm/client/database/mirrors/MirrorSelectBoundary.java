@@ -44,6 +44,7 @@ public interface MirrorSelectBoundary
     default List<Pair<Mirror, Integer>> pingMirrors() throws IOException
     {
         return listAvailableMirrors().stream().filter(Mirror::isWeb)
+            .parallel()
             .map(m -> new Pair<>(m, ping(m.url())))
             .sorted(comparingInt(Map.Entry::getValue))
             .toList();
