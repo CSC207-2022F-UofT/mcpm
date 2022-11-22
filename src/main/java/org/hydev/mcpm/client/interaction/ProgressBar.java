@@ -81,16 +81,10 @@ public class ProgressBar implements ProgressBarBoundary {
     }
 
 
-    private void incrementBarProgress(int id, long inc) {
-        this.bars.get(id).increase(inc);
-    }
-
-
-    private void setBarProgress(int id, long progress) {
-        this.bars.get(id).set(progress);
-    }
-
-
+    /*
+     * Reprint all the ProgresRows
+     * If printing would overcap the framerate, then skip this update
+     */
     protected void update()
     {
         // if the progress bar is closed, don't do anything
@@ -106,6 +100,9 @@ public class ProgressBar implements ProgressBarBoundary {
         forceUpdate();
     }
 
+    /*
+    This is where all the printing happens
+     */
     private void forceUpdate()
     {
         // Roll back to the first line
@@ -176,7 +173,7 @@ public class ProgressBar implements ProgressBarBoundary {
                 }
 
                 for (int j = 0; j < all.size(); j++) {
-                    b.incrementBarProgress(j, 1_000_000);
+                    all.get(j).increase(1_000_000);
                 }
                 safeSleep(3);
             }
@@ -185,31 +182,35 @@ public class ProgressBar implements ProgressBarBoundary {
         }
         try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
         {
+            var all = new ArrayList<ProgressRowBoundary>();
             for (int i = 0; i < 36; i++) {
                 ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
                 b.appendBar(bar);
+                all.add(bar);
             }
             for (int t = 0; t < 300; t++) {
                 for (int i = 0; i < 36; i++) {
                     double speed = Math.cos(Math.PI / 18 * i);
                     speed = speed * speed * 5 + 1;
-                    b.incrementBarProgress(i, (long) Math.ceil(speed) * 1_000_000);
+                    all.get(i).increase((long) Math.ceil(speed) * 1_000_000);
                 }
                 safeSleep(15);
             }
         }
 
         try (var b = new ProgressBar(ProgressBarTheme.FLOWER_THEME)) {
+            var all = new ArrayList<ProgressRowBoundary>();
             for (int i = 0; i < 36; i++) {
                 ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
                 b.appendBar(bar);
+                all.add(bar);
             }
 
             for (int t = 0; t < 400; t++) {
                 for (int i = 0; i < 36; i++) {
                     double speed = Math.cos(Math.PI / 18 * (i + t * 36 / 150));
                     speed = Math.abs(speed) * 5;
-                    b.incrementBarProgress(i, (long) Math.ceil(speed * 1_000_000));
+                    all.get(i).increase((long) Math.ceil(speed * 1_000_000));
                 }
                 safeSleep(30);
             }

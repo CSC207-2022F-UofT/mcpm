@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.database.fetcher;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.luben.zstd.Zstd;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ClassicHttpRequest;
@@ -19,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 
+import static org.hydev.mcpm.Constants.JACKSON;
+
 /**
  * A database fetcher that has a local persistent cache along and a network fallback.
  */
@@ -27,9 +29,11 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     private final Path cacheDirectory;
 
     private Database localDatabase;
+    private boolean enableCompression = true;
 
     public static final String HASH_FILE_NAME = "db.hash";
     public static final String DATABASE_FILE_NAME = "db";
+    public static final String DATABASE_ZST_FILE_NAME = "db.zst";
 
     public static final String USER_AGENT = "MCPM Client";
 
@@ -111,7 +115,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
             var file = Paths.get(cacheDirectory.toString(), DATABASE_FILE_NAME).toFile();
 
-            var database = new ObjectMapper().readValue(file, Database.class);
+            var database = JACKSON.readValue(file, Database.class);
 
             if (database != null) {
                 localDatabase = database;
@@ -148,18 +152,26 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
         listener.finish();
 
-        return builder.toString(StandardCharsets.UTF_8);
+        // Decompress ZSTD
+        if (this.enableCompression)
+        {
+            var bs = builder.toByteArray();
+            bs = Zstd.decompress(bs, (int) Zstd.decompressedSize(bs));
+
+            return new String(bs, StandardCharsets.UTF_8);
+        }
+        else return builder.toString(StandardCharsets.UTF_8);
     }
 
     @Nullable
     private Database fetchHostDatabase(DatabaseFetcherListener listener) {
         try (var client = HttpClients.createDefault()) {
             var body = client.execute(
-                requestTo(DATABASE_FILE_NAME),
+                requestTo(enableCompression ? DATABASE_ZST_FILE_NAME : DATABASE_FILE_NAME),
                 request -> readDatabaseFromContent(request.getEntity(), listener)
             );
 
-            var database = new ObjectMapper().readValue(body, Database.class);
+            var database = JACKSON.readValue(body, Database.class);
 
             if (database != null) {
                 localDatabase = database;
@@ -198,5 +210,11 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         }
 
         return fetchHostDatabase(listener);
+    }
+
+    public LocalDatabaseFetcher enableCompression(boolean enableCompression)
+    {
+        this.enableCompression = enableCompression;
+        return this;
     }
 }
