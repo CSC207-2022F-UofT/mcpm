@@ -43,8 +43,9 @@ public class ZstdUtils
             var compress = cl.getMethod("compress", byte[].class);
             return new ReflectedZstd(cl, decompress, decompressedSize, compress);
         }
-        catch (ClassNotFoundException | NoSuchMethodException e)
+        catch (Exception e)
         {
+            // Any exception here would mean that it isn't supported
             return null;
         }
     }
