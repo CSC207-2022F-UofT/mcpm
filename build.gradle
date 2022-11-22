@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'org.hydev.csc207'
-version '0.1.0.51'
+version '0.1.0.435'
 
 application {
     mainClass = 'org.hydev.mcpm.client.arguments.ArgsParser'
