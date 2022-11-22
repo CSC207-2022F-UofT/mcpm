@@ -29,7 +29,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     private final Path cacheDirectory;
 
     private Database localDatabase;
-    private boolean enableCompression = true;
+    private final boolean enableCompression;
 
     public static final String HASH_FILE_NAME = "db.hash";
     public static final String DATABASE_FILE_NAME = "db";
@@ -58,6 +58,15 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     public LocalDatabaseFetcher(URI host, Path cacheDirectory) {
         this.host = host;
         this.cacheDirectory = cacheDirectory;
+
+        var enableCompression = false;
+        try
+        {
+            Zstd.compress("Hello world".getBytes());
+            enableCompression = true;
+        }
+        catch (Exception ignored) { }
+        this.enableCompression = enableCompression;
     }
 
     private ClassicHttpRequest requestTo(String path) {
@@ -210,11 +219,5 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         }
 
         return fetchHostDatabase(listener);
-    }
-
-    public LocalDatabaseFetcher enableCompression(boolean enableCompression)
-    {
-        this.enableCompression = enableCompression;
-        return this;
     }
 }
