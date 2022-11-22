@@ -11,6 +11,11 @@ import org.hydev.mcpm.utils.ZstdUtils;
  */
 public class ZstdTest
 {
+    /**
+     * Main method for the zstd test
+     *
+     * @param args Args (not used)
+     */
     public static void main(String[] args) throws ZstdException
     {
         System.out.printf("Detected ZSTD support: %s\n", ZstdUtils.isSupported());

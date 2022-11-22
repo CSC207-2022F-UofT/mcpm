@@ -30,7 +30,7 @@ public class ZstdUtils
      *
      * @return Zstd class if usable, null otherwise
      */
-    private static @Nullable ReflectedZstd _getZstdClass()
+    private static @Nullable ReflectedZstd getZstdClass()
     {
         try
         {
@@ -49,7 +49,7 @@ public class ZstdUtils
 
     static
     {
-        zstd = _getZstdClass();
+        zstd = getZstdClass();
     }
 
     /**
