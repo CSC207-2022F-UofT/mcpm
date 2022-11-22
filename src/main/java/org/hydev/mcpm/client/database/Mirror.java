@@ -1,5 +1,7 @@
 package org.hydev.mcpm.client.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.annotation.Nullable;
 import java.util.Set;
 
@@ -34,6 +36,7 @@ public record Mirror(
      *
      * @return Supports web
      */
+    @JsonIgnore
     public boolean isWeb()
     {
         return protocols.contains("http") || protocols.contains("https");
@@ -57,7 +60,7 @@ public record Mirror(
         return host;
     }
 
-    @Override
+    @Override @JsonIgnore
     public String httpEndpoint()
     {
         if (httpEndpoint == null) return "/";
