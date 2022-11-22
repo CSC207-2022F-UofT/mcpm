@@ -1,10 +1,11 @@
 package org.hydev.mcpm.client.database;
 
+import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.hydev.mcpm.client.database.MirrorSelector.MIRROR_LIST_URL;
+import static org.hydev.mcpm.client.database.mirrors.MirrorSelector.MIRROR_LIST_URL;
 import static org.hydev.mcpm.utils.NetworkUtils.ping;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 

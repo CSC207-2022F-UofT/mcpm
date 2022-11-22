@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.commands.entries;
 
-import org.hydev.mcpm.client.database.MirrorSelectBoundary;
+import org.hydev.mcpm.client.database.mirrors.MirrorSelectBoundary;
 
 import java.io.IOException;
 import java.util.List;
