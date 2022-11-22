@@ -2,3 +2,4 @@ requests
 hypy_utils>=1.0.16
 py-cpuinfo
 tqdm
+ruamel.yaml
