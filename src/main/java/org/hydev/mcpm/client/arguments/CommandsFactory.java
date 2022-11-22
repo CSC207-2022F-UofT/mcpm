@@ -32,7 +32,6 @@ public class CommandsFactory {
     public static List<CommandParser> baseParsers() {
         var host = URI.create("http://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
-        var echoController = new EchoController();
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker()));
         var listController = new ListController(new ListAllInteractor());
         var searchController = new SearchPackagesController(new SearchInteractor(fetcher));
@@ -43,7 +42,6 @@ public class CommandsFactory {
          * If you're not sure if your command is server-only, add it to this list!
          */
         return List.of(
-            new EchoParser(echoController),
             new ExportPluginsParser(exportPluginsController),
             new ListParser(listController),
             new SearchParser(searchController)
