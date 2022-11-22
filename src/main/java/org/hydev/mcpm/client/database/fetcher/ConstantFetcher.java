@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Database fetcher that takes in a database
+ */
 public class ConstantFetcher implements DatabaseFetcher {
     private final Database database;
 

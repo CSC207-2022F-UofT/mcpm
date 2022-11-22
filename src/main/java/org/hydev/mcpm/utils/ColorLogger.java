@@ -129,7 +129,9 @@ public class ColorLogger
      */
     public static int lengthNoColor(String in)
     {
-        for (var key : ansiReplacements.keySet()) in = in.replace(key, "");
+        for (var key : ansiReplacements.keySet()) {
+            in = in.replace(key, "");
+        }
         return in.length();
     }
 }
