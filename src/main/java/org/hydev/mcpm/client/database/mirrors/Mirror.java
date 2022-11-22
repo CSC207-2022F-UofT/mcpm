@@ -3,6 +3,8 @@ package org.hydev.mcpm.client.database.mirrors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.annotation.Nullable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 /**
@@ -52,6 +54,25 @@ public record Mirror(
         if (protocols.contains("https")) return "https://" + host + httpEndpoint();
         else if (protocols.contains("http")) return "http://" + host + httpEndpoint();
         else return null;
+    }
+
+    /**
+     * URL but as a URI object
+     *
+     * @return URI or null
+     */
+    public @Nullable URI uri()
+    {
+        var url = url();
+        if (url == null) return null;
+        try
+        {
+            return new URI(url);
+        }
+        catch (URISyntaxException e)
+        {
+            return null;
+        }
     }
 
     @Override
