@@ -51,11 +51,13 @@ public record MirrorController(MirrorSelectBoundary boundary)
         try
         {
             if (refresh) boundary.updateMirrors();
+            var selected = boundary.getSelectedMirror();
 
             // Display the top 20 results
             var ping = boundary.pingMirrors();
             log.accept(tabulate(ping.stream().limit(20).map(it ->
-                    List.of(it.k().host(), formatPing(it.v()), formatSpeed(it.k().speed()))).toList(),
+                    List.of((selected.host().equals(it.k().host()) ? "&a> " : "  ") + it.k().host(),
+                        formatPing(it.v()), formatSpeed(it.k().speed()))).toList(),
                 List.of(":Host", "Delay:", "Speed:")));
         }
         catch (IOException e)
