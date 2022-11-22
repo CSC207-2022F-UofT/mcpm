@@ -56,7 +56,7 @@ public record MirrorController(MirrorSelectBoundary boundary)
             // Display the top 20 results
             var ping = boundary.pingMirrors();
             log.accept(tabulate(ping.stream().limit(20).map(it ->
-                    List.of((selected.host().equals(it.k().host()) ? "&a> " : "  ") + it.k().host(),
+                    List.of((selected.host().equals(it.k().host()) ? "&6> " : "&f  ") + it.k().host(),
                         formatPing(it.v()), formatSpeed(it.k().speed()))).toList(),
                 List.of(":Host", "Delay:", "Speed:")));
         }
