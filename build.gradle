@@ -47,6 +47,7 @@ checkstyle {
 dependencies {
     // The Spigot API with no shadowing. Requires the OSS repo.
     compileOnly 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
+    testImplementation 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
 
     // Argument parser
     // https://mvnrepository.com/artifact/net.sourceforge.argparse4j/argparse4j
