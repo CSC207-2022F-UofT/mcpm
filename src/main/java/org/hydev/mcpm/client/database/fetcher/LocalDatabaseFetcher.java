@@ -31,6 +31,8 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
     private Database localDatabase;
 
+    public static final boolean ENABLE_COMPRESSION = true;
+
     public static final String HASH_FILE_NAME = "db.hash";
     public static final String DATABASE_FILE_NAME = "db";
     public static final String DATABASE_ZST_FILE_NAME = "db.zst";
@@ -153,7 +155,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         listener.finish();
 
         // Decompress ZSTD
-        if (ZstdUtils.nativeSupport())
+        if (ENABLE_COMPRESSION)
         {
             var bs = builder.toByteArray();
             bs = Zstd.decompress(bs, (int) Zstd.decompressedSize(bs));
@@ -167,7 +169,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     private Database fetchHostDatabase(DatabaseFetcherListener listener) {
         try (var client = HttpClients.createDefault()) {
             var body = client.execute(
-                requestTo(ZstdUtils.nativeSupport() ? DATABASE_ZST_FILE_NAME : DATABASE_FILE_NAME),
+                requestTo(ENABLE_COMPRESSION ? DATABASE_ZST_FILE_NAME : DATABASE_FILE_NAME),
                 request -> readDatabaseFromContent(request.getEntity(), listener)
             );
 
