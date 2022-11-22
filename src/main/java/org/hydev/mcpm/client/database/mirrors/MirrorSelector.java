@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.database.mirrors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.database.mirrors;
 
 import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.NotNull;

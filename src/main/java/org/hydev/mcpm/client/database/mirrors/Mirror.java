@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.database.mirrors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
