@@ -1,6 +1,7 @@
 package org.hydev.mcpm;
 
-import com.github.luben.zstd.Zstd;
+import org.hydev.mcpm.utils.ZstdException;
+import org.hydev.mcpm.utils.ZstdUtils;
 
 /**
  * This is not a unit test, but a manual test to see if your platform is supported by Zstd-jni.
@@ -10,18 +11,11 @@ import com.github.luben.zstd.Zstd;
  */
 public class ZstdTest
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws ZstdException
     {
-        var enableCompression = false;
-        try
-        {
-            Zstd.compress("Hello world".getBytes());
-            enableCompression = true;
-        }
-        catch (Exception ignored) { }
-        System.out.printf("Detected ZSTD support: %s\n", enableCompression);
+        System.out.printf("Detected ZSTD support: %s\n", ZstdUtils.isSupported());
 
-        var cb = Zstd.compress("Zstd compression/decompression works!".getBytes());
-        System.out.println(new String(Zstd.decompress(cb, (int) Zstd.decompressedSize(cb))));
+        var cb = ZstdUtils.compress("Zstd compression/decompression works!".getBytes());
+        System.out.println(new String(ZstdUtils.decompress(cb)));
     }
 }
