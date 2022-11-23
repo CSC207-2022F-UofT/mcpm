@@ -10,15 +10,8 @@ import java.util.function.Consumer;
 /**
  * Argument parser for LoadCommand. See LoadEntry.
  */
-public class LoadParser implements CommandParser
+public record LoadParser(LoadController controller) implements CommandParser
 {
-    private final LoadController controller;
-
-    public LoadParser(LoadController controller)
-    {
-        this.controller = controller;
-    }
-
     @Override
     public String name()
     {

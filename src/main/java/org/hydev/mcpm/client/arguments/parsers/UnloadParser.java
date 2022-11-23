@@ -11,15 +11,8 @@ import java.util.function.Consumer;
 /**
  * Argument parser for UnloadCommand. See UnloadEntry.
  */
-public class UnloadParser implements CommandParser
+public record UnloadParser(UnloadController controller) implements CommandParser
 {
-    private final UnloadController controller;
-
-    public UnloadParser(UnloadController controller)
-    {
-        this.controller = controller;
-    }
-
     @Override
     public String name()
     {
