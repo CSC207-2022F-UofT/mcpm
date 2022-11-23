@@ -43,7 +43,7 @@ public class ProgressBar implements ProgressBarBoundary {
     public ProgressBar(ProgressBarTheme theme)
     {
         this.theme = theme;
-        this.out = System.out;
+        this.out = ConsoleUtils.RAW_OUT;
         this.cu = new ConsoleUtils(this.out);
         this.bars = new ArrayList<>();
         this.activeBars = new ArrayList<>();
