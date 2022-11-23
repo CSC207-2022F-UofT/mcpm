@@ -45,7 +45,7 @@ public record PluginModelId(
         var optionalMeta = model.getLatestPluginVersion().map(PluginVersion::meta);
 
         if (optionalMeta.isEmpty()) {
-            return false;
+            return pluginName == null && pluginMain == null;
         }
 
         var meta = optionalMeta.get();
