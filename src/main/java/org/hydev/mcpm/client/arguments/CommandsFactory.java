@@ -37,6 +37,7 @@ public class CommandsFactory {
         var listController = new ListController(new ListAllInteractor());
         var searchController = new SearchPackagesController(new SearchInteractor(fetcher));
         var mirrorController = new MirrorController(new MirrorSelector());
+        var infoController = new InfoController(new LocalPluginTracker());
 
         /*
          * Add general parsers to this list!
@@ -47,7 +48,8 @@ public class CommandsFactory {
             new ExportPluginsParser(exportPluginsController),
             new ListParser(listController),
             new SearchParser(searchController),
-            new MirrorParser(mirrorController)
+            new MirrorParser(mirrorController),
+            new InfoParser(infoController)
         );
     }
 
