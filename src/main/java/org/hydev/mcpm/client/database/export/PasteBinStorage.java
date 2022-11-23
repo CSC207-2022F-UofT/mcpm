@@ -8,19 +8,26 @@ import java.io.IOException;
 /**
  * Store string content to a pastebin that supports raw text requests (e.g. https://github.com/w4/bin)
  *
+ * @param host Pastebin host URL
  * @author Peter (https://github.com/MstrPikachu)
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-11-23
  */
-public class PasteBinStorage implements StringStorage
+public record PasteBinStorage(String host) implements StringStorage
 {
-    private static final String HOST = "https://mcpm.hydev.org/paste/";
+    /**
+     * Construct with default host
+     */
+    public PasteBinStorage()
+    {
+        this("https://mcpm.hydev.org/paste/");
+    }
 
     @Override
     public String store(String content) throws IOException
     {
         // Send request
-        return Request.put(HOST)
+        return Request.put(host)
             .bodyString(content, ContentType.TEXT_PLAIN)
             .execute().returnContent().asString();
     }
@@ -31,7 +38,7 @@ public class PasteBinStorage implements StringStorage
         // If token is not a URL, treat it as the pastebin token and append host from it
         if (!token.startsWith("http://") && !token.startsWith("https://"))
         {
-            token = HOST + token;
+            token = host + token;
         }
 
         // Send request
@@ -43,6 +50,6 @@ public class PasteBinStorage implements StringStorage
     @Override
     public String instruction()
     {
-        return String.format("Please save the content to the pastebin at %s, and paste in the URL", HOST);
+        return String.format("Please save the content to the pastebin at %s, and paste in the URL", host);
     }
 }
