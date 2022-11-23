@@ -27,4 +27,6 @@ jobs:
         uses: gradle/gradle-build-action@v2.3.3
 
       - name: Gradle Checkstyle
-        run: ./gradlew check
+        run: |
+          ./gradlew checkStyleMain
+          ./gradlew checkStyleTest
