@@ -77,20 +77,20 @@ public record InfoController(PluginTracker tracker)
             var pl = tracker.listInstalled().stream().filter(it -> it.name().equalsIgnoreCase(name)).findFirst()
                 .orElseThrow(() -> new AssertionError(String.format("Cannot find plugin '%s'", name)));
 
-            var msg = "&bPlugin Info:\n";
-            msg += formatPair("Name", "&b" + pl.name());
-            msg += formatPair("Main", pl.main());
-            msg += formatPair("Version", pl.version());
-            msg += formatPair("Description", pl.description());
-            msg += formatPair("Author", pl.author());
-            msg += formatPair("Authors", pl.authors());
-            msg += formatPair("Website", pl.website());
-            msg += formatPair("API Version", pl.apiVersion());
-            msg += formatPair("Depend", pl.depend());
-            msg += formatPair("Soft Depend", pl.softdepend());
-            msg += formatPair("Load Before", pl.loadbefore());
-            msg += formatPair("Libraries", pl.libraries());
-            msg += formatPair("Commands", pl.commands());
+            String msg = "&bPlugin Info:\n" +
+                formatPair("Name", "&b" + pl.name()) +
+                formatPair("Main", pl.main()) +
+                formatPair("Version", pl.version()) +
+                formatPair("Description", pl.description()) +
+                formatPair("Author", pl.author()) +
+                formatPair("Authors", pl.authors()) +
+                formatPair("Website", pl.website()) +
+                formatPair("API Version", pl.apiVersion()) +
+                formatPair("Depend", pl.depend()) +
+                formatPair("Soft Depend", pl.softdepend()) +
+                formatPair("Load Before", pl.loadbefore()) +
+                formatPair("Libraries", pl.libraries()) +
+                formatPair("Commands", pl.commands());
             log.accept(msg);
         }
         catch (AssertionError e)
