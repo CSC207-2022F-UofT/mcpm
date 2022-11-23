@@ -9,15 +9,8 @@ import java.util.function.Consumer;
 /**
  * Argument parser for ReloadCommand. See ReloadEntry.
  */
-public class ReloadParser implements CommandParser
+public record ReloadParser(ReloadController controller) implements CommandParser
 {
-    private final ReloadController controller;
-
-    public ReloadParser(ReloadController controller)
-    {
-        this.controller = controller;
-    }
-
     @Override
     public String description()
     {
