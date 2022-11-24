@@ -18,19 +18,21 @@ class StoredHashMapTest
         var s = new StoredHashMap<>(fp);
         s.put("a", 1);
         s.put("b", 2);
-        assert s.get("a").equals(1);
-        assert s.get("b").equals(2);
+        assertEquals(s.get("a"), 1);
+        assertEquals(s.get("b"), 2);
 
         var s2 = new StoredHashMap<>(fp);
-        assert s2.get("a").equals(1) && s2.get("b").equals(2);
+        assertEquals(s2.get("a"), 1);
+        assertEquals(s2.get("b"), 2);
         s2.remove("a");
 
         var s3 = new StoredHashMap<>(fp);
-        assert !s3.containsKey("a") && s3.get("b").equals(2);
+        assertFalse(s3.containsKey("a"));
+        assertEquals(s3.get("b"), 2);
         s3.remove("b", 1);
-        assert s3.get("b").equals(2);
+        assertEquals(s3.get("b"), 2);
         s3.clear();
-        assert !s3.containsKey("b");
+        assertFalse(s3.containsKey("b"));
         
         fp.delete();
     }

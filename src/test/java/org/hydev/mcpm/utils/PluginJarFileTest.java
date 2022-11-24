@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Tests for org.hydev.mcpm.utils.PluginJarFile
  *
@@ -30,7 +32,7 @@ class PluginJarFileTest
     void readString() throws IOException
     {
         // Test reading the first line of plugin.yml
-        assert jar.readString("plugin.yml").split("\n")[0].strip().equals("name: ActiveList");
+        assertEquals(jar.readString("plugin.yml").split("\n")[0].strip(), "name: ActiveList");
     }
 
     @Test
@@ -38,12 +40,12 @@ class PluginJarFileTest
     {
         var meta = jar.readPluginYaml();
 
-        assert meta.main().equals("org.hydev.mc.ActiveList");
-        assert meta.name().equals("ActiveList");
-        assert meta.version().equals("1.1");
-        assert meta.getFirstAuthor().equals("Hykilpikonna");
+        assertEquals(meta.main(), "org.hydev.mc.ActiveList");
+        assertEquals(meta.name(), "ActiveList");
+        assertEquals(meta.version(), "1.1");
+        assertEquals(meta.getFirstAuthor(), "Hykilpikonna");
         assert meta.commands().containsKey("activelist");
-        assert meta.commands().get("activelist").aliases().equals(List.of("al", "ll"));
+        assertEquals(meta.commands().get("activelist").aliases(), List.of("al", "ll"));
 
         // Obtain all command names and aliases of a plugin meta
         var cmds = Stream.concat(meta.commands().values().stream().flatMap(c -> c.aliases().stream()),

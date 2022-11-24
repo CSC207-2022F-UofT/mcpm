@@ -3,6 +3,8 @@ package org.hydev.mcpm.client.models;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class PluginYmlTest
 {
     @Test
@@ -23,18 +25,18 @@ class PluginYmlTest
 
         var meta = PluginYml.fromYml(yml);
 
-        assert meta.main().equals("org.hydev.mcpm.SpigotEntry");
-        assert meta.name().equals("MCPM");
-        assert meta.version().equals("1.1");
-        assert meta.description().equals("Minecraft Package Manager for Bukkit/Spiget Servers");
-        assert meta.apiVersion().equals("1.18");
-        assert meta.author().equals("Hykilpikonna");
-        assert meta.getFirstAuthor().equals("Hykilpikonna");
+        assertEquals(meta.main(), "org.hydev.mcpm.SpigotEntry");
+        assertEquals(meta.name(), "MCPM");
+        assertEquals(meta.version(), "1.1");
+        assertEquals(meta.description(), "Minecraft Package Manager for Bukkit/Spiget Servers");
+        assertEquals(meta.apiVersion(), "1.18");
+        assertEquals(meta.author(), "Hykilpikonna");
+        assertEquals(meta.getFirstAuthor(), "Hykilpikonna");
         assert meta.load() == null;
         assert meta.authors() == null;
-        assert meta.website().equals("https://github.com/CSC207-2022F-UofT/mcpm");
+        assertEquals(meta.website(), "https://github.com/CSC207-2022F-UofT/mcpm");
         assert meta.commands().containsKey("mcpm");
-        assert meta.commands().get("mcpm").description().equals("Minecraft package manager");
+        assertEquals(meta.commands().get("mcpm").description(), "Minecraft package manager");
     }
 
     @Test

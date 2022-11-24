@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Tests for Pair class
  */
@@ -14,10 +16,10 @@ class PairTest
     {
         var p = new Pair<>("a", 1);
 
-        assert p.k().equals(p.getKey());
-        assert p.k().equals("a");
-        assert p.v().equals(p.getValue());
-        assert p.v().equals(1);
+        assertEquals(p.k(), p.getKey());
+        assertEquals(p.k(), "a");
+        assertEquals(p.v(), p.getValue());
+        assertEquals(p.v(), 1);
 
         try
         {

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Tests for the CommandFactory
  *
@@ -26,6 +28,6 @@ class CommandsFactoryTest
 
         AtomicReference<String> log = new AtomicReference<>("");
         ba.parse(new String[]{"echo", "hi"}, s -> log.set(log.get() + s));
-        assert log.get().equals("Echo: hi");
+        assertEquals(log.get(), "Echo: hi");
     }
 }

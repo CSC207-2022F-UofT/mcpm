@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * TODO: Write a description for this class!
  *
@@ -26,7 +28,7 @@ class ReflectionUtilsTest
     {
         var a = new A();
         var f = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
-        assert f.equals(Arrays.asList("meow", "qwq"));
+        assertEquals(f, Arrays.asList("meow", "qwq"));
     }
 
     @Test
@@ -38,7 +40,7 @@ class ReflectionUtilsTest
         f.set(1, "wolf");
 
         var newF = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
-        assert newF.get(1).equals("wolf");
+        assertEquals(newF.get(1), "wolf");
     }
 
     @Test
@@ -46,11 +48,11 @@ class ReflectionUtilsTest
     {
         var a = new A();
         var f = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
-        assert f.get(0).equals("meow");
+        assertEquals(f.get(0), "meow");
         assert ReflectionUtils.setPrivateField(a, "field", List.of("wolf"));
-        assert f.get(0).equals("meow");
+        assertEquals(f.get(0), "meow");
 
         var newF = ReflectionUtils.getPrivateField(a, "field", new TypeToken<List<String>>(){}).orElseThrow();
-        assert newF.get(0).equals("wolf");
+        assertEquals(newF.get(0), "wolf");
     }
 }

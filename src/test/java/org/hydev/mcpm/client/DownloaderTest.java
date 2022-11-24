@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hydev.mcpm.client.database.MirrorSelector.MIRROR_LIST_URL;
+import static org.hydev.mcpm.client.database.mirrors.MirrorSelector.MIRROR_LIST_URL;
 import static org.hydev.mcpm.utils.NetworkUtils.ping;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;

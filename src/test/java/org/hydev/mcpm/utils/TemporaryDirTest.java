@@ -17,7 +17,7 @@ class TemporaryDirTest
         var tf = new File(t.path, "test.txt").toPath();
         Files.writeString(tf, "meow");
 
-        assert Files.readString(tf).strip().equals("meow");
+        assertEquals(Files.readString(tf).strip(), "meow");
         t.close();
         System.out.println(tf.toFile());
         assert !tf.toFile().exists();

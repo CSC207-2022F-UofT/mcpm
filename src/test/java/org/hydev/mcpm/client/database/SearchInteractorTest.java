@@ -11,6 +11,8 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Test suite for the SearchInteractor class.
  *
@@ -47,7 +49,7 @@ public class SearchInteractorTest {
 
         var text = formatStr(result, ", ");
         System.out.println(text);
-        assert text.equals("SkinsRestorer, SkinsRestorer");
+        assertEquals(text, "SkinsRestorer, SkinsRestorer");
     }
 
     @Test
@@ -59,7 +61,7 @@ public class SearchInteractorTest {
 
         var text = formatStr(result, ", ");
         System.out.println(text);
-        assert text.equals("CoordsOffline, StatusSigns, SkinsRestorer, PetShop, InventorySafe, SkinsRestorer");
+        assertEquals(text, "CoordsOffline, StatusSigns, SkinsRestorer, PetShop, InventorySafe, SkinsRestorer");
     }
 
     @Test
@@ -72,6 +74,6 @@ public class SearchInteractorTest {
         var text = formatStr(result, ", ");
 
         System.out.println(text);
-        assert text.equals("AnimatedLeaves");
+        assertEquals(text, "AnimatedLeaves");
     }
 }

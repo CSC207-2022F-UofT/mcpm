@@ -26,7 +26,7 @@ class ArgsParserTest
         public void run(Namespace details, Consumer<String> log)
         {
             log.accept(details.toString());
-            assert details.getString("a").equals("meow");
+            assertEquals(details.getString("a"), "meow");
         }
 
         @Override
