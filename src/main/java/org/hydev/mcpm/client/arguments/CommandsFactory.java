@@ -1,5 +1,7 @@
 package org.hydev.mcpm.client.arguments;
 
+import org.hydev.mcpm.client.DatabaseManager;
+import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
 import org.hydev.mcpm.client.database.ListAllInteractor;
@@ -9,6 +11,8 @@ import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
 import org.hydev.mcpm.client.injector.PluginLoader;
+import org.hydev.mcpm.client.installer.InstallInteractor;
+import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
 import org.hydev.mcpm.utils.ColorLogger;
 
 import java.net.URI;
@@ -33,11 +37,16 @@ public class CommandsFactory {
     public static List<CommandParser> baseParsers() {
         var host = URI.create("http://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
-        var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker()));
-        var listController = new ListController(new ListAllInteractor());
-        var searchController = new SearchPackagesController(new SearchInteractor(fetcher));
+        var tracker = new LocalPluginTracker();
+        var searcher = new SearchInteractor(fetcher);
+        var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
+        var listController = new ListController(new ListAllInteractor(tracker));
+        var searchController = new SearchPackagesController(searcher);
         var mirrorController = new MirrorController(new MirrorSelector());
-        var infoController = new InfoController(new LocalPluginTracker());
+        var infoController = new InfoController(tracker);
+        var installController = new InstallController(new InstallInteractor(
+            new SpigotPluginDownloader(new Downloader(), host.toString()),
+            new DatabaseManager(tracker, searcher)));
 
         /*
          * Add general parsers to this list!
@@ -49,7 +58,8 @@ public class CommandsFactory {
             new ListParser(listController),
             new SearchParser(searchController),
             new MirrorParser(mirrorController),
-            new InfoParser(infoController)
+            new InfoParser(infoController),
+            new InstallParser(installController)
         );
     }
 
