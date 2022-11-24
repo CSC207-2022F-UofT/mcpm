@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.database.mirrors;
 
 import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +44,23 @@ public interface MirrorSelectBoundary
     default List<Pair<Mirror, Integer>> pingMirrors() throws IOException
     {
         return listAvailableMirrors().stream().filter(Mirror::isWeb)
+            .parallel()
             .map(m -> new Pair<>(m, ping(m.url())))
             .sorted(comparingInt(Map.Entry::getValue))
             .toList();
     }
+
+    /**
+     * Get the mirror that the user has selected, or the default mirror
+     *
+     * @return A selected mirror
+     */
+    Mirror getSelectedMirror() throws IOException;
+
+    /**
+     * Set a mirror as user-selected
+     *
+     * @param mirror A selected mirror
+     */
+    void setSelectedMirror(Mirror mirror) throws IOException;
 }

@@ -9,18 +9,7 @@ import java.util.function.Consumer;
 /**
  * A command that handles plugin reloading operations. See ReloadEntry and ReloadParser.
  */
-public class ReloadController {
-    private final ReloadBoundary reloader;
-
-    /**
-     * Creates a ReloadCommand object with this specified ReloadBoundary to use when dispatched.
-     *
-     * @param loader The relaod boundary to use in Command operation.
-     */
-    public ReloadController(ReloadBoundary loader) {
-        this.reloader = loader;
-    }
-
+public record ReloadController(ReloadBoundary reloader) {
     /**
      * Hot reload plugins and output status to log.
      *

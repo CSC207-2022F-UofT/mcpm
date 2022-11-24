@@ -31,7 +31,7 @@ public class NetworkUtils
         {
             try
             {
-                Request.head("https://1.1.1.1").connectTimeout(ONE_S).execute();
+                Request.head("https://every1dns.com").connectTimeout(ONE_S).execute();
             }
             catch (IOException ignored) { }
             pingInitialized = true;

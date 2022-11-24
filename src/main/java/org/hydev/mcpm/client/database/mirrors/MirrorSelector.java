@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.database.mirrors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+import static org.hydev.mcpm.Constants.CFG_PATH;
+
 /**
  * Implementation of mirror select boundary
  *
@@ -21,7 +23,8 @@ public class MirrorSelector implements MirrorSelectBoundary
 {
     public static final String MIRROR_LIST_URL = "https://mcprs.hydev.org/mirrorlist.yml";
     private static final ObjectMapper YML = new ObjectMapper(new YAMLFactory());
-    private static final File LOCAL_PATH = new File(System.getProperty("user.home"), ".config/mcpm/mirrorlist.yml");
+    private static final File LOCAL_PATH = new File(CFG_PATH, "mirrorlist.yml");
+    private static final File LOCAL_SEL = new File(CFG_PATH, "selected.yml");
 
     @Override
     public @NotNull List<Mirror> listAvailableMirrors() throws IOException
@@ -46,5 +49,19 @@ public class MirrorSelector implements MirrorSelectBoundary
         // Save yml to local folder
         LOCAL_PATH.getParentFile().mkdirs();
         Files.writeString(LOCAL_PATH.toPath(), yml);
+    }
+
+    @Override
+    public Mirror getSelectedMirror() throws IOException
+    {
+        if (LOCAL_SEL.exists()) return YML.readValue(Files.readString(LOCAL_SEL.toPath()), new TypeReference<>() {});
+        return listAvailableMirrors().get(0);
+    }
+
+    @Override
+    public void setSelectedMirror(Mirror mirror) throws IOException
+    {
+        LOCAL_SEL.getParentFile().mkdirs();
+        Files.writeString(LOCAL_SEL.toPath(), YML.writeValueAsString(mirror));
     }
 }

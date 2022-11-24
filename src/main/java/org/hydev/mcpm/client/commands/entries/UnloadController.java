@@ -9,18 +9,7 @@ import java.util.function.Consumer;
 /**
  * A command that handles plugin unloading operations. See UnloadEntry and UnloadParser.
  */
-public class UnloadController {
-    private final UnloadBoundary unloader;
-
-    /**
-     * Creates a UnloadCommand object with this specified UnloadBoundary to use when dispatched.
-     *
-     * @param loader The "unload boundary" to use in Command operation.
-     */
-    public UnloadController(UnloadBoundary loader) {
-        this.unloader = loader;
-    }
-
+public record UnloadController(UnloadBoundary unloader) {
     /**
      * Unload plugins and output status to log.
      *

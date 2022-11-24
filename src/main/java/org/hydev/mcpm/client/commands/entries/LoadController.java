@@ -9,19 +9,7 @@ import java.util.function.Consumer;
 /**
  * A command that handles plugin loading operations. See LoadEntry and LoadParser.
  */
-public class LoadController {
-    private final LoadBoundary loader;
-
-    /**
-     * Creates a LoadCommand object with this specified LoadBoundary to use when dispatched.
-     *
-     * @param loader The load boundary to use in Command operation.
-     */
-    public LoadController(LoadBoundary loader) {
-        this.loader = loader;
-    }
-
-
+public record LoadController(LoadBoundary loader) {
     /**
      * Load plugins and output status to log.
      *

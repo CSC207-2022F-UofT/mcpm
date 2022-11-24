@@ -4,6 +4,7 @@ import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
 import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
+import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
@@ -32,10 +33,11 @@ public class CommandsFactory {
     public static List<CommandParser> baseParsers() {
         var host = URI.create("http://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
-        var echoController = new EchoController();
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(new LocalPluginTracker()));
         var listController = new ListController(new ListAllInteractor());
         var searchController = new SearchPackagesController(new SearchInteractor(fetcher));
+        var mirrorController = new MirrorController(new MirrorSelector());
+        var infoController = new InfoController(new LocalPluginTracker());
 
         /*
          * Add general parsers to this list!
@@ -43,10 +45,11 @@ public class CommandsFactory {
          * If you're not sure if your command is server-only, add it to this list!
          */
         return List.of(
-            new EchoParser(echoController),
             new ExportPluginsParser(exportPluginsController),
             new ListParser(listController),
-            new SearchParser(searchController)
+            new SearchParser(searchController),
+            new MirrorParser(mirrorController),
+            new InfoParser(infoController)
         );
     }
 
