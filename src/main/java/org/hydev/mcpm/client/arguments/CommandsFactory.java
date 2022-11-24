@@ -48,7 +48,7 @@ public class CommandsFactory {
         var installController = new InstallController(new InstallInteractor(
             new SpigotPluginDownloader(new Downloader(), mirror.selectedMirrorSupplier()),
             new DatabaseManager(tracker, searcher)));
-        var refreshController = new RefreshController(fetcher, fetcherListener);
+        var refreshController = new RefreshController(fetcher, fetcherListener, mirror);
 
         /*
          * Add general parsers to this list!

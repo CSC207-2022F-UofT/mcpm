@@ -4,6 +4,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.entries.RefreshController;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 /**
@@ -35,7 +36,14 @@ public record RefreshParser(RefreshController controller) implements CommandPars
     @Override
     public void run(Namespace details, Consumer<String> log)
     {
-        controller.refresh();
-        log.accept("&aDatabase refreshed successfully!");
+        try
+        {
+            controller.refresh();
+            log.accept("&aDatabase refreshed successfully!");
+        }
+        catch (IOException e)
+        {
+            log.accept("&cDatabase refresh failed: " + e.getMessage());
+        }
     }
 }
