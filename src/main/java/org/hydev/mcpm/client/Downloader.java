@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -121,5 +122,25 @@ public class Downloader
     {
         this.threads = threads;
         return this;
+    }
+
+    /**
+     * Tests for the downloader
+     *
+     * @param args Not used
+     */
+    public static void main(String[] args)
+    {
+        String link = "https://mcpm.hydev.org/db";
+        File out = new File("./build/db.json");
+        String link1 = "https://mcpm.hydev.org/db.zst";
+        File out1 = new File("./build/db.zst");
+        Downloader downloader = new Downloader().showProgress(true).threads(2);
+        Map<String, File> urls = new HashMap<>();
+        urls.put(link, out);
+        urls.put(link1, out1);
+        downloader.downloadFiles(urls);
+        out.delete();
+        out1.delete();
     }
 }
