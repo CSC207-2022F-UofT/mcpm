@@ -63,8 +63,10 @@ public class ProgressRow implements ProgressRowBoundary {
     {
         double speed = speedCalculator.getSpeed();
         double eta = (total - completed) / speed;
+
+        // Get minutes and seconds separately, show at most 99 minutes
         long etaS = (long) (eta % 60);
-        long etaM = (long) (eta / 60);
+        long etaM = Math.min((long) (eta / 60), 99);
 
         // Replace variables
         var p = String.format("%3.0f%%", 100d * completed / total);
