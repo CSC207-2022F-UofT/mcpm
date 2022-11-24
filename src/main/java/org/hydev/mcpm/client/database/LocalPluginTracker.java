@@ -1,6 +1,9 @@
 package org.hydev.mcpm.client.database;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
@@ -8,15 +11,11 @@ import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.utils.Pair;
 import org.hydev.mcpm.utils.PluginJarFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
-
-import static org.hydev.mcpm.Constants.JACKSON;
+import java.util.stream.Collectors;
 
 /**
  * This class keeps track of locally installed packages
@@ -26,7 +25,7 @@ import static org.hydev.mcpm.Constants.JACKSON;
  */
 public class LocalPluginTracker implements PluginTracker {
     // CSV file storing the list of manually installed plugins
-    private String mainLockFile = "plugins/mcpm.lock.json";
+    private String mainLockFile = "plugins/mcpm.lock.csv";
 
     // Directory containing the plugins
     private String pluginDirectory = "plugins";
@@ -64,29 +63,41 @@ public class LocalPluginTracker implements PluginTracker {
     }
 
     /**
-     * Read the json file and return a mapping between plugin names and install status
+     * Read the CSV file and return a mapping between plugin names and install
+     * status
      *
      * @return Mapping between plugin name and boolean status
      */
-    private Map<String, Boolean> readLock() {
+    private Map<String, Boolean> readCsv() {
+        Map<String, Boolean> map = new HashMap<>();
         try {
-            return JACKSON.readValue(new File(mainLockFile), new TypeReference<>() {});
+            CSVReader reader = new CSVReader(new FileReader(mainLockFile));
+            String[] line;
+            while ((line = reader.readNext()) != null) {
+                map.put(line[0], Boolean.parseBoolean(line[1]));
+            }
+            reader.close();
+            return map;
         } catch (FileNotFoundException e) {
-            return new HashMap<>();
-        } catch (IOException e) {
+            return map;
+        } catch (CsvException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Save a hashmap's contents, overwriting the json file
+     * Save a hashmap's contents, overwriting a CSV file
      *
      * @param map Hashmap to save
      *
      */
-    private void saveLock(Map<String, Boolean> map) {
-        try {
-            JACKSON.writeValue(new File(mainLockFile), map);
+    private void saveCsv(Map<String, Boolean> map) {
+        String csvFile = mainLockFile;
+        try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
+            for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+                String[] line = { entry.getKey(), entry.getValue().toString() };
+                writer.writeNext(line);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -99,9 +110,9 @@ public class LocalPluginTracker implements PluginTracker {
      * @param status Plugin status (true = manual, false = auto)
      */
     public void addEntry(String name, boolean status) {
-        Map<String, Boolean> map = readLock();
+        Map<String, Boolean> map = readCsv();
         map.put(name, status);
-        saveLock(map);
+        saveCsv(map);
     }
 
     /**
@@ -110,16 +121,16 @@ public class LocalPluginTracker implements PluginTracker {
      * @param name Plugin name
      */
     public void removeEntry(String name) {
-        Map<String, Boolean> map = readLock();
+        Map<String, Boolean> map = readCsv();
         map.remove(name);
-        saveLock(map);
+        saveCsv(map);
     }
 
     /**
      * Synchronize locally installed plugins at pluginDirectory with the CSV file
      */
     public void syncMainLockFile() {
-        Map<String, Boolean> csvMap = readLock();
+        Map<String, Boolean> csvMap = readCsv();
 
         Set<String> installedMap = new HashSet<>();
 
@@ -140,10 +151,10 @@ public class LocalPluginTracker implements PluginTracker {
         }
 
         // Return a new map containing all of temp's elements, turned into a map.
-        Map<String, Boolean> newMap = toAdd.stream().collect(Pair.toMap());
+        Map<String, Boolean> newMap = toAdd.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
         // Save the new map to the csv file.
-        saveLock(newMap);
+        saveCsv(newMap);
     }
 
     /**
@@ -173,11 +184,11 @@ public class LocalPluginTracker implements PluginTracker {
      * @param name Plugin name
      */
     public void setManuallyInstalled(String name) {
-        Map<String, Boolean> mainLock = readLock();
+        Map<String, Boolean> mainLock = readCsv();
 
         if (mainLock.containsKey(name)) {
             mainLock.replace(name, true);
-            saveLock(mainLock);
+            saveCsv(mainLock);
         }
     }
 
@@ -190,11 +201,11 @@ public class LocalPluginTracker implements PluginTracker {
         // Locate the name in the list of installed plugins and set the value in the
         // second row as false
         // Load in the csv file
-        Map<String, Boolean> mainLock = readLock();
+        Map<String, Boolean> mainLock = readCsv();
 
         if (mainLock.containsKey(name)) {
             mainLock.replace(name, false);
-            saveLock(mainLock);
+            saveCsv(mainLock);
         }
     }
 
@@ -204,7 +215,7 @@ public class LocalPluginTracker implements PluginTracker {
      * @return List of plugin names
      */
     public List<String> listManuallyInstalled() {
-        Map<String, Boolean> mainLock = readLock();
+        Map<String, Boolean> mainLock = readCsv();
 
         ArrayList<String> accumulator = new ArrayList<>();
 
