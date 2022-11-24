@@ -74,7 +74,7 @@ public class Sugar
             var k = values[i];
             var v = values[i + 1];
 
-            assert k != null;
+            assertTrue(k != null);
             if (v != null) map.put(k, v);
         }
 

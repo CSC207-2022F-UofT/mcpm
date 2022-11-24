@@ -2,8 +2,7 @@ package org.hydev.mcpm.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for org.hydev.mcpm.utils.GeneralUtils
@@ -26,7 +25,7 @@ class GeneralUtilsTest
         long time = System.currentTimeMillis();
         GeneralUtils.safeSleep(50);
         long elapsed = System.currentTimeMillis() - time;
-        assert (40 <= elapsed) && (elapsed <= 60);
+        assertTrue((40 <= elapsed) && (elapsed <= 60));
     }
 
     @Test
@@ -34,7 +33,7 @@ class GeneralUtilsTest
     {
         var absPath = GeneralUtils.getResourceFile("test-plugin-activelist.jar");
         assertNotNull(absPath);
-        assert absPath.isFile();
-        assert absPath.toString().endsWith("test-plugin-activelist.jar");
+        assertTrue(absPath.isFile());
+        assertTrue(absPath.toString().endsWith("test-plugin-activelist.jar"));
     }
 }

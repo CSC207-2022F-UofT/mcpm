@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for org.hydev.mcpm.utils.PluginJarFile
@@ -44,7 +45,7 @@ class PluginJarFileTest
         assertEquals(meta.name(), "ActiveList");
         assertEquals(meta.version(), "1.1");
         assertEquals(meta.getFirstAuthor(), "Hykilpikonna");
-        assert meta.commands().containsKey("activelist");
+        assertTrue(meta.commands().containsKey("activelist"));
         assertEquals(meta.commands().get("activelist").aliases(), List.of("al", "ll"));
 
         // Obtain all command names and aliases of a plugin meta

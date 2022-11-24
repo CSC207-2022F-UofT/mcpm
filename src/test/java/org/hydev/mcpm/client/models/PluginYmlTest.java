@@ -37,7 +37,7 @@ class PluginYmlTest
         assertNull(meta.load());
         assertNull(meta.authors());
         assertEquals(meta.website(), "https://github.com/CSC207-2022F-UofT/mcpm");
-        assert meta.commands().containsKey("mcpm");
+        assertTrue(meta.commands().containsKey("mcpm"));
         assertEquals(meta.commands().get("mcpm").description(), "Minecraft package manager");
     }
 

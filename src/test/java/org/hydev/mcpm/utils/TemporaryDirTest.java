@@ -20,6 +20,6 @@ class TemporaryDirTest
         assertEquals(Files.readString(tf).strip(), "meow");
         t.close();
         System.out.println(tf.toFile());
-        assert !tf.toFile().exists();
+        assertFalse(tf.toFile().exists());
     }
 }

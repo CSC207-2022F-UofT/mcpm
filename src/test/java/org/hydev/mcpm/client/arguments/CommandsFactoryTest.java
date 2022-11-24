@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the CommandFactory
@@ -20,10 +21,10 @@ class CommandsFactoryTest
     {
         var ba = CommandsFactory.baseArgsParser();
         var sa = CommandsFactory.serverArgsParser(System.out::println);
-
-        assert ba.getRawSubparsers().stream().anyMatch(it -> it.name().equals("list"));
-        assert ba.getRawSubparsers().stream().noneMatch(it -> it.name().equals("load"));
-        assert sa.getRawSubparsers().stream().anyMatch(it -> it.name().equals("list"));
-        assert sa.getRawSubparsers().stream().anyMatch(it -> it.name().equals("load"));
+        
+        assertTrue(ba.getRawSubparsers().stream().anyMatch(it -> it.name().equals("list")));
+        assertTrue(ba.getRawSubparsers().stream().noneMatch(it -> it.name().equals("load")));
+        assertTrue(sa.getRawSubparsers().stream().anyMatch(it -> it.name().equals("list")));
+        assertTrue(sa.getRawSubparsers().stream().anyMatch(it -> it.name().equals("load")));
     }
 }

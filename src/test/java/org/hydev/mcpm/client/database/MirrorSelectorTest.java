@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import static org.hydev.mcpm.client.database.mirrors.MirrorSelector.MIRROR_LIST_URL;
 import static org.hydev.mcpm.utils.NetworkUtils.ping;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
@@ -43,7 +44,7 @@ class MirrorSelectorTest
         System.out.println(pings);
         for (int i = 0; i < pings.size() - 1; i++)
         {
-            assert pings.get(i).v() <= pings.get(i + 1).v();
+            assertTrue(pings.get(i).v() <= pings.get(i + 1).v());
         }
     }
 }

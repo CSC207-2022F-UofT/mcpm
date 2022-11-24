@@ -56,7 +56,7 @@ class SugarTest
     void uncheckedMapOf()
     {
         Map<String, Integer> map = Sugar.uncheckedMapOf("a", 1, "b", 2);
-        assert map.containsKey("a") && map.containsKey("b");
+        assertTrue(map.containsKey("a") && map.containsKey("b"));
         assertEquals(map.get("a"), 1);
         assertEquals(map.get("b"), 2);
     }

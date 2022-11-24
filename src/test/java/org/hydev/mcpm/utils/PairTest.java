@@ -36,7 +36,7 @@ class PairTest
         var ps = List.of(new Pair<>("a", 1), new Pair<>("b", 2));
         var map = ps.stream().collect(Pair.toMap());
 
-        assert map.containsKey("a") && map.containsKey("b");
+        assertTrue(map.containsKey("a") && map.containsKey("b"));
         assertEquals(map.get("a"), 1);
         assertEquals(map.get("b"), 2);
     }
