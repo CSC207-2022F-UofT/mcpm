@@ -5,8 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.JacksonYAMLParseException;
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.error.MarkedYAMLException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PluginYmlTest
 {
@@ -35,8 +34,8 @@ class PluginYmlTest
         assertEquals(meta.apiVersion(), "1.18");
         assertEquals(meta.author(), "Hykilpikonna");
         assertEquals(meta.getFirstAuthor(), "Hykilpikonna");
-        assert meta.load() == null;
-        assert meta.authors() == null;
+        assertNull(meta.load());
+        assertNull(meta.authors());
         assertEquals(meta.website(), "https://github.com/CSC207-2022F-UofT/mcpm");
         assert meta.commands().containsKey("mcpm");
         assertEquals(meta.commands().get("mcpm").description(), "Minecraft package manager");

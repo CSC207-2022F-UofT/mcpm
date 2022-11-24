@@ -37,6 +37,7 @@ class PairTest
         var map = ps.stream().collect(Pair.toMap());
 
         assert map.containsKey("a") && map.containsKey("b");
-        assert map.get("a") == 1 && map.get("b") == 2;
+        assertEquals(map.get("a"), 1);
+        assertEquals(map.get("b"), 2);
     }
 }

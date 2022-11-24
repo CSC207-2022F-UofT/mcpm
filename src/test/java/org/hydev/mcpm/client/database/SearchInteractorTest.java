@@ -45,7 +45,7 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_NAME, "SkinsRestorer", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
         System.out.println(text);
@@ -57,7 +57,7 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "offline online", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
         System.out.println(text);
@@ -69,7 +69,7 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "al", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
 

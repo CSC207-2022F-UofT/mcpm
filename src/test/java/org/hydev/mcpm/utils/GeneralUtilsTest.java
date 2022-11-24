@@ -2,6 +2,9 @@ package org.hydev.mcpm.utils;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * Tests for org.hydev.mcpm.utils.GeneralUtils
  *
@@ -13,8 +16,8 @@ class GeneralUtilsTest
     @Test
     void makeUrl()
     {
-        assert GeneralUtils.makeUrl("https://example.com", "cat", "meow", "azalea", "cute").toString()
-            .equals("https://example.com?cat=meow&azalea=cute");
+        assertEquals(GeneralUtils.makeUrl("https://example.com", "cat", "meow", "azalea", "cute").toString(),
+            "https://example.com?cat=meow&azalea=cute");
     }
 
     @Test
@@ -30,7 +33,7 @@ class GeneralUtilsTest
     void getResourceFile()
     {
         var absPath = GeneralUtils.getResourceFile("test-plugin-activelist.jar");
-        assert absPath != null;
+        assertNotNull(absPath);
         assert absPath.isFile();
         assert absPath.toString().endsWith("test-plugin-activelist.jar");
     }

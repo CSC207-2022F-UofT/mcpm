@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.hydev.mcpm.utils.ColorLogger.printc;
 import static org.hydev.mcpm.utils.ColorLogger.printfc;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for ColorLogger
@@ -25,6 +26,6 @@ class ColorLoggerTest
     @Test
     void lengthNoColor()
     {
-        assert ColorLogger.lengthNoColor("&bBlue!") == "Blue!".length();
+        assertEquals(ColorLogger.lengthNoColor("&bBlue!"), "Blue!".length());
     }
 }
