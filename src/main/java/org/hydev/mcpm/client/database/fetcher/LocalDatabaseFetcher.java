@@ -129,8 +129,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
     private String readDatabaseFromContent(HttpEntity entity, DatabaseFetcherListener listener) throws IOException {
         long total = entity.getContentLength();
-
-        var builder = new ByteArrayOutputStream();
+        var builder = new ByteArrayOutputStream((int) total);
 
         try (var stream = entity.getContent()) {
             var buffer = new byte[8096];

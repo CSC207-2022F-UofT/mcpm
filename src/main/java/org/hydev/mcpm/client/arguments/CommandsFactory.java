@@ -35,7 +35,7 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
     public static List<CommandParser> baseParsers() {
-        var host = URI.create("http://mcpm.hydev.org");
+        var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
         var tracker = new LocalPluginTracker();
         var searcher = new SearchInteractor(fetcher);

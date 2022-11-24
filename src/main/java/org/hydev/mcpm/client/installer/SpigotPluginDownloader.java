@@ -58,6 +58,5 @@ public class SpigotPluginDownloader implements PluginDownloader {
      * */
     private String constructUrl(long pluginId, long pluginVersion) {
         return String.format("%s/pkgs/spiget/%s/%s/release.jar", baseUrl, pluginId, pluginVersion);
-
     }
 }

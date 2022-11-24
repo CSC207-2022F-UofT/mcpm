@@ -1,11 +1,15 @@
 package org.hydev.mcpm.client;
 
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpEntity;
 import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +35,7 @@ public class Downloader
     /** Number of simultaneous downloads */
     private int threads = 5;
 
-    private ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
-
-    private ArrayList<ProgressRow> allRows = new ArrayList<>();
+    private final ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
     /**
      * Download one file from the internet to local storage through HTTP request
@@ -43,31 +45,40 @@ public class Downloader
      */
     public void downloadFile(String url, File to)
     {
-        try (FileOutputStream fileos = new FileOutputStream(to)) {
-            URL link = new URL(url);
-            HttpURLConnection http = (HttpURLConnection) link.openConnection();
-            long fileSize = (long) http.getContentLengthLong();
+        try (var client = HttpClients.createDefault())
+        {
+            var get = new HttpGet(url);
+            var bytes = client.execute(get, (req) ->
+            {
+                HttpEntity entity = req.getEntity();
+                var total = entity.getContentLength();
+                var builder = new ByteArrayOutputStream((int) total);
 
+                // Create progress row
+                var row = new ProgressRow(total).desc(to.getName()).descLen(30);
+                bar.appendBar(row);
 
-            BufferedInputStream in = new BufferedInputStream(http.getInputStream());
-            BufferedOutputStream bout = new BufferedOutputStream(fileos, 1024);
-            byte[] buffer = new byte[1024];
-            int read;
+                try (var stream = entity.getContent())
+                {
+                    var buffer = new byte[8096];
 
-            var row = new ProgressRow(fileSize)
-                    .desc(format("Download %s", allRows.size()))
-                    .descLen(30);
-            bar.appendBar(row);
-            allRows.add(row);
-            while ((read = in.read(buffer, 0, 1024)) >= 0) {
-                bout.write(buffer, 0, read);
-                allRows.forEach(a -> a.increase(1024));
-            }
-            bout.close();
-            in.close();
+                    var count = stream.read(buffer);
+                    while (count > 0)
+                    {
+                        builder.write(buffer, 0, count);
+                        row.increase(count);
+                        count = stream.read(buffer);
+                    }
+                }
+
+                return builder.toByteArray();
+            });
+
+            Files.write(to.toPath(), bytes);
         }
-        catch (IOException ex) {
-            ex.printStackTrace();
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
