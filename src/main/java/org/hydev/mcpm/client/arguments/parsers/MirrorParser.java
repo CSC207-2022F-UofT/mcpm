@@ -31,10 +31,12 @@ public record MirrorParser(MirrorController controller) implements CommandParser
     @Override
     public void run(Namespace details, Consumer<String> log)
     {
-        switch (details.getString("op"))
+        var op = details.getString("op");
+        switch (op)
         {
             case "ping" -> controller.ping(details.getBoolean("refresh"), log);
             case "select" -> controller.select(details.getString("host"), log);
+            default -> throw new UnsupportedOperationException("Unknown operation: " + op);
         }
     }
 

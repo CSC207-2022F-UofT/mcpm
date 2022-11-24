@@ -22,7 +22,7 @@ public class SpigotPluginDownloader implements PluginDownloader {
      * Initialize the Spigot Plugin Downloader
      *
      * @param downloader The file downloader
-     * @param baseUrl base URL for web brower
+     * @param host Base URL provider
      * */
     public SpigotPluginDownloader(Downloader downloader, Supplier<URI> host) {
         this.downloader = downloader;

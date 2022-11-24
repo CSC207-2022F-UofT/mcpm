@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearchInteractorTest {
-    private final URI host = URI.create("http://mcprs-bell.hydev.org");
-    private final LocalDatabaseFetcher fetcher = new LocalDatabaseFetcher(host);
+    private final URI host = URI.create("https://mcprs-bell.hydev.org");
+    private final LocalDatabaseFetcher fetcher = new LocalDatabaseFetcher(() -> host);
     private final SearchInteractor database = new SearchInteractor(fetcher);
 
     /**

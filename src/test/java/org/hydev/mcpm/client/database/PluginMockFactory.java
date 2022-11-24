@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * Mock plugin factory for testing
+ */
 public class PluginMockFactory {
     private PluginMockFactory() { }
 
@@ -111,12 +114,18 @@ public class PluginMockFactory {
         return new DatabaseInteractor(fetcher, listener);
     }
 
+    /**
+     * Generate a testing list of PluginModels
+     *
+     * @return Testing list of PluginModels
+     */
     public static List<PluginModel> generatePlugins() {
         List<PluginModel> plugins = new ArrayList<>();
         String[] names = {"WorldGuard"};
-        String [] descriptions = {"Protect your server!\n" +
-                "WorldGuard lets you and players guard areas of land against griefers and undesirables\n" +
-                "as well as tweak and disable various gameplay features of Minecraft."};
+        String [] descriptions = {"""
+            Protect your server!
+            WorldGuard lets you and players guard areas of land against griefers and undesirables
+            as well as tweak and disable various gameplay features of Minecraft.""".stripIndent()};
         return plugins;
     }
 }

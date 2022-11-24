@@ -27,7 +27,7 @@ public class DatabaseInteractorListTest {
         smallInteractor = PluginMockFactory.interactor(List.of(
             PluginMockFactory.model(1),
             PluginMockFactory.model(2, "hello"),
-            PluginMockFactory.model(3,"test")
+            PluginMockFactory.model(3, "test")
         ));
     }
 
