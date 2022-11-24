@@ -1,47 +1,50 @@
-package org.hydev.mcpm.client.installer;
+package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.Downloader;
-import org.hydev.mcpm.client.commands.entries.SearchPackagesController;
 import org.hydev.mcpm.client.database.DatabaseInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
+import org.hydev.mcpm.client.database.PluginTracker;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
+import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
-import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.results.ListPackagesResult;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
+import org.hydev.mcpm.client.installer.InstallException;
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 
-import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /*
  * A manager that communicates with database and returns the plugin source for installation
  * */
 public class DatabaseManager {
-    private final DatabaseInteractor databaseInteractor;
-    private final LocalPluginTracker localPluginTracker;
 
-    private final SearchInteractor searchInteractor;
+    private final PluginTracker localPluginTracker;
+    private final SearchPackagesBoundary searchInteractor;
+
+//    private LocalDatabaseFetcher localDatabaseFetcher = new LocalDatabaseFetcher(URI.create("http://mcpm.hydev.org"));
 
     /**
      * Initialize an database manager
      */
-    public DatabaseManager() {
-        this.databaseInteractor = new DatabaseInteractor(new LocalDatabaseFetcher(URI.create("http://mcpm.hydev.org")));
-        this.localPluginTracker = new LocalPluginTracker("lock", "plugins");
-        this.searchInteractor = new SearchInteractor(new LocalDatabaseFetcher(URI.create("http://mcpm.hydev.org")));
+    public DatabaseManager(PluginTracker localPluginTracker, SearchPackagesBoundary searchInteractor) {
+        this.localPluginTracker = localPluginTracker;
+        this.searchInteractor = searchInteractor;
     }
+
+//    /**
+//     * Initialize an database manager
+//     * @param listener The listener that will receive updates if the database is downloaded from the internet.
+//     */
+//    public DatabaseManager(DatabaseFetcherListener listener) {
+//        this.databaseInteractor = new DatabaseInteractor(localDatabaseFetcher);
+//        this.localPluginTracker = new LocalPluginTracker();
+//        this.searchInteractor = new SearchInteractor(localDatabaseFetcher, listener);
+//    }
+
 
     /**
      * Search if the plugin exists, throw exception if it does not exist and return the information of
