@@ -4,9 +4,11 @@ import com.google.common.base.Stopwatch;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.hydev.mcpm.utils.ZstdUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -23,11 +25,11 @@ class ZstdUtilsTest
     void test() throws ZstdException
     {
         assumeTrue(ZstdUtils.nativeSupport());
-        assertEquals(new String(decompress(compress("Hello world".getBytes()))), "Hello world");
-        assertEquals(new String(decompressPure(compress("Hello world".getBytes()))), "Hello world");
-        assertEquals(new String(decompress(compressPure("Hello world".getBytes()))), "Hello world");
-        assertEquals(new String(decompressPure(compressPure("Hello world".getBytes()))), "Hello world");
-        assertThrows(ZstdException.class, () -> decompress("not a zstd archive".getBytes()));
+        assertEquals(new String(decompress(compress("Hello world".getBytes(UTF_8))), UTF_8), "Hello world");
+        assertEquals(new String(decompressPure(compress("Hello world".getBytes(UTF_8))), UTF_8), "Hello world");
+        assertEquals(new String(decompress(compressPure("Hello world".getBytes(UTF_8))), UTF_8), "Hello world");
+        assertEquals(new String(decompressPure(compressPure("Hello world".getBytes(UTF_8))), UTF_8), "Hello world");
+        assertThrows(ZstdException.class, () -> decompress("not a zstd archive".getBytes(UTF_8)));
     }
 
     /**

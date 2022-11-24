@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
@@ -166,5 +167,18 @@ public class ZstdUtils
         } else {
             return dst;
         }
+    }
+
+    /**
+     * Main method for the zstd test
+     *
+     * @param args Args (not used)
+     */
+    public static void main(String[] args) throws ZstdException
+    {
+        System.out.printf("Detected ZSTD support: %s\n", ZstdUtils.nativeSupport());
+
+        var cb = ZstdUtils.compress("Zstd compression/decompression works!".getBytes(StandardCharsets.UTF_8));
+        System.out.println(new String(ZstdUtils.decompress(cb), StandardCharsets.UTF_8));
     }
 }
