@@ -14,9 +14,4 @@ public class ZstdException extends IOException
     {
         super(cause);
     }
-
-    public ZstdException(String message)
-    {
-        super(message);
-    }
 }
