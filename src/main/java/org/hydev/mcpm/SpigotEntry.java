@@ -4,17 +4,14 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.hydev.mcpm.client.arguments.ArgsParser;
 import org.hydev.mcpm.client.arguments.CommandsFactory;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 import org.hydev.mcpm.utils.ColorLogger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -44,6 +41,9 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
+
+        // Let the other parts of our program know that we're in minecraft
+        Constants.IS_MINECRAFT = true;
     }
 
     /**

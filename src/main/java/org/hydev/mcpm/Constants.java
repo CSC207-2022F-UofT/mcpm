@@ -16,6 +16,11 @@ import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
  */
 public class Constants
 {
+    // This is technically not a constant, but it should only be changed by SpigotEntry to true.
+    // It cannot be put inside SpigotEntry because accessing SpigotEntry would try to initialize the class, then it
+    // will try to import Spigot packages which doesn't exist outside of Spigot.
+    public static boolean IS_MINECRAFT = false;
+
     public static final ObjectMapper JACKSON = new ObjectMapper()
         .disable(FAIL_ON_UNKNOWN_PROPERTIES).enable(INDENT_OUTPUT);
 
