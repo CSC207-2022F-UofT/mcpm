@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'org.hydev.csc207'
-version '0.1.0.51'
+version '0.1.0.435'
 
 application {
     mainClass = 'org.hydev.mcpm.client.arguments.ArgsParser'
@@ -58,16 +58,10 @@ dependencies {
 
     // Json/YAML parser: Jackson
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0-rc3'
-
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0-rc3'
-
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc3'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0'
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.0-rc3'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.0'
 
     // General utilities
     // https://mvnrepository.com/artifact/com.google.guava/guava
@@ -75,14 +69,14 @@ dependencies {
 
     // IDE annotations
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
-    implementation 'org.jetbrains:annotations:16.0.1'
+    implementation 'org.jetbrains:annotations:23.0.0'
 
     // Terminal Hacks
     // https://mvnrepository.com/artifact/org.fusesource.jansi/jansi
     implementation 'org.fusesource.jansi:jansi:2.4.0'
 
-    // https://mvnrepository.com/artifact/jline/jline
-    implementation 'jline:jline:2.14.6'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // CSV Parser
     // https://mvnrepository.com/artifact/com.opencsv/opencsv/5.7.1
@@ -93,8 +87,9 @@ dependencies {
     implementation 'com.github.luben:zstd-jni:1.5.2-5'
 
     // Unit tests
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.4'
 }
 
 processResources {
