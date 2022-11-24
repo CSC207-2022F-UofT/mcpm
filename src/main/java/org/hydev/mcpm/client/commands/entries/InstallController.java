@@ -21,9 +21,9 @@ public record InstallController(InstallBoundary boundary)
      * @param log Log string
      */
     public void install(String name, SearchPackagesType type, boolean load, Consumer<String> log) {
-        // TODO: log error
-        InstallInput input = new InstallInput(name, type, load, true);
-        boundary.installPlugin(input);
-        log.accept("string");
+        // TODO: User-friendly outputs
+        var input = new InstallInput(name, type, load, true);
+        var output = boundary.installPlugin(input);
+        log.accept(output.type().reason());
     }
 }
