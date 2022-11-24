@@ -6,16 +6,16 @@ import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
 import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
-import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
+import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
 import org.hydev.mcpm.utils.ColorLogger;
 
-import java.net.URI;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -35,10 +35,11 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
     public static List<CommandParser> baseParsers() {
+        var fetcherListener = new ProgressBarFetcherListener();
         var mirror = new MirrorSelector();
         var fetcher = new LocalDatabaseFetcher(mirror.selectedMirrorSupplier());
         var tracker = new LocalPluginTracker();
-        var searcher = new SearchInteractor(fetcher);
+        var searcher = new SearchInteractor(fetcher, fetcherListener);
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));
         var searchController = new SearchPackagesController(searcher);
@@ -47,6 +48,7 @@ public class CommandsFactory {
         var installController = new InstallController(new InstallInteractor(
             new SpigotPluginDownloader(new Downloader(), mirror.selectedMirrorSupplier()),
             new DatabaseManager(tracker, searcher)));
+        var refreshController = new RefreshController(fetcher, fetcherListener);
 
         /*
          * Add general parsers to this list!
@@ -59,7 +61,8 @@ public class CommandsFactory {
             new SearchParser(searchController),
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
-            new InstallParser(installController)
+            new InstallParser(installController),
+            new RefreshParser(refreshController)
         );
     }
 
