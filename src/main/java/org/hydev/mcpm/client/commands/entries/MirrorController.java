@@ -72,7 +72,7 @@ public record MirrorController(MirrorSelectBoundary boundary)
      * @param host Hostname of the mirror
      * @param log Logger
      */
-    public void sel(String host, Consumer<String> log)
+    public void select(String host, Consumer<String> log)
     {
         try
         {

@@ -34,7 +34,7 @@ public record MirrorParser(MirrorController controller) implements CommandParser
         switch (details.getString("op"))
         {
             case "ping" -> controller.ping(details.getBoolean("refresh"), log);
-            case "sel" -> controller.sel(details.getString("host"), log);
+            case "select" -> controller.select(details.getString("host"), log);
         }
     }
 
@@ -53,6 +53,6 @@ public record MirrorParser(MirrorController controller) implements CommandParser
             .help("Select a mirror");
         sel.addArgument("host").nargs("?")
             .help("Host of the mirror");
-        sel.setDefault("op", "sel");
+        sel.setDefault("op", "select");
     }
 }
