@@ -21,7 +21,7 @@ class CommandsFactoryTest
     {
         var ba = CommandsFactory.baseArgsParser();
         var sa = CommandsFactory.serverArgsParser(System.out::println);
-        
+
         assertTrue(ba.getRawSubparsers().stream().anyMatch(it -> it.name().equals("list")));
         assertTrue(ba.getRawSubparsers().stream().noneMatch(it -> it.name().equals("load")));
         assertTrue(sa.getRawSubparsers().stream().anyMatch(it -> it.name().equals("list")));
