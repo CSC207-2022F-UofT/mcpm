@@ -31,3 +31,4 @@ build
 data
 .mcpm
 *.pyc
+plugins
