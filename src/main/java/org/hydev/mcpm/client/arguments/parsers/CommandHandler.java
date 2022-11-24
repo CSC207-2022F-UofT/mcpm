@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
-import org.hydev.mcpm.client.installer.InstallException;
+import org.hydev.mcpm.client.installer.InstallResult;
 
 import java.util.function.Consumer;
 
@@ -27,5 +27,5 @@ public interface CommandHandler
      *
      * @param details A details object that contains all the arguments that the user executed this command with.
      */
-    void run(Namespace details, Consumer<String> log) throws InstallException;
+    void run(Namespace details, Consumer<String> log);
 }

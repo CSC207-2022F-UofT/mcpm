@@ -127,7 +127,7 @@ public class Downloader
     }
 
     /**
-     * Displays a demo for.
+     * Displays a demo for downloader.
      *
      * @param args Arguments are ignored.
      */

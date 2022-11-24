@@ -81,7 +81,8 @@ public record Mirror(
         return host;
     }
 
-    @Override @JsonIgnore
+    @Override
+    @JsonIgnore
     public String httpEndpoint()
     {
         if (httpEndpoint == null) return "/";
