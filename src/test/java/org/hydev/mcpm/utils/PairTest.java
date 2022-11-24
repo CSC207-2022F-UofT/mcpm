@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for Pair class
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PairTest
 {
     @Test
-    void gettersSetters()
+    void getters()
     {
         var p = new Pair<>("a", 1);
 
@@ -20,13 +21,13 @@ class PairTest
         assertEquals(p.k(), "a");
         assertEquals(p.v(), p.getValue());
         assertEquals(p.v(), 1);
+    }
 
-        try
-        {
-            p.setValue(2);
-            assert false;
-        }
-        catch (Pair.UnmodifiableException ignored) { }
+    @Test
+    void setterFail()
+    {
+        var p = new Pair<>("a", 1);
+        assertThrows(Pair.UnmodifiableException.class, () -> p.setValue(1));
     }
 
     @Test
