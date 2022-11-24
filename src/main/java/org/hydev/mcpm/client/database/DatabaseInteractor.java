@@ -222,8 +222,8 @@ public class DatabaseInteractor
      * @param args Arguments are ignored.
      */
     public static void main(String[] args) {
-        var host = URI.create("http://mcpm.hydev.org");
-        var fetcher = new LocalDatabaseFetcher(host);
+        var host = URI.create("https://mcpm.hydev.org");
+        var fetcher = new LocalDatabaseFetcher(() -> host);
         var database = new DatabaseInteractor(fetcher);
 
         var result = database.list(new ListPackagesInput(20, 0, true));

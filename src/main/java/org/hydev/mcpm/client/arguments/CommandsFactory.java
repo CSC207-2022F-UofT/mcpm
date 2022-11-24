@@ -35,17 +35,17 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
     public static List<CommandParser> baseParsers() {
-        var host = URI.create("https://mcpm.hydev.org");
-        var fetcher = new LocalDatabaseFetcher(host);
+        var mirror = new MirrorSelector();
+        var fetcher = new LocalDatabaseFetcher(mirror.selectedMirrorSupplier());
         var tracker = new LocalPluginTracker();
         var searcher = new SearchInteractor(fetcher);
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));
         var searchController = new SearchPackagesController(searcher);
-        var mirrorController = new MirrorController(new MirrorSelector());
+        var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(tracker);
         var installController = new InstallController(new InstallInteractor(
-            new SpigotPluginDownloader(new Downloader(), host.toString()),
+            new SpigotPluginDownloader(new Downloader(), mirror.selectedMirrorSupplier()),
             new DatabaseManager(tracker, searcher)));
 
         /*

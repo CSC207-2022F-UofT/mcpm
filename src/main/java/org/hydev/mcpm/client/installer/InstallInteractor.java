@@ -94,10 +94,11 @@ public class InstallInteractor implements InstallBoundary {
      */
     public static void main(String[] args) {
         new File(FILEPATH).mkdirs();
+        var host = URI.create("https://mcpm.hydev.org");
         Downloader downloader = new Downloader();
-        SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader);
+        SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
         LocalPluginTracker pluginTracker = new LocalPluginTracker();
-        LocalDatabaseFetcher localDatabaseFetcher = new LocalDatabaseFetcher(URI.create("http://mcpm.hydev.org"));
+        LocalDatabaseFetcher localDatabaseFetcher = new LocalDatabaseFetcher(() -> host);
         SearchInteractor searchInteractor = new SearchInteractor(localDatabaseFetcher);
         DatabaseManager databaseManager = new DatabaseManager(pluginTracker, searchInteractor);
         InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager);

@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
+import java.util.function.Supplier;
 
 import static org.hydev.mcpm.Constants.JACKSON;
 
@@ -25,7 +26,7 @@ import static org.hydev.mcpm.Constants.JACKSON;
  * A database fetcher that has a local persistent cache along and a network fallback.
  */
 public class LocalDatabaseFetcher implements DatabaseFetcher {
-    private final URI host;
+    private final Supplier<URI> host;
     private final Path cacheDirectory;
 
     private Database localDatabase;
@@ -44,7 +45,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
      * @param host The host URL MCPM server mirror that will be used to request database files.
      *             Example: "http://mcpm.hydev.com"
      */
-    public LocalDatabaseFetcher(URI host) {
+    public LocalDatabaseFetcher(Supplier<URI> host) {
         this(host, Path.of(".mcpm/"));
     }
 
@@ -55,15 +56,15 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
      *             Example: "http://mcpm.hydev.com"
      * @param cacheDirectory The directory that the cached database and hash file will be stored (as child files).
      */
-    public LocalDatabaseFetcher(URI host, Path cacheDirectory) {
+    public LocalDatabaseFetcher(Supplier<URI> host, Path cacheDirectory) {
         this.host = host;
         this.cacheDirectory = cacheDirectory;
     }
 
     private ClassicHttpRequest requestTo(String path) {
-        var request = new HttpGet(URI.create(host.toString() + "/" + path));
+        var request = new HttpGet(URI.create(host.get().toString() + "/" + path));
 
-        request.addHeader("Host", host.getHost());
+        request.addHeader("Host", host.get().getHost());
         request.addHeader("User-Agent", USER_AGENT);
         request.addHeader("Accepts", "application/json");
 
