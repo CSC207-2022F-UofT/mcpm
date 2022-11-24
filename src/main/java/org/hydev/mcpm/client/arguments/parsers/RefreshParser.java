@@ -36,5 +36,6 @@ public record RefreshParser(RefreshController controller) implements CommandPars
     public void run(Namespace details, Consumer<String> log)
     {
         controller.refresh();
+        log.accept("&aDatabase refreshed successfully!");
     }
 }
