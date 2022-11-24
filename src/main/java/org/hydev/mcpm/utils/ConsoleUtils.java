@@ -1,5 +1,7 @@
 package org.hydev.mcpm.utils;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 /**
@@ -10,6 +12,7 @@ import java.io.PrintStream;
  */
 public class ConsoleUtils
 {
+    public static final PrintStream RAW_OUT = new PrintStream(new FileOutputStream(FileDescriptor.out));
     private final PrintStream out;
 
     public ConsoleUtils(PrintStream out)
@@ -19,7 +22,7 @@ public class ConsoleUtils
 
     public ConsoleUtils()
     {
-        this(System.out);
+        this(RAW_OUT);
     }
 
     /**
