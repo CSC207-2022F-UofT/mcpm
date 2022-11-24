@@ -25,9 +25,5 @@ class CommandsFactoryTest
         assert ba.getRawSubparsers().stream().noneMatch(it -> it.name().equals("load"));
         assert sa.getRawSubparsers().stream().anyMatch(it -> it.name().equals("list"));
         assert sa.getRawSubparsers().stream().anyMatch(it -> it.name().equals("load"));
-
-        AtomicReference<String> log = new AtomicReference<>("");
-        ba.parse(new String[]{"echo", "hi"}, s -> log.set(log.get() + s));
-        assertEquals(log.get(), "Echo: hi");
     }
 }
