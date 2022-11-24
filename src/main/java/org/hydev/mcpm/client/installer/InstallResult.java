@@ -7,14 +7,7 @@ package org.hydev.mcpm.client.installer;
  * @author Rena (https://github.com/thudoan1706)
  * @since 2022-11-20
  */
-public class InstallException extends Exception
-{
-    private final Type type;
-
-    public InstallException(Type type)
-    {
-        this.type = type;
-    }
+public record InstallResult(Type type) {
 
     /**
      * Type of install failure
@@ -25,7 +18,9 @@ public class InstallException extends Exception
         SEARCH_INVALID_INPUT("Invalid search input"),
         SEARCH_FAILED_TO_FETCH_DATABASE("Failed to fetch the MCPM database"),
         NO_VERSION_AVAILABLE("No versions are available to download"),
-        PLUGIN_EXISTS("The plugin is already installed on the system");
+        PLUGIN_EXISTS("The plugin is already installed on the system"),
+
+        SUCCESS("Plugins are installed successfully");
 
         private final String reason;
 
@@ -37,22 +32,5 @@ public class InstallException extends Exception
         {
             return reason;
         }
-    }
-
-    public Type type()
-    {
-        return type;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        return type().reason();
-    }
-
-    @Override
-    public String getLocalizedMessage()
-    {
-        return getMessage();
     }
 }

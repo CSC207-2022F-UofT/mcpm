@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
+import org.hydev.mcpm.client.installer.InstallResult;
 
 import java.util.function.Consumer;
 
