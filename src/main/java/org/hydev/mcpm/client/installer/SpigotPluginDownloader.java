@@ -6,6 +6,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.function.Supplier;
 
+import static org.hydev.mcpm.utils.GeneralUtils.concatUri;
+
 /**
  * Plugin downloader for the MCPM Plugin Repository
  *
@@ -48,9 +50,9 @@ public class SpigotPluginDownloader implements PluginDownloader {
      *
      * @param pluginId Spigot Plugin ID
      * @param pluginVersion Spigot Plugin Version ID
-     * */
+     */
     private String constructUrl(long pluginId, long pluginVersion) {
 
-        return String.format("%s/pkgs/spiget/%s/%s/release.jar", host.get(), pluginId, pluginVersion);
+        return concatUri(host.get(), String.format("pkgs/spiget/%s/%s/release.jar", pluginId, pluginVersion)).toString();
     }
 }

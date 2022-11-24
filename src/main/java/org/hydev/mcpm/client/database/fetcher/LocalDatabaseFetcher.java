@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.function.Supplier;
 
 import static org.hydev.mcpm.Constants.JACKSON;
+import static org.hydev.mcpm.utils.GeneralUtils.concatUri;
 
 /**
  * A database fetcher that has a local persistent cache along and a network fallback.
@@ -62,7 +63,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     }
 
     private ClassicHttpRequest requestTo(String path) {
-        var request = new HttpGet(URI.create(host.get().toString() + "/" + path));
+        var request = new HttpGet(concatUri(host.get(),  path));
 
         request.addHeader("Host", host.get().getHost());
         request.addHeader("User-Agent", USER_AGENT);
