@@ -1,9 +1,12 @@
 package org.hydev.mcpm.client.models;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.yaml.JacksonYAMLParseException;
+import com.fasterxml.jackson.dataformat.yaml.snakeyaml.error.MarkedYAMLException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PluginYmlTest
 {
@@ -42,30 +45,22 @@ class PluginYmlTest
     @Test
     void fromYmlFail()
     {
-
         String yml = """  
             main: org.hydev.mcpm.SpigotEntry
             name:[MCPM]
             version: 1.1
             """.stripIndent();
 
-        try
-        {
-            var meta = PluginYml.fromYml(yml);
-            assert false;
-        }
-        catch (PluginYml.InvalidPluginMetaStructure | JsonProcessingException ignored) { }
+        assertThrows(JacksonYAMLParseException.class, () -> PluginYml.fromYml(yml));
+    }
 
-
-        String yml2 = """  
+    @Test
+    void fromYmlFail2()
+    {
+        String yml = """  
             [a, b, c]
             """.stripIndent();
 
-        try
-        {
-            var meta = PluginYml.fromYml(yml2);
-            assert false;
-        }
-        catch (PluginYml.InvalidPluginMetaStructure | JsonProcessingException ignored) { }
+        assertThrows(PluginYml.InvalidPluginMetaStructure.class, () -> PluginYml.fromYml(yml));
     }
 }
