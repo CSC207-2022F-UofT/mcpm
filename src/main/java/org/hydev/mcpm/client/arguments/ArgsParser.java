@@ -49,6 +49,7 @@ public class ArgsParser
 
         // Create help string and help command
         help = "mcpm: Minecraft Plugin Package Manager\n" + String.join("", allParsers.stream()
+            .filter(it -> !it.description().isBlank())
             .map(it -> String.format("&f/mcpm %s &6- %s&r\n", it.name(), it.description())).toList()) +
             "To view the help message of a command, use /mcpm <command> -h";
         var helpSub = parsers.addParser("help", false);

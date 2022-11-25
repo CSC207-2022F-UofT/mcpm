@@ -14,7 +14,7 @@ public interface CommandParser extends CommandHandler {
     String name();
 
     /**
-     * Description of the command
+     * Description of the command. If the description is empty, it will not show up in the help menu.
      *
      * @return Description
      */
