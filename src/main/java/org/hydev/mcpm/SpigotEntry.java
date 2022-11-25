@@ -4,17 +4,14 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.hydev.mcpm.client.arguments.ArgsParser;
 import org.hydev.mcpm.client.arguments.CommandsFactory;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 import org.hydev.mcpm.utils.ColorLogger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,6 +22,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
+    private static SpigotEntry instance;
     private Logger log;
 
     private ArgsParser parser;
@@ -35,6 +33,9 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     @Override
     public void onEnable()
     {
+        // Initialize instance. This is needed for the PluginLoader.
+        instance = this;
+
         // Initialize logger
         log = getLogger();
         log.info("Enabled!");
@@ -44,6 +45,16 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
+    }
+
+    /**
+     * Get latest instance
+     *
+     * @return Instance of this
+     */
+    public static SpigotEntry instance()
+    {
+        return instance;
     }
 
     /**
