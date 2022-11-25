@@ -35,6 +35,7 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
     public static List<CommandParser> baseParsers() {
+        var pager = new PageController(20);
         var fetcherListener = new ProgressBarFetcherListener();
         var mirror = new MirrorSelector();
         var fetcher = new LocalDatabaseFetcher(mirror.selectedMirrorSupplier());
@@ -62,7 +63,8 @@ public class CommandsFactory {
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
             new InstallParser(installController),
-            new RefreshParser(refreshController)
+            new RefreshParser(refreshController),
+            new PageParser(pager)
         );
     }
 
