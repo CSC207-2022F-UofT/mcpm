@@ -41,6 +41,12 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
 {
     private static final File HELPER_JAR = new File("plugins/mcpm-helper.jar");
 
+    public PluginLoader()
+    {
+        // Delete helper when this class is loaded
+        deleteHelper();
+    }
+
     @Override
     public boolean loadPlugin(String name) throws PluginNotFoundException
     {
@@ -280,4 +286,23 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
         }
     }
 
+    /**
+     * Find and try to unload the plugin helper if present, do nothing otherwise
+     */
+    protected void deleteHelper()
+    {
+        try
+        {
+            // 6. Unload the helper plugin
+            unloadPlugin("MCPM-Helper");
+
+            // 7. Delete the helper jar
+            Files.deleteIfExists(HELPER_JAR.toPath());
+        }
+        catch (PluginNotFoundException ignored) { }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 }
