@@ -179,9 +179,43 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     @Override
     public void reloadPlugin(String name) throws PluginNotFoundException
     {
+        if (name.equalsIgnoreCase("mcpm"))
+        {
+            reloadSelf();
+            return;
+        }
         unloadPlugin(name);
         loadPlugin(name);
     }
+
+    /**
+     * Attempt to reload this plugin
+     */
+    private void reloadSelf()
+    {
+        var pl = injectHelper();
+
+        try
+        {
+            var jar = new File(PluginLoader.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+
+            // 4. Reflect! Since MCPM and MCPM-Helper are in different class loaders, I cannot call/cast it directly
+            // or else it would give me a nonsense error "class PluginLoaderHelper cannot be cast to PluginLoaderHelper"
+            var cls = pl.getClass();
+            System.out.println(cls);
+            System.out.println(Arrays.toString(cls.getDeclaredMethods()));
+            var reload = cls.getDeclaredMethod("reloadMcpm", Plugin.class, File.class);
+            reload.setAccessible(true);
+            reload.invoke(pl, SpigotEntry.instance(), jar);
+
+            // 5. (now this line ceased to exist). Check out unloadHelper() to continue
+        }
+        catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | URISyntaxException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Inject the helper jar needed for unloading myself
      *
