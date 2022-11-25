@@ -1,14 +1,10 @@
-package org.hydev.mcpm.utils;
+package org.hydev.mcpm.client.commands.presenter;
 
-import com.fasterxml.jackson.databind.util.ArrayIterator;
 import com.google.common.collect.Streams;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static org.apache.commons.lang3.StringUtils.*;
@@ -20,8 +16,39 @@ import static org.hydev.mcpm.utils.ColorLogger.lengthNoColor;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-11-20
  */
-public class FormatUtils
+public record Table(List<String> headers, List<List<String>> rows, String sep) implements PagedPresenter<Table>
 {
+    /**
+     * Table with default separator
+     *
+     * @param headers Headers (see tabulate())
+     * @param rows Rows (see tabulate())
+     */
+    public Table(List<String> headers, List<List<String>> rows)
+    {
+        this(headers, rows, " | ");
+    }
+
+    @Override
+    public String toString()
+    {
+        return tabulate(rows, headers, sep);
+    }
+
+    @Override
+    public Table presentPage(int page, int lines)
+    {
+        page -= 1;
+        var pg = rows.stream().skip((long) page * lines).limit(lines).toList();
+        return new Table(headers, pg, sep);
+    }
+
+    @Override
+    public int total(int lines)
+    {
+        return (int) Math.ceil(rows.size() * 1.0 / lines);
+    }
+
     /**
      * String justification type
      */
