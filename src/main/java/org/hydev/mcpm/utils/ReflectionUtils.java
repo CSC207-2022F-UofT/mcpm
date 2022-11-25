@@ -2,7 +2,9 @@ package org.hydev.mcpm.utils;
 
 import com.google.common.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 /**
@@ -27,11 +29,12 @@ public class ReflectionUtils
     {
         try
         {
-            var field = obj.getClass().getDeclaredField(fieldName);
+            var field = findField(obj.getClass(), fieldName);
+            if (field == null) return Optional.empty();
             field.setAccessible(true);
             return Optional.ofNullable((T) type.getRawType().cast(field.get(obj)));
         }
-        catch (NoSuchFieldException | IllegalAccessException e)
+        catch (IllegalAccessException e)
         {
             return Optional.empty();
         }
@@ -49,14 +52,36 @@ public class ReflectionUtils
     {
         try
         {
-            var field = obj.getClass().getDeclaredField(fieldName);
+            var field = findField(obj.getClass(), fieldName);
+            if (field == null) return false;
             field.setAccessible(true);
             field.set(obj, value);
             return true;
         }
-        catch (NoSuchFieldException | IllegalAccessException e)
+        catch (IllegalAccessException e)
         {
             return false;
         }
+    }
+
+    /**
+     * Find field in all parent classes, return null if not found
+     *
+     * @param cls Any class
+     * @param name Name of the field
+     * @return Field or null
+     */
+    public static @Nullable Field findField(@NotNull Class<?> cls, @NotNull String name)
+    {
+        while (cls != Object.class)
+        {
+            try {
+                return cls.getDeclaredField(name);
+            }
+            catch (NoSuchFieldException e) {
+                cls = cls.getSuperclass();
+            }
+        }
+        return null;
     }
 }
