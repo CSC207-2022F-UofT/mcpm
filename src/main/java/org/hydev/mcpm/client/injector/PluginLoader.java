@@ -10,6 +10,7 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
+import org.hydev.mcpm.SpigotEntry;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
@@ -38,6 +39,8 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
  */
 public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
+    private static final File HELPER_JAR = new File("plugins/mcpm-helper.jar");
+
     @Override
     public boolean loadPlugin(String name) throws PluginNotFoundException
     {
@@ -179,4 +182,68 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
         unloadPlugin(name);
         loadPlugin(name);
     }
+    /**
+     * Inject the helper jar needed for unloading myself
+     *
+     * @return Helper plugin instance
+     */
+    protected Plugin injectHelper()
+    {
+        try
+        {
+            // Return existing helper if it exists
+            return findLoadedPlugin("MCPM-Helper");
+        }
+        catch (PluginNotFoundException ignored) { }
+
+        try
+        {
+            // 1. Get the class bytecode from the jar
+            var jar = new File(PluginLoader.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            System.out.println(jar);
+            try (var ji = new PluginJarFile(jar))
+            {
+                var yml = """
+                    main: org.hydev.mcpm.client.injector.PluginLoaderHelper
+                    name: MCPM-Helper
+                    version: 1.0
+                    api-version: 1.19
+                    description: A temporary plugin that allows mcpm to reload itself
+                    """.stripIndent();
+
+                var classes = ji.list().stream().map(ZipEntry::getName)
+                    .filter(it -> it.contains("org/hydev/mcpm/client/injector") ||
+                        it.contains("org/hydev/mcpm/utils/ReflectionUtils") ||
+                        it.contains("org/hydev/mcpm/client/models/PluginYml") ||
+                        it.contains("org/hydev/mcpm/utils/PluginJarFile")).toList();
+
+                // 2. Create a new jar file
+                System.out.println("Creating jar file...");
+                try (var jo = new JarOutputStream(new FileOutputStream(HELPER_JAR)))
+                {
+                    // Copy classes
+                    for (String c : classes)
+                    {
+                        System.out.println("Copying " + c);
+                        jo.putNextEntry(new JarEntry(c));
+                        jo.write(ji.readBytes(c));
+                        jo.closeEntry();
+                    }
+
+                    // Put yml
+                    jo.putNextEntry(new JarEntry("plugin.yml"));
+                    jo.write(yml.getBytes(StandardCharsets.UTF_8));
+                    jo.closeEntry();
+                }
+            }
+
+            // 3. Load the helper plugin
+            return loadPluginHelper(HELPER_JAR);
+        }
+        catch (URISyntaxException | IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
