@@ -43,7 +43,7 @@ public class CommandsFactory {
         var searcher = new SearchInteractor(fetcher, fetcherListener);
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));
-        var searchController = new SearchPackagesController(searcher);
+        var searchController = new SearchPackagesController(searcher, pager);
         var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(tracker);
         var installController = new InstallController(new InstallInteractor(
