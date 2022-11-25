@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.arguments;
 
+import org.hydev.mcpm.Constants;
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.arguments.parsers.*;
@@ -32,9 +33,10 @@ public class CommandsFactory {
     /**
      * Creates a list of general parsers for the ArgsParser class.
      *
+     * @param isMinecraft If we're in the minecraft env
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
-    public static List<CommandParser> baseParsers() {
+    public static List<CommandParser> baseParsers(boolean isMinecraft) {
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
         var tracker = new LocalPluginTracker();
@@ -44,9 +46,15 @@ public class CommandsFactory {
         var searchController = new SearchPackagesController(searcher);
         var mirrorController = new MirrorController(new MirrorSelector());
         var infoController = new InfoController(tracker);
+        PluginLoader pluginLoader = null;
+        if (isMinecraft) {
+            pluginLoader = new PluginLoader();
+        }
+        System.out.println(isMinecraft);
         var installController = new InstallController(new InstallInteractor(
             new SpigotPluginDownloader(new Downloader(), host.toString()),
-            new DatabaseManager(tracker, searcher)));
+            new DatabaseManager(tracker, searcher), pluginLoader));
+
 
         /*
          * Add general parsers to this list!
@@ -86,7 +94,7 @@ public class CommandsFactory {
             new UnloadParser(unloadController)
         );
 
-        return Stream.concat(baseParsers().stream(), serverOnly.stream()).toList();
+        return Stream.concat(baseParsers(true).stream(), serverOnly.stream()).toList();
     }
 
     /**
@@ -95,7 +103,7 @@ public class CommandsFactory {
      * @return An ArgsParser object. Invoke ArgsParser#parse to see more.
      */
     public static ArgsParser baseArgsParser() {
-        return new ArgsParser(baseParsers(), ColorLogger.toStdOut());
+        return new ArgsParser(baseParsers(false), ColorLogger.toStdOut());
     }
 
     /**
