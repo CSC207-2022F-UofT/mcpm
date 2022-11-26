@@ -110,7 +110,7 @@ public class ProgressBar implements ProgressBarBoundary {
         if (istty) cu.curUp(activeBars.size());
         activeBars.forEach(bar -> {
             cu.eraseLine();
-            out.print(bar.toString(theme, cols));
+            out.println(bar.toString(theme, cols));
         });
     }
 
