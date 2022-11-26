@@ -19,6 +19,7 @@ import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     // Directory containing the plugins
     private String pluginDirectory = "plugins";
 
+    final ObjectMapper mapper = new ObjectMapper();
+
     /*
      * Instantiates a LocalPluginTracker with default parameters for general use
      */
@@ -136,9 +139,49 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     }
 
     /**
-     * Save a hashmap's contents, overwriting a CSV file
+     * Read a JSON file at the given location file and return a mapping between
+     * plugin names and install
+     * status
      *
-     * @param map Hashmap to save
+     * @param csv The mapping between plugin name and boolean status
+     */
+    private ArrayList<PluginTrackerModel> readJson() {
+        try {
+            // ObjectMapper mapper = new ObjectMapper();
+            // Reads the json file and converts it to a list of PluginTrackerModel objects
+            return this.mapper.readValue(new File(mainLockFile), mapper.getTypeFactory()
+                    .constructCollectionType(ArrayList.class, PluginTrackerModel.class));
+        } catch (FileNotFoundException e) {
+
+            return (new ArrayList<PluginTrackerModel>());
+        } catch (JsonParseException | JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    /**
+     * Save an ArrayList's contents into a JSON file by replacing all contents
+     *
+     * @param list ArrayList of PluginTrackerModel instances to save
+     *
+     */
+    private void saveJson(ArrayList<PluginTrackerModel> list) {
+        try {
+            this.mapper.writeValue(Paths.get(mainLockFile).toFile(), list);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Save an ArrayList's contents, overwriting a CSV file
+     *
+     * @param list ArrayList of PluginTrackerModel instances to save
      *
      */
     private void saveCsv(ArrayList<PluginTrackerModel> listToSave) {
