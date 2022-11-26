@@ -1,8 +1,10 @@
 package org.hydev.mcpm.client.uninstallUseCase;
-import java.io.File;
-import java.util.Arrays;
+
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
+
+import java.io.File;
+import java.util.Arrays;
 
 
 public class Uninstaller implements UninstallBoundary{
@@ -26,11 +28,5 @@ public class Uninstaller implements UninstallBoundary{
         } else {
             System.out.println("Failed to delete the file");
         }
-
-
-//        if (remove_depen){
-//
-//        }
-
     }
 }
