@@ -1,13 +1,14 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
+import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,9 +18,17 @@ import java.util.stream.Collectors;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearchInteractorTest {
-    private final URI host = URI.create("http://mcprs-bell.hydev.org");
-    private final LocalDatabaseFetcher fetcher = new LocalDatabaseFetcher(host);
-    private final SearchInteractor database = new SearchInteractor(fetcher);
+    private static SearchInteractor database;
+
+    /**
+     * Create relevant interactors for tests.
+     */
+    @BeforeAll
+    public static void setup() {
+        var smallFetcher = new ConstantFetcher(PluginMockFactory.generateTestPlugins());
+        var listener = new BriefFetcherListener(true);
+        database = new SearchInteractor(smallFetcher, listener);
+    }
 
     /**
      * Helper method for formatting the output as a string.
@@ -39,39 +48,85 @@ public class SearchInteractorTest {
     }
 
     @Test
-    void testSearchByNameSuccess() {
+    void testSearchByNameSuccessMatch() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesType.BY_NAME, "SkinsRestorer", true));
+                new SearchPackagesInput(SearchPackagesType.BY_NAME, "multiverse-core", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
         var text = formatStr(result, ", ");
-        System.out.println(text);
-        assert text.equals("SkinsRestorer, SkinsRestorer");
+        assert text.equals("Multiverse-Core");
     }
 
     @Test
-    void testSearchByKeywordSuccess() {
+    void testSearchByNameSuccessNoMatch() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "offline online", true));
+                new SearchPackagesInput(SearchPackagesType.BY_NAME, "multiverse-Core", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
         var text = formatStr(result, ", ");
-        System.out.println(text);
-        assert text.equals("CoordsOffline, StatusSigns, SkinsRestorer, PetShop, InventorySafe, SkinsRestorer");
+        assert text.equals("");
     }
 
     @Test
-    void testSearchByCommandSuccess() {
+    void testSearchByKeywordSuccessMatch() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "al", true));
+                new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "players and", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
         var text = formatStr(result, ", ");
+        assert text.equals("Holographic Displays, WorldGuard");
+    }
 
-        System.out.println(text);
-        assert text.equals("AnimatedLeaves");
+    @Test
+    void testSearchByKeywordSuccessNoMatch() {
+        var result = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "pp", true));
+
+        assert result.state() == SearchPackagesResult.State.SUCCESS;
+
+        var text = formatStr(result, ", ");
+        assert text.equals("");
+    }
+
+    @Test
+    void testSearchByCommandSuccessMatch() {
+        var result = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "/ungod", true));
+
+        assert result.state() == SearchPackagesResult.State.SUCCESS;
+
+        var text = formatStr(result, ", ");
+        assert text.equals("WorldGuard, Holographic Displays");
+    }
+
+    @Test
+    void testSearchByCommandSuccessNoMatch() {
+        var result = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "pp", true));
+
+        assert result.state() == SearchPackagesResult.State.SUCCESS;
+
+        var text = formatStr(result, ", ");
+        assert text.equals("");
+    }
+
+    @Test
+    void testInvalidSearch() {
+        var result1 = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_NAME, "", true));
+        var result2 = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "", true));
+        var result3 = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "", true));
+
+        assert result1.state() == SearchPackagesResult.State.INVALID_INPUT;
+        assert result2.state() == SearchPackagesResult.State.INVALID_INPUT;
+        assert result3.state() == SearchPackagesResult.State.INVALID_INPUT;
+        assert result1.plugins().isEmpty();
+        assert result2.plugins().isEmpty();
+        assert result3.plugins().isEmpty();
     }
 }
