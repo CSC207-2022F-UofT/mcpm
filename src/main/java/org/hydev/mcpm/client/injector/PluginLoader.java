@@ -231,13 +231,6 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     {
         try
         {
-            // Return existing helper if it exists
-            return findLoadedPlugin("MCPM-Helper");
-        }
-        catch (PluginNotFoundException ignored) { }
-
-        try
-        {
             // 1. Get the class bytecode from the jar
             var jar = new File(PluginLoader.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             System.out.println(jar);
