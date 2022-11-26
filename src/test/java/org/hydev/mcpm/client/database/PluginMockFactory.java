@@ -6,6 +6,8 @@ import org.hydev.mcpm.client.models.PluginCommand;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +30,10 @@ public class PluginMockFactory {
      * @param aliases Other names
      * @return A Map<String, PluginCommand> object.
      */
-    public static Map<String, PluginCommand> createCommand(String description, List<String> aliases) {
+    public static @NotNull Map<String, PluginCommand> createCommand(String description, List<String> aliases) {
         var map = new HashMap<String, PluginCommand>();
         var pc = new PluginCommand(description, aliases, null, null);
-        for (String alias: aliases) {
+        for (String alias : aliases) {
             map.put(alias, pc);
         }
         return map;
@@ -203,9 +205,10 @@ public class PluginMockFactory {
 
     /**
      * Generates a sample list of plugins used for testing, containing the name, description, and commands.
+     *
      * @return List of plugins for testing.
      */
-    public static List<PluginModel> generateTestPlugins() {
+    public static @Unmodifiable List<PluginModel> generateTestPlugins() {
         String[] descriptions = {"WorldGuard lets you and players guard areas " +
                 "of land against griefers and undesirables as well " +
                 "as tweak and disable various gameplay features of Minecraft.",

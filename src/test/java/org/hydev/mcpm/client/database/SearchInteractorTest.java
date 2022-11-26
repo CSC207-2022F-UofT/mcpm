@@ -48,7 +48,7 @@ public class SearchInteractorTest {
     }
 
     @Test
-    void testSearchByNameSuccess() {
+    void testSearchByNameSuccessMatch() {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_NAME, "multiverse-core", true));
 
@@ -59,7 +59,18 @@ public class SearchInteractorTest {
     }
 
     @Test
-    void testSearchByKeywordSuccess() {
+    void testSearchByNameSuccessNoMatch() {
+        var result = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_NAME, "multiverse-Core", true));
+
+        assert result.state() == SearchPackagesResult.State.SUCCESS;
+
+        var text = formatStr(result, ", ");
+        assert text.equals("");
+    }
+
+    @Test
+    void testSearchByKeywordSuccessMatch() {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "players and", true));
 
@@ -70,7 +81,18 @@ public class SearchInteractorTest {
     }
 
     @Test
-    void testSearchByCommandSuccess() {
+    void testSearchByKeywordSuccessNoMatch() {
+        var result = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "pp", true));
+
+        assert result.state() == SearchPackagesResult.State.SUCCESS;
+
+        var text = formatStr(result, ", ");
+        assert text.equals("");
+    }
+
+    @Test
+    void testSearchByCommandSuccessMatch() {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "/ungod", true));
 
@@ -78,5 +100,33 @@ public class SearchInteractorTest {
 
         var text = formatStr(result, ", ");
         assert text.equals("WorldGuard, Holographic Displays");
+    }
+
+    @Test
+    void testSearchByCommandSuccessNoMatch() {
+        var result = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "pp", true));
+
+        assert result.state() == SearchPackagesResult.State.SUCCESS;
+
+        var text = formatStr(result, ", ");
+        assert text.equals("");
+    }
+
+    @Test
+    void testInvalidSearch() {
+        var result1 = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_NAME, "", true));
+        var result2 = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "", true));
+        var result3 = database.search(
+                new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "", true));
+
+        assert result1.state() == SearchPackagesResult.State.INVALID_INPUT;
+        assert result2.state() == SearchPackagesResult.State.INVALID_INPUT;
+        assert result3.state() == SearchPackagesResult.State.INVALID_INPUT;
+        assert result1.plugins().isEmpty();
+        assert result2.plugins().isEmpty();
+        assert result3.plugins().isEmpty();
     }
 }
