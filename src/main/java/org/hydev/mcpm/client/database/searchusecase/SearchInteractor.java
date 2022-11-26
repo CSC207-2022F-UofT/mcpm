@@ -54,7 +54,7 @@ public class SearchInteractor implements SearchPackagesBoundary {
             return SearchPackagesResult.by(SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE);
         }
 
-        var searchStr = input.searchStr().toLowerCase();
+        var searchStr = input.searchStr();
         if (searchStr.isEmpty())
             return SearchPackagesResult.by(SearchPackagesResult.State.INVALID_INPUT);
 

@@ -43,8 +43,7 @@ public class SearcherByName implements Searcher {
      *
      * @param inp User input for the search. Should be a name as a string here.
      * @param plugins A list of all plugins in the database.
-     * @return A dictionary associating a string feature of the plugins to the matching plugins.
-     *         Returns null if inp is not a string.
+     * @return A list of plugins associated to inp.
      */
     @Override
     public List<PluginModel> getSearchList(String inp, List<PluginModel> plugins) {
@@ -52,6 +51,6 @@ public class SearcherByName implements Searcher {
         if (SearcherByName.nameMap == null) {
             SearcherByName.nameMap = constructSearchMaps(plugins);
         }
-        return SearcherByName.nameMap.get(inp.toLowerCase());
+        return SearcherByName.nameMap.getOrDefault(inp, List.of());
     }
 }
