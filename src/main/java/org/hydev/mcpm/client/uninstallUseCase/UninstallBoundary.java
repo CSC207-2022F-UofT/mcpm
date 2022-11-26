@@ -1,5 +1,8 @@
 package org.hydev.mcpm.client.uninstallUseCase;
 
+import org.hydev.mcpm.client.database.LocalPluginTracker;
+import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 
 /**
@@ -11,5 +14,6 @@ public interface UninstallBoundary {
      * @param name given name of the plugin
      */
 
-    public void uninstall(String name) throws PluginNotFoundException;
+    public UninstallResult uninstallPlugin(UninstallInput input, LocalPluginTracker lpt, LocalDatabaseFetcher ldf, DatabaseManager dbManage,
+                                           SearchPackagesResult spr) throws PluginNotFoundException;
 }

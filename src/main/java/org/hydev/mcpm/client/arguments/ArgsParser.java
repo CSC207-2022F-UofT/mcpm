@@ -101,7 +101,7 @@ public class ArgsParser
      * @param args Arguments are ignored.
      */
     public static void main(String[] args) {
-        var parser = CommandsFactory.serverArgsParser(System.out::println);
+        var parser = CommandsFactory.baseArgsParser();
 
         try {
             parser.parse(args);

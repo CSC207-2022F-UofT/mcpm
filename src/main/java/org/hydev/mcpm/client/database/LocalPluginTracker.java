@@ -34,10 +34,18 @@ public class LocalPluginTracker implements PluginTracker
     private String pluginDirectory = "TODO: Get this path";
 
     // Constructor 
-    public LocalPluginTracker(String mainLockFileUrl, String pluginDirectoryUrl) 
-    {
-        this.mainLockFile = mainLockFileUrl;
-        this.pluginDirectory = pluginDirectoryUrl;
+    public LocalPluginTracker() {
+    }
+
+    /**
+     * Instantiates a LocalPluginTracker with custom parameters for testing or
+     *
+     * @param mainLockFile    The path to the main lock file
+     * @param pluginDirectory The path to the plugin directory
+     */
+    public LocalPluginTracker(String mainLockFile, String pluginDirectory) {
+        this.mainLockFile = mainLockFile;
+        this.pluginDirectory = pluginDirectory;
     }
 
     /**
@@ -276,11 +284,11 @@ public class LocalPluginTracker implements PluginTracker
         return "";
     }
 
-    /**
-     * Compares the hash of the locally-installed plugin of a specified 
-     * version with the hash of the plugin of that version on the server
-     * @return True if the hashes match, false otherwise
-    */
+    //    /**
+    //     * Compares the hash of the locally-installed plugin of a specified
+    //     * version with the hash of the plugin of that version on the server
+    //     * @return True if the hashes match, false otherwise
+    //    */
     
     /* public boolean compareHash(File local, String remote) {
         // Get the hash of the plugin with name name and version version from the server
