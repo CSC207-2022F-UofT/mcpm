@@ -15,10 +15,9 @@ import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.injector.UnloadBoundary;
 import org.hydev.mcpm.client.models.PluginModel;
-import org.hydev.mcpm.client.uninstallUseCase.*;
-import org.hydev.mcpm.client.database.results.ExportPluginsResult;
-import org.hydev.mcpm.client.models.PluginVersion;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
+
+
+
 
 
 public class Uninstaller implements UninstallBoundary {
