@@ -61,7 +61,7 @@ public class SearchInteractorTest {
     @Test
     void testSearchByNameSuccessNoMatch() {
         var result = database.search(
-                new SearchPackagesInput(SearchPackagesType.BY_NAME, "multiverse-Core", true));
+                new SearchPackagesInput(SearchPackagesType.BY_NAME, "pp", true));
 
         assert result.state() == SearchPackagesResult.State.SUCCESS;
 
