@@ -12,7 +12,9 @@ import org.hydev.mcpm.client.injector.UnloadBoundary;
  * @param remove_depen remove dependencies or not
  */
 public  record UninstallInput(String name,
-                              PluginLoader ulb, SearchPackagesType spType, boolean remove_depen){
+                              PluginLoader ulb,
+                              SearchPackagesType spType,
+                              boolean remove_depen){
 
 }
 

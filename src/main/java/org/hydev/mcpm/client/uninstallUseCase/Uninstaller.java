@@ -66,7 +66,7 @@ public class Uninstaller implements UninstallBoundary {
         } else if (spr.plugins().isEmpty()) {
             return new UninstallResult(UninstallResult.State.LOCATING_PLUGIN_FAILURE);
         }
-        // 2. Uninstall plugin
+        // 2. Uninstall the plugin
         // a. unload plugin
 //        PluginLoader pil = new PluginLoader();
 //        pil.unloadPlugin(name);

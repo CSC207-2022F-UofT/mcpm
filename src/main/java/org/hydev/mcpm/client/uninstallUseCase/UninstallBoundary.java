@@ -14,6 +14,7 @@ public interface UninstallBoundary {
      * @param name given name of plugin
      */
 
-    public UninstallResult uninstallPlugin(UninstallInput input, LocalPluginTracker lpt, LocalDatabaseFetcher ldf, DatabaseManager dbManage,
+    public UninstallResult uninstallPlugin(UninstallInput input,
+                                           LocalPluginTracker lpt, LocalDatabaseFetcher ldf, DatabaseManager dbManage,
                                            SearchPackagesResult spr) throws PluginNotFoundException;
 }
