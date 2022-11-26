@@ -7,19 +7,14 @@ import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import static java.lang.String.format;
 
 /**
  * File downloader
@@ -156,7 +151,7 @@ public class Downloader
         String link4 = "https://ocw.mit.edu/ans7870/9/9.00SC/MIT9_00SCF11_text.pdf";
         File out4 = new File("./MIT9_00SCF11_text");
 
-        Downloader downloader = new Downloader();
+        final var downloader = new Downloader();
         Map<String, File> urls = new HashMap<>();
         urls.put(link, out);
         urls.put(link1, out1);
