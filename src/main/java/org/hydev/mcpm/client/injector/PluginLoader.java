@@ -63,12 +63,12 @@ public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, Un
     @Override
     public File unloadPlugin(String name) throws PluginNotFoundException
     {
-        var pm = Bukkit.getPluginManager();
+        final var pm = Bukkit.getPluginManager();
 
         // 1. Find plugin by name
-        var plugin = Arrays.stream(pm.getPlugins()).filter(p -> p.getName().equalsIgnoreCase(name)).findFirst()
+        final var plugin = Arrays.stream(pm.getPlugins()).filter(p -> p.getName().equalsIgnoreCase(name)).findFirst()
             .orElseThrow(() -> new PluginNotFoundException(name));
-        var jar = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+        final var jar = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
         // 2. Unload plugin
         pm.disablePlugin(plugin);

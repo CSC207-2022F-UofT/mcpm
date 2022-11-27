@@ -20,6 +20,13 @@ public class Uninstaller implements UninstallBoundary {
     private final UnloadBoundary unloader;
     private final LocalJarBoundary jarFinder;
 
+    /**
+     * Constructor for uninstaller
+     *
+     * @param tracker Local plugin tracker
+     * @param unloader Unload implementation
+     * @param jarFinder Local jar finder
+     */
     public Uninstaller(PluginTracker tracker, UnloadBoundary unloader, LocalJarBoundary jarFinder) {
         this.tracker = tracker;
         this.unloader = unloader;

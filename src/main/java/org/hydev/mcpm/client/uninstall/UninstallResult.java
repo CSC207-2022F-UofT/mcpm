@@ -16,6 +16,9 @@ public record UninstallResult(State state, Map<String, State> dependencies) {
         this(state, new HashMap<>());
     }
 
+    /**
+     * Result state for uninstall
+     */
     public enum State {
         NOT_FOUND,
         FAILED_TO_DELETE,
