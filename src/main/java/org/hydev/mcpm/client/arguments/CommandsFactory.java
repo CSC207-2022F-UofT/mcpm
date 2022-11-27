@@ -50,10 +50,11 @@ public class CommandsFactory {
         if (isMinecraft) {
             pluginLoader = new PluginLoader();
         }
+        DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
         System.out.println(isMinecraft);
         var installController = new InstallController(new InstallInteractor(
             new SpigotPluginDownloader(new Downloader(), host.toString()),
-            new DatabaseManager(tracker, searcher), pluginLoader));
+            databaseManager, pluginLoader));
 
 
         /*
