@@ -6,7 +6,7 @@ import argparse
 import subprocess
 from subprocess import run, check_call
 
-from tools import download_jdk
+from . import download_jdk
 
 ALIAS = {
     "Launcher": "org.hydev.mcpm.client.Launcher",
@@ -17,14 +17,16 @@ ALIAS = {
 if __name__ == '__main__':
     a = argparse.ArgumentParser("run.py", "Java Gradle external runner")
     a.add_argument('classname', help="Full class name (e.g. org.hydev.mcpm.client.Launcher) or alias (e.g. Launcher)")
-    cls = a.parse_args().classname
+    a.add_argument('-j', '--java', help="Custom java path")
+    args = a.parse_args()
+    cls = args.classname
 
     # Replace alias
     if cls in ALIAS:
         cls = ALIAS[cls]
 
     # Download JDK
-    java = download_jdk.ensure_java("19")
+    java = args.java or download_jdk.ensure_java("19")
 
     # Build classes
     check_call("./gradlew classes testClasses", shell=True)

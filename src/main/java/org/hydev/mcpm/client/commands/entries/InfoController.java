@@ -39,7 +39,7 @@ public record InfoController(PluginTracker tracker)
         if (rawValue == null) return "";
 
         // If a map is passed in, only show its keys
-        if (rawValue instanceof Map<?,?> v)
+        if (rawValue instanceof Map<?, ?> v)
         {
             rawValue = v.keySet().stream().toList();
         }

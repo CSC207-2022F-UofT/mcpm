@@ -11,10 +11,8 @@ import java.util.List;
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-11-20
  */
-public class ListAllInteractor implements ListAllBoundary
+public record ListAllInteractor(PluginTracker tracker) implements ListAllBoundary
 {
-    LocalPluginTracker localPluginTracker = new LocalPluginTracker();
-
     /**
      * listAllInteractor interacts with the LocalPluginTracker to get the list of plugins, according to a specified
      * parameter
@@ -25,14 +23,14 @@ public class ListAllInteractor implements ListAllBoundary
      */
     public List<PluginYml> listAll(String parameter)
     {
-        var installed = localPluginTracker.listInstalled();
+        var installed = tracker.listInstalled();
         switch (parameter)
         {
             case "all":
                 return installed;
 
             case "manual":
-                var local = localPluginTracker.listManuallyInstalled();
+                var local = tracker.listManuallyInstalled();
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
 
             case "outdated":

@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.database.inputs;
 
 /**
- * The type of the keyword passed into search package
+ * The type of searching package
  */
 public enum SearchPackagesType {
         BY_NAME,

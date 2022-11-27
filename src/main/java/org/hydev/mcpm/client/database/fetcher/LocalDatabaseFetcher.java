@@ -8,6 +8,7 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.hydev.mcpm.client.models.Database;
 import org.hydev.mcpm.utils.HashUtils;
+import org.hydev.mcpm.utils.ZstdUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -28,7 +29,8 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     private final Path cacheDirectory;
 
     private Database localDatabase;
-    private boolean enableCompression = true;
+
+    public static final boolean ENABLE_COMPRESSION = true;
 
     public static final String HASH_FILE_NAME = "db.hash";
     public static final String DATABASE_FILE_NAME = "db";
@@ -128,8 +130,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
 
     private String readDatabaseFromContent(HttpEntity entity, DatabaseFetcherListener listener) throws IOException {
         long total = entity.getContentLength();
-
-        var builder = new ByteArrayOutputStream();
+        var builder = new ByteArrayOutputStream((int) total);
 
         try (var stream = entity.getContent()) {
             var buffer = new byte[8096];
@@ -152,7 +153,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         listener.finish();
 
         // Decompress ZSTD
-        if (this.enableCompression)
+        if (ENABLE_COMPRESSION)
         {
             var bs = builder.toByteArray();
             bs = Zstd.decompress(bs, (int) Zstd.decompressedSize(bs));
@@ -166,7 +167,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
     private Database fetchHostDatabase(DatabaseFetcherListener listener) {
         try (var client = HttpClients.createDefault()) {
             var body = client.execute(
-                requestTo(enableCompression ? DATABASE_ZST_FILE_NAME : DATABASE_FILE_NAME),
+                requestTo(ENABLE_COMPRESSION ? DATABASE_ZST_FILE_NAME : DATABASE_FILE_NAME),
                 request -> readDatabaseFromContent(request.getEntity(), listener)
             );
 
@@ -205,11 +206,5 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         }
 
         return fetchHostDatabase(listener);
-    }
-
-    public LocalDatabaseFetcher enableCompression(boolean enableCompression)
-    {
-        this.enableCompression = enableCompression;
-        return this;
     }
 }
