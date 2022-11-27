@@ -11,6 +11,7 @@ import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
+import org.hydev.mcpm.client.injector.LocalJarFinder;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
@@ -78,7 +79,8 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that require the Server (Minecraft Bukkit Plugin) environment.
      */
     public static List<CommandParser> serverParsers() {
-        var loader = new PluginLoader();
+        var jarFinder = new LocalJarFinder();
+        var loader = new PluginLoader(jarFinder);
 
         var loadController = new LoadController(loader);
         var reloadController = new ReloadController(loader);

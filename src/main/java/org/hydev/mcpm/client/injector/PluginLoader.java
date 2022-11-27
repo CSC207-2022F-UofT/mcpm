@@ -10,8 +10,6 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
-import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.utils.PluginJarFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,26 +28,12 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundary
+public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
     @Override
     public boolean loadPlugin(String name) throws PluginNotFoundException
     {
-        // 1. Find plugin file by name
-        var dir = new File("plugins");
-        if (!dir.isDirectory()) throw new PluginNotFoundException(name);
-        var file = Arrays.stream(Optional.ofNullable(dir.listFiles())
-                .orElseThrow(() -> new PluginNotFoundException(name)))
-            .filter(f -> f.getName().endsWith(".jar"))
-            .filter(f -> {
-                try (var jf = new PluginJarFile(f))
-                {
-                    return jf.readPluginYaml().name().equalsIgnoreCase(name);
-                }
-                catch (IOException | PluginYml.InvalidPluginMetaStructure ignored) { return false; }
-            }).findFirst().orElseThrow(() -> new PluginNotFoundException(name));
-
-        return loadPlugin(file);
+        return loadPlugin(jarFinder.findJar(name));
     }
 
     @Override
