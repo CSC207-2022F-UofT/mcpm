@@ -19,7 +19,6 @@ import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,7 +145,7 @@ public class DatabaseInteractor
         var mismatchedSet = Set.copyOf(result.mismatched());
         var mismatched = forInput.states().stream()
             .filter(state -> mismatchedSet.contains(state.modelId()))
-            .toList();
+            .collect(Collectors.toSet());
 
         var updatable = new HashMap<PluginVersionState, PluginModel>();
 
