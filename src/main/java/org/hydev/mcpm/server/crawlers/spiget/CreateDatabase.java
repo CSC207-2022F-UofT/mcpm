@@ -14,7 +14,6 @@ import org.yaml.snakeyaml.error.MarkedYAMLException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +63,7 @@ public class CreateDatabase {
                     var hash = new HashUtils().hash(databaseFile);
 
                     Files.writeString(versionFile.toPath(), hash);
-                } catch (NoSuchAlgorithmException | IOException e) {
+                } catch (IOException e) {
                     System.err.println("Failed to write database hash file.");
                 }
             }
@@ -168,7 +167,7 @@ public class CreateDatabase {
             System.err.printf("Cannot read plugin.yml for %s: %s\n", metaFile.toPath(), e);
 
             return Optional.empty();
-        } catch (NumberFormatException | NoSuchAlgorithmException | IOException e) {
+        } catch (NumberFormatException | IOException e) {
             e.printStackTrace();
 
             return Optional.empty();

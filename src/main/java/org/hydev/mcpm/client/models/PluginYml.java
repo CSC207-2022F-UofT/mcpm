@@ -3,6 +3,7 @@ package org.hydev.mcpm.client.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.dataformat.yaml.JacksonYAMLParseException;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 
@@ -49,8 +50,7 @@ public record PluginYml(
      * @param yml YML string
      * @return PluginYml object
      */
-    public static PluginYml fromYml(String yml)
-        throws MarkedYAMLException, InvalidPluginMetaStructure, JsonProcessingException {
+    public static PluginYml fromYml(String yml) throws InvalidPluginMetaStructure, JsonProcessingException {
         // The YAML parser doesn't like \t tab characters
         yml = yml.replace("\t", "    ");
 

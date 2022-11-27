@@ -2,7 +2,6 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
-import org.hydev.mcpm.client.database.model.PluginVersionId;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
@@ -11,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * Mock factory for testing search functionality
+ */
 public class PluginMockFactory {
     private PluginMockFactory() { }
 
