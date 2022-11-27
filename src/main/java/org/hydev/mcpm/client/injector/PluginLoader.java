@@ -16,7 +16,10 @@ import org.hydev.mcpm.utils.PluginJarFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 
 import static org.hydev.mcpm.utils.ReflectionUtils.getPrivateField;
 import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
@@ -74,13 +77,14 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     }
 
     @Override
-    public void unloadPlugin(String name) throws PluginNotFoundException
+    public File unloadPlugin(String name) throws PluginNotFoundException
     {
         var pm = Bukkit.getPluginManager();
 
         // 1. Find plugin by name
         var plugin = Arrays.stream(pm.getPlugins()).filter(p -> p.getName().equalsIgnoreCase(name)).findFirst()
             .orElseThrow(() -> new PluginNotFoundException(name));
+        var jar = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
         // 2. Unload plugin
         pm.disablePlugin(plugin);
@@ -127,6 +131,8 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
                 e.printStackTrace();
             }
         }
+
+        return jar;
     }
 
     @Override
