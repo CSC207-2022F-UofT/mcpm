@@ -19,8 +19,8 @@ import java.util.List;
  * Database API
  */
 public class DatabaseManager {
-    private static PluginTracker localPluginTracker;
-    private static SearchPackagesBoundary searchInteractor;
+    private final PluginTracker localPluginTracker;
+    private final SearchPackagesBoundary searchInteractor;
 
     public DatabaseManager(PluginTracker tracker, SearchPackagesBoundary searcher) {
         this.localPluginTracker = tracker;
@@ -29,10 +29,9 @@ public class DatabaseManager {
 
     /**
      *
-     * Search if the plugin exists, throw exception if it does not exist and return the information of
-     * the pluigin needs to be installed.
+     * Search if the plugin exists, return the Search Results
      *
-     * @param input the plugin input pending for installation
+     * @param input the input pending for installation
      */
     public SearchPackagesResult getSearchResult(InstallInput input) {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);

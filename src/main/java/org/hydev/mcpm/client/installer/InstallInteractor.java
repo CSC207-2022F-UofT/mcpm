@@ -52,7 +52,7 @@ public class InstallInteractor implements InstallBoundary {
         SearchPackagesResult searchResult = databaseManager.getSearchResult(installInput);
 
 
-        if (searchResult.plugins() == null || searchResult.state() != SearchPackagesResult.State.SUCCESS) {
+        if (searchResult.state() != SearchPackagesResult.State.SUCCESS) {
             return new InstallResult(
                     searchResult.state() == SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE ?
                             InstallResult.Type.SEARCH_FAILED_TO_FETCH_DATABASE :
