@@ -9,7 +9,7 @@ public interface UninstallBoundary {
     /**
      * Uninstalls plugin based on its given name
      *
-     * @param name given name of plugin
+     * @param input Uninstall input
      */
-    void uninstall(String name) throws PluginNotFoundException;
+    UninstallResult uninstall(UninstallInput input) throws PluginNotFoundException;
 }
