@@ -50,7 +50,9 @@ public class InstallInteractor implements InstallBoundary {
     {
         // 1. Search the name and get a list of plugins
         SearchPackagesResult searchResult = databaseManager.getSearchResult(installInput);
-        if (searchResult.state() != SearchPackagesResult.State.SUCCESS) {
+
+
+        if (searchResult.plugins() == null || searchResult.state() != SearchPackagesResult.State.SUCCESS) {
             return new InstallResult(
                     searchResult.state() == SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE ?
                             InstallResult.Type.SEARCH_FAILED_TO_FETCH_DATABASE :
@@ -75,7 +77,10 @@ public class InstallInteractor implements InstallBoundary {
         if (pluginVersion == null) {
             return new InstallResult(Type.NO_VERSION_AVAILABLE);
         }
-        databaseManager.checkPluginInstalled(pluginVersion);
+
+        if (databaseManager.checkPluginInstalledByVersion(pluginVersion)) {
+            return new InstallResult(Type.PLUGIN_EXISTS);
+        };
 
         // 3. Download it
         spigotPluginDownloader.download(id, pluginVersion.id(),
@@ -91,8 +96,7 @@ public class InstallInteractor implements InstallBoundary {
                 installPlugin(dependencyInput);
             }
         }
-        System.out.println(pluginLoader != null);
-        System.out.println(installInput);
+
         if (pluginLoader != null && installInput.load()) {
             try {
                 pluginLoader.loadPlugin(installInput.name());
@@ -114,13 +118,14 @@ public class InstallInteractor implements InstallBoundary {
      */
     public static void main(String[] args) {
         new File(FILEPATH).mkdirs();
+        var host = URI.create("https://mcpm.hydev.org");
+        var fetcher = new LocalDatabaseFetcher(host);
+        var tracker = new LocalPluginTracker();
+        var searcher = new SearchInteractor(fetcher);
         Downloader downloader = new Downloader();
         PluginLoader loader = null;
         SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader);
-        LocalPluginTracker pluginTracker = new LocalPluginTracker();
-        LocalDatabaseFetcher localDatabaseFetcher = new LocalDatabaseFetcher(URI.create("http://mcpm.hydev.org"));
-        SearchInteractor searchInteractor = new SearchInteractor(localDatabaseFetcher);
-        DatabaseManager databaseManager = new DatabaseManager(pluginTracker, searchInteractor);
+        DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
         InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager, loader);
         InstallInput installInput = new InstallInput("JedCore", SearchPackagesType.BY_NAME, true, true);
         installInteractor.installPlugin(installInput);
