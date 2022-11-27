@@ -78,14 +78,14 @@ public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresente
         var outcomes = result.outcomes();
 
         // If we are updating all plugins, only show users plugins that were upgraded.
-        if (!input.updateAll()) {
+        if (input.updateAll()) {
             outcomes = outcomes.entrySet().stream()
                 .filter(x -> x.getValue().state() != UpdateOutcome.State.UP_TO_DATE)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
 
         if (outcomes.isEmpty()) {
-            log.accept("&2 All plugins are up to date.");
+            log.accept("&2All plugins are up to date.");
         } else {
             var updated = outcomes.values().stream()
                 .filter(x -> x.state() == UpdateOutcome.State.UPDATED)
@@ -97,7 +97,7 @@ public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresente
 
             if (failed > 0) {
                 log.accept("&cFailed to update " + failed + " plugins (" + updated + " plugins updated).");
-            } if (updated > 0) {
+            } else if (updated > 0) {
                 log.accept("&2Updated " + updated + " plugins successfully.");
             } else {
                 log.accept("&2All plugins are up to date.");
