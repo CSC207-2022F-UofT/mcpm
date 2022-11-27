@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer for MCPRS cralwer
+Requires=mcprs-crawl.service
+
+[Timer]
+Unit=mcprs-crawl.service
+OnCalendar=*-*-* 5:00:00
+
+[Install]
+WantedBy=multi-user.target
