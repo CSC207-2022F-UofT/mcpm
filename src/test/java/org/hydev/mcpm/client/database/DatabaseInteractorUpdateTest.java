@@ -2,6 +2,7 @@ package org.hydev.mcpm.client.database;
 
 import java.util.List;
 import java.util.OptionalLong;
+import java.util.Set;
 
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
@@ -112,8 +113,7 @@ public class DatabaseInteractorUpdateTest {
         assertEquals(result.state(), CheckForUpdatesResult.State.SUCCESS);
         assertEquals(result.updatable().size(), 1);
         assertEquals(result.updatable().get(outdated).id(), 3);
-        assertEquals(result.mismatched().size(), 1);
-        assertEquals(result.mismatched().get(0), mismatched);
+        assertEquals(result.mismatched(), Set.of(mismatched));
     }
 
     /**
