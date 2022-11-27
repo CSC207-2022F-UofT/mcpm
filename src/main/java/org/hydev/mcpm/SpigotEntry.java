@@ -22,6 +22,12 @@ import static java.util.Objects.requireNonNull;
  */
 public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
+    public SpigotEntry()
+    {
+        // Let the other parts of our program know that we're in minecraft
+        Constants.IS_MINECRAFT = true;
+    }
+
     private Logger log;
 
     private ArgsParser parser;
@@ -41,9 +47,6 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
-
-        // Let the other parts of our program know that we're in minecraft
-        Constants.IS_MINECRAFT = true;
     }
 
     /**
