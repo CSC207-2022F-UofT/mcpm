@@ -1,11 +1,8 @@
-package org.hydev.mcpm.client.database.inputs;
+package org.hydev.mcpm.client.database.results;
 
-import org.bukkit.plugin.Plugin;
 import org.hydev.mcpm.client.database.model.PluginModelId;
-import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

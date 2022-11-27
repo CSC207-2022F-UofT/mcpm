@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database.inputs;
+package org.hydev.mcpm.client.database.results;
 
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
