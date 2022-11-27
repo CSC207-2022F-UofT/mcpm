@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Checks for updates from a MatchBoundary object.
+ *
+ * @param matchBoundary A match boundary that wraps Database information.
+ */
 public record CheckForUpdatesInteractor(
     MatchPluginsBoundary matchBoundary
 ) implements CheckForUpdatesBoundary {

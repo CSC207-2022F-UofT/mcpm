@@ -22,6 +22,13 @@ import java.util.stream.Collectors;
 
 import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
 
+/**
+ * Handles update requests (installing, etc.)
+ *
+ * @param checkBoundary The boundary to use to check for plugin updates.
+ * @param installer The boundary to use for installing new plugins.
+ * @param pluginTracker The plugin tracker to use for getting installed plugin information.
+ */
 public record UpdateInteractor(
     CheckForUpdatesBoundary checkBoundary,
     InstallBoundary installer,
@@ -143,6 +150,7 @@ public record UpdateInteractor(
             case SUCCESS -> { /* nothing */ }
             case INVALID_INPUT -> { return UpdateResult.by(UpdateResult.State.INTERNAL_ERROR); }
             case FAILED_TO_FETCH_DATABASE ->  { return UpdateResult.by(UpdateResult.State.FAILED_TO_FETCH_DATABASE); }
+            default -> throw new RuntimeException(); // Handle this!
         }
 
         Map<String, UpdateOutcome> results = new HashMap<>();
