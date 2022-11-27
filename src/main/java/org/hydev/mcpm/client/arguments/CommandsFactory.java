@@ -5,9 +5,11 @@ import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
-import org.hydev.mcpm.client.database.DatabaseInteractor;
+import org.hydev.mcpm.client.database.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
+import org.hydev.mcpm.client.database.MatchPluginsInteractor;
+import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
@@ -42,15 +44,17 @@ public class CommandsFactory {
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
         var tracker = new LocalPluginTracker();
-        var searcher = new SearchInteractor(fetcher);
         var loader = isMinecraft ? new PluginLoader() : null;
+        var listener = new ProgressBarFetcherListener();
+        var searcher = new SearchInteractor(fetcher, listener);
         var installer = new InstallInteractor(
             new SpigotPluginDownloader(new Downloader(), host.toString()),
             new DatabaseManager(tracker, searcher),
             loader
         );
-        var database = new DatabaseInteractor(fetcher);
-        var updater = new UpdateInteractor(database, installer, tracker);
+        var matcher = new MatchPluginsInteractor(fetcher, listener);
+        var updateChecker = new CheckForUpdatesInteractor(matcher);
+        var updater = new UpdateInteractor(updateChecker, installer, tracker);
 
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));

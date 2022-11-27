@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.updater;
 import org.hydev.mcpm.client.database.PluginTracker;
 import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
+import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionId;

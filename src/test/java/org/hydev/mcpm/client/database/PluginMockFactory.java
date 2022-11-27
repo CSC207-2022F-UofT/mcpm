@@ -100,19 +100,6 @@ public class PluginMockFactory {
         );
     }
 
-    /**
-     * Creates a mock DatabaseInteractor object with the provided plugin list.
-     *
-     * @param plugins A list of plugins that the DatabaseInteractor will have access to.
-     * @return A DatabaseInteractor object.
-     */
-    public static DatabaseInteractor interactor(List<PluginModel> plugins) {
-        var fetcher = new ConstantFetcher(plugins);
-        var listener = new BriefFetcherListener(true);
-
-        return new DatabaseInteractor(fetcher, listener);
-    }
-
     public static List<PluginModel> generatePlugins() {
         List<PluginModel> plugins = new ArrayList<>();
         String[] names = {"WorldGuard"};
