@@ -8,6 +8,11 @@ import org.hydev.mcpm.client.commands.presenters.LogUpdatePresenter;
 
 import java.util.function.Consumer;
 
+/**
+ * Handles parsing related to the update command.
+ *
+ * @param controller A controller to dispatch an update command when invoked.
+ */
 public record UpdateParser(UpdateController controller) implements CommandParser {
     @Override
     public String name() {

@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
+/**
+ * An interactor to match plugin identifiers to their names.
+ *
+ * @param fetcher A database fetcher to get database information.
+ * @param listener A listener object to show database fetch progress.
+ */
 public record MatchPluginsInteractor(
     DatabaseFetcher fetcher,
     DatabaseFetcherListener listener

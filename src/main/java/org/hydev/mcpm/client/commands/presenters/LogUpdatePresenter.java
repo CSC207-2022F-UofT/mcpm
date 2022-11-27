@@ -11,6 +11,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * Formats update information for the CLI and writes it to log.
+ *
+ * @param log A consumer that takes Minecraft Color coded strings to print to the user.
+ */
 public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresenter {
     private static String userShortFromType(UpdateOutcome.State state) {
         return switch (state) {
