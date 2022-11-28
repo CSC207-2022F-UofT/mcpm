@@ -109,7 +109,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     private PluginYml readMeta(File jar) {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error reading plugin.yml from " + jar);
             return null;
         }
