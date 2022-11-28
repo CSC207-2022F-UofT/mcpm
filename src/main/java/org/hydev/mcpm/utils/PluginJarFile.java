@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipFile;
 
@@ -20,11 +19,6 @@ public class PluginJarFile extends ZipFile
     public PluginJarFile(@NotNull File file) throws IOException
     {
         super(file);
-    }
-
-    public PluginJarFile(@NotNull File file, int mode, @NotNull Charset charset) throws IOException
-    {
-        super(file, mode, charset);
     }
 
     /**

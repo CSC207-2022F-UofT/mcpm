@@ -3,6 +3,8 @@ package org.hydev.mcpm.utils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 
 /**
  * This class handles temporary directories like Python's tempfile.TemporaryDirectory:
@@ -54,6 +56,14 @@ public class TemporaryDir implements AutoCloseable
     @Override
     public void close()
     {
-        path.delete();
+        // Recursively delete files on exit
+        try (var w = Files.walk(path.toPath()))
+        {
+            w.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
