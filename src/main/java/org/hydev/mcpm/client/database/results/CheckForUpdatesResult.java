@@ -1,10 +1,10 @@
-package org.hydev.mcpm.client.database.inputs;
+package org.hydev.mcpm.client.database.results;
 
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Result returned from CheckForUpdatesBoundary.
@@ -17,7 +17,7 @@ import java.util.Map;
 public record CheckForUpdatesResult(
     State state,
     Map<PluginVersionState, PluginModel> updatable,
-    List<PluginVersionState> mismatched
+    Set<PluginVersionState> mismatched
 ) {
     /**
      * The outcome of the CheckForUpdatesResult.
@@ -36,6 +36,6 @@ public record CheckForUpdatesResult(
      * @return A CheckForUpdatesResult object with state initialized and dummy values for the other elements.
      */
     public static CheckForUpdatesResult by(CheckForUpdatesResult.State state) {
-        return new CheckForUpdatesResult(state, Map.of(), List.of());
+        return new CheckForUpdatesResult(state, Map.of(), Set.of());
     }
 }

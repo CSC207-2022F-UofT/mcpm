@@ -5,8 +5,11 @@ import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.entries.*;
+import org.hydev.mcpm.client.database.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
+import org.hydev.mcpm.client.database.MatchPluginsInteractor;
+import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
@@ -14,6 +17,7 @@ import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
+import org.hydev.mcpm.client.updater.UpdateInteractor;
 import org.hydev.mcpm.utils.ColorLogger;
 
 import java.net.URI;
@@ -40,22 +44,25 @@ public class CommandsFactory {
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
         var tracker = new LocalPluginTracker();
-        var searcher = new SearchInteractor(fetcher);
+        var loader = isMinecraft ? new PluginLoader() : null;
+        var listener = new ProgressBarFetcherListener();
+        var searcher = new SearchInteractor(fetcher, listener);
+        var installer = new InstallInteractor(
+            new SpigotPluginDownloader(new Downloader(), host.toString()),
+            new DatabaseManager(tracker, searcher),
+            loader
+        );
+        var matcher = new MatchPluginsInteractor(fetcher, listener);
+        var updateChecker = new CheckForUpdatesInteractor(matcher);
+        var updater = new UpdateInteractor(updateChecker, installer, tracker);
+
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));
         var searchController = new SearchPackagesController(searcher);
         var mirrorController = new MirrorController(new MirrorSelector());
         var infoController = new InfoController(tracker);
-        PluginLoader pluginLoader = null;
-        if (isMinecraft) {
-            pluginLoader = new PluginLoader();
-        }
-        DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
-        System.out.println(isMinecraft);
-        var installController = new InstallController(new InstallInteractor(
-            new SpigotPluginDownloader(new Downloader(), host.toString()),
-            databaseManager, pluginLoader));
-
+        var installController = new InstallController(installer);
+        var updateController = new UpdateController(updater);
 
         /*
          * Add general parsers to this list!
@@ -68,7 +75,8 @@ public class CommandsFactory {
             new SearchParser(searchController),
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
-            new InstallParser(installController)
+            new InstallParser(installController),
+            new UpdateParser(updateController)
         );
     }
 

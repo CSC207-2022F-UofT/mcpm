@@ -35,6 +35,7 @@ public record MirrorParser(MirrorController controller) implements CommandParser
         {
             case "ping" -> controller.ping(details.getBoolean("refresh"), log);
             case "select" -> controller.select(details.getString("host"), log);
+            default -> throw new RuntimeException();
         }
     }
 
