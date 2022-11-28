@@ -1,7 +1,5 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
-import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.models.PluginCommand;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
@@ -142,20 +140,6 @@ public class PluginMockFactory {
                         .toList()
         );
     }
-
-    /**
-     * Creates a mock DatabaseInteractor object with the provided plugin list.
-     *
-     * @param plugins A list of plugins that the DatabaseInteractor will have access to.
-     * @return A DatabaseInteractor object.
-     */
-    public static DatabaseInteractor interactor(List<PluginModel> plugins) {
-        var fetcher = new ConstantFetcher(plugins);
-        var listener = new BriefFetcherListener(true);
-
-        return new DatabaseInteractor(fetcher, listener);
-    }
-
 
     /**
      * Generates a sample list of plugins used for testing, containing the name, description, and commands.
