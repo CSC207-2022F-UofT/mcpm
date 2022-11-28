@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.arguments;
 
-import org.hydev.mcpm.Constants;
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.arguments.parsers.*;
@@ -9,14 +8,16 @@ import org.hydev.mcpm.client.database.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.MatchPluginsInteractor;
-import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
-import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.export.ExportInteractor;
 import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.database.fetcher.ProgressBarFetcherListener;
+import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
+import org.hydev.mcpm.client.injector.LocalJarFinder;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
+import org.hydev.mcpm.client.uninstall.Uninstaller;
 import org.hydev.mcpm.client.updater.UpdateInteractor;
 import org.hydev.mcpm.utils.ColorLogger;
 
@@ -44,7 +45,9 @@ public class CommandsFactory {
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(host);
         var tracker = new LocalPluginTracker();
-        var loader = isMinecraft ? new PluginLoader() : null;
+        var jarFinder = new LocalJarFinder();
+
+        var loader = isMinecraft ? new PluginLoader(jarFinder) : null;
         var listener = new ProgressBarFetcherListener();
         var searcher = new SearchInteractor(fetcher, listener);
         var installer = new InstallInteractor(
@@ -61,7 +64,10 @@ public class CommandsFactory {
         var searchController = new SearchPackagesController(searcher);
         var mirrorController = new MirrorController(new MirrorSelector());
         var infoController = new InfoController(tracker);
+
+        var databaseManager = new DatabaseManager(tracker, searcher);
         var installController = new InstallController(installer);
+        var uninstallController = new UninstallController(new Uninstaller(tracker, loader, jarFinder));
         var updateController = new UpdateController(updater);
 
         /*
@@ -76,6 +82,7 @@ public class CommandsFactory {
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
             new InstallParser(installController),
+            new UninstallParser(uninstallController),
             new UpdateParser(updateController)
         );
     }
@@ -86,7 +93,8 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that require the Server (Minecraft Bukkit Plugin) environment.
      */
     public static List<CommandParser> serverParsers() {
-        var loader = new PluginLoader();
+        var jarFinder = new LocalJarFinder();
+        var loader = new PluginLoader(jarFinder);
 
         var loadController = new LoadController(loader);
         var reloadController = new ReloadController(loader);
