@@ -1,5 +1,6 @@
 package org.hydev.mcpm.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 
 import java.io.File;
@@ -39,6 +40,33 @@ public class GeneralUtils
         {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Concatenate two URLs
+     *
+     * @param base Base url
+     * @param path Path
+     * @return Concatenated URLs
+     */
+    public static URI concatUri(String base, String path)
+    {
+        // Remove redundant slashes
+        base = StringUtils.stripEnd(base, "/");
+        path = StringUtils.stripStart(path, "/");
+        return URI.create(base + "/" + path);
+    }
+
+    /**
+     * Concatenate two URLs
+     *
+     * @param base Base url
+     * @param path Path
+     * @return Concatenated URLs
+     */
+    public static URI concatUri(URI base, String path)
+    {
+        return concatUri(base.toString(), path);
     }
 
     /**

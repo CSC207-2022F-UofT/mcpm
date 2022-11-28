@@ -21,7 +21,6 @@ import org.hydev.mcpm.client.uninstall.Uninstaller;
 import org.hydev.mcpm.client.updater.UpdateInteractor;
 import org.hydev.mcpm.utils.ColorLogger;
 
-import java.net.URI;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -42,8 +41,8 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
     public static List<CommandParser> baseParsers(boolean isMinecraft) {
-        var host = URI.create("https://mcpm.hydev.org");
-        var fetcher = new LocalDatabaseFetcher(host);
+        var mirror = new MirrorSelector();
+        var fetcher = new LocalDatabaseFetcher(mirror.selectedMirrorSupplier());
         var tracker = new LocalPluginTracker();
         var jarFinder = new LocalJarFinder();
 
@@ -51,7 +50,7 @@ public class CommandsFactory {
         var listener = new ProgressBarFetcherListener();
         var searcher = new SearchInteractor(fetcher, listener);
         var installer = new InstallInteractor(
-            new SpigotPluginDownloader(new Downloader(), host.toString()),
+            new SpigotPluginDownloader(new Downloader(), mirror.selectedMirrorSupplier()),
             new DatabaseManager(tracker, searcher),
             loader
         );
@@ -59,16 +58,18 @@ public class CommandsFactory {
         var updateChecker = new CheckForUpdatesInteractor(matcher);
         var updater = new UpdateInteractor(updateChecker, installer, tracker);
 
+        // Controllers
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));
         var searchController = new SearchPackagesController(searcher);
-        var mirrorController = new MirrorController(new MirrorSelector());
+        var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(tracker);
 
         var databaseManager = new DatabaseManager(tracker, searcher);
         var installController = new InstallController(installer);
         var uninstallController = new UninstallController(new Uninstaller(tracker, loader, jarFinder));
         var updateController = new UpdateController(updater);
+        var refreshController = new RefreshController(fetcher, listener, mirror);
 
         /*
          * Add general parsers to this list!
@@ -82,6 +83,7 @@ public class CommandsFactory {
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
             new InstallParser(installController),
+            new RefreshParser(refreshController),
             new UninstallParser(uninstallController),
             new UpdateParser(updateController)
         );

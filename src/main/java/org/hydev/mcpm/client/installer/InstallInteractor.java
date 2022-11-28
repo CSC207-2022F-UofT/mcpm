@@ -119,12 +119,12 @@ public class InstallInteractor implements InstallBoundary {
     public static void main(String[] args) {
         new File(FILEPATH).mkdirs();
         var host = URI.create("https://mcpm.hydev.org");
-        var fetcher = new LocalDatabaseFetcher(host);
+        var fetcher = new LocalDatabaseFetcher(() -> host);
         var tracker = new LocalPluginTracker();
         var searcher = new SearchInteractor(fetcher);
         Downloader downloader = new Downloader();
         PluginLoader loader = null;
-        SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader);
+        SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
         DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
         InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager, loader);
         InstallInput installInput = new InstallInput("JedCore", SearchPackagesType.BY_NAME, true, true);

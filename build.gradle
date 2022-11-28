@@ -43,6 +43,10 @@ checkstyle {
     maxWarnings = 5
 }
 
+task checkStyle(type: GradleBuild) {
+    tasks = ['checkStyleMain', 'checkStyleTest']
+}
+
 
 dependencies {
     // The Spigot API with no shadowing. Requires the OSS repo.

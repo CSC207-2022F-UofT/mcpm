@@ -59,6 +59,9 @@ public record MirrorController(MirrorSelectBoundary boundary)
                     List.of((selected.host().equals(it.k().host()) ? "&6> " : "&f  ") + it.k().host(),
                         formatPing(it.v()), formatSpeed(it.k().speed()))).toList(),
                 List.of(":Host", "Delay:", "Speed:")));
+
+            // User feedback
+            log.accept("You can use /mcpm mirror select <host> to select a mirror.");
         }
         catch (IOException e)
         {
