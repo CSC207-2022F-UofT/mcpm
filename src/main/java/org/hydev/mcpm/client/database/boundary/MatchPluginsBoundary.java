@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.database.boundary;
 
 import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
-import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
+import org.hydev.mcpm.client.database.results.MatchPluginsResult;
 
 /**
  * Defines how a user can match plugins by an identifier.

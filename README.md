@@ -94,8 +94,8 @@ There's 3 different ways you can search for new plugins:
 You can execute these commands in any environment using the `search` subcommand:
 ```shell
 mcpm search JedCore # Search for a plugin with the name "JedCore"
-mcpm search --by-keyword "protect land" # Search for a plugin that has protect in its description.
-mcpm search --by-command claim # Search for a plugin that provides a /claim command.
+mcpm search --keyword "protect land" # Search for a plugin that has protect in its description.
+mcpm search --command claim # Search for a plugin that provides a /claim command.
 ```
 
 # Install Plugins
@@ -112,8 +112,6 @@ For example, you can install a plugin that provides a `claim` command using the 
 
 ```shell
 mcpm install JedCore # Installs the latest version of the JedCore plugin.
-mcpm install --by-keyword "protect land" # This is also provided for consistency with search.
-mcpm install --by-command claim # This will install the latest version of a command that provides claim!
 ```
 
 We recommend you use the search command before installing anything,

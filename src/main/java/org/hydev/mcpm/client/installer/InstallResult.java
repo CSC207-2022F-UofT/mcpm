@@ -20,7 +20,11 @@ public record InstallResult(Type type) {
         NO_VERSION_AVAILABLE("No versions are available to download"),
         PLUGIN_EXISTS("The plugin is already installed on the system"),
 
-        SUCCESS("Plugins are installed successfully");
+        SUCCESS_INSTALLED_AND_FAIL_LOADED("Plugins are installed successfully, but fail to be loaded"),
+
+        SUCCESS_INSTALLED_AND_LOADED("&bPlugins are installed successfully and loaded"),
+
+        SUCCESS_INSTALLED_AND_UNLOADED("Plugins are installed successfully and unloaded");
 
         private final String reason;
 

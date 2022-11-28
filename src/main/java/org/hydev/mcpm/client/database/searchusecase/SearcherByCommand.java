@@ -56,6 +56,6 @@ public class SearcherByCommand implements Searcher {
         if (SearcherByCommand.commandMap == null) {
             SearcherByCommand.commandMap = constructSearchMaps(plugins);
         }
-        return SearcherByCommand.commandMap.get(inp.toLowerCase());
+        return SearcherByCommand.commandMap.getOrDefault(inp, List.of());
     }
 }

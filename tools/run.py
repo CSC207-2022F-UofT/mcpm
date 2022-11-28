@@ -6,7 +6,7 @@ import argparse
 import subprocess
 from subprocess import run, check_call
 
-from tools import download_jdk
+from . import download_jdk
 
 ALIAS = {
     "Entry": "org.hydev.mcpm.client.arguments.ArgsParser",
@@ -19,6 +19,7 @@ if __name__ == '__main__':
     a.add_argument('classname', help="Full class name (e.g. org.hydev.mcpm.client.Launcher) or alias (e.g. Launcher)", nargs="?",
                    default='Entry')
     a.add_argument('-a', '--args', help="Arguments passed into the program", nargs="+")
+    a.add_argument('-j', '--java', help="Custom java path")
     args = a.parse_args()
     cls = args.classname
 
@@ -27,7 +28,7 @@ if __name__ == '__main__':
         cls = ALIAS[cls]
 
     # Download JDK
-    java = download_jdk.ensure_java("19")
+    java = args.java or download_jdk.ensure_java("19")
 
     # Build classes
     check_call("./gradlew classes testClasses", shell=True)

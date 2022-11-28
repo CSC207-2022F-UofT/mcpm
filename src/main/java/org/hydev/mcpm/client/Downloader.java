@@ -9,15 +9,13 @@ import org.hydev.mcpm.client.interaction.ProgressRow;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
@@ -140,18 +138,20 @@ public class Downloader
     /**
      * Displays a demo for downloader.
      *
-     * @param args Arguments are ignored.
+     * @param args Not used
      */
-    public static void main(String[] args) throws IOException {
-        // Remember to chang link to test
-        String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
-        File out = new File("./Introduction_to_Algorithms_Third_Edition.pdf");
-        String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
-        File out1 = new File("./Math.pdf");
-        Downloader downloader = new Downloader();
+    public static void main(String[] args)
+    {
+        String link = "https://mcpm.hydev.org/db";
+        File out = new File("./build/db.json");
+        String link1 = "https://mcpm.hydev.org/db.zst";
+        File out1 = new File("./build/db.zst");
+        Downloader downloader = new Downloader().showProgress(true).threads(2);
         Map<String, File> urls = new HashMap<>();
         urls.put(link, out);
         urls.put(link1, out1);
         downloader.downloadFiles(urls);
+        out.delete();
+        out1.delete();
     }
 }
