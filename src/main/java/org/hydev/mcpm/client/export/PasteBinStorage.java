@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database.export;
+package org.hydev.mcpm.client.export;
 
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ContentType;
@@ -9,9 +9,6 @@ import java.io.IOException;
  * Store string content to a pastebin that supports raw text requests (e.g. https://github.com/w4/bin)
  *
  * @param host Pastebin host URL
- * @author Peter (https://github.com/MstrPikachu)
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-23
  */
 public record PasteBinStorage(String host) implements StringStorage
 {

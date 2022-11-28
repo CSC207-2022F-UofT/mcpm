@@ -44,6 +44,6 @@ public class ExportPluginsParser implements CommandParser
     @Override
     public void run(Namespace details, Consumer<String> log)
     {
-        controller.export(new ExportPluginsInput(details.get("cache"), details.get("outfile")), log);
+        controller.export(new ExportPluginsInput(details.get("cache")), log);
     }
 }

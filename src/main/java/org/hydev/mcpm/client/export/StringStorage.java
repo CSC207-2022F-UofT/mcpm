@@ -1,13 +1,9 @@
-package org.hydev.mcpm.client.database.export;
+package org.hydev.mcpm.client.export;
 
 import java.io.IOException;
 
 /**
  * Basic string content storage
- *
- * @author Peter (https://github.com/MstrPikachu)
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-23
  */
 public interface StringStorage
 {

@@ -1,20 +1,15 @@
 package org.hydev.mcpm.client.export;
 
-import org.hydev.mcpm.client.local.LocalPluginTracker;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 
-import java.io.PrintStream;
+
+import static org.hydev.mcpm.Constants.JACKSON;
 
 /**
  * An implementation of ExportPluginsBoundary that fetches from a database.
  */
-public class ExportInteractor implements ExportPluginsBoundary {
-
-    private final LocalPluginTracker tracker;
-
-    public ExportInteractor(LocalPluginTracker tracker) {
-        this.tracker = tracker;
-    }
-
+public record ExportInteractor(PluginTracker tracker, StringStorage storage) implements ExportPluginsBoundary {
 
     /**
      * Outputs the plugins on each line as its name and version separated by a space.
@@ -26,11 +21,16 @@ public class ExportInteractor implements ExportPluginsBoundary {
     public ExportPluginsResult export(ExportPluginsInput input) {
         var plugins = tracker.listInstalled();
         if (plugins == null) {
-            return new ExportPluginsResult(ExportPluginsResult.State.FAILED_TO_FETCH_PLUGINS);
+            return new ExportPluginsResult(ExportPluginsResult.State.FAILED_TO_FETCH_PLUGINS, null);
         }
+        var models = plugins.stream().map(p -> new ExportModel(p.name(), p.version()));
 
-        PrintStream ps = new PrintStream(input.out());
-        plugins.forEach(p -> ps.printf("%s %s\n", p.name(), p.version()));
-        return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS);
+        try {
+            var answer = JACKSON.writeValueAsString(models);
+            return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS, answer);
+        } catch (JsonProcessingException e) {
+            // Should never happen
+            throw new RuntimeException(e);
+        }
     }
 }
