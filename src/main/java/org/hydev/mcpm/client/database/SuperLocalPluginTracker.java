@@ -1,14 +1,9 @@
 package org.hydev.mcpm.client.database;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.opencsv.exceptions.CsvException;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
@@ -22,7 +17,6 @@ import org.hydev.mcpm.client.models.PluginTrackerModel;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class keeps track of locally installed packages
@@ -34,21 +28,23 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     // CSV file storing the list of manually installed plugins.
     // Now, each row in the csv file represents something as follows:
     // ""name", "boolean", "versionId", "pluginId"
-    private String mainLockFile = "plugins/mcpm.lock.csv";
+
+    private String mainLockFile = "plugins/mcpm.lock.json";
 
     // Directory containing the plugins
     private String pluginDirectory = "plugins";
 
     final ObjectMapper mapper = new ObjectMapper();
 
-    /*
+    /**
      * Instantiates a LocalPluginTracker with default parameters for general use
      */
     public SuperLocalPluginTracker() {
     }
 
     /**
-     * Instantiates a LocalPluginTracker with custom parameters for testing or
+     * Instantiates a LocalPluginTracker with custom parameters for testing or other
+     * purposes
      *
      * @param mainLockFile    The path to the main lock file
      * @param pluginDirectory The path to the plugin directory
@@ -73,28 +69,31 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         }
     }
 
-    /**
+    /*
      * Read the CSV file and return a mapping between plugin names and install
      * status
      *
      * @return Mapping between plugin name and boolean status
      */
-    private ArrayList<PluginTrackerModel> readCsv() {
-        ArrayList<PluginTrackerModel> accumulator = new ArrayList<>();
-        try {
-            CSVReader reader = new CSVReader(new FileReader(mainLockFile));
-            String[] line;
-            while ((line = reader.readNext()) != null) {
-                accumulator.add(new PluginTrackerModel(line[0], Boolean.parseBoolean(line[1]), line[2], line[3]));
-            }
-            reader.close();
-            return accumulator;
-        } catch (FileNotFoundException e) {
-            return accumulator;
-        } catch (CsvException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    /*
+     * private ArrayList<PluginTrackerModel> readCsv() {
+     * ArrayList<PluginTrackerModel> accumulator = new ArrayList<>();
+     * try {
+     * CSVReader reader = new CSVReader(new FileReader(mainLockFile));
+     * String[] line;
+     * while ((line = reader.readNext()) != null) {
+     * accumulator.add(new PluginTrackerModel(line[0],
+     * Boolean.parseBoolean(line[1]), line[2], line[3]));
+     * }
+     * reader.close();
+     * return accumulator;
+     * } catch (FileNotFoundException e) {
+     * return accumulator;
+     * } catch (CsvException | IOException e) {
+     * throw new RuntimeException(e);
+     * }
+     * }
+     */
 
     /**
      * Read a JSON file at the given location file and return a mapping between
@@ -135,57 +134,64 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         }
     }
 
-    /**
+    /*
      * Save an ArrayList's contents, overwriting a CSV file
      *
      * @param list ArrayList of PluginTrackerModel instances to save
      *
      */
-    private void saveCsv(ArrayList<PluginTrackerModel> listToSave) {
-        String csvFile = mainLockFile;
-        try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
-            for (PluginTrackerModel pluginTrackerModel : listToSave) {
-                String[] data = { pluginTrackerModel.getName(), pluginTrackerModel.isManual().toString(),
-                        pluginTrackerModel.getVersionId(), pluginTrackerModel.getPluginId() };
-                writer.writeNext(data);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    /*
+     * private void saveCsv(ArrayList<PluginTrackerModel> listToSave) {
+     * String csvFile = mainLockFile;
+     * try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
+     * for (PluginTrackerModel pluginTrackerModel : listToSave) {
+     * String[] data = { pluginTrackerModel.getName(),
+     * pluginTrackerModel.isManual().toString(),
+     * pluginTrackerModel.getVersionId(), pluginTrackerModel.getPluginId() };
+     * writer.writeNext(data);
+     * }
+     * } catch (IOException e) {
+     * throw new RuntimeException(e);
+     * }
+     * }
+     */
 
     /**
-     * Add a plugin to the CSV file
+     * Add a plugin to the JSON file
      *
      * @param name   Plugin name
      * @param status Plugin status (true = manual, false = auto)
      */
     public void addEntry(String name, boolean status, String versionId, String pluginId) {
-        var currentList = readCsv();
+        ArrayList<PluginTrackerModel> currentList = this.readJson();
         currentList.add(new PluginTrackerModel(name, status, versionId, pluginId));
-        saveCsv(currentList);
+        saveJson(currentList);
     }
 
     /**
-     * Remove a plugin with the given name from the CSV file
+     * Remove a plugin with the given name from the JSON file
      *
      * @param name Plugin name
      */
+
     public void removeEntry(String name) {
-        var currentList = readCsv();
+        ArrayList<PluginTrackerModel> currentList = this.readJson();
         currentList.removeIf(pluginTrackerModel -> pluginTrackerModel.getName().equals(name));
-        saveCsv(currentList);
+        saveJson(currentList);
     }
 
     /**
-     * Synchronize locally installed plugins at pluginDirectory with the CSV file
-     * (add new plugins, remove deleted plugins)
+     * Add a plugin to the JSON file
+     *
+     * @param tryPreserveLocalStatus if true, attempt to preserve the local status
+     *                               of the plugin using
+     *                               the local status of the plugin with the same
+     *                               name. This may be inaccurate
+     *                               if multiple plugins share the same name
      * 
-     * @param tryPreserveLocalStatus If true, try to preserve the local status of
-     *                               the plugin (manual)
      */
     public void syncMainLockFile(Boolean tryPreserveLocalStatus) {
-        ArrayList<PluginTrackerModel> currentList = readCsv();
+        ArrayList<PluginTrackerModel> currentList = readJson();
 
         HashMap<String, PluginTrackerModel> currentListName = new HashMap<>();
 
@@ -205,32 +211,32 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         ArrayList<PluginTrackerModel> toAdd = new ArrayList<>();
 
         for (PluginYml pluginYml : installedPlugins) {
-            PluginTrackerModel PluginRepresentation = new PluginTrackerModel(pluginYml.name(), false,
+            PluginTrackerModel pluginRepresentation = new PluginTrackerModel(pluginYml.name(), false,
                     pluginYml.version(), "unknown");
 
             // if the plugin exists in currentList and installedPlugins,
             // add it to toAdd with its currently stored parameters and status
 
-            if (currentListName.containsKey(PluginRepresentation.getName())) {
-                if (currentListName.get(PluginRepresentation.getName()).getVersionId()
-                        .equals(PluginRepresentation.getVersionId())) {
+            if (currentListName.containsKey(pluginRepresentation.getName())) {
+                if (currentListName.getOrDefault(pluginRepresentation.getName(), null).equals(null)) {
                     // if the plugin exists in both currentList and installedPlugins, pass it on
-                    toAdd.add(currentListName.get(PluginRepresentation.getName()));
+                    toAdd.add(currentListName.get(pluginRepresentation.getName()));
                 } else if (tryPreserveLocalStatus) {
                     // if the plugin exists in both currentList and installedPlugins, but the
                     // version differs
                     // and we are trying to preserve local status, pass it on with the same status
-                    PluginRepresentation.setManual(currentListName.get(PluginRepresentation.getClass()).isManual());
+                    boolean status = currentListName.get(pluginRepresentation.getName()).isManual();
+                    pluginRepresentation.setManual(status);
                 }
                 // Overwrite the local representation with a new one
-                toAdd.add(PluginRepresentation);
+                toAdd.add(pluginRepresentation);
 
             } else {
-                toAdd.add(PluginRepresentation);
+                toAdd.add(pluginRepresentation);
             }
         }
 
-        saveCsv(toAdd);
+        saveJson(toAdd);
     }
 
     /**
@@ -250,18 +256,13 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
     /**
      * Mark a plugin as manually installed (as opposed to a dependency)
-     * Precondition: mainLockFile is a sorted .csv file with the following format:
-     * 1st column: Plugin name
-     * 2nd column: Manually added (true/false)
-     * Example:
-     * PluginName,true
-     * PluginName2,false
+     * Precondition: mainLockFile is a JSON file containing a list of valid
+     * PluginTrackerModel entries
      *
      * @param name Plugin name
      */
     public void setManuallyInstalled(String name) {
-        ArrayList<PluginTrackerModel> currentList = readCsv();
-
+        ArrayList<PluginTrackerModel> currentList = readJson();
         ArrayList<PluginTrackerModel> newList = new ArrayList<>();
 
         for (PluginTrackerModel pluginTrackerModel : currentList) {
@@ -271,7 +272,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             newList.add(pluginTrackerModel);
         }
 
-        saveCsv(newList);
+        saveJson(newList);
     }
 
     /**
@@ -283,7 +284,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         // Locate the name in the list of installed plugins and set the value in the
         // second row as false
         // Load in the csv file
-        ArrayList<PluginTrackerModel> currentList = readCsv();
+        ArrayList<PluginTrackerModel> currentList = readJson();
 
         ArrayList<PluginTrackerModel> newList = new ArrayList<>();
 
@@ -294,7 +295,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             newList.add(pluginTrackerModel);
         }
 
-        saveCsv(newList);
+        saveJson(newList);
     }
 
     /**
@@ -303,7 +304,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * @return List of plugin names
      */
     public List<String> listManuallyInstalled() {
-        ArrayList<PluginTrackerModel> currentList = readCsv();
+        ArrayList<PluginTrackerModel> currentList = readJson();
 
         ArrayList<String> newList = new ArrayList<>();
 
@@ -312,7 +313,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 newList.add(pluginTrackerModel.getName());
             }
         }
-
         return newList;
     }
 
