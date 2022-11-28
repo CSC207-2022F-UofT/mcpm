@@ -17,54 +17,12 @@ import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
+import org.hydev.mcpm.client.models.PluginTrackerModel;
 
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-
-/**
- * 
- * Representation of a plugin for use in the local plugin tracker.
- */
-
-class PluginTrackerModel {
-    String name;
-    Boolean isManual;
-    String versionId;
-    String pluginId;
-
-    public PluginTrackerModel(String name, Boolean isManual, String versionId, String pluginId) {
-        this.name = name;
-        this.isManual = isManual;
-        this.versionId = versionId;
-        this.pluginId = pluginId;
-    }
-
-    public PluginTrackerModel(String stringRepresentation) {
-        String[] split = stringRepresentation.split(",");
-        this.name = split[0];
-        this.isManual = Boolean.parseBoolean(split[1]);
-        this.versionId = split[2];
-        this.pluginId = split[3];
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Boolean getManual() {
-        return isManual;
-    }
-
-    public String getVersionId() {
-        return versionId;
-    }
-
-    public String getPluginId() {
-        return pluginId;
-    }
-}
 
 /**
  * This class keeps track of locally installed packages
@@ -152,7 +110,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             return this.mapper.readValue(new File(mainLockFile), mapper.getTypeFactory()
                     .constructCollectionType(ArrayList.class, PluginTrackerModel.class));
         } catch (FileNotFoundException e) {
-
             return (new ArrayList<PluginTrackerModel>());
         } catch (JsonParseException | JsonMappingException e) {
             throw new RuntimeException(e);
@@ -188,8 +145,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         String csvFile = mainLockFile;
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
             for (PluginTrackerModel pluginTrackerModel : listToSave) {
-                String[] data = { pluginTrackerModel.name, pluginTrackerModel.isManual.toString(),
-                        pluginTrackerModel.versionId, pluginTrackerModel.pluginId };
+                String[] data = { pluginTrackerModel.getName(), pluginTrackerModel.isManual().toString(),
+                        pluginTrackerModel.getVersionId(), pluginTrackerModel.getPluginId() };
                 writer.writeNext(data);
             }
         } catch (IOException e) {
@@ -216,7 +173,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      */
     public void removeEntry(String name) {
         var currentList = readCsv();
-        currentList.removeIf(pluginTrackerModel -> pluginTrackerModel.name.equals(name));
+        currentList.removeIf(pluginTrackerModel -> pluginTrackerModel.getName().equals(name));
         saveCsv(currentList);
     }
 
@@ -233,7 +190,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         HashMap<String, PluginTrackerModel> currentListName = new HashMap<>();
 
         for (PluginTrackerModel pluginTrackerModel : currentList) {
-            currentListName.put(pluginTrackerModel.name, pluginTrackerModel);
+            currentListName.put(pluginTrackerModel.getName(), pluginTrackerModel);
         }
 
         List<PluginYml> installedPlugins = listInstalled();
@@ -254,15 +211,16 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             // if the plugin exists in currentList and installedPlugins,
             // add it to toAdd with its currently stored parameters and status
 
-            if (currentListName.containsKey(PluginRepresentation.name)) {
-                if (currentListName.get(PluginRepresentation.name).versionId.equals(PluginRepresentation.versionId)) {
+            if (currentListName.containsKey(PluginRepresentation.getName())) {
+                if (currentListName.get(PluginRepresentation.getName()).getVersionId()
+                        .equals(PluginRepresentation.getVersionId())) {
                     // if the plugin exists in both currentList and installedPlugins, pass it on
-                    toAdd.add(currentListName.get(PluginRepresentation.name));
+                    toAdd.add(currentListName.get(PluginRepresentation.getName()));
                 } else if (tryPreserveLocalStatus) {
                     // if the plugin exists in both currentList and installedPlugins, but the
                     // version differs
                     // and we are trying to preserve local status, pass it on with the same status
-                    PluginRepresentation.isManual = currentListName.get(PluginRepresentation.name).isManual;
+                    PluginRepresentation.setManual(currentListName.get(PluginRepresentation.getClass()).isManual());
                 }
                 // Overwrite the local representation with a new one
                 toAdd.add(PluginRepresentation);
@@ -307,8 +265,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         ArrayList<PluginTrackerModel> newList = new ArrayList<>();
 
         for (PluginTrackerModel pluginTrackerModel : currentList) {
-            if (pluginTrackerModel.name.equals(name)) {
-                pluginTrackerModel.isManual = true;
+            if (pluginTrackerModel.getName().equals(name)) {
+                pluginTrackerModel.setManual(true);
             }
             newList.add(pluginTrackerModel);
         }
@@ -330,8 +288,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         ArrayList<PluginTrackerModel> newList = new ArrayList<>();
 
         for (PluginTrackerModel pluginTrackerModel : currentList) {
-            if (pluginTrackerModel.name.equals(name)) {
-                pluginTrackerModel.isManual = false;
+            if (pluginTrackerModel.getName().equals(name)) {
+                pluginTrackerModel.setManual(false);
             }
             newList.add(pluginTrackerModel);
         }
@@ -350,8 +308,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         ArrayList<String> newList = new ArrayList<>();
 
         for (PluginTrackerModel pluginTrackerModel : currentList) {
-            if (pluginTrackerModel.isManual) {
-                newList.add(pluginTrackerModel.name);
+            if (pluginTrackerModel.isManual()) {
+                newList.add(pluginTrackerModel.getName());
             }
         }
 
