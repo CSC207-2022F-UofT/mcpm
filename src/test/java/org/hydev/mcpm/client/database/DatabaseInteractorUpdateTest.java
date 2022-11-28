@@ -2,12 +2,18 @@ package org.hydev.mcpm.client.database;
 
 import java.util.List;
 import java.util.OptionalLong;
+import java.util.Set;
 
+import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
+import org.hydev.mcpm.client.database.boundary.MatchPluginsBoundary;
+import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
+import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
+import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
 import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
+import org.hydev.mcpm.client.models.PluginModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -17,21 +23,31 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests the DatabaseInteractor's update method.
  */
 public class DatabaseInteractorUpdateTest {
-    private static DatabaseInteractor emptyInteractor;
-    private static DatabaseInteractor smallInteractor;
+    private static CheckForUpdatesBoundary emptyInteractor;
+    private static CheckForUpdatesBoundary smallInteractor;
+
+    static CheckForUpdatesBoundary interactor(List<PluginModel> plugins) {
+        var fetcher = new ConstantFetcher(plugins);
+        var listener = new BriefFetcherListener(true);
+
+        // Best to mock this too, but these tests were tied to this originally.
+        var matcher = new MatchPluginsInteractor(fetcher, listener);
+
+        return new CheckForUpdatesInteractor(matcher);
+    }
 
     /**
      * Create relevant interactors for tests.
      */
     @BeforeAll
     public static void setup() {
-        emptyInteractor = PluginMockFactory.interactor(List.of());
+        emptyInteractor = interactor(List.of());
 
-        smallInteractor = PluginMockFactory.interactor(List.of(
+        smallInteractor = interactor(List.of(
             PluginMockFactory.model(1),
-            PluginMockFactory.model(2, "name", List.of("ver.1", "ver.2")),
-            PluginMockFactory.model(3, "test", List.of("update", "update update")),
-            PluginMockFactory.model(4, "test", List.of("1.0", "2.0", "3.0"))
+            PluginMockFactory.model(2, "name", null, List.of("ver.1", "ver.2"), null),
+            PluginMockFactory.model(3, "test", null, List.of("update", "update update"), null),
+            PluginMockFactory.model(4, "test", null, List.of("1.0", "2.0", "3.0"), null)
         ));
     }
 
@@ -112,8 +128,7 @@ public class DatabaseInteractorUpdateTest {
         assertEquals(result.state(), CheckForUpdatesResult.State.SUCCESS);
         assertEquals(result.updatable().size(), 1);
         assertEquals(result.updatable().get(outdated).id(), 3);
-        assertEquals(result.mismatched().size(), 1);
-        assertEquals(result.mismatched().get(0), mismatched);
+        assertEquals(result.mismatched(), Set.of(mismatched));
     }
 
     /**

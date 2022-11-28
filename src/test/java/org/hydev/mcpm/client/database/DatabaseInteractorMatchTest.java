@@ -1,9 +1,13 @@
 package org.hydev.mcpm.client.database;
 
+import org.hydev.mcpm.client.database.boundary.MatchPluginsBoundary;
+import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
+import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
-import org.hydev.mcpm.client.database.inputs.MatchPluginsResult;
+import org.hydev.mcpm.client.database.results.MatchPluginsResult;
 import org.hydev.mcpm.client.database.model.PluginModelId;
 
+import org.hydev.mcpm.client.models.PluginModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -16,17 +20,24 @@ import java.util.OptionalLong;
  * Tests the DatabaseInteractor's match method.
  */
 public class DatabaseInteractorMatchTest {
-    private static DatabaseInteractor emptyInteractor;
-    private static DatabaseInteractor smallInteractor;
+    private static MatchPluginsBoundary emptyInteractor;
+    private static MatchPluginsBoundary smallInteractor;
+
+    static MatchPluginsBoundary interactor(List<PluginModel> plugins) {
+        var fetcher = new ConstantFetcher(plugins);
+        var listener = new BriefFetcherListener(true);
+
+        return new MatchPluginsInteractor(fetcher, listener);
+    }
 
     /**
      * Create relevant interactors for tests.
      */
     @BeforeAll
     public static void setup() {
-        emptyInteractor = PluginMockFactory.interactor(List.of());
+        emptyInteractor = interactor(List.of());
 
-        smallInteractor = PluginMockFactory.interactor(List.of(
+        smallInteractor = interactor(List.of(
             PluginMockFactory.model(1),
             PluginMockFactory.model(2, "hello"),
             PluginMockFactory.model(3, "test")

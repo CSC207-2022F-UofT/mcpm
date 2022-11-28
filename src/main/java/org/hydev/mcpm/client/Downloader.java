@@ -10,11 +10,16 @@ import org.hydev.mcpm.client.interaction.ProgressRow;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static java.lang.String.format;
 
 /**
  * File downloader
@@ -135,7 +140,7 @@ public class Downloader
     /**
      * Displays a demo for downloader.
      *
-     * @param args Arguments are ignored.
+     * @param args Not used
      */
     public static void main(String[] args) throws IOException
     {
@@ -159,5 +164,7 @@ public class Downloader
         urls.put(link3, out3);
         urls.put(link4, out4);
         downloader.downloadFiles(urls);
+        out.delete();
+        out1.delete();
     }
 }
