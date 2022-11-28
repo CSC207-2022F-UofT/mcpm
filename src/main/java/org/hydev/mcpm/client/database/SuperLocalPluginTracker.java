@@ -594,7 +594,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 throw new Exception("Empty Directory.");
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("Plugin not found, error with directory iteration.");
         }
     }
