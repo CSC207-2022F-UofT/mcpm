@@ -11,6 +11,7 @@ import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.client.models.PluginYml.InvalidPluginMetaStructure;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.client.models.PluginTrackerModel;
 
@@ -65,6 +66,10 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             return InstancePluginJarFile.readPluginYaml();
         } catch (IOException e) {
             System.out.println("Error reading plugin.yml from " + jar);
+            return null;
+        } catch (InvalidPluginMetaStructure e) {
+            System.out.println("Invalid plugin.yml structure in " + jar);
+            e.printStackTrace();
             return null;
         }
     }
@@ -335,6 +340,9 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 // directory
 
                 File pluginYmlPath = getPluginFile(name);
+                if (pluginYmlPath == null) {
+                    throw new FileNotFoundException("Plugin " + name + " not found");
+                }
                 PluginYml p = readMeta(pluginYmlPath);
                 if (p == null)
                     continue;
@@ -537,24 +545,20 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         // Get the file path of the plugin with name name from the local plugin
         // directory
         // Return the file path as a File
-        try {
-            // Find the file from the plugin directory
-            File dir = new File(pluginDirectory);
-            File[] directoryListing = dir.listFiles();
-            if (directoryListing != null) {
-                for (File child : directoryListing) {
-                    if (child.getName().equals(name)) {
-                        return child;
-                    }
-                }
-                throw new IllegalArgumentException("Plugin not found, verify whether installed.");
-            } else {
-                throw new Exception("Empty Directory.");
-            }
+        // Find the file from the plugin directory
 
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Plugin not found, error with directory iteration.");
+        File dir = new File(pluginDirectory);
+        File[] directoryListing = dir.listFiles();
+        if (directoryListing != null) {
+            for (File child : directoryListing) {
+                if (child.getName().equals(name)) {
+                    return child;
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("Plugin not found, verify whether installed.");
         }
+        return null;
     }
 
     /**
