@@ -1,5 +1,6 @@
 package org.hydev.mcpm.utils;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -9,12 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class StoredHashMapTest
 {
-
     @Test
+    @Tag("IntegrationTest")
     void putRemoveSave()
     {
         var fp = new File("test.meow.hashmap.json");
-        if (fp.exists()) fp.delete();
+        if (fp.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            fp.delete();
+        }
 
         var s = new StoredHashMap<>(fp);
         s.put("a", 1);
@@ -33,8 +37,10 @@ class StoredHashMapTest
         s3.remove("b", 1);
         assertEquals(s3.get("b"), 2);
         s3.clear();
+        //noinspection ConstantConditions
         assertFalse(s3.containsKey("b"));
-        
+
+        //noinspection ResultOfMethodCallIgnored
         fp.delete();
     }
 }
