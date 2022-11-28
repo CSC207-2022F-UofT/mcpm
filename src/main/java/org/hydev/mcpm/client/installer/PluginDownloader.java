@@ -2,9 +2,6 @@ package org.hydev.mcpm.client.installer;
 
 /**
   * Downloader for Spigot plugins
-  *
-  * @author Rena (https://github.com/thudoan1706)
-  * @since 2022-11-20
  */
 public interface PluginDownloader {
     /**

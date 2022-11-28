@@ -35,9 +35,6 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
 
 /**
  * Implementation of plugin hot-loading/unloading
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
  */
 public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {

@@ -11,8 +11,6 @@ import java.util.function.Consumer;
  * Parser for the mirror selector command
  *
  * @param controller Mirror controller
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public record MirrorParser(MirrorController controller) implements CommandParser
 {

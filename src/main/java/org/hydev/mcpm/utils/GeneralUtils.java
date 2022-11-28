@@ -9,10 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * TODO: Write a description for this class!
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
+ * Miscellaneous convenience functions for urls, sleep, resource related inquiries.
  */
 public class GeneralUtils
 {

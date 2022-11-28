@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HashUtilsTest
 {
-    HashUtils hashUtils = new HashUtils();
+    private static final HashUtils hashUtils = new HashUtils();
 
     @Test
     void hashString()

@@ -23,11 +23,6 @@ import java.util.function.Consumer;
 
 /**
  * Implementation to the InstallBoundary, handles installation of plugins
-
- * @author Azalea (https://github.com/hykilpikonna)
- * @author Rena (https://github.com/thudoan1706)
- * @author Taylor (https://github.com/1whatleytay)
- * @since 2022-11-20
  * */
 
 public class InstallInteractor implements InstallBoundary {
@@ -53,10 +48,11 @@ public class InstallInteractor implements InstallBoundary {
         this.pluginLoader = pluginLoader;
     }
 
-    /*
-     * Install the plugin
-     * @param installInput: the plugin submitted by the user for installing
-     * */
+    /**
+     * Install the plugin.
+     *
+     * @param installInput the plugin submitted by the user for installing
+     */
     @Override
     public boolean installPlugin(InstallInput installInput,
                                        InstallResultPresenter installPresenter)
@@ -177,10 +173,14 @@ public class InstallInteractor implements InstallBoundary {
         SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
         DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
         InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager, loader);
-        InstallInput installInput = new InstallInput("JedCore",
-                                                    SearchPackagesType.BY_NAME,
-                                                    true,
-                                                    true);
+
+        InstallInput installInput = new InstallInput(
+            "JedCore",
+            SearchPackagesType.BY_NAME,
+            true,
+            true
+        );
+
         installInteractor.installPlugin(installInput, resultPresenter);
     }
 }

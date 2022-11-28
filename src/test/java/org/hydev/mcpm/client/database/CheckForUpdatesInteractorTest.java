@@ -1,34 +1,34 @@
 package org.hydev.mcpm.client.database;
 
-import java.util.List;
-import java.util.OptionalLong;
-import java.util.Set;
-
 import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
-import org.hydev.mcpm.client.database.boundary.MatchPluginsBoundary;
-import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
+import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
 import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
+import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.OptionalLong;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests the DatabaseInteractor's update method.
+ * Tests the default CheckForUpdatesInteractor's update method for correct behaviour.
  */
-public class DatabaseInteractorUpdateTest {
+public class CheckForUpdatesInteractorTest {
     private static CheckForUpdatesBoundary emptyInteractor;
     private static CheckForUpdatesBoundary smallInteractor;
 
     static CheckForUpdatesBoundary interactor(List<PluginModel> plugins) {
         var fetcher = new ConstantFetcher(plugins);
-        var listener = new BriefFetcherListener(true);
+        var listener = new QuietFetcherListener();
 
         // Best to mock this too, but these tests were tied to this originally.
         var matcher = new MatchPluginsInteractor(fetcher, listener);

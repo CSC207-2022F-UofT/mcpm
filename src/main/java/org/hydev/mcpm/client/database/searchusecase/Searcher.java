@@ -11,7 +11,6 @@ import java.util.Map;
  * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public interface Searcher {
-
     /**
      * Constructs a dictionary associating a feature (e.g. name, keyword, command)
      * of the plugins to the matching plugins.

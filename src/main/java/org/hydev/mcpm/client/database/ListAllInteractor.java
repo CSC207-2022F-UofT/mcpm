@@ -7,9 +7,6 @@ import java.util.List;
 
 /**
  * Implementation to the ListAll functionality
- *
- * @author Kevin (https://github.com/kchprog)
- * @since 2022-11-20
  */
 public record ListAllInteractor(PluginTracker tracker) implements ListAllBoundary
 {

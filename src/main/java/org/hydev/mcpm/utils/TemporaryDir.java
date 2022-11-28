@@ -24,9 +24,6 @@ import java.util.Comparator;
  * }
  * // directory and contents have been removed
  * }
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-02
  */
 public class TemporaryDir implements AutoCloseable
 {

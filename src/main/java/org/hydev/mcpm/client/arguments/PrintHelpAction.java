@@ -9,9 +9,6 @@ import java.util.Map;
 
 /**
  * Print help argument action to create help messages
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
  */
 public record PrintHelpAction(Subparser subparser) implements ArgumentAction
 {

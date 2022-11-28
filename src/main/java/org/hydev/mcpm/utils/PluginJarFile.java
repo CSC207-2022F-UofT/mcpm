@@ -13,9 +13,6 @@ import java.util.zip.ZipFile;
 
 /**
  * Static utility functions for reading Java archives (jar).
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-02
  */
 public class PluginJarFile extends ZipFile
 {

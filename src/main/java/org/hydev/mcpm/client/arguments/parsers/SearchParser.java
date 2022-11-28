@@ -12,8 +12,6 @@ import java.util.function.Consumer;
  * SearchParser has two arguments: "type" and "text."
  * When the user runs the search command, the program prompts the user to specify the type of
  * search and the search text.
- *
- * @author Jerry Zhu (https://github.com/jerryzhu509)
  */
 public record SearchParser(SearchPackagesController controller) implements CommandParser {
     @Override

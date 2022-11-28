@@ -12,9 +12,6 @@ import java.util.Arrays;
 
 /**
  * Utility for Zstd-jni
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public class ZstdUtils
 {

@@ -48,7 +48,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
         log.info("Enabled!");
 
         // Initialize controller
-        parser = CommandsFactory.serverArgsParser(text -> log.info(text));
+        parser = CommandsFactory.serverArgsParser();
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);

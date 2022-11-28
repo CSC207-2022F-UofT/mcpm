@@ -6,7 +6,7 @@ import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
 
 /**
- * Controller class for the Install use case.
+ * Controller class for the installation use case.
  */
 public record InstallController(InstallBoundary boundary)
 {

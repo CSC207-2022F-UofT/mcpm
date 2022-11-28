@@ -10,9 +10,6 @@ import static org.hydev.mcpm.client.commands.presenter.Table.tabulate;
 
 /**
  * Controller for the mirror selection command
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public record MirrorController(MirrorSelectBoundary boundary)
 {

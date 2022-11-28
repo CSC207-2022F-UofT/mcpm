@@ -9,9 +9,6 @@ import java.util.List;
 
 /**
  * Plugin tracker interface
- *
- * @author Kevin (https://github.com/kchprog)
- * @since 2022-09-27
  */
 public interface PluginTracker {
     void addEntry(String name, boolean status);

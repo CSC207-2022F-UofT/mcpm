@@ -1,8 +1,7 @@
 package org.hydev.mcpm.client.commands.entries;
 
-import com.google.common.collect.Streams;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.hydev.mcpm.client.database.PluginTracker;
 import org.hydev.mcpm.utils.ColorLogger;
 
@@ -10,14 +9,10 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
  * Controller for the info use case
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public record InfoController(PluginTracker tracker)
 {

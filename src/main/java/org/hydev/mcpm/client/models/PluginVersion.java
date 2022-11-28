@@ -8,9 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @param size Size of compressed archive
  * @param sha256 SHA256 Hash Checksum (for validation)
  * @param meta Meta info stored in plugin.yml
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginVersion(

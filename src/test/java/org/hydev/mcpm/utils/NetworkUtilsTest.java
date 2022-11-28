@@ -4,9 +4,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for NetworkUtils
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-01
  */
 class NetworkUtilsTest
 {

@@ -1,7 +1,5 @@
 package org.hydev.mcpm.client.database.fetcher;
 
-import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
-import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.models.Database;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.jetbrains.annotations.Nullable;

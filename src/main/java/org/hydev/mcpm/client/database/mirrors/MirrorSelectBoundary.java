@@ -14,9 +14,6 @@ import static org.hydev.mcpm.utils.NetworkUtils.ping;
 
 /**
  * Interface for selecting a mirror
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-01
  */
 public interface MirrorSelectBoundary
 {
@@ -38,7 +35,7 @@ public interface MirrorSelectBoundary
      *
      * <p>This is implemented as a default interface method because different implementations of
      * MirrorSelectBoundary shouldn't have different implementations of this method. Check out our
-     * discussion thread https://github.com/CSC207-2022F-UofT/mcpm/pull/15#discussion_r1012044200
+     * <a href="https://github.com/CSC207-2022F-UofT/mcpm/pull/15#discussion_r1012044200">discussion thread</a>
      * for more details.
      *
      * @return Sorted list of mirrors with their latencies, with the fastest on top

@@ -11,9 +11,6 @@ import java.util.List;
  * @param aliases Other names
  * @param permission Required permission
  * @param usage Usage help
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginCommand(

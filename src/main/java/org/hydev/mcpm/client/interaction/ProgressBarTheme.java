@@ -7,10 +7,8 @@ package org.hydev.mcpm.client.interaction;
  * @param done The character displayed for done (e.g. "#")
  * @param iprLen Displayed length of the ipr string (Some characters have length 1 but take up two characters' space)
  * @param doneLen Displayed length of the done string
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
  */
+@SuppressWarnings("unused")
 public record ProgressBarTheme(
     String done,
     String ipr,

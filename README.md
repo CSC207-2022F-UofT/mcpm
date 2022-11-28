@@ -33,7 +33,7 @@ mcpm search JedCore # Look for plugins named JedCore
 mcpm install JedCore # Install it to our local directory!
 ```
 
-On a windows machine, I recommend executing the shortcut via a bash emulator (Git Bash),
+On a Windows machine, I recommend executing the shortcut via a bash emulator (Git Bash),
 launching the app yourself using `java`, or investigating the scripts in the /tools folder (run.py).
 
 The In-Game environment is more involved and requires a server with our MCPM plugin.
@@ -126,7 +126,7 @@ don't need to worry about accidentally breaking your plugin installs.
 
 You can easily uninstall a plugin by name using the `uninstall` subcommand.
 
-The uninstall command will automatically get rid of all dependencies if possible.
+The `uninstall` command will automatically get rid of all dependencies if possible.
 
 If you are attempting to get rid of a plugin that's required for another
 plugin to work, then MCPM will ask you to uninstall the other plugin first.

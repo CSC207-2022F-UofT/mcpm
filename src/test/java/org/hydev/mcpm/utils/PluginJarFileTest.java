@@ -14,9 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for org.hydev.mcpm.utils.PluginJarFile
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-02
  */
 class PluginJarFileTest
 {

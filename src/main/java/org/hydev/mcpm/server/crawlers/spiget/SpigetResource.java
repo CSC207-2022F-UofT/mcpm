@@ -18,9 +18,6 @@ import java.util.Map;
  * @param downloads Number of downloads
  * @param existenceStatus Existence status, IDK what this means
  * @param version Latest version ID and UUID
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
  */
 public record SpigetResource(
     long id,

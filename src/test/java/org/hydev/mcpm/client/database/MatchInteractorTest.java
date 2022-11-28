@@ -1,31 +1,31 @@
 package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.boundary.MatchPluginsBoundary;
-import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
+import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
 import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
-import org.hydev.mcpm.client.database.results.MatchPluginsResult;
 import org.hydev.mcpm.client.database.model.PluginModelId;
-
+import org.hydev.mcpm.client.database.results.MatchPluginsResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 import java.util.OptionalLong;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
- * Tests the DatabaseInteractor's match method.
+ * Tests the MatchInteractor's match method for correct behaviour.
  */
-public class DatabaseInteractorMatchTest {
+public class MatchInteractorTest {
     private static MatchPluginsBoundary emptyInteractor;
     private static MatchPluginsBoundary smallInteractor;
 
     static MatchPluginsBoundary interactor(List<PluginModel> plugins) {
         var fetcher = new ConstantFetcher(plugins);
-        var listener = new BriefFetcherListener(true);
+        var listener = new QuietFetcherListener();
 
         return new MatchPluginsInteractor(fetcher, listener);
     }

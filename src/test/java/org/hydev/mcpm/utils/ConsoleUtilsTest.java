@@ -4,9 +4,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for ConsoleUtils
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
  */
 class ConsoleUtilsTest
 {

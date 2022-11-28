@@ -7,10 +7,7 @@ import static org.hydev.mcpm.utils.ColorLogger.printfc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests for ColorLogger
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
+ * Tests for the ColorLogger class.
  */
 class ColorLoggerTest
 {

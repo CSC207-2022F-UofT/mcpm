@@ -9,9 +9,6 @@ import java.util.Optional;
 
 /**
  * Utilities for JVM reflections
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-29
  */
 public class ReflectionUtils
 {
