@@ -45,34 +45,6 @@ public class PluginMockFactory {
      * @param name The name of the plugin.
      * @param version The version string for the plugin.
      * @param description The description for the plugin.
-     * @return A PluginYml object.
-     */
-    public static PluginYml meta(String name, String version, String description) {
-        return new PluginYml(
-            "org." + name,
-            name,
-            version,
-            description,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        );
-    }
-
-    /**
-     * Creates a mock PluginYml object.
-     *
-     * @param name The name of the plugin.
-     * @param version The version string for the plugin.
-     * @param description The description for the plugin.
      * @param commands Commands for the plugin.
      * @return A PluginYml object.
      */
@@ -106,7 +78,7 @@ public class PluginMockFactory {
      * @return A PluginVersion object.
      */
     public static PluginVersion version(long id, String name, String string) {
-        return new PluginVersion(id, 0, "", meta(name, string, null));
+        return new PluginVersion(id, 0, "", meta(name, string, null, null));
     }
 
     /**
@@ -145,26 +117,8 @@ public class PluginMockFactory {
      */
     public static PluginModel model(long id, String name) {
         return new PluginModel(
-            id,
-            List.of(version(id, name, "ver." + name)) // NOT SEMVER
-        );
-    }
-
-    /**
-     * Creates a mock PluginModel object.
-     * The first version in versionNames will have id 0, the next will have id 1, and so on...
-     *
-     * @param id The plugin id.
-     * @param name The plugin name.
-     * @param versionNames The individual version strings for each version.
-     * @return A PluginModel object.
-     */
-    public static PluginModel model(long id, String name, List<String> versionNames) {
-        return new PluginModel(
-            id,
-            IntStream.range(0, versionNames.size())
-                .mapToObj(i -> version(i, name, versionNames.get(i)))
-                .toList()
+                id,
+                List.of(version(id, name, "ver." + name)) // NOT SEMVER
         );
     }
 
@@ -213,9 +167,9 @@ public class PluginMockFactory {
                 "of land against griefers and undesirables as well " +
                 "as tweak and disable various gameplay features of Minecraft.",
                 "Multiverse was created at the dawn of Bukkit multiworld support. " +
-                "It has since then grown into a complete world management " +
-                "solution including special treatment of your nether worlds with " +
-                "Multiverse NetherPortals.",
+                        "It has since then grown into a complete world management " +
+                        "solution including special treatment of your nether worlds with " +
+                        "Multiverse NetherPortals.",
                 "Create futuristic holograms to display text and items to players!"
         };
 
