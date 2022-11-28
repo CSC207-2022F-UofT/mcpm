@@ -37,10 +37,10 @@ public class SpigotPluginDownloader implements PluginDownloader {
     /**
      * Download the plugin according to its filepath
      *
-     * @param pluginId The Id of the plugin
+     * @param pluginId      The Id of the plugin
      * @param pluginVersion the plugin Version
-     * @param destination The filepath where the plugin will be installed to
-     * */
+     * @param destination   The filepath where the plugin will be installed to
+     */
     @Override
     public void download(long pluginId, long pluginVersion, String destination) {
         try {
