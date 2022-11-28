@@ -63,7 +63,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     private PluginYml readMeta(File jar) {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error reading plugin.yml from " + jar);
             return null;
         }
@@ -552,7 +552,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 throw new Exception("Empty Directory.");
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("Plugin not found, error with directory iteration.");
         }
     }
