@@ -10,13 +10,14 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
-import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.utils.PluginJarFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 
 import static org.hydev.mcpm.utils.ReflectionUtils.getPrivateField;
 import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
@@ -27,26 +28,12 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundary
+public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
     @Override
     public boolean loadPlugin(String name) throws PluginNotFoundException
     {
-        // 1. Find plugin file by name
-        var dir = new File("plugins");
-        if (!dir.isDirectory()) throw new PluginNotFoundException(name);
-        var file = Arrays.stream(Optional.ofNullable(dir.listFiles())
-                .orElseThrow(() -> new PluginNotFoundException(name)))
-            .filter(f -> f.getName().endsWith(".jar"))
-            .filter(f -> {
-                try (var jf = new PluginJarFile(f))
-                {
-                    return jf.readPluginYaml().name().equalsIgnoreCase(name);
-                }
-                catch (IOException | PluginYml.InvalidPluginMetaStructure ignored) { return false; }
-            }).findFirst().orElseThrow(() -> new PluginNotFoundException(name));
-
-        return loadPlugin(file);
+        return loadPlugin(jarFinder.findJar(name));
     }
 
     @Override
@@ -74,13 +61,14 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     }
 
     @Override
-    public void unloadPlugin(String name) throws PluginNotFoundException
+    public File unloadPlugin(String name) throws PluginNotFoundException
     {
-        var pm = Bukkit.getPluginManager();
+        final var pm = Bukkit.getPluginManager();
 
         // 1. Find plugin by name
-        var plugin = Arrays.stream(pm.getPlugins()).filter(p -> p.getName().equalsIgnoreCase(name)).findFirst()
+        final var plugin = Arrays.stream(pm.getPlugins()).filter(p -> p.getName().equalsIgnoreCase(name)).findFirst()
             .orElseThrow(() -> new PluginNotFoundException(name));
+        final var jar = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
         // 2. Unload plugin
         pm.disablePlugin(plugin);
@@ -127,6 +115,8 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
                 e.printStackTrace();
             }
         }
+
+        return jar;
     }
 
     @Override
