@@ -19,7 +19,7 @@ public record RefreshController(
 )
 {
     /**
-     * Refresh
+     * Refresh the database cache and mirror list
      */
     public void refresh() throws IOException
     {

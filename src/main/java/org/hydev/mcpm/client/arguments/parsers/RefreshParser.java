@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 /**
- * Parser for the refresh command
+ * Refresh the database cache and mirror list
  *
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-11-24
