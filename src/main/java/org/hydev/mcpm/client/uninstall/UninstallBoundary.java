@@ -11,5 +11,5 @@ public interface UninstallBoundary {
      *
      * @param input Uninstall input
      */
-    UninstallResult uninstall(UninstallInput input) throws PluginNotFoundException;
+    UninstallResult uninstall(UninstallInput input);
 }

@@ -13,15 +13,24 @@ import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * This class keeps track of locally installed packages
- *
- * @author Kevin (https://github.com/kchprog)
- * @since 2022-09-27
  */
 public class LocalPluginTracker implements PluginTracker {
     // CSV file storing the list of manually installed plugins
@@ -246,7 +255,7 @@ public class LocalPluginTracker implements PluginTracker {
         // Get all the dependencies of the manually installed plugins
         for (String name : manuallyinstalledPlugins) {
             try {
-                // Find the pluginYml file of the plugin with name name from the plugin
+                // Find the pluginYml file of the plugin with name from the plugin
                 // directory
 
                 File pluginYmlPath = getPluginFile(name);
@@ -361,7 +370,7 @@ public class LocalPluginTracker implements PluginTracker {
      * @return List of plugin names
      */
     public List<PluginYml> listOutdatedPluginYml(SearchPackagesBoundary searchPackagesBoundary) {
-        List<PluginYml> outdatedPlugins = new ArrayList<PluginYml>();
+        List<PluginYml> outdatedPlugins = new ArrayList<>();
         List<PluginYml> installedPlugins = listInstalled();
 
         // For each plugin in the list of installed plugins, check if the version in the
@@ -385,7 +394,7 @@ public class LocalPluginTracker implements PluginTracker {
      * version on the server.
      * If yes, return true. If no, return false.
      *
-     * @return True if the local version of plugin with name name is outdated, false
+     * @return True if the local version of plugin with name is outdated, false
      *         otherwise
      */
     public Boolean compareVersion(String name, SearchPackagesBoundary searchPackagesBoundary) {
@@ -449,7 +458,7 @@ public class LocalPluginTracker implements PluginTracker {
      * @return A File object representation of the plugin
      */
     private File getPluginFile(String name) {
-        // Get the file path of the plugin with name name from the local plugin
+        // Get the file path of the plugin with name from the local plugin
         // directory
         // Return the file path as a File
         try {

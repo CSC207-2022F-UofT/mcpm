@@ -1,18 +1,13 @@
 package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.database.LocalPluginTracker;
 import org.hydev.mcpm.client.database.PluginTracker;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
-import org.hydev.mcpm.client.installer.InstallResult;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -49,20 +44,17 @@ public class DatabaseManager {
      * @param pluginName The version of the installed plugin
      * */
     public boolean checkPluginInstalledByName(String pluginName) {
-        var name = pluginName;
-
         List<PluginYml> pluginInstalled = localPluginTracker.listInstalled();
         for (PluginYml pluginYml : pluginInstalled) {
-            if (pluginYml != null && pluginYml.name() != null && pluginYml.name().equals(name)) {
+            if (pluginYml != null && pluginYml.name() != null && pluginYml.name().equals(pluginName)) {
                 return true;
             }
         }
         return false;
     }
 
-
     /**
-     * check if plugin with given name already installed locally
+     * Check if plugin with given name already installed locally.
      *
      * @param pluginVersion The version of the installed plugin
      * */
@@ -72,7 +64,7 @@ public class DatabaseManager {
         List<PluginYml> pluginInstalled = localPluginTracker.listInstalled();
         for (PluginYml pluginYml : pluginInstalled) {
             if (pluginYml != null && pluginYml.version() != null &&
-                    pluginYml.version().equals(pluginVersion.meta().version())) {
+                    pluginYml.version().equals(version)) {
                 return true;
             }
         }

@@ -7,9 +7,6 @@ import java.util.List;
 
 /**
  * Interface for listing all plugins
- *
- * @author Kevin (https://github.com/kchprog)
- * @since 2022-11-20
  */
 public interface ListAllBoundary {
 

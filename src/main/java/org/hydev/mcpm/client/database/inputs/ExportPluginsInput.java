@@ -7,8 +7,6 @@ import java.io.OutputStream;
  *
  * @param cache if true, will use local cache of plugins to export. Otherwise, will fetch plugins from the database.
  * @param out OutputStream to write to
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-11-19
  */
 public record ExportPluginsInput(
         boolean cache,

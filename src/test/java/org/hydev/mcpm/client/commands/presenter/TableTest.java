@@ -9,9 +9,6 @@ import static org.hydev.mcpm.utils.ColorLogger.printc;
 
 /**
  * Tests for FormatUtils
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
  */
 class TableTest
 {

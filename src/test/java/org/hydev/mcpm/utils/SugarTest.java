@@ -2,16 +2,14 @@ package org.hydev.mcpm.utils;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * TODO: Write a description for this class!
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
+ * Tests the various methods of the Sugar class.
  */
 class SugarTest
 {

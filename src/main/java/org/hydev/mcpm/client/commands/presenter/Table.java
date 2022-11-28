@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.center;
+import static org.apache.commons.lang3.StringUtils.leftPad;
+import static org.apache.commons.lang3.StringUtils.rightPad;
 import static org.hydev.mcpm.utils.ColorLogger.lengthNoColor;
 
 /**
  * Utility functions for formatting the CLI
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
  */
 public record Table(List<String> headers, List<List<String>> rows, String sep) implements PagedPresenter<Table>
 {

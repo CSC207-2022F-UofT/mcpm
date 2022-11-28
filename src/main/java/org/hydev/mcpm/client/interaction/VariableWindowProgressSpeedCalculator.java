@@ -1,18 +1,10 @@
 package org.hydev.mcpm.client.interaction;
 
-import com.google.errorprone.annotations.Var;
-import org.checkerframework.checker.units.qual.A;
-import org.hydev.mcpm.utils.Pair;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Implementation of VariableWindowProgressRowBoundary using a prefix sum array.
- *
- *
  */
 public class VariableWindowProgressSpeedCalculator implements VariableWindowProgressSpeedBoundary {
     private final ArrayList<Long> psa = new ArrayList<>();
@@ -23,15 +15,12 @@ public class VariableWindowProgressSpeedCalculator implements VariableWindowProg
 
     private final TreeMap<Long, Integer> map = new TreeMap<>(); // maps time in milliseconds to psa indices
     private long total = 0;
-    private long start; // start time
-    private final long defaultWindow;
 
     /**
      * Constructs a VariableWindowProgressSpeedCalculator with the given default window for getSpeed in nanoseconds.
      */
-    public VariableWindowProgressSpeedCalculator(long defaultWindow) {
-        start = System.currentTimeMillis();
-        this.defaultWindow = defaultWindow / 1000000; // converting to milliseconds
+    public VariableWindowProgressSpeedCalculator() {
+        long start = System.currentTimeMillis();
 
         // initialize values to avoid ArrayIndexOutOfBoundsException in incProgress
         psa.add(0L);

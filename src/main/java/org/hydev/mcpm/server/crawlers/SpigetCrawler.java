@@ -13,7 +13,10 @@ import org.hydev.mcpm.utils.TemporaryDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
@@ -26,17 +29,14 @@ import static org.hydev.mcpm.server.crawlers.spiget.CreateDatabase.writeDatabase
 import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
 
 /**
- * TODO: Write a description for this class!
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
+ * This class makes requests to spiget and gets new information on latest plugin updates.
+ * It then organizes the data into a directory structure that can be inspected and served over HTTP.
  */
 public class SpigetCrawler
 {
     private final String spiget = "https://api.spiget.org/v2";
     private final String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
-    private final long mtDelay = 1000;
     private final File dataDir;
     private final StoredHashMap<String, String> blacklist;
 
@@ -138,17 +138,6 @@ public class SpigetCrawler
             e.printStackTrace();
             return new ArrayList<>();
         }
-    }
-
-    /**
-     * Get file download path for the latest version of a plugin
-     *
-     * @param res Plugin
-     * @return File download path
-     */
-    private File getTemporaryDownloadPath(SpigetResource res)
-    {
-        return new File(dataDir, format("crawler/spiget/dl-cache/latest/%s.jar", res.id()));
     }
 
     /**
@@ -301,12 +290,8 @@ public class SpigetCrawler
         System.out.println(res.size());
 
         // TODO: Parallelize this. Currently causes ConcurrentModificationException with StoredHashMap
-        res.stream().filter(it -> !crawler.getLatestPath(it).isFile()).forEach(it ->
-        {
-            crawler.checkUpdate(it);
-
-            //safeSleep(crawler.mtDelay);
-        });
+        //safeSleep(crawler.mtDelay);
+        res.stream().filter(it -> !crawler.getLatestPath(it).isFile()).forEach(crawler::checkUpdate);
 
         // Create links
         crawler.links();

@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
+import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
@@ -28,7 +28,7 @@ public class SearchInteractorTest {
     @BeforeAll
     public static void setup() {
         var smallFetcher = new ConstantFetcher(PluginMockFactory.generateTestPlugins());
-        var listener = new BriefFetcherListener(true);
+        var listener = new QuietFetcherListener();
         database = new SearchInteractor(smallFetcher, listener);
     }
 
@@ -39,6 +39,7 @@ public class SearchInteractorTest {
      * @param delim Delimiter separating names.
      * @return Formatted names of plugins as a string.
      */
+    @SuppressWarnings("SameParameterValue")
     private String formatStr(SearchPackagesResult result, String delim) {
         return result
                 .plugins()

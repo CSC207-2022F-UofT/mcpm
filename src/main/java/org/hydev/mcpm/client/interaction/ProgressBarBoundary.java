@@ -4,10 +4,6 @@ import java.util.List;
 
 /**
  * Terminal progress bar based on Xterm escape codes
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-09-27
  */
 public interface ProgressBarBoundary extends AutoCloseable {
     /**

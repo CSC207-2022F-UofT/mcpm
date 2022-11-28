@@ -12,10 +12,8 @@ import static org.hydev.mcpm.Constants.YML;
 /**
  * POJO model for plugin.yml inside each Minecraft Bukkit/Spigot plugin.
  * <p>
- * For specifications of each field; please visit https://www.spigotmc.org/wiki/plugin-yml/
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-02
+ * For specifications of each field; please visit
+ * <a href="https://www.spigotmc.org/wiki/plugin-yml/">https://www.spigotmc.org/wiki/plugin-yml/</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginYml(

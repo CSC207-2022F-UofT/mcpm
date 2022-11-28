@@ -14,16 +14,11 @@ import java.util.function.Consumer;
 /**
  * Handles parsing command arguments into CommandEntry objects (to be dispatched to Controller).
  * For steps to add a new command, see Command.java.
- *
- * @author Taylor
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
  */
 public class ArgsParser
 {
     private final String help;
     private final ArgumentParser parser;
-    private final Consumer<String> log;
     private final List<CommandParser> subparsers;
 
     /**
@@ -31,8 +26,7 @@ public class ArgsParser
      *
      * @param allParsers A list of all CommandParser objects that this ArgsParser can parse.
      */
-    public ArgsParser(List<CommandParser> allParsers, Consumer<String> log) {
-        this.log = log;
+    public ArgsParser(List<CommandParser> allParsers) {
         this.subparsers = allParsers;
 
         parser = ArgumentParsers.newFor("mcpm").addHelp(false).build();
@@ -54,10 +48,6 @@ public class ArgsParser
             "To view the help message of a command, use /mcpm <command> -h";
         var helpSub = parsers.addParser("help", false);
         helpSub.setDefault("handler", (CommandHandler) (args, log1) -> log1.accept(help));
-    }
-
-    public void parse(String[] arguments) throws ArgumentParserException {
-        parse(arguments, log);
     }
 
     /**
@@ -97,15 +87,6 @@ public class ArgsParser
      *
      * @param e The error object that was caught from #parse.
      */
-    public void fail(ArgumentParserException e) {
-        this.fail(e, log);
-    }
-
-    /**
-     * Writes the error message to stdout (along with help details if needed).
-     *
-     * @param e The error object that was caught from #parse.
-     */
     public void fail(ArgumentParserException e, Consumer<String> log) {
         StringWriter writer = new StringWriter();
         PrintWriter printer = new PrintWriter(writer);
@@ -137,9 +118,9 @@ public class ArgsParser
         var parser = CommandsFactory.baseArgsParser();
 
         try {
-            parser.parse(args);
+            parser.parse(args, System.out::println);
         } catch (ArgumentParserException e) {
-            parser.fail(e);
+            parser.fail(e, System.out::println);
         }
     }
 }

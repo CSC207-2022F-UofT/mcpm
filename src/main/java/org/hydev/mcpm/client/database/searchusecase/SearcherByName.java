@@ -2,7 +2,10 @@ package org.hydev.mcpm.client.database.searchusecase;
 
 import org.hydev.mcpm.client.models.PluginModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Searcher that returns a map based on names.

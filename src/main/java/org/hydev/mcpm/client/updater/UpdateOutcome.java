@@ -32,7 +32,7 @@ public record UpdateOutcome(
         NETWORK_ERROR,
         /**
          * Set when the version of the plugin installed is the same as the one in the database.
-         * Use --no-cache to force a update of the database.
+         * Use --no-cache to force an update of the database.
          */
         UP_TO_DATE,
         /**

@@ -8,9 +8,6 @@ import java.util.function.Consumer;
 
 /**
  * Command parser for the info use case
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public record InfoParser(InfoController controller) implements CommandParser
 {

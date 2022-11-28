@@ -7,7 +7,7 @@ import java.util.Map;
  *
  * @param state The result of the update command.
  *              SUCCESS is required to have vaild values for other fields.
- * @param outcomes A map mapping plugin names to UpdateOutcome objects detailing whether or not they were updated.
+ * @param outcomes A map mapping plugin names to UpdateOutcome objects detailing whether they were updated.
  */
 public record UpdateResult(
     State state,

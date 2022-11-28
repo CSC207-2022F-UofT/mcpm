@@ -8,9 +8,6 @@ import java.util.function.Function;
  * Row of a progress bar. By default, it treats total and completed as Bytes and automatically formats the speed as
  * a download speed. If this class is used outside downloading context, please use unit(string) function to set the
  * unit.
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
  */
 public class ProgressRow implements ProgressRowBoundary {
     private final long total;
@@ -20,9 +17,7 @@ public class ProgressRow implements ProgressRowBoundary {
     private int descLen;
     private String fmt;
     private Function<Double, String> speedFormatter;
-    private ProgressSpeedBoundary speedCalculator;
-
-    private final long startTime;
+    private final ProgressSpeedBoundary speedCalculator;
 
     /**
      * Creates a ProgressRow object with a maximum 100% value of total.
@@ -38,17 +33,6 @@ public class ProgressRow implements ProgressRowBoundary {
         this.fmt = "{desc}{speed} {eta} {prefix}{progbar}{suffix} {%done}";
         this.speedFormatter = UnitConverter.binarySpeedFormatter();
         this.speedCalculator = new ProgressSpeedCalculator((long) 2e9); // 2 seconds
-
-        // Record start time for speed estimation
-        this.startTime = System.nanoTime();
-    }
-
-    /**
-     * @return Elapsed time in seconds
-     */
-    private double elapsed()
-    {
-        return (System.nanoTime() - startTime) / 1e9d;
     }
 
     /**

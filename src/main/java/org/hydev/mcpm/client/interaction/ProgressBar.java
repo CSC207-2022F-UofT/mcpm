@@ -2,9 +2,14 @@ package org.hydev.mcpm.client.interaction;
 
 import org.fusesource.jansi.AnsiConsole;
 import org.hydev.mcpm.utils.ConsoleUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
@@ -13,10 +18,6 @@ import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
 /**
  * Terminal progress bar based on Xterm escape codes
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-09-27
  */
 public class ProgressBar implements ProgressBarBoundary {
     private final ConsoleUtils cu;
@@ -106,7 +107,7 @@ public class ProgressBar implements ProgressBarBoundary {
     private void forceUpdate()
     {
         // Roll back to the first line
-        Collections.sort(activeBars, (a, b) -> Double.compare(b.getCompletion(), a.getCompletion()));
+        activeBars.sort((a, b) -> Double.compare(b.getCompletion(), a.getCompletion()));
         if (istty) cu.curUp(activeBars.size());
         activeBars.forEach(bar -> {
             cu.eraseLine();
@@ -151,6 +152,17 @@ public class ProgressBar implements ProgressBarBoundary {
         return bars;
     }
 
+    @NotNull
+    private static ArrayList<ProgressRowBoundary> createRows(ProgressBar b) {
+        var all = new ArrayList<ProgressRowBoundary>();
+        for (int i = 0; i < 36; i++) {
+            ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
+            b.appendBar(bar);
+            all.add(bar);
+        }
+        return all;
+    }
+
     /**
      * Displays a demo progress bar.
      *
@@ -172,9 +184,10 @@ public class ProgressBar implements ProgressBarBoundary {
                     all.add(row);
                 }
 
-                for (int j = 0; j < all.size(); j++) {
-                    all.get(j).increase(1_000_000);
+                for (ProgressRowBoundary progressRowBoundary : all) {
+                    progressRowBoundary.increase(1_000_000);
                 }
+
                 safeSleep(3);
             }
 
@@ -182,12 +195,7 @@ public class ProgressBar implements ProgressBarBoundary {
         }
         try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
         {
-            var all = new ArrayList<ProgressRowBoundary>();
-            for (int i = 0; i < 36; i++) {
-                ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
-                b.appendBar(bar);
-                all.add(bar);
-            }
+            ArrayList<ProgressRowBoundary> all = createRows(b);
             for (int t = 0; t < 300; t++) {
                 for (int i = 0; i < 36; i++) {
                     double speed = Math.cos(Math.PI / 18 * i);
@@ -199,16 +207,11 @@ public class ProgressBar implements ProgressBarBoundary {
         }
 
         try (var b = new ProgressBar(ProgressBarTheme.FLOWER_THEME)) {
-            var all = new ArrayList<ProgressRowBoundary>();
-            for (int i = 0; i < 36; i++) {
-                ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
-                b.appendBar(bar);
-                all.add(bar);
-            }
+            ArrayList<ProgressRowBoundary> all = createRows(b);
 
             for (int t = 0; t < 400; t++) {
                 for (int i = 0; i < 36; i++) {
-                    double speed = Math.cos(Math.PI / 18 * (i + t * 36 / 150));
+                    double speed = Math.cos(Math.PI / 18 * (i + t * 36.0 / 150.0));
                     speed = Math.abs(speed) * 5;
                     all.get(i).increase((long) Math.ceil(speed * 1_000_000));
                 }

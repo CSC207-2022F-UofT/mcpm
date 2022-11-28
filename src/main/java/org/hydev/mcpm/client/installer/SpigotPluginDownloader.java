@@ -13,13 +13,9 @@ import static org.hydev.mcpm.utils.GeneralUtils.concatUri;
 
 /**
  * Plugin downloader for the MCPM Plugin Repository
- *
- * @author Rena (https://github.com/thudoan1706)
- * @since 2022-11-20
  */
 
 public class SpigotPluginDownloader implements PluginDownloader {
-
     private final Downloader downloader;
     private final Supplier<URI> host;
 
@@ -35,11 +31,11 @@ public class SpigotPluginDownloader implements PluginDownloader {
     }
 
     /**
-     * Download the plugin according to its filepath
+     * Download the plugin according to its filepath.
      *
-     * @param pluginId      The Id of the plugin
-     * @param pluginVersion the plugin Version
-     * @param destination   The filepath where the plugin will be installed to
+     * @param pluginId      The id of the plugin to download.
+     * @param pluginVersion The associated plugin version.
+     * @param destination   The filepath where the plugin will be installed to.
      */
     @Override
     public void download(long pluginId, long pluginVersion, String destination) {
@@ -61,7 +57,8 @@ public class SpigotPluginDownloader implements PluginDownloader {
      * @param pluginVersion Spigot Plugin Version ID
      */
     private String constructUrl(long pluginId, long pluginVersion) {
+        var path = String.format("pkgs/spiget/%s/%s/release.jar", pluginId, pluginVersion);
 
-        return concatUri(host.get(), String.format("pkgs/spiget/%s/%s/release.jar", pluginId, pluginVersion)).toString();
+        return concatUri(host.get(), path).toString();
     }
 }

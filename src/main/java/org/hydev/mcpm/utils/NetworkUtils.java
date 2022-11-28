@@ -8,9 +8,6 @@ import java.util.stream.IntStream;
 
 /**
  * Network utilities
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-01
  */
 public class NetworkUtils
 {

@@ -1,21 +1,13 @@
 package org.hydev.mcpm.client.interaction;
 
-import org.hydev.mcpm.utils.Pair;
 import org.hydev.mcpm.utils.arrays.FixedWindowSum;
 import org.hydev.mcpm.utils.arrays.SlidingWindow;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 /**
  * An implementation of ProgressSpeedCalculator using a queue and sliding window method.
- *
  * The sliding window method maintains a queue of all updates within the window.
  * All updates outside the window (in other words, too old) will be removed from the queue.
  * The sum of the queue is also maintained to avoid a loop to calculate it.
- *
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-11-19
  */
 public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
     private final FixedWindowSum windowSum;
@@ -23,7 +15,6 @@ public class ProgressSpeedCalculator implements ProgressSpeedBoundary {
     private final long start;
 
     private long total = 0; // total to calculate inc in setProgress
-    private long sum = 0; // sliding window sum
 
     /**
      * Construct a ProgressSpeedCalculator with a window size.

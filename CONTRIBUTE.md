@@ -72,7 +72,7 @@ The downloadable Spigot plugins and their meta info are stored on our server, ho
 
 If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#how-to-set-up-a-mirror)
 
-### How to set up a mirror
+### How to setup a mirror
 
 The MCPRS server is hosted with a plain file server that supports both http and rsync. The official server is hosted using Nginx, but any file server with such compatibility would work. You can follow one of the approaches below to set up a mirror.
 
@@ -80,7 +80,7 @@ After setting up a mirror, if you want to add it to our mirror list, you can sub
 
 #### Setup Mirror using Docker Compose
 
-For convenience, we created a docker image so that you can set up a mirror using Docker. It will automatically set up:
+For convenience, we created a docker image so that you can setup a mirror using Docker. It will automatically set up:
 
 1. `mcprs-sync`: Script to automatically sync updates every 24 hours (configurable)
 2. `mcprs-rsyncd`: rsync server

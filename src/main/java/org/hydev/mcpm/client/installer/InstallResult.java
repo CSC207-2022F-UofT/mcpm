@@ -6,10 +6,6 @@ import java.util.Collection;
 
 /**
  * Exception during installation of a plugin
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @author Rena (https://github.com/thudoan1706)
- * @since 2022-11-20
  */
 public record InstallResult(Type type) {
     /**

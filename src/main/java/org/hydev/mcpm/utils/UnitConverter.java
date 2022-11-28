@@ -5,9 +5,6 @@ import java.util.function.Function;
 
 /**
  * Unit converter utility class
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-19
  */
 public class UnitConverter
 {

@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Syntax sugar that java lacks
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
+ * This class provides convenience methods for an easier time manipulating array content.
+ * For example, this includes a subscript method that handles negative array subscripting.
  */
 public class Sugar
 {

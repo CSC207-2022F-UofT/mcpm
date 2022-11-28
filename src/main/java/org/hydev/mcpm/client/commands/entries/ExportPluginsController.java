@@ -7,9 +7,6 @@ import java.util.function.Consumer;
 
 /**
  * Controller for the export plugins use case.
- *
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-11-19
  */
 public class ExportPluginsController {
     private final ExportPluginsBoundary boundary;

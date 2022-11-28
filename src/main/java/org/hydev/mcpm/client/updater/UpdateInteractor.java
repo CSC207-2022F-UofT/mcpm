@@ -3,11 +3,11 @@ package org.hydev.mcpm.client.updater;
 import org.hydev.mcpm.client.database.PluginTracker;
 import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.model.PluginModelId;
 import org.hydev.mcpm.client.database.model.PluginVersionId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
+import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
@@ -21,7 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.MISMATCHED;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.NETWORK_ERROR;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.NOT_INSTALLED;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.UPDATED;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.UP_TO_DATE;
 
 /**
  * Handles update requests (installing, etc.)
@@ -37,7 +41,7 @@ public record UpdateInteractor(
 ) implements UpdateBoundary {
     @Nullable
     private PluginVersionState stateByName(String name) {
-        // Weirdly enough, seems like getVersion expects the full file name in the plugins dir.
+        // Weirdly enough, seems like getVersion expects the full file name in the plugin's dir.
         var version = pluginTracker.getVersion(name + ".jar");
 
         /* In case of something breaking:

@@ -8,7 +8,6 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.hydev.mcpm.client.models.Database;
 import org.hydev.mcpm.utils.HashUtils;
-import org.hydev.mcpm.utils.ZstdUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -18,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.util.function.Supplier;
 
 import static org.hydev.mcpm.Constants.JACKSON;
@@ -48,6 +46,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
      * @param host The host URL MCPM server mirror that will be used to request database files.
      *             Example: "http://mcpm.hydev.com"
      */
+    @SuppressWarnings("JavadocLinkAsPlainText")
     public LocalDatabaseFetcher(Supplier<URI> host) {
         this(host, Path.of(".mcpm/"));
     }
@@ -59,6 +58,7 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
      *             Example: "http://mcpm.hydev.com"
      * @param cacheDirectory The directory that the cached database and hash file will be stored (as child files).
      */
+    @SuppressWarnings("JavadocLinkAsPlainText")
     public LocalDatabaseFetcher(Supplier<URI> host, Path cacheDirectory) {
         this.host = host;
         this.cacheDirectory = cacheDirectory;

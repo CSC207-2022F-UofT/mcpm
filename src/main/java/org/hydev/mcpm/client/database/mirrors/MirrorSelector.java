@@ -15,9 +15,6 @@ import static org.hydev.mcpm.Constants.CFG_PATH;
 
 /**
  * Implementation of mirror select boundary
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-01
  */
 public record MirrorSelector(String mirrorListUrl) implements MirrorSelectBoundary
 {

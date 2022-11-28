@@ -2,8 +2,33 @@ package org.hydev.mcpm.client.arguments;
 
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
-import org.hydev.mcpm.client.arguments.parsers.*;
-import org.hydev.mcpm.client.commands.entries.*;
+import org.hydev.mcpm.client.arguments.parsers.CommandParser;
+import org.hydev.mcpm.client.arguments.parsers.ExportPluginsParser;
+import org.hydev.mcpm.client.arguments.parsers.InfoParser;
+import org.hydev.mcpm.client.arguments.parsers.InstallParser;
+import org.hydev.mcpm.client.arguments.parsers.ListParser;
+import org.hydev.mcpm.client.arguments.parsers.LoadParser;
+import org.hydev.mcpm.client.arguments.parsers.MirrorParser;
+import org.hydev.mcpm.client.arguments.parsers.PageParser;
+import org.hydev.mcpm.client.arguments.parsers.RefreshParser;
+import org.hydev.mcpm.client.arguments.parsers.ReloadParser;
+import org.hydev.mcpm.client.arguments.parsers.SearchParser;
+import org.hydev.mcpm.client.arguments.parsers.UninstallParser;
+import org.hydev.mcpm.client.arguments.parsers.UnloadParser;
+import org.hydev.mcpm.client.arguments.parsers.UpdateParser;
+import org.hydev.mcpm.client.commands.entries.ExportPluginsController;
+import org.hydev.mcpm.client.commands.entries.InfoController;
+import org.hydev.mcpm.client.commands.entries.InstallController;
+import org.hydev.mcpm.client.commands.entries.ListController;
+import org.hydev.mcpm.client.commands.entries.LoadController;
+import org.hydev.mcpm.client.commands.entries.MirrorController;
+import org.hydev.mcpm.client.commands.entries.PageController;
+import org.hydev.mcpm.client.commands.entries.RefreshController;
+import org.hydev.mcpm.client.commands.entries.ReloadController;
+import org.hydev.mcpm.client.commands.entries.SearchPackagesController;
+import org.hydev.mcpm.client.commands.entries.UninstallController;
+import org.hydev.mcpm.client.commands.entries.UnloadController;
+import org.hydev.mcpm.client.commands.entries.UpdateController;
 import org.hydev.mcpm.client.database.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.database.ListAllInteractor;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
@@ -19,10 +44,8 @@ import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
 import org.hydev.mcpm.client.uninstall.Uninstaller;
 import org.hydev.mcpm.client.updater.UpdateInteractor;
-import org.hydev.mcpm.utils.ColorLogger;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -66,7 +89,6 @@ public class CommandsFactory {
         var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(tracker);
 
-        var databaseManager = new DatabaseManager(tracker, searcher);
         var installController = new InstallController(installer);
         var uninstallController = new UninstallController(new Uninstaller(tracker, loader, jarFinder));
         var updateController = new UpdateController(updater);
@@ -124,7 +146,7 @@ public class CommandsFactory {
      * @return An ArgsParser object. Invoke ArgsParser#parse to see more.
      */
     public static ArgsParser baseArgsParser() {
-        return new ArgsParser(baseParsers(false), ColorLogger.toStdOut());
+        return new ArgsParser(baseParsers(false));
     }
 
     /**
@@ -132,7 +154,7 @@ public class CommandsFactory {
      *
      * @return An ArgsParser object. Invoke ArgsParser#parse to see more.
      */
-    public static ArgsParser serverArgsParser(Consumer<String> log) {
-        return new ArgsParser(serverParsers(), log);
+    public static ArgsParser serverArgsParser() {
+        return new ArgsParser(serverParsers());
     }
 }

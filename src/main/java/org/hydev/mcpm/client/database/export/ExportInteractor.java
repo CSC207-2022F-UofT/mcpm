@@ -9,9 +9,6 @@ import java.io.PrintStream;
 
 /**
  * An implementation of ExportPluginsBoundary that fetches from a database.
- *
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-11-19
  */
 public class ExportInteractor implements ExportPluginsBoundary {
 

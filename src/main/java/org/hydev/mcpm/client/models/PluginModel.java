@@ -13,10 +13,6 @@ import java.util.Optional;
  *
  * @param id Raw Plugin ID
  * @param versions Current & historical versions (sorted in time order)
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
- * @since 2022-09-27
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginModel(

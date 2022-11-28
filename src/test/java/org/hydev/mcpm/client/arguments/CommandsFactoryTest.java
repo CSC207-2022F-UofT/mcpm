@@ -1,20 +1,16 @@
 package org.hydev.mcpm.client.arguments;
 
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the CommandFactory
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-21
  */
 class CommandsFactoryTest
 {
     @Test
-    void test() throws ArgumentParserException
+    void test()
     {
         var ba = CommandsFactory.baseArgsParser();
 

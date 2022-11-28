@@ -2,9 +2,6 @@ package org.hydev.mcpm.client.interaction;
 
 /**
  * Defines an interface for a class that can calculate the speed of a ProgressRowBoundary using the last x seconds.
- *
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-19
  */
 public interface ProgressSpeedBoundary {
     /**

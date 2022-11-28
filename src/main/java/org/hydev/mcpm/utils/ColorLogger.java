@@ -9,10 +9,8 @@ import java.util.function.Consumer;
 import static org.hydev.mcpm.utils.Sugar.uncheckedMapOf;
 
 /**
- * Logging with minecraft color codes (see https://minecraft.fandom.com/wiki/Formatting_codes)
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
+ * Logging with minecraft color codes
+ * (see <a href="https://minecraft.fandom.com/wiki/Formatting_codes">formatting codes</a>)
  */
 public class ColorLogger
 {
@@ -101,7 +99,7 @@ public class ColorLogger
     /**
      * Create a logger that prints colored messages to a standard print stream
      *
-     * @param stream Print stream (can be System.out or System.err)
+     * @param stream Print stream (can be stdout or stderr)
      * @return Logger function
      */
     public static Consumer<String> toPrint(PrintStream stream)

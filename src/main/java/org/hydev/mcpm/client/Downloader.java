@@ -10,28 +10,18 @@ import org.hydev.mcpm.client.interaction.ProgressRow;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static java.lang.String.format;
+import java.util.concurrent.TimeUnit;
 
 /**
  * File downloader
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-09-27
  */
 public class Downloader
 {
-    /** Whether to show progress bar during download */
-    private boolean showProgress = false;
-
     /** Number of simultaneous downloads */
     private int threads = 5;
 
@@ -94,6 +84,7 @@ public class Downloader
         try (ExecutorService executor = Executors.newFixedThreadPool(threads))
         {
             var files = urls.keySet().stream().toList();
+
             if (files.size() > 0)
             {
                 for (String url : files)
@@ -107,22 +98,12 @@ public class Downloader
                 executor.shutdown();
                 // All files submitted for downloading
 
-                while (!executor.isTerminated()) {}
+                //noinspection ResultOfMethodCallIgnored
+                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+
                 // All files are completely downloaded
             }
-        }
-    }
-
-    /**
-     * Setter for showProgress
-     *
-     * @param showProgress Whether to show progress bar during download
-     * @return this (for fluent access)
-     */
-    public Downloader showProgress(boolean showProgress)
-    {
-        this.showProgress = showProgress;
-        return this;
+        } catch (InterruptedException e) { /* do nothing */ }
     }
 
     /**
@@ -142,7 +123,8 @@ public class Downloader
      *
      * @param args Not used
      */
-    public static void main(String[] args) throws IOException
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void main(String[] args)
     {
         // Remember to chang link to test
         String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
@@ -157,6 +139,7 @@ public class Downloader
         File out4 = new File("./MIT9_00SCF11_text");
 
         final var downloader = new Downloader();
+
         Map<String, File> urls = new HashMap<>();
         urls.put(link, out);
         urls.put(link1, out1);

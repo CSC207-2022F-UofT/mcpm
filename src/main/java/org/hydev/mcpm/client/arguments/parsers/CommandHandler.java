@@ -1,15 +1,12 @@
 package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
-import org.hydev.mcpm.client.installer.InstallResult;
 
 import java.util.function.Consumer;
 
 /**
- * Command handler
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
+ * Provides an implementation for a Command.
+ * Typically, an implementation will involve grabbing view details from the Namespace and calling a controller.
  */
 public interface CommandHandler
 {

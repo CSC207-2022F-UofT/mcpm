@@ -1,11 +1,7 @@
 package org.hydev.mcpm.client.interaction;
 
 /**
- * Row of a progress bar
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-10-30
+ * Row of a progress bar.
  */
 public interface ProgressRowBoundary {
     /**
@@ -69,7 +65,7 @@ public interface ProgressRowBoundary {
      * This is specified using indicators like {speed}, {desc}.
      * For a full list see class implementation.
      *
-     * @param fmt The foramt string.
+     * @param fmt The format string.
      * @return This object for chaining.
      */
     ProgressRowBoundary fmt(String fmt);
