@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Test suite for the SearchInteractor class.
  *
@@ -52,10 +54,10 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_NAME, "multiverse-core", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assert text.equals("Multiverse-Core");
+        assertEquals(text, "Multiverse-Core");
     }
 
     @Test
@@ -63,10 +65,10 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_NAME, "pp", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assert text.equals("");
+        assertEquals(text, "");
     }
 
     @Test
@@ -74,10 +76,10 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "players and", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assert text.equals("Holographic Displays, WorldGuard");
+        assertEquals(text, "Holographic Displays, WorldGuard");
     }
 
     @Test
@@ -85,10 +87,10 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_KEYWORD, "pp", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assert text.equals("");
+        assertEquals(text, "");
     }
 
     @Test
@@ -96,10 +98,10 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "/ungod", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assert text.equals("WorldGuard, Holographic Displays");
+        assertEquals(text, "WorldGuard, Holographic Displays");
     }
 
     @Test
@@ -107,10 +109,10 @@ public class SearchInteractorTest {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "pp", true));
 
-        assert result.state() == SearchPackagesResult.State.SUCCESS;
+        assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assert text.equals("");
+        assertEquals(text, "");
     }
 
     @Test
@@ -122,9 +124,9 @@ public class SearchInteractorTest {
         var result3 = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "", true));
 
-        assert result1.state() == SearchPackagesResult.State.INVALID_INPUT;
-        assert result2.state() == SearchPackagesResult.State.INVALID_INPUT;
-        assert result3.state() == SearchPackagesResult.State.INVALID_INPUT;
+        assertEquals(result1.state(), SearchPackagesResult.State.INVALID_INPUT);
+        assertEquals(result2.state(), SearchPackagesResult.State.INVALID_INPUT);
+        assertEquals(result3.state(), SearchPackagesResult.State.INVALID_INPUT);
         assert result1.plugins().isEmpty();
         assert result2.plugins().isEmpty();
         assert result3.plugins().isEmpty();

@@ -29,9 +29,9 @@ public class DatabaseInteractorUpdateTest {
 
         smallInteractor = PluginMockFactory.interactor(List.of(
             PluginMockFactory.model(1),
-            PluginMockFactory.model(2, "name", List.of("ver.1", "ver.2")),
-            PluginMockFactory.model(3, "test", List.of("update", "update update")),
-            PluginMockFactory.model(4, "test", List.of("1.0", "2.0", "3.0"))
+            PluginMockFactory.model(2, "name", null, List.of("ver.1", "ver.2"), null),
+            PluginMockFactory.model(3, "test", null, List.of("update", "update update"), null),
+            PluginMockFactory.model(4, "test", null, List.of("1.0", "2.0", "3.0"), null)
         ));
     }
 
