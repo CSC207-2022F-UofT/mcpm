@@ -19,9 +19,13 @@ import static org.hydev.mcpm.Constants.CFG_PATH;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-11-01
  */
-public class MirrorSelector implements MirrorSelectBoundary
+public record MirrorSelector(String mirrorListUrl) implements MirrorSelectBoundary
 {
-    public static final String MIRROR_LIST_URL = "https://mcprs.hydev.org/mirrorlist.yml";
+    public MirrorSelector()
+    {
+        this("https://mcprs.hydev.org/mirrorlist.yml");
+    }
+
     private static final ObjectMapper YML = new ObjectMapper(new YAMLFactory());
     private static final File LOCAL_PATH = new File(CFG_PATH, "mirrorlist.yml");
     private static final File LOCAL_SEL = new File(CFG_PATH, "selected.yml");
@@ -41,7 +45,7 @@ public class MirrorSelector implements MirrorSelectBoundary
     public void updateMirrors() throws IOException
     {
         // Send request to fetch mirror list
-        var yml = Request.get(MIRROR_LIST_URL).execute().returnContent().asString();
+        var yml = Request.get(mirrorListUrl()).execute().returnContent().asString();
 
         // Try parsing the YML
         YML.readValue(yml, new TypeReference<List<Mirror>>(){});

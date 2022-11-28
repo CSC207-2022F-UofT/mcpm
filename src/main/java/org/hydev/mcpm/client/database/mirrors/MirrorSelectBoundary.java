@@ -4,8 +4,10 @@ import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static java.util.Comparator.comparingInt;
 import static org.hydev.mcpm.utils.NetworkUtils.ping;
@@ -63,4 +65,26 @@ public interface MirrorSelectBoundary
      * @param mirror A selected mirror
      */
     void setSelectedMirror(Mirror mirror) throws IOException;
+
+    /**
+     * Get the selected mirror as a URI supplier
+     *
+     * @return URI supplier function
+     */
+    default Supplier<URI> selectedMirrorSupplier()
+    {
+        return () ->
+        {
+            try
+            {
+                return getSelectedMirror().uri();
+            }
+            catch (IOException e)
+            {
+                // Fallback
+                e.printStackTrace();
+                return URI.create("https://mcpm.hydev.org/");
+            }
+        };
+    }
 }

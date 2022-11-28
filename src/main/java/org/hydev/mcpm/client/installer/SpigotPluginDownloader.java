@@ -3,6 +3,10 @@ package org.hydev.mcpm.client.installer;
 import org.hydev.mcpm.client.Downloader;
 
 import java.io.File;
+import java.net.URI;
+import java.util.function.Supplier;
+
+import static org.hydev.mcpm.utils.GeneralUtils.concatUri;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,26 +21,17 @@ import java.nio.file.Paths;
 public class SpigotPluginDownloader implements PluginDownloader {
 
     private final Downloader downloader;
-    private final String baseUrl;
-
-    /**
-     * Initialize the Spigot Plugin Downloader*
-     *
-     * @param downloader The file downloader
-     * */
-    public SpigotPluginDownloader(Downloader downloader) {
-        this(downloader, "https://mcpm.hydev.org");
-    }
+    private final Supplier<URI> host;
 
     /**
      * Initialize the Spigot Plugin Downloader
      *
      * @param downloader The file downloader
-     * @param baseUrl base URL for web brower
+     * @param host Base URL provider
      * */
-    public SpigotPluginDownloader(Downloader downloader, String baseUrl) {
+    public SpigotPluginDownloader(Downloader downloader, Supplier<URI> host) {
         this.downloader = downloader;
-        this.baseUrl = baseUrl;
+        this.host = host;
     }
 
     /**
@@ -64,8 +59,9 @@ public class SpigotPluginDownloader implements PluginDownloader {
      *
      * @param pluginId Spigot Plugin ID
      * @param pluginVersion Spigot Plugin Version ID
-     * */
+     */
     private String constructUrl(long pluginId, long pluginVersion) {
-        return String.format("%s/pkgs/spiget/%s/%s/release.jar", baseUrl, pluginId, pluginVersion);
+
+        return concatUri(host.get(), String.format("pkgs/spiget/%s/%s/release.jar", pluginId, pluginVersion)).toString();
     }
 }

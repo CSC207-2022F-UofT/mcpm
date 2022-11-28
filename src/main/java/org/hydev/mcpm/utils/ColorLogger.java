@@ -3,7 +3,6 @@ package org.hydev.mcpm.utils;
 import org.bukkit.command.CommandSender;
 
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -70,7 +69,7 @@ public class ColorLogger
      */
     public static Consumer<String> toMinecraft(CommandSender sender)
     {
-        return s -> sender.sendMessage(s.replace("&", "§"));
+        return s -> sender.sendMessage(s == null ? "null" : s.replace("&", "§"));
     }
 
     /**
@@ -81,8 +80,7 @@ public class ColorLogger
      */
     private static String encodeAnsiString(String in)
     {
-        // Add &r (color reset) after each line
-        //in = String.join("\n", Arrays.stream(in.split("\n")).map(line -> line + "&r").toList());
+        if (in == null) return "null";
 
         // Add &r to the end
         in += "&r";
@@ -129,6 +127,7 @@ public class ColorLogger
      */
     public static int lengthNoColor(String in)
     {
+        if (in == null) return 0;
         for (var key : ansiReplacements.keySet()) {
             in = in.replace(key, "");
         }

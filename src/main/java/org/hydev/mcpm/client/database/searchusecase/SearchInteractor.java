@@ -17,7 +17,6 @@ public class SearchInteractor implements SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
 
-
     /**
      * Creates a new database with the provided database fetcher.
      * Consider passing LocalDatabaseFetcher. Defaults to the ProgressBarFetcherListener.

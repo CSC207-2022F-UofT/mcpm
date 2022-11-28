@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.hydev.mcpm.client.database.mirrors.MirrorSelector.MIRROR_LIST_URL;
 import static org.hydev.mcpm.utils.NetworkUtils.ping;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -18,8 +17,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  */
 class MirrorSelectorTest
 {
-    static boolean hasInternet = ping(MIRROR_LIST_URL) != -1;
     static MirrorSelector mi = new MirrorSelector();
+    static boolean hasInternet = ping(mi.mirrorListUrl()) != -1;
 
     @Test
     void listAvailableMirrors() throws IOException
