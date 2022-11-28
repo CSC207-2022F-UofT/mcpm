@@ -1,5 +1,6 @@
 package org.hydev.mcpm.utils;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 class ConsoleUtilsTest
 {
     @Test
+    @Tag("IntegrationTest")
     void move()
     {
         // NOTE: You must be on a Xterm-compatible TTY for this test to work, which is why it's

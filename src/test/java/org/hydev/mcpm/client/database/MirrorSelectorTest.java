@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ class MirrorSelectorTest
     private static final boolean hasInternet = ping(mi.mirrorListUrl()) != -1;
 
     @Test
+    @Tag("IntegrationTest")
     void listAvailableMirrors() throws IOException
     {
         assumeTrue(hasInternet);
@@ -27,6 +29,7 @@ class MirrorSelectorTest
     }
 
     @Test
+    @Tag("IntegrationTest")
     void updateMirrors() throws IOException
     {
         assumeTrue(hasInternet);
@@ -34,6 +37,7 @@ class MirrorSelectorTest
     }
 
     @Test
+    @Tag("IntegrationTest")
     void pingMirrors() throws IOException
     {
         assumeTrue(hasInternet);
