@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
+import org.hydev.mcpm.client.local.MirrorSelector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

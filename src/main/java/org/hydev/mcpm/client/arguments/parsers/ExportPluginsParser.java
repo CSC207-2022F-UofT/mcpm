@@ -2,8 +2,8 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.commands.entries.ExportPluginsController;
-import org.hydev.mcpm.client.database.inputs.ExportPluginsInput;
+import org.hydev.mcpm.client.commands.controllers.ExportPluginsController;
+import org.hydev.mcpm.client.export.ExportPluginsInput;
 
 import java.io.OutputStream;
 import java.util.function.Consumer;

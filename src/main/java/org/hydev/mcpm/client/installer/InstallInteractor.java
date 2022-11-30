@@ -2,11 +2,11 @@ package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
-import org.hydev.mcpm.client.database.LocalPluginTracker;
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
+import org.hydev.mcpm.client.local.LocalPluginTracker;
+import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.search.SearchPackagesType;
+import org.hydev.mcpm.client.search.SearchPackagesResult;
+import org.hydev.mcpm.client.search.SearchInteractor;
 import org.hydev.mcpm.client.injector.LoadBoundary;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.installer.InstallResult.Type;

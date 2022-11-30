@@ -82,9 +82,12 @@ public class ZstdUtils
         try
         {
             // !nativeSupport()
-            if (zstd == null) {
+            if (!nativeSupport()) {
                 return compressPure(content);
             }
+
+            // nativeSupport checks this for us, we want to silence the warning
+            assert zstd != null;
 
             //noinspection RedundantCast
             return (byte[]) zstd.compress.invoke(null, (Object) content, level);
@@ -130,9 +133,12 @@ public class ZstdUtils
     {
         try
         {
-            if (zstd == null) {
+            if (!nativeSupport()) {
                 return decompressPure(zst);
             }
+
+            // nativeSupport checks this for us, we want to silence the warning
+            assert zstd != null;
 
             //noinspection RedundantCast
             return (byte[]) zstd.decompress.invoke(null, zst,
