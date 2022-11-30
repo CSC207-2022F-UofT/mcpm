@@ -95,6 +95,7 @@ public class SearchInteractorTest {
     }
 
     @Test
+    @SuppressWarnings("SpellCheckingInspection")
     void testSearchByCommandSuccessMatch() {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "/ungod", true));

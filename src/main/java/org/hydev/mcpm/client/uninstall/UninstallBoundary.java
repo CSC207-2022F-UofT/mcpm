@@ -1,7 +1,5 @@
 package org.hydev.mcpm.client.uninstall;
 
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
-
 /**
  * Uninstalls a plugin
  */

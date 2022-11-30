@@ -81,7 +81,12 @@ public class ZstdUtils
     {
         try
         {
-            if (!nativeSupport()) return compressPure(content);
+            // !nativeSupport()
+            if (zstd == null) {
+                return compressPure(content);
+            }
+
+            //noinspection RedundantCast
             return (byte[]) zstd.compress.invoke(null, (Object) content, level);
         }
         catch (IllegalAccessException e)
@@ -125,7 +130,11 @@ public class ZstdUtils
     {
         try
         {
-            if (!nativeSupport()) return decompressPure(zst);
+            if (zstd == null) {
+                return decompressPure(zst);
+            }
+
+            //noinspection RedundantCast
             return (byte[]) zstd.decompress.invoke(null, zst,
                 ((Long) zstd.decompressedSize.invoke(null, (Object) zst)).intValue());
         }

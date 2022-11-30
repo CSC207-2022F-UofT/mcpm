@@ -12,8 +12,6 @@ import java.util.Optional;
  * Implementation that finds locally installed jars by name
  *
  * @param dir Plugins directory (default to "./plugins")
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-27
  */
 public record LocalJarFinder(File dir) implements LocalJarBoundary
 {

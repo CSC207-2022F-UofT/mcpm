@@ -9,9 +9,6 @@ import java.util.function.Consumer;
 
 /**
  * Refresh the database cache and mirror list
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-24
  */
 public record RefreshParser(RefreshController controller) implements CommandParser
 {
