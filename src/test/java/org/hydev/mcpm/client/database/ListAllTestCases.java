@@ -18,9 +18,7 @@ import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
 import java.nio.file.Paths;

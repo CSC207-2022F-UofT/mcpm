@@ -27,7 +27,7 @@ public class PluginTrackerModel {
     }
 
     /**
-     * Constructor for PluginTrackerModel
+     * Constructor for PluginTrackerModel.
      * Instantiates a PluginTrackerModel object from a string.
      */
     public PluginTrackerModel(String stringRepresentation) {

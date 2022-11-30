@@ -14,6 +14,7 @@ import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.models.PluginYml.InvalidPluginMetaStructure;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.client.models.PluginTrackerModel;
+import org.hydev.mcpm.client.database.SuperPluginTracker;
 
 import java.io.*;
 import java.nio.file.Paths;
