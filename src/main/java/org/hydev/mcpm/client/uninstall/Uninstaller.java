@@ -12,8 +12,6 @@ import static org.hydev.mcpm.client.uninstall.UninstallResult.State.*;
 
 /**
  * Uninstall use case interactor
- *
- * @author Anushka (https://github.com/aanushkasharma)
  */
 public class Uninstaller implements UninstallBoundary {
     private final PluginTracker tracker;

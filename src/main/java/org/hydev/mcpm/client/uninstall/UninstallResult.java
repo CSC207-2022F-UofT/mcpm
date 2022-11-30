@@ -8,8 +8,6 @@ import java.util.Map;
  *
  * @param state State of uninstall
  * @param dependencies States for uninstall dependencies
- * @author Anushka (https://github.com/aanushkasharma)
- * @since 2022-11-27
  */
 public record UninstallResult(State state, Map<String, State> dependencies) {
     public UninstallResult(State state) {

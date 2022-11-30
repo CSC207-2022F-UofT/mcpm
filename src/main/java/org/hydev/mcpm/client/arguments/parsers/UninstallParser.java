@@ -11,9 +11,6 @@ import java.util.function.Consumer;
 
 /**
  * Command parser for the uninstallation use case
- *
- * @author Anushka (https://github.com/aanushkasharma)
- * @since 2022-11-27
  */
 public record UninstallParser(UninstallController controller) implements CommandParser {
     @Override

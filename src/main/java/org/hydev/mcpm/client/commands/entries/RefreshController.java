@@ -8,9 +8,6 @@ import java.io.IOException;
 
 /**
  * Controller for the refresh command
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-24
  */
 public record RefreshController(
     DatabaseFetcher fetcher,
