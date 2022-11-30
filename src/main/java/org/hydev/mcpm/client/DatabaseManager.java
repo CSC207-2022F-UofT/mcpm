@@ -1,9 +1,9 @@
 package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.database.PluginTracker;
-import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.search.SearchPackagesBoundary;
+import org.hydev.mcpm.client.search.SearchPackagesInput;
+import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Database Manager uses Database API to provide searchResult and check the installed plugin locally
- * (Goal: avoid the dependency and cluster of parameters to connect to database)
+ * (Goal: avoid the dependency and cluster of parameters to connect to database).
  */
 public class DatabaseManager {
     private final PluginTracker localPluginTracker;

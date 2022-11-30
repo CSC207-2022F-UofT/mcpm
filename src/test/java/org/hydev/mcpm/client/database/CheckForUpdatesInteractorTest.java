@@ -1,13 +1,15 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
+import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
+import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.model.PluginModelId;
-import org.hydev.mcpm.client.database.model.PluginVersionId;
-import org.hydev.mcpm.client.database.model.PluginVersionState;
-import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
+import org.hydev.mcpm.client.updater.CheckForUpdatesInput;
+import org.hydev.mcpm.client.matcher.PluginModelId;
+import org.hydev.mcpm.client.matcher.PluginVersionId;
+import org.hydev.mcpm.client.matcher.PluginVersionState;
+import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
+import org.hydev.mcpm.client.updater.CheckForUpdatesResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

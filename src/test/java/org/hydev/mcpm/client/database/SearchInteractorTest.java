@@ -2,10 +2,10 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
+import org.hydev.mcpm.client.search.SearchPackagesInput;
+import org.hydev.mcpm.client.search.SearchPackagesType;
+import org.hydev.mcpm.client.search.SearchPackagesResult;
+import org.hydev.mcpm.client.search.SearchInteractor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

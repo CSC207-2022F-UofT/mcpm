@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.commands.entries.SearchPackagesController;
+import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 
 import java.util.List;
 import java.util.function.Consumer;

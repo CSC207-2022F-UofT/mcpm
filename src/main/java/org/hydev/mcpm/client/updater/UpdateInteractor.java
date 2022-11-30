@@ -1,13 +1,10 @@
 package org.hydev.mcpm.client.updater;
 
-import org.hydev.mcpm.client.database.PluginTracker;
-import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.model.PluginModelId;
-import org.hydev.mcpm.client.database.model.PluginVersionId;
-import org.hydev.mcpm.client.database.model.PluginVersionState;
-import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.search.SearchPackagesType;
+import org.hydev.mcpm.client.matcher.PluginModelId;
+import org.hydev.mcpm.client.matcher.PluginVersionId;
+import org.hydev.mcpm.client.matcher.PluginVersionState;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;

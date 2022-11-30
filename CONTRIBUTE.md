@@ -42,7 +42,7 @@ Then, you can run your class with:
 
 For example, you can test the progress bar with:
 
-`java19 -cp "$cp" org.hydev.mcpm.client.interaction.ProgressBar`
+`java19 -cp "$cp" org.hydev.mcpm.client.display.progress.ProgressBar`
 
 </details>
 

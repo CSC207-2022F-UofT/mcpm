@@ -1,17 +1,14 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 
 import java.io.File;
 import java.util.List;
 
 /**
  * Plugin tracker interface
- *
- * @author Kevin (https://github.com/kchprog)
- * @since 2022-09-27
  */
 public interface SuperPluginTracker {
     void addEntry(String name, boolean status, String versionId, String pluginId);

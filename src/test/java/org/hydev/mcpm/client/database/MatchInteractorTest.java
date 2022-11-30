@@ -1,11 +1,12 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.boundary.MatchPluginsBoundary;
+import org.hydev.mcpm.client.matcher.MatchPluginsBoundary;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
-import org.hydev.mcpm.client.database.inputs.MatchPluginsInput;
-import org.hydev.mcpm.client.database.model.PluginModelId;
-import org.hydev.mcpm.client.database.results.MatchPluginsResult;
+import org.hydev.mcpm.client.matcher.MatchPluginsInput;
+import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
+import org.hydev.mcpm.client.matcher.PluginModelId;
+import org.hydev.mcpm.client.matcher.MatchPluginsResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

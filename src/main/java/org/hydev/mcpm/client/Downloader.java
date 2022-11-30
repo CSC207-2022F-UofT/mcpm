@@ -3,9 +3,9 @@ package org.hydev.mcpm.client;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpEntity;
-import org.hydev.mcpm.client.interaction.ProgressBar;
-import org.hydev.mcpm.client.interaction.ProgressBarTheme;
-import org.hydev.mcpm.client.interaction.ProgressRow;
+import org.hydev.mcpm.client.display.progress.ProgressBar;
+import org.hydev.mcpm.client.display.progress.ProgressBarTheme;
+import org.hydev.mcpm.client.display.progress.ProgressRow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

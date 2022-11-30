@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.installer.input;
 
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
+import org.hydev.mcpm.client.search.SearchPackagesType;
 
 /**
  * Install Plugin Input

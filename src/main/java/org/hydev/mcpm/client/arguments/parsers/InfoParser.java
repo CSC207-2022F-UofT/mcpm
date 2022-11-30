@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.commands.entries.InfoController;
+import org.hydev.mcpm.client.commands.controllers.InfoController;
 
 import java.util.function.Consumer;
 
