@@ -1,4 +1,4 @@
-package org.hydev.mcpm.server.crawlers.spiget;
+package org.hydev.mcpm.server.spiget;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

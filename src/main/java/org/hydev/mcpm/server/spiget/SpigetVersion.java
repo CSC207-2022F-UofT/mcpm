@@ -1,4 +1,4 @@
-package org.hydev.mcpm.server.crawlers.spiget;
+package org.hydev.mcpm.server.spiget;
 
 /**
  * Spiget Version POJO for endpoint api.spiget.org/v2/resources/{resource_id}/versions

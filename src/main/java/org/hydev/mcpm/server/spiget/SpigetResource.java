@@ -1,4 +1,4 @@
-package org.hydev.mcpm.server.crawlers.spiget;
+package org.hydev.mcpm.server.spiget;
 
 import java.util.List;
 import java.util.Map;
