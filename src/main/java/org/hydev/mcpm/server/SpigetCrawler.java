@@ -1,11 +1,11 @@
-package org.hydev.mcpm.server.crawlers;
+package org.hydev.mcpm.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.fluent.Request;
 import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.server.crawlers.spiget.SpigetResource;
+import org.hydev.mcpm.server.spiget.SpigetResource;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.utils.StoredHashMap;
 import org.hydev.mcpm.utils.TemporaryDir;
@@ -24,8 +24,8 @@ import java.util.stream.StreamSupport;
 import static java.lang.String.format;
 import static java.nio.file.Files.createSymbolicLink;
 import static org.hydev.mcpm.Constants.JACKSON;
-import static org.hydev.mcpm.server.crawlers.spiget.CreateDatabase.packageStore;
-import static org.hydev.mcpm.server.crawlers.spiget.CreateDatabase.writeDatabase;
+import static org.hydev.mcpm.server.spiget.CreateDatabase.packageStore;
+import static org.hydev.mcpm.server.spiget.CreateDatabase.writeDatabase;
 import static org.hydev.mcpm.utils.GeneralUtils.makeUrl;
 
 /**
