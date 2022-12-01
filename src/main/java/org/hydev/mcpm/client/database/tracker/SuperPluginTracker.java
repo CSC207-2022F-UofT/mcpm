@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.database.tracker;
 
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Plugin tracker interface
+ * Extended plugin tracker interface (with methods for specific versionId/pluginId).
  */
 public interface SuperPluginTracker {
     void addEntry(String name, boolean status, String versionId, String pluginId);

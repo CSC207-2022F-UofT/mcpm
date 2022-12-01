@@ -60,9 +60,9 @@ The downloadable Spigot plugins and their meta info are stored on our server, ho
 
 **Europe** 🇪🇺
 
-| Mirror URL (HTTPS)   | Hosted By | Provider   | Location        | Speed    | Update |
-|----------------------|-----------|------------|-----------------|----------|-------|
-| mcprs-lux.hydev.org  | HyDEV     | GCore Labs | 🇱🇺 Luxembourg | 200 Mbps | 1 day |
+| Mirror URL (HTTPS)  | Hosted By | Provider   | Location        | Speed    | Update |
+|---------------------|-----------|------------|-----------------|----------|--------|
+| mcprs-lux.hydev.org | HyDEV     | GCore Labs | 🇱🇺 Luxembourg | 200 Mbps | 1 day  |
 
 **Asia**
 
@@ -70,7 +70,7 @@ The downloadable Spigot plugins and their meta info are stored on our server, ho
 |-----------------------|-----------|----------|------------|----------|--------|
 | mcprs-tokyo.hydev.org | HyDEV     | Vultr    | 🇯🇵 Tokyo | 200 Mbps | 1 day  |
 
-If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#how-to-set-up-a-mirror)
+If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to setup a mirror](#How to setup a mirror)
 
 ### How to setup a mirror
 

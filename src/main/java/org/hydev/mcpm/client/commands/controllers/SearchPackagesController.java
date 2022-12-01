@@ -1,12 +1,14 @@
 package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.commands.presenter.Table;
+import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesInput;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -34,7 +36,11 @@ public record SearchPackagesController(SearchPackagesBoundary searcher, @Nullabl
 
         // Print the plugins found
         var list = result.plugins().stream()
-                .map(it -> it.getLatestPluginVersion().get().meta()).toList();
+            .map(PluginModel::getLatestPluginVersion)
+            .filter(Optional::isPresent)
+            .map(it -> it.get().meta())
+            .toList();
+
         var table = new Table(List.of(":Name", "Author", "Version:"),
                 list.stream().map(p -> List.of("&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList());
 

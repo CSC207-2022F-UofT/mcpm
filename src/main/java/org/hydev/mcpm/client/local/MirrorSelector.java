@@ -50,6 +50,7 @@ public record MirrorSelector(String mirrorListUrl) implements MirrorSelectBounda
         YML.readValue(yml, new TypeReference<List<Mirror>>(){});
 
         // Save yml to local folder
+        //noinspection ResultOfMethodCallIgnored
         LOCAL_PATH.getParentFile().mkdirs();
         Files.writeString(LOCAL_PATH.toPath(), yml);
     }
@@ -64,6 +65,7 @@ public record MirrorSelector(String mirrorListUrl) implements MirrorSelectBounda
     @Override
     public void setSelectedMirror(Mirror mirror) throws IOException
     {
+        //noinspection ResultOfMethodCallIgnored
         LOCAL_SEL.getParentFile().mkdirs();
         Files.writeString(LOCAL_SEL.toPath(), YML.writeValueAsString(mirror));
     }
