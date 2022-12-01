@@ -249,12 +249,11 @@ public class LocalPluginTracker implements PluginTracker {
      */
     public List<String> listOrphanPlugins(boolean considerSoftDependencies) {
 
-        List<String> orphanPlugins = new ArrayList<>();
-        List<String> manuallyinstalledPlugins = listManuallyInstalled();
+        List<String> manuallyInstalledPlugins = listManuallyInstalled();
         List<String> requiredDependencies = new ArrayList<>();
 
         // Get all the dependencies of the manually installed plugins
-        for (String name : manuallyinstalledPlugins) {
+        for (String name : manuallyInstalledPlugins) {
             try {
                 // Find the pluginYml file of the plugin with name from the plugin
                 // directory
@@ -295,11 +294,10 @@ public class LocalPluginTracker implements PluginTracker {
 
         // Get the difference between the set of manually installed plugins,
         // the set of required dependencies, and the set of all installed plugins
-        orphanPlugins = installedPlugins;
-        orphanPlugins.removeAll(requiredDependencies);
-        orphanPlugins.removeAll(manuallyinstalledPlugins);
+        installedPlugins.removeAll(requiredDependencies);
+        installedPlugins.removeAll(manuallyInstalledPlugins);
 
-        return orphanPlugins;
+        return installedPlugins;
     }
 
     /**
@@ -321,7 +319,13 @@ public class LocalPluginTracker implements PluginTracker {
                 for (File child : directoryListing) {
                     if (child.getName().equals(name)) {
                         try {
-                            return readMeta(child).version();
+                            var meta = readMeta(child);
+
+                            if (meta != null) {
+                                return meta.version();
+                            }
+
+                            return null;
                         } catch (Exception e) {
                             System.out.println("Error reading plugin.yml version from " + child);
                         }
@@ -402,6 +406,11 @@ public class LocalPluginTracker implements PluginTracker {
         try {
             File pluginYmlPath = getPluginFile(name);
             PluginYml currPlugin = readMeta(pluginYmlPath);
+
+            if (currPlugin == null) {
+                return false;
+            }
+
             String localVersion = currPlugin.version();
 
             SearchPackagesInput searchPackagesInput = new SearchPackagesInput(SearchPackagesType.BY_NAME, name,
@@ -438,13 +447,19 @@ public class LocalPluginTracker implements PluginTracker {
      *
      * @param local  the local plugin File
      * @param remote a PluginModel object representing the plugin on the server
-     * @return List of plugin names
+     * @return True if this plugin is up-to-date.
      */
     public Boolean compareVersionNew(File local, PluginModel remote) {
         try {
             PluginYml localPlugin = readMeta(local);
+
+            if (localPlugin == null) {
+                return false;
+            }
+
             String localVersion = localPlugin.version();
             String remoteVersion = remote.versions().get(0).meta().version();
+
             return localVersion.equals(remoteVersion);
         } catch (Exception e) {
             System.out.println("Error comparing versions");

@@ -154,6 +154,7 @@ public class InstallInteractor implements InstallBoundary {
      * @param args Arguments are ignored.
      */
     public static void main(String[] args) {
+        //noinspection ResultOfMethodCallIgnored
         new File(FILEPATH).mkdirs();
         Consumer<String> log = new Consumer<>() {
             @Override

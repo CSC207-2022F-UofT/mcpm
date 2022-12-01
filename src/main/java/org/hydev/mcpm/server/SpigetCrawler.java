@@ -87,6 +87,7 @@ public class SpigetCrawler
      * @param refresh Ignore caches
      * @return List of all resources, or an empty list on error
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<SpigetResource> crawlAllResources(boolean refresh)
     {
         var time = System.currentTimeMillis();
@@ -125,7 +126,10 @@ public class SpigetCrawler
             // There exists previously crawled resources, backup before saving.
             if (outPath.isFile())
             {
-                if (bakPath.isFile()) bakPath.delete();
+                if (bakPath.isFile()) {
+                    bakPath.delete();
+                }
+
                 bakPath.getParentFile().mkdirs();
                 outPath.renameTo(bakPath);
             }
@@ -196,6 +200,7 @@ public class SpigetCrawler
             }
 
             // Success, write to file
+            //noinspection ResultOfMethodCallIgnored
             fp.getParentFile().mkdirs();
 
             // Write meta to plugin.yml
@@ -235,6 +240,7 @@ public class SpigetCrawler
     /**
      * Create symbolic links for a downloaded resource
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void links()
     {
         // Loop through each resource

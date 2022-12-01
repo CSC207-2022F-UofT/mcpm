@@ -1,9 +1,8 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.local;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
@@ -107,9 +106,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             return this.mapper.readValue(new File(mainLockFile), mapper.getTypeFactory()
                     .constructCollectionType(ArrayList.class, PluginTrackerModel.class));
         } catch (FileNotFoundException e) {
-            return (new ArrayList<PluginTrackerModel>());
-        } catch (JsonParseException | JsonMappingException e) {
-            throw new RuntimeException(e);
+            return (new ArrayList<>());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -215,23 +212,20 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             // if the plugin exists in currentList and installedPlugins,
             // add it to toAdd with its currently stored parameters and status
 
-            if (currentListName.containsKey(pluginRepresentation.getName())) {
-                if (currentListName.getOrDefault(pluginRepresentation.getName(), null).equals(null)) {
-                    // if the plugin exists in both currentList and installedPlugins, pass it on
-                    toAdd.add(currentListName.get(pluginRepresentation.getName()));
-                } else if (tryPreserveLocalStatus) {
-                    // if the plugin exists in both currentList and installedPlugins, but the
-                    // version differs
-                    // and we are trying to preserve local status, pass it on with the same status
-                    boolean status = currentListName.get(pluginRepresentation.getName()).isManual();
-                    pluginRepresentation.setManual(status);
-                }
-                // Overwrite the local representation with a new one
-                toAdd.add(pluginRepresentation);
+            var model = currentListName.getOrDefault(pluginRepresentation.getName(), null);
 
-            } else {
-                toAdd.add(pluginRepresentation);
+            if (model != null) {
+                // if the plugin exists in both currentList and installedPlugins, pass it on
+                toAdd.add(currentListName.get(pluginRepresentation.getName()));
+            } else if (tryPreserveLocalStatus) {
+                // if the plugin exists in both currentList and installedPlugins, but the
+                // version differs
+                // and we are trying to preserve local status, pass it on with the same status
+                boolean status = currentListName.get(pluginRepresentation.getName()).isManual();
+                pluginRepresentation.setManual(status);
             }
+
+            toAdd.add(pluginRepresentation);
         }
 
         saveJson(toAdd);
@@ -321,13 +315,11 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * @return List of plugin names
      */
     public List<String> listOrphanPlugins(boolean considerSoftDependencies) {
-
-        List<String> orphanPlugins = new ArrayList<>();
-        List<String> manuallyinstalledPlugins = listManuallyInstalled();
+        List<String> manuallyInstalledPlugins = listManuallyInstalled();
         List<String> requiredDependencies = new ArrayList<>();
 
         // Get all the dependencies of the manually installed plugins
-        for (String name : manuallyinstalledPlugins) {
+        for (String name : manuallyInstalledPlugins) {
             try {
                 // Find the pluginYml file of the plugin with name name from the plugin
                 // directory
@@ -371,11 +363,10 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
         // Get the difference between the set of manually installed plugins,
         // the set of required dependencies, and the set of all installed plugins
-        orphanPlugins = installedPlugins;
-        orphanPlugins.removeAll(requiredDependencies);
-        orphanPlugins.removeAll(manuallyinstalledPlugins);
+        installedPlugins.removeAll(requiredDependencies);
+        installedPlugins.removeAll(manuallyInstalledPlugins);
 
-        return orphanPlugins;
+        return installedPlugins;
     }
 
     /**
@@ -390,56 +381,27 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         // plugin.yml
         // If the plugin is not found, throw an error
 
-        try {
-            File dir = new File(pluginDirectory);
-            File[] directoryListing = dir.listFiles();
-            if (directoryListing != null) {
-                for (File child : directoryListing) {
-                    if (child.getName().equals(name)) {
-                        try {
-                            return readMeta(child).version();
-                        } catch (Exception e) {
-                            System.out.println("Error reading plugin.yml version from " + child);
-                        }
+        File dir = new File(pluginDirectory);
+        File[] directoryListing = dir.listFiles();
+        if (directoryListing != null) {
+            for (File child : directoryListing) {
+                if (child.getName().equals(name)) {
+                    // We probably want to keep this try catch.
+                    // A plugin can be malformed in many ways, this will just drop it from our list if needed.
+                    try {
+                        return readMeta(child).version();
+                    } catch (Exception e) {
+                        System.out.println("Error reading plugin.yml version from " + child);
                     }
                 }
-            } else {
-                System.out.println("Plugin with id " + name + " not found");
-                return "";
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } else {
+            System.out.println("Plugin with id " + name + " not found");
+            return "";
         }
+
         return "";
     }
-
-    /// **
-    // * Get a list of plugins that are outdated
-    // *
-    // * @return List of plugin names
-    // */
-    /*
-     * public List<String> listOutdated() {
-     * List<String> outdatedPlugins = new ArrayList<String>();
-     * List<PluginYml> installedPlugins = listInstalled();
-     * 
-     * // For each plugin in the list of installed plugins, check if the version in
-     * the plugin.yml file is outdated
-     * // If it is, add the plugin name to the list of outdated plugins
-     * for (PluginYml plugin : installedPlugins) {
-     * try {
-     * if (compareVersion(mainLockFile)) {
-     * outdatedPlugins.add(plugin.name());
-     * }
-     * } catch (Exception e) {
-     * System.out.println("Error checking if plugin " + plugin.name() +
-     * " is outdated");
-     * }
-     * }
-     * 
-     * return outdatedPlugins;
-     * }
-     */
 
     /**
      * Get a list of plugin (as pluginYml) that are outdated
@@ -447,19 +409,15 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * @return List of plugin names
      */
     public List<PluginYml> listOutdatedPluginYml(SearchPackagesBoundary searchPackagesBoundary) {
-        List<PluginYml> outdatedPlugins = new ArrayList<PluginYml>();
+        List<PluginYml> outdatedPlugins = new ArrayList<>();
         List<PluginYml> installedPlugins = listInstalled();
 
         // For each plugin in the list of installed plugins, check if the version in the
         // plugin.yml file is outdated
         // If it is, add the plugin name to the list of outdated plugins
         for (PluginYml plugin : installedPlugins) {
-            try {
-                if (compareVersion(plugin.name(), searchPackagesBoundary)) {
-                    outdatedPlugins.add(plugin);
-                }
-            } catch (RuntimeException e) {
-                throw new RuntimeException(e);
+            if (compareVersion(plugin.name(), searchPackagesBoundary)) {
+                outdatedPlugins.add(plugin);
             }
         }
 
@@ -475,34 +433,28 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      *         otherwise
      */
     public Boolean compareVersion(String name, SearchPackagesBoundary searchPackagesBoundary) {
-        try {
-            File pluginYmlPath = getPluginFile(name);
-            PluginYml currPlugin = readMeta(pluginYmlPath);
-            String localVersion = currPlugin.version();
+        File pluginYmlPath = getPluginFile(name);
+        PluginYml currPlugin = readMeta(pluginYmlPath);
+        String localVersion = currPlugin.version();
 
-            SearchPackagesInput searchPackagesInput = new SearchPackagesInput(SearchPackagesType.BY_NAME, name,
-                    false);
-            SearchPackagesResult searchPackagesResult = searchPackagesBoundary.search(searchPackagesInput);
+        SearchPackagesInput searchPackagesInput = new SearchPackagesInput(SearchPackagesType.BY_NAME, name,
+                false);
+        SearchPackagesResult searchPackagesResult = searchPackagesBoundary.search(searchPackagesInput);
 
-            // Get the version of the plugin from the server: Query for all, see if there's
-            // a match
-            if (searchPackagesResult.state().equals(SearchPackagesResult.State.SUCCESS)) {
-                for (PluginModel plugin : searchPackagesResult.plugins()) {
-                    PluginVersion latest = plugin.getLatestPluginVersion().orElse(null);
-                    if (latest != null) {
-                        if (latest.meta().version().equals(localVersion)) {
-                            return true;
-                        }
+        // Get the version of the plugin from the server: Query for all, see if there's
+        // a match
+        if (searchPackagesResult.state().equals(SearchPackagesResult.State.SUCCESS)) {
+            for (PluginModel plugin : searchPackagesResult.plugins()) {
+                PluginVersion latest = plugin.getLatestPluginVersion().orElse(null);
+                if (latest != null) {
+                    if (latest.meta().version().equals(localVersion)) {
+                        return true;
                     }
-
                 }
-            } else {
-                return false;
-            }
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            }
         }
+
         return false;
     }
 
@@ -512,7 +464,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      *
      * @param local  the local plugin File
      * @param remote a PluginModel object representing the plugin on the server
-     * @return List of plugin names
+     * @return True if this plugin is up-to-date.
      */
     public Boolean compareVersionNew(File local, PluginModel remote) {
         try {
@@ -548,6 +500,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         } else {
             throw new IllegalArgumentException("Plugin not found, verify whether installed.");
         }
+
         return null;
     }
 
