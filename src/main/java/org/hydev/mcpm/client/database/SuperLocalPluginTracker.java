@@ -106,7 +106,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * plugin names and install
      * status
      *
-     * @param csv The mapping between plugin name and boolean status
      */
     private ArrayList<PluginTrackerModel> readJson() {
         try {
@@ -361,8 +360,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                         requiredDependencies.addAll(p.softdepend());
                 }
 
-            } catch (Exception e) {
-                System.out.println("Error getting dependencies of " + name);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -415,8 +414,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 System.out.println("Plugin with id " + name + " not found");
                 return "";
             }
-        } catch (Exception e) {
-            System.out.println("Error reading plugin.yml from " + name);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
         return "";
     }
@@ -466,8 +465,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 if (compareVersion(plugin.name(), searchPackagesBoundary)) {
                     outdatedPlugins.add(plugin);
                 }
-            } catch (Exception e) {
-                System.out.println("Error checking if plugin " + plugin.name() + " is outdated");
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -510,8 +509,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             }
 
         } catch (Exception e) {
-            System.out.println("Error fetching local plugin version");
-            return false;
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -531,8 +529,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             String remoteVersion = remote.versions().get(0).meta().version();
             return localVersion.equals(remoteVersion);
         } catch (Exception e) {
-            System.out.println("Error comparing versions");
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
