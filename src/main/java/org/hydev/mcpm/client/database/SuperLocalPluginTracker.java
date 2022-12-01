@@ -66,12 +66,9 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
         } catch (IOException e) {
-            System.out.println("Error reading plugin.yml from " + jar);
-            return null;
+            throw new RuntimeException("Error reading plugin.yml from " + jar.getAbsolutePath());
         } catch (InvalidPluginMetaStructure e) {
-            System.out.println("Invalid plugin.yml structure in " + jar);
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Invalid plugin.yml structure in " + jar.getAbsolutePath());
         }
     }
 
@@ -504,7 +501,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
                 }
             } else {
-                System.out.println("Error getting hash from server");
                 return false;
             }
 
@@ -559,21 +555,4 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         return null;
     }
 
-    /**
-     * Tests. TODO: Move this to tests
-     *
-     * @param args Arguments (not used)
-     */
-    public static void main(String[] args) {
-        LocalPluginTracker myLocalPluginTracker = new LocalPluginTracker();
-
-        // Test listInstalled
-        List<PluginYml> installedPlugins = myLocalPluginTracker.listInstalled();
-        for (PluginYml plugin : installedPlugins) {
-            System.out.println(plugin.name());
-        }
-
-        // Test listOutdated
-
-    }
 }
