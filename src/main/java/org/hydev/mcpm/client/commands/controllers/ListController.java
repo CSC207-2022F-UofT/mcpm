@@ -35,7 +35,7 @@ public class ListController {
      * @param log       Logger
      */
     public void listAll(String parameter, Consumer<String> log) {
-        var list = listAllBoundary.listAll(parameter);
+        var list = listAllBoundary.listAll(parameter, checkForUpdatesBoundary);
 
         // Tabulate result
         var table = tabulate(list.stream().map(p -> List.of("&a" + p.name(), "&e"
