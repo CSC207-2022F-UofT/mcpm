@@ -16,7 +16,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Database API
+ * Database Manager uses Database API to provide searchResult and check the installed plugin locally
+ * (Goal: avoid the dependency and cluster of parameters to connect to database)
  */
 public class DatabaseManager {
     private final PluginTracker localPluginTracker;
@@ -36,8 +37,10 @@ public class DatabaseManager {
     public SearchPackagesResult getSearchResult(InstallInput input) {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);
         SearchPackagesResult searchPackageResult = searchInteractor.search(searchPackagesInput);
-
-        return searchPackageResult;
+        if (searchPackageResult.state() == SearchPackagesResult.State.SUCCESS) {
+            return searchPackageResult;
+        }
+        return null;
     }
 
     /**
@@ -64,7 +67,7 @@ public class DatabaseManager {
      * @param pluginVersion The version of the installed plugin
      * */
     public boolean checkPluginInstalledByVersion(PluginVersion pluginVersion) {
-        var name = pluginVersion.meta().name();
+        var version = pluginVersion.meta().version();
 
         List<PluginYml> pluginInstalled = localPluginTracker.listInstalled();
         for (PluginYml pluginYml : pluginInstalled) {

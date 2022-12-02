@@ -5,9 +5,8 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.entries.InstallController;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.installer.InstallResult;
 import org.hydev.mcpm.client.installer.presenter.InstallPresenter;
-import org.hydev.mcpm.client.installer.presenter.ResultPresenter;
+import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
 
 import java.util.function.Consumer;
 
@@ -38,7 +37,7 @@ public record InstallParser(InstallController controller) implements CommandPars
     @Override
     public void run(Namespace details, Consumer<String> log) {
         var name = details.getString("name");
-        ResultPresenter installResultPresent = new InstallPresenter(log);
+        InstallResultPresenter installResultPresent = new InstallPresenter(log);
         controller.install(name, SearchPackagesType.BY_NAME, !details.getBoolean("noLoad"), installResultPresent);
     }
 }

@@ -7,9 +7,13 @@ import java.util.function.Consumer;
 /**
  * Implementation to the ResultPresenter, display the result of installation of plugins
  */
-public class InstallPresenter implements ResultPresenter {
+public class InstallPresenter implements InstallResultPresenter {
 
     private Consumer<String> log;
+
+    private InstallResult installResult;
+
+    private String name;
     /**
      * Instantiate Install Presenter
      *
@@ -18,10 +22,12 @@ public class InstallPresenter implements ResultPresenter {
 
     public InstallPresenter(Consumer<String> log) {
         this.log = log;
+        this.installResult = null;
+        this.name = null;
     }
 
     @Override
-    public void displayResult(String message) {
-        this.log.accept(message);
+    public void displayResult(InstallResult installResult, String name) {
+        this.log.accept(name + ": " + installResult.type().reason());
     }
 }
