@@ -11,7 +11,6 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import org.hydev.mcpm.SpigotEntry;
-import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;
 
 import javax.annotation.Nullable;
@@ -23,7 +22,10 @@ import java.net.URISyntaxException;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
@@ -37,11 +39,11 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-09-27
  */
-public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundary
+public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
     private static final File HELPER_JAR = new File("plugins/mcpm-helper.jar");
 
-    public PluginLoader()
+    public PluginLoader
     {
         // Delete helper when this class is loaded
         deleteHelper();
@@ -50,21 +52,7 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     @Override
     public boolean loadPlugin(String name) throws PluginNotFoundException
     {
-        // 1. Find plugin file by name
-        var dir = new File("plugins");
-        if (!dir.isDirectory()) throw new PluginNotFoundException(name);
-        var file = Arrays.stream(Optional.ofNullable(dir.listFiles())
-                .orElseThrow(() -> new PluginNotFoundException(name)))
-            .filter(f -> f.getName().endsWith(".jar"))
-            .filter(f -> {
-                try (var jf = new PluginJarFile(f))
-                {
-                    return jf.readPluginYaml().name().equalsIgnoreCase(name);
-                }
-                catch (IOException | PluginYml.InvalidPluginMetaStructure ignored) { return false; }
-            }).findFirst().orElseThrow(() -> new PluginNotFoundException(name));
-
-        return loadPlugin(file);
+        return loadPlugin(jarFinder.findJar(name));
     }
 
     @Override
@@ -117,20 +105,24 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     }
 
     @Override
-    public void unloadPlugin(String name) throws PluginNotFoundException
+    public File unloadPlugin(String name) throws PluginNotFoundException
     {
         // 1. Find plugin by name
-        unloadPlugin(findLoadedPlugin(name));
+        return unloadPlugin(findLoadedPlugin(name));
     }
 
     /**
      * Unload plugin helper
      *
      * @param plugin Plugin object
+     * @return Plugin's jar file
      */
-    static void unloadPlugin(Plugin plugin)
+    static File unloadPlugin(Plugin plugin)
     {
-        var pm = Bukkit.getPluginManager();
+        final var pm = Bukkit.getPluginManager();
+
+        // 1. Find plugin jar
+        final var jar = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
         // 2. Unload plugin
         pm.disablePlugin(plugin);
@@ -180,6 +172,8 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
                 e.printStackTrace();
             }
         }
+
+        return jar;
     }
 
     @Override
@@ -203,7 +197,7 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
 
         try
         {
-            var jar = new File(PluginLoader.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            final var jar = new File(PluginLoader.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
             // 4. Reflect! Since MCPM and MCPM-Helper are in different class loaders, I cannot call/cast it directly
             // or else it would give me a nonsense error "class PluginLoaderHelper cannot be cast to PluginLoaderHelper"
@@ -227,7 +221,7 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
      *
      * @return Helper plugin instance
      */
-    protected Plugin injectHelper()
+    private Plugin injectHelper()
     {
         try
         {
@@ -282,7 +276,7 @@ public class PluginLoader implements LoadBoundary, UnloadBoundary, ReloadBoundar
     /**
      * Find and try to unload the plugin helper if present, do nothing otherwise
      */
-    protected void deleteHelper()
+    private void deleteHelper()
     {
         try
         {

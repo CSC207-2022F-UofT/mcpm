@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.installer;
 
+import org.hydev.mcpm.Constants;
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
@@ -7,6 +8,9 @@ import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
 import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
+import org.hydev.mcpm.client.injector.LoadBoundary;
+import org.hydev.mcpm.client.injector.PluginLoader;
+import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.installer.InstallResult.Type;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.models.PluginModel;
@@ -29,9 +33,12 @@ public class InstallInteractor implements InstallBoundary {
     private final DatabaseManager databaseManager;
     private final PluginDownloader spigotPluginDownloader;
 
-    public InstallInteractor(PluginDownloader spigotPluginDownloader, DatabaseManager databaseManager) {
+    private final LoadBoundary pluginLoader;
+
+    public InstallInteractor(PluginDownloader spigotPluginDownloader, DatabaseManager databaseManager, LoadBoundary pluginLoader) {
         this.databaseManager = databaseManager;
         this.spigotPluginDownloader = spigotPluginDownloader;
+        this.pluginLoader = pluginLoader;
     }
 
     /*
@@ -43,6 +50,8 @@ public class InstallInteractor implements InstallBoundary {
     {
         // 1. Search the name and get a list of plugins
         SearchPackagesResult searchResult = databaseManager.getSearchResult(installInput);
+
+
         if (searchResult.state() != SearchPackagesResult.State.SUCCESS) {
             return new InstallResult(
                     searchResult.state() == SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE ?
@@ -68,7 +77,10 @@ public class InstallInteractor implements InstallBoundary {
         if (pluginVersion == null) {
             return new InstallResult(Type.NO_VERSION_AVAILABLE);
         }
-        databaseManager.checkPluginInstalled(pluginVersion);
+
+        if (databaseManager.checkPluginInstalledByVersion(pluginVersion)) {
+            return new InstallResult(Type.PLUGIN_EXISTS);
+        };
 
         // 3. Download it
         spigotPluginDownloader.download(id, pluginVersion.id(),
@@ -84,7 +96,19 @@ public class InstallInteractor implements InstallBoundary {
                 installPlugin(dependencyInput);
             }
         }
-        return new InstallResult(Type.SUCCESS);
+
+        if (pluginLoader != null && installInput.load()) {
+            try {
+                pluginLoader.loadPlugin(installInput.name());
+            } catch (PluginNotFoundException e) {
+                return new InstallResult(Type.SUCCESS_INSTALLED_AND_FAIL_LOADED);
+            }
+        }
+
+        if (installInput.load()) {
+            return new InstallResult(Type.SUCCESS_INSTALLED_AND_LOADED);
+        }
+        return new InstallResult(Type.SUCCESS_INSTALLED_AND_UNLOADED);
     }
 
     /**
@@ -95,13 +119,14 @@ public class InstallInteractor implements InstallBoundary {
     public static void main(String[] args) {
         new File(FILEPATH).mkdirs();
         var host = URI.create("https://mcpm.hydev.org");
+        var fetcher = new LocalDatabaseFetcher(() -> host);
+        var tracker = new LocalPluginTracker();
+        var searcher = new SearchInteractor(fetcher);
         Downloader downloader = new Downloader();
+        PluginLoader loader = null;
         SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
-        LocalPluginTracker pluginTracker = new LocalPluginTracker();
-        LocalDatabaseFetcher localDatabaseFetcher = new LocalDatabaseFetcher(() -> host);
-        SearchInteractor searchInteractor = new SearchInteractor(localDatabaseFetcher);
-        DatabaseManager databaseManager = new DatabaseManager(pluginTracker, searchInteractor);
-        InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager);
+        DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
+        InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager, loader);
         InstallInput installInput = new InstallInput("JedCore", SearchPackagesType.BY_NAME, true, true);
         installInteractor.installPlugin(installInput);
     }

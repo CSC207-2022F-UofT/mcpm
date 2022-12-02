@@ -23,6 +23,13 @@ import static java.util.Objects.requireNonNull;
 public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
     private static SpigotEntry instance;
+
+    public SpigotEntry()
+    {
+        // Let the other parts of our program know that we're in minecraft
+        Constants.IS_MINECRAFT = true;
+    }
+
     private Logger log;
 
     private ArgsParser parser;

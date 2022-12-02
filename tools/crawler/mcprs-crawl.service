@@ -1,0 +1,11 @@
+[Unit]
+Description=Crawl MCPRS packages
+
+[Service]
+Type=oneshot
+ExecStart=bash /ws/mcpm/crawl.sh
+User=azalea
+Group=azalea
+
+[Install]
+WantedBy=multi-user.target

@@ -1,21 +1,41 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
-import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
-import org.hydev.mcpm.client.database.model.PluginVersionId;
+import org.hydev.mcpm.client.models.PluginCommand;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 /**
- * Mock plugin factory for testing
+ * This class creates Plugins mainly for testing purposes.
+ *
+ * @author Taylor Whatley
+ * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class PluginMockFactory {
     private PluginMockFactory() { }
+
+    /**
+     * Creates a mock PluginCommand object.
+     *
+     * @param description Description
+     * @param aliases Other names
+     * @return A Map<String, PluginCommand> object.
+     */
+    public static @NotNull Map<String, PluginCommand> createCommand(String description, List<String> aliases) {
+        var map = new HashMap<String, PluginCommand>();
+        var pc = new PluginCommand(description, aliases, null, null);
+        for (String alias : aliases) {
+            map.put(alias, pc);
+        }
+        return map;
+    }
 
     /**
      * Creates a mock PluginYml object.
@@ -23,25 +43,27 @@ public class PluginMockFactory {
      * @param name The name of the plugin.
      * @param version The version string for the plugin.
      * @param description The description for the plugin.
+     * @param commands Commands for the plugin.
      * @return A PluginYml object.
      */
-    public static PluginYml meta(String name, String version, String description) {
+    public static PluginYml meta(String name, String version, String description,
+                                 Map<String, PluginCommand> commands) {
         return new PluginYml(
-            "org." + name,
-            name,
-            version,
-            description,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
+                "org." + name,
+                name,
+                version,
+                description,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                commands
         );
     }
 
@@ -54,7 +76,22 @@ public class PluginMockFactory {
      * @return A PluginVersion object.
      */
     public static PluginVersion version(long id, String name, String string) {
-        return new PluginVersion(id, 0, "", meta(name, string, null));
+        return new PluginVersion(id, 0, "", meta(name, string, null, null));
+    }
+
+    /**
+     * Creates a mock PluginVersion object.
+     *
+     * @param id The version id.
+     * @param name The plugin name (for meta).
+     * @param string The version string (for meta).
+     * @param description The plugin description.
+     * @param commands The commands in the plugin.
+     * @return A PluginVersion object.
+     */
+    public static PluginVersion version(long id, String name, String string, String description,
+                                        Map<String, PluginCommand> commands) {
+        return new PluginVersion(id, 0, "", meta(name, string, description, commands));
     }
 
 
@@ -78,8 +115,8 @@ public class PluginMockFactory {
      */
     public static PluginModel model(long id, String name) {
         return new PluginModel(
-            id,
-            List.of(version(id, name, "ver." + name)) // NOT SEMVER
+                id,
+                List.of(version(id, name, "ver." + name)) // NOT SEMVER
         );
     }
 
@@ -89,43 +126,49 @@ public class PluginMockFactory {
      *
      * @param id The plugin id.
      * @param name The plugin name.
+     * @param description The plugin description.
      * @param versionNames The individual version strings for each version.
+     * @param commands Commands for the plugin.
      * @return A PluginModel object.
      */
-    public static PluginModel model(long id, String name, List<String> versionNames) {
+    public static PluginModel model(long id, String name, String description, List<String> versionNames,
+                                    Map<String, PluginCommand> commands) {
         return new PluginModel(
-            id,
-            IntStream.range(0, versionNames.size())
-                .mapToObj(i -> version(i, name, versionNames.get(i)))
-                .toList()
+                id,
+                IntStream.range(0, versionNames.size())
+                        .mapToObj(i -> version(i, name, versionNames.get(i), description, commands))
+                        .toList()
         );
     }
 
     /**
-     * Creates a mock DatabaseInteractor object with the provided plugin list.
+     * Generates a sample list of plugins used for testing, containing the name, description, and commands.
      *
-     * @param plugins A list of plugins that the DatabaseInteractor will have access to.
-     * @return A DatabaseInteractor object.
+     * @return List of plugins for testing.
      */
-    public static DatabaseInteractor interactor(List<PluginModel> plugins) {
-        var fetcher = new ConstantFetcher(plugins);
-        var listener = new BriefFetcherListener(true);
+    public static @Unmodifiable List<PluginModel> generateTestPlugins() {
+        String[] descriptions = {"WorldGuard lets you and players guard areas " +
+                "of land against griefers and undesirables as well " +
+                "as tweak and disable various gameplay features of Minecraft.",
+                "Multiverse was created at the dawn of Bukkit multiworld support. " +
+                        "It has since then grown into a complete world management " +
+                        "solution including special treatment of your nether worlds with " +
+                        "Multiverse NetherPortals.",
+                "Create futuristic holograms to display text and items to players!"
+        };
 
-        return new DatabaseInteractor(fetcher, listener);
-    }
-
-    /**
-     * Generate a testing list of PluginModels
-     *
-     * @return Testing list of PluginModels
-     */
-    public static List<PluginModel> generatePlugins() {
-        List<PluginModel> plugins = new ArrayList<>();
-        String[] names = {"WorldGuard"};
-        String [] descriptions = {"""
-            Protect your server!
-            WorldGuard lets you and players guard areas of land against griefers and undesirables
-            as well as tweak and disable various gameplay features of Minecraft.""".stripIndent()};
-        return plugins;
+        return List.of(
+                PluginMockFactory.model(1),
+                PluginMockFactory.model(2, "WorldGuard",
+                        descriptions[0],
+                        List.of("1.18.2", "1.18.1"),
+                        createCommand(descriptions[0], List.of("/god", "/ungod"))),
+                PluginMockFactory.model(3, "Multiverse-Core", descriptions[1],
+                        List.of("1.19.2", "1.19.1"),
+                        createCommand(descriptions[1],List.of("/mvlist", "/mvl"))),
+                PluginMockFactory.model(4, "Holographic Displays", descriptions[2],
+                        List.of("1.19.2", "1.19.1", "1.19"),
+                        createCommand(descriptions[2], List.of("/hd", "/ungod")))
+        );
     }
 }

@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.database.boundary;
 
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
+import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
 
 /**
  * Defines how a user can search for plugin updates.

@@ -12,10 +12,14 @@ import java.io.IOException;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-11-24
  */
-public record RefreshController(DatabaseFetcher fetcher, DatabaseFetcherListener listener, MirrorSelectBoundary mirror)
+public record RefreshController(
+    DatabaseFetcher fetcher,
+    DatabaseFetcherListener listener,
+    MirrorSelectBoundary mirror
+)
 {
     /**
-     * Refresh
+     * Refresh the database cache and mirror list
      */
     public void refresh() throws IOException
     {

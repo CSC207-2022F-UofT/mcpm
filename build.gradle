@@ -51,6 +51,7 @@ task checkStyle(type: GradleBuild) {
 dependencies {
     // The Spigot API with no shadowing. Requires the OSS repo.
     compileOnly 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
+    testImplementation 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
 
     // Argument parser
     // https://mvnrepository.com/artifact/net.sourceforge.argparse4j/argparse4j
@@ -89,6 +90,10 @@ dependencies {
     // ZSTD Compression
     // https://mvnrepository.com/artifact/com.github.luben/zstd-jni
     implementation 'com.github.luben:zstd-jni:1.5.2-5'
+
+    // ZSTD but pure java for platforms that doesn't support native
+    // https://mvnrepository.com/artifact/io.airlift/aircompressor
+    implementation 'io.airlift:aircompressor:0.21'
 
     // Unit tests
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'

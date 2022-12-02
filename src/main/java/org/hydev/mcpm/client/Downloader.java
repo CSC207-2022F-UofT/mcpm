@@ -7,17 +7,17 @@ import org.hydev.mcpm.client.interaction.ProgressBar;
 import org.hydev.mcpm.client.interaction.ProgressBarTheme;
 import org.hydev.mcpm.client.interaction.ProgressRow;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
@@ -140,18 +140,31 @@ public class Downloader
     /**
      * Displays a demo for downloader.
      *
-     * @param args Arguments are ignored.
+     * @param args Not used
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException
+    {
         // Remember to chang link to test
         String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
         File out = new File("./Introduction_to_Algorithms_Third_Edition.pdf");
         String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
         File out1 = new File("./Math.pdf");
-        Downloader downloader = new Downloader();
+        String link2 = "https://ouopentextbooks.org/mathematics/files/2015/07/1503.pdf";
+        File out2 = new File("./1503");
+        String link3 = "https://faculty.math.illinois.edu/~aydin/math220/lecturenotes/m220_Sec1_4.pdf";
+        File out3 = new File("./m220_Sec1_4");
+        String link4 = "https://ocw.mit.edu/ans7870/9/9.00SC/MIT9_00SCF11_text.pdf";
+        File out4 = new File("./MIT9_00SCF11_text");
+
+        final var downloader = new Downloader();
         Map<String, File> urls = new HashMap<>();
         urls.put(link, out);
         urls.put(link1, out1);
+        urls.put(link2, out2);
+        urls.put(link3, out3);
+        urls.put(link4, out4);
         downloader.downloadFiles(urls);
+        out.delete();
+        out1.delete();
     }
 }

@@ -7,6 +7,9 @@ import java.net.URI;
 import java.util.function.Supplier;
 
 import static org.hydev.mcpm.utils.GeneralUtils.concatUri;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Plugin downloader for the MCPM Plugin Repository
@@ -40,7 +43,13 @@ public class SpigotPluginDownloader implements PluginDownloader {
      * */
     @Override
     public void download(long pluginId, long pluginVersion, String destination) {
-        // Unused @param tag for 'pluginVersion:'. [JavadocMethod]
+        try {
+            // I'm sorry, this is an important for the update API.
+            Files.createDirectories(Paths.get(destination).getParent());
+        } catch (IOException e) {
+            /* ignore */
+        }
+
         String url = constructUrl(pluginId, pluginVersion);
         downloader.downloadFile(url, new File(destination));
     }

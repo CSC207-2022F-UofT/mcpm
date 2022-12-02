@@ -20,7 +20,7 @@ public record SearchPackagesController(SearchPackagesBoundary searcher, @Nullabl
      * Load plugins and output status to log.
      *
      * @param type String that specifies the type of search.
-     * @param text String that secifies the search text.
+     * @param text String that specifies the search text.
      * @param noCache Specifies whether to use local cache or not.
      * @param log Callback for status for log events.
      */
