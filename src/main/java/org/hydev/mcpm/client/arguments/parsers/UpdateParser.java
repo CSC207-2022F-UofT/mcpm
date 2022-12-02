@@ -5,6 +5,10 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.entries.UpdateController;
 import org.hydev.mcpm.client.commands.presenters.LogUpdatePresenter;
+import org.hydev.mcpm.client.commands.presenters.UpdatePresenter;
+import org.hydev.mcpm.client.installer.InstallResult;
+import org.hydev.mcpm.client.installer.presenter.InstallPresenter;
+import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
 
 import java.util.function.Consumer;
 
@@ -51,12 +55,13 @@ public record UpdateParser(UpdateController controller) implements CommandParser
         // and I don't want UpdatePresenter to depend on Consumer<String>,
         // I'll instantiate this every call.
         var presenter = new LogUpdatePresenter(log);
-
+        InstallResultPresenter installPresenter = new InstallPresenter(log);
         controller.update(
             details.getList("names"),
             details.getBoolean("load"),
             details.getBoolean("no-cache"),
-            presenter
+            presenter,
+            installPresenter
         );
     }
 }
