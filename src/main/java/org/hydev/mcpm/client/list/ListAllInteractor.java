@@ -1,34 +1,39 @@
-package org.hydev.mcpm.client.list;
+package org.hydev.mcpm.client.database;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.models.PluginYml;
 
 import java.util.List;
 
 /**
  * Implementation to the ListAll functionality
+ *
+ * @author Kevin (https://github.com/kchprog)
+ * @since 2022-11-20
  */
-public record ListAllInteractor(PluginTracker tracker) implements ListAllBoundary
-{
+public class ListAllInteractor implements ListAllBoundary {
+    SuperLocalPluginTracker localPluginTracker = new SuperLocalPluginTracker();
+
     /**
-     * listAllInteractor interacts with the LocalPluginTracker to get the list of plugins, according to a specified
+     * listAllInteractor interacts with the LocalPluginTracker to get the list of
+     * plugins, according to a specified
      * parameter
      *
-     * @param parameter The parameter for the ListAll use case. 'All' denotes a request to list all manually
-     *     installed plugins, 'manual' denotes a request to list all manually installed plugins, and 'outdated' denotes
-     *     a request to list all manually installed plugins that are outdated.
+     * @param parameter The parameter for the ListAll use case. 'All' denotes a
+     *                  request to list all manually
+     *                  installed plugins, 'manual' denotes a request to list all
+     *                  manually installed plugins, and 'outdated' denotes
+     *                  a request to list all manually installed plugins that are
+     *                  outdated.
      */
-    public List<PluginYml> listAll(String parameter)
-    {
-        var installed = tracker.listInstalled();
-        switch (parameter)
-        {
+    public List<PluginYml> listAll(String parameter) {
+        var installed = localPluginTracker.listInstalled();
+        switch (parameter) {
             case "all":
                 return installed;
 
             case "manual":
-                var local = tracker.listManuallyInstalled();
+                var local = localPluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
 
             case "outdated":
