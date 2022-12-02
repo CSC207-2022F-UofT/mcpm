@@ -8,6 +8,12 @@ import org.hydev.mcpm.utils.Pair;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Mock implementation of the PluginTracker interface.
+ *
+ * @param entries A list of all entries in the lockfile.
+ * @param installed A list of all "Installed" PluginYml files (to be returned in listInstalled).
+ */
 public record MockPluginTracker(
     Map<String, Boolean> entries,
     List<PluginYml> installed

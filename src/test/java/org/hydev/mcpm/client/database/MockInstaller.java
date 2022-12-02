@@ -13,16 +13,32 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Mock installer utility that keeps track of plugins that were requested to be installed.
+ */
 public class MockInstaller implements InstallBoundary {
     private final List<PluginModel> plugins;
     private final PluginTracker tracker;
     private final boolean defaultResult;
     private final Set<String> requested = new HashSet<>();
 
+    /**
+     * Creates a new MockInstaller object that always succeeds (when it is not already installed).
+     *
+     * @param plugins A list of plugins to lookup plugin related information about (to pass to PluginTracker).
+     * @param tracker A plugin tracker to query whether a plugin is installed.
+     */
     public MockInstaller(List<PluginModel> plugins, PluginTracker tracker) {
         this(plugins, tracker, true);
     }
 
+    /**
+     * Creates a new MockInstaller object.
+     *
+     * @param plugins A list of plugins to lookup plugin related information about (to pass to PluginTracker).
+     * @param tracker A plugin tracker to query whether a plugin is installed.
+     * @param defaultResult Determines what the installer should return when installPlugin is invoked.
+     */
     public MockInstaller(List<PluginModel> plugins, PluginTracker tracker, boolean defaultResult) {
         this.plugins = plugins;
         this.tracker = tracker;
@@ -53,6 +69,11 @@ public class MockInstaller implements InstallBoundary {
         return defaultResult;
     }
 
+    /**
+     * Returns a list of all plugin names that were passed to installPlugin (and succeeded).
+     *
+     * @return A list of plugin names.
+     */
     Set<String> getRequested() {
         return new HashSet<>(requested);
     }
