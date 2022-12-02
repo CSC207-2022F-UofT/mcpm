@@ -30,6 +30,7 @@ import org.hydev.mcpm.client.commands.controllers.UninstallController;
 import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.local.LocalPluginTracker;
+import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.list.ListAllInteractor;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
@@ -42,7 +43,6 @@ import org.hydev.mcpm.client.injector.LocalJarFinder;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
-import org.hydev.mcpm.client.installer.presenter.InstallPresenter;
 import org.hydev.mcpm.client.uninstall.Uninstaller;
 import org.hydev.mcpm.client.updater.UpdateInteractor;
 
