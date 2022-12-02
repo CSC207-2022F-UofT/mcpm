@@ -23,6 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Test methods related to the Update plugins use case.
+ * To accomplish this, we use mock installers, plugin trackers and databases.
+ */
 public class UpdateInteractorTest {
     private static final InstallResultPresenter installPresenter = new SilentInstallPresenter();
 
@@ -32,6 +36,15 @@ public class UpdateInteractorTest {
         MockInstaller mockInstaller
     ) { }
 
+    /**
+     * Create an interactor with provided paramters.
+     *
+     * @param plugins A repository of all plugins. Will be passed to database unless emptyDatabase is true.
+     * @param installedVersions Maps from plugin id to versions of plugins that are "installed" in the mock tracker.
+     * @param installerSucceeds Determines the return value of the mock installer (false for failure).
+     * @param emptyDatabase If true, regardless of the value of plugins, the database will contain no plugins.
+     * @return A MockPackage object, consisting of an UpdateBoundary, PluginTracker and Installer.
+     */
     private static MockPackage interactor(
         List<PluginModel> plugins,
         Map<Long, String> installedVersions,
@@ -66,6 +79,11 @@ public class UpdateInteractorTest {
         );
     }
 
+    /**
+     * Default plugins in a database for utility.
+     *
+     * @return A list of mock PluginModel objects.
+     */
     private static List<PluginModel> defaultPlugins() {
         return List.of(
             PluginMockFactory.model(1, "TpProtect", List.of("0.0.0.0.1", "0.0.3", "9.99")),
@@ -75,10 +93,20 @@ public class UpdateInteractorTest {
         );
     }
 
+    /**
+     * Returns an interactor with an empty database and empty plugin tracker.
+     *
+     * @return A MockPackage object.
+     */
     private static MockPackage emptyInteractor() {
         return interactor(List.of(), Map.of(), true, false);
     }
 
+    /**
+     * Returns an interactor with an empty database but one installed plugin (JedCore).
+     *
+     * @return A MockPackage object.
+     */
     private static MockPackage emptyWithInstalledInteractor() {
         return interactor(
             defaultPlugins(),
@@ -87,6 +115,11 @@ public class UpdateInteractorTest {
         );
     }
 
+    /**
+     * Returns an interactor with all installed plugins marked as up-to-date.
+     *
+     * @return A MockPackage object.
+     */
     private static MockPackage upToDateInteractor() {
         return interactor(defaultPlugins(), Map.of(
             2L, "version-3",
@@ -95,6 +128,11 @@ public class UpdateInteractorTest {
         ), true, false);
     }
 
+    /**
+     * Returns an interactor with one installed plugin marked as out-of-date.
+     *
+     * @return A MockPackage object.
+     */
     private static MockPackage oneOldInteractor() {
         return interactor(defaultPlugins(), Map.of(
             2L, "version-2",
@@ -103,6 +141,11 @@ public class UpdateInteractorTest {
         ), true, false);
     }
 
+    /**
+     * Returns an interactor with one out-of-date plugin, with a strictly failing mock installer.
+     *
+     * @return A MockPackage object.
+     */
     private static MockPackage failingOneOldInteractor() {
         return interactor(defaultPlugins(), Map.of(
             2L, "version-2",
@@ -111,6 +154,11 @@ public class UpdateInteractorTest {
         ), false, false);
     }
 
+    /**
+     * Returns an interactor with all installed plugins marked as out-of-date.
+     *
+     * @return A MockPackage object.
+     */
     private static MockPackage outOfDateInteractor() {
         return interactor(defaultPlugins(), Map.of(
             2L, "version-2",
@@ -119,18 +167,27 @@ public class UpdateInteractorTest {
         ), true, false);
     }
 
+    /**
+     * Asserts if the outcome is not UP_TO_DATE.
+     */
     private static void assertUpToDate(UpdateOutcome outcome, String version) {
         assertEquals(outcome.state(), UpdateOutcome.State.UP_TO_DATE);
         assertEquals(outcome.initialVersion(), version);
         assertNull(outcome.destinationVersion());
     }
 
+    /**
+     * Asserts if the outcome is not UPDATED.
+     */
     private static void assertUpdated(UpdateOutcome outcome, String version, String destination) {
         assertEquals(outcome.state(), UpdateOutcome.State.UPDATED);
         assertEquals(outcome.initialVersion(), version);
         assertEquals(outcome.destinationVersion(), destination);
     }
 
+    /**
+     * Tests that update does nothing on an empty database/plugin tracker.
+     */
     @Test
     void testEmptyDatabase() {
         var mock = emptyInteractor();
@@ -143,6 +200,9 @@ public class UpdateInteractorTest {
         assertTrue(result.outcomes().isEmpty());
     }
 
+    /**
+     * Tests that update correctly marks a plugin that does not exist in the database as MISMATCHED.
+     */
     @Test
     void testMismatchedPlugin() {
         var mock = emptyWithInstalledInteractor();
@@ -155,6 +215,9 @@ public class UpdateInteractorTest {
         assertEquals(result.outcomes().get("JedCore").state(), UpdateOutcome.State.MISMATCHED);
     }
 
+    /**
+     * Tests that update correctly marks a given plugin that is not in the plugin tracker as NOT_INSTALLED.
+     */
     @Test
     void testMismatchedName() {
         var mock = emptyInteractor();
@@ -167,6 +230,9 @@ public class UpdateInteractorTest {
         assertEquals(result.outcomes().get("JedCore").state(), UpdateOutcome.State.NOT_INSTALLED);
     }
 
+    /**
+     * Tests that update correctly marks all up-to-date plugins as UP_TO_DATE.
+     */
     @Test
     void testAllUpToDate() {
         var mock = upToDateInteractor();
@@ -182,6 +248,9 @@ public class UpdateInteractorTest {
         assertUpToDate(result.outcomes().get("TpProtect"), "9.99");
     }
 
+    /**
+     * Tests that update correctly marks a specific given plugin as UP_TO_DATE.
+     */
     @Test
     void testOneUpToDate() {
         var mock = upToDateInteractor();
@@ -195,6 +264,9 @@ public class UpdateInteractorTest {
         assertUpToDate(result.outcomes().get("Apples+"), "1.2");
     }
 
+    /**
+     * Tests that update correctly marks all installed plugins as OUT_OF_DATE.
+     */
     @Test
     void testAllOutOfDate() {
         var mock = outOfDateInteractor();
@@ -210,6 +282,9 @@ public class UpdateInteractorTest {
         assertUpdated(result.outcomes().get("TpProtect"), "0.0.3", "9.99");
     }
 
+    /**
+     * Tests that update correctly marks a given plugin as OUT_OF_DATE.
+     */
     @Test
     void testOneOutOfDate() {
         var mock = outOfDateInteractor();
@@ -223,6 +298,9 @@ public class UpdateInteractorTest {
         assertUpdated(result.outcomes().get("Apples+"), "1.0", "1.2");
     }
 
+    /**
+     * Tests that update correctly marks a mixture of OUT_OF_DATE and UP_TO_DATE plugins.
+     */
     @Test
     void testAllMixed() {
         var mock = oneOldInteractor();
@@ -238,6 +316,9 @@ public class UpdateInteractorTest {
         assertUpToDate(result.outcomes().get("TpProtect"), "9.99");
     }
 
+    /**
+     * Tests that update correctly conveys a NETWORK_ERROR on an installation failure.
+     */
     @Test
     void testFailingInstaller() {
         var mock = failingOneOldInteractor();

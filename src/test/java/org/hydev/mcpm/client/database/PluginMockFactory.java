@@ -175,15 +175,18 @@ public class PluginMockFactory {
      * @return List of plugins for testing.
      */
     public static @Unmodifiable List<PluginModel> generateTestPlugins() {
-        String[] descriptions = {"WorldGuard lets you and players guard areas " +
-                "of land against griefers and undesirables as well " +
-                "as tweak and disable various gameplay features of Minecraft.",
-                "Multiverse was created at the dawn of Bukkit multiworld support. " +
-                        "It has since then grown into a complete world management " +
-                        "solution including special treatment of your nether worlds with " +
-                        "Multiverse NetherPortals.",
-                "Create futuristic holograms to display text and items to players!"
-        };
+        var worldGuardDescription = "WorldGuard lets you and players guard areas " +
+            "of land against griefers and undesirables as well " +
+            "as tweak and disable various gameplay features of Minecraft.";
+
+        var multiverseDescription = "Multiverse was created at the dawn of Bukkit multiworld support. " +
+            "It has since then grown into a complete world management " +
+            "solution including special treatment of your nether worlds with " +
+            "Multiverse NetherPortals.";
+
+        var hologramDescription = "Create futuristic holograms to display text and items to players!";
+
+        String[] descriptions = { worldGuardDescription, multiverseDescription, hologramDescription };
 
         return List.of(
                 PluginMockFactory.model(1),
@@ -193,7 +196,7 @@ public class PluginMockFactory {
                         createCommand(descriptions[0], List.of("/god", "/ungod"))),
                 PluginMockFactory.model(3, "Multiverse-Core", descriptions[1],
                         List.of("1.19.2", "1.19.1"),
-                        createCommand(descriptions[1],List.of("/mvlist", "/mvl"))),
+                        createCommand(descriptions[1], List.of("/mvlist", "/mvl"))),
                 PluginMockFactory.model(4, "Holographic Displays", descriptions[2],
                         List.of("1.19.2", "1.19.1", "1.19"),
                         createCommand(descriptions[2], List.of("/hd", "/ungod")))
