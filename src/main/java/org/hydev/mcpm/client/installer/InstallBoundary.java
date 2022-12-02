@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.installer;
 
 
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 
 /**
  * Interface for installing plugin to the jar file.

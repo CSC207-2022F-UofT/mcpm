@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.commands.presenter;
 
-import org.hydev.mcpm.client.commands.presenter.Table;
+import org.hydev.mcpm.client.display.presenters.Table;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

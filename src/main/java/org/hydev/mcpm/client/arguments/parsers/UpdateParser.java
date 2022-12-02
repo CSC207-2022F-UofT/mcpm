@@ -6,8 +6,8 @@ import net.sourceforge.argparse4j.inf.Subparser;
 
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.display.presenters.LogUpdatePresenter;
-import org.hydev.mcpm.client.installer.presenter.InstallPresenter;
-import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
+import org.hydev.mcpm.client.display.presenters.InstallPresenter;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 
 import java.util.function.Consumer;
 

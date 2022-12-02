@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.commands.controllers;
 
-import org.hydev.mcpm.client.commands.presenter.Table;
+import org.hydev.mcpm.client.display.presenters.Table;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesInput;

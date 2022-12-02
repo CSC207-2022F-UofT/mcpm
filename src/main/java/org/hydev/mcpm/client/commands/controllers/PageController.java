@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.commands.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.hydev.mcpm.Constants;
-import org.hydev.mcpm.client.commands.presenter.PagedPresenter;
+import org.hydev.mcpm.client.commands.presenters.PagedPresenter;
 
 import javax.annotation.Nullable;
 import java.io.File;

@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.display.presenters;
 
-import org.hydev.mcpm.client.commands.presenter.Table;
 import org.hydev.mcpm.client.commands.presenters.UpdatePresenter;
 import org.hydev.mcpm.client.updater.UpdateInput;
 import org.hydev.mcpm.client.updater.UpdateOutcome;

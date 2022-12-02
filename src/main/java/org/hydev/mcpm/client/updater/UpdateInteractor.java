@@ -7,7 +7,7 @@ import org.hydev.mcpm.client.matcher.PluginVersionId;
 import org.hydev.mcpm.client.matcher.PluginVersionState;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.Pair;

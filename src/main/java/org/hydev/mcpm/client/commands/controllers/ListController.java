@@ -5,7 +5,7 @@ import org.hydev.mcpm.client.list.ListAllBoundary;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.hydev.mcpm.client.commands.presenter.Table.tabulate;
+import static org.hydev.mcpm.client.display.presenters.Table.tabulate;
 
 /**
  * Controller class for the ListAll use case.

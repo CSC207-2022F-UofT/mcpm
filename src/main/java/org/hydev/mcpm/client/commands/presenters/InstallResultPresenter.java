@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.installer.presenter;
+package org.hydev.mcpm.client.commands.presenters;
 
 import org.hydev.mcpm.client.installer.InstallResult;
 

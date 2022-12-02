@@ -11,8 +11,8 @@ import org.hydev.mcpm.client.injector.LoadBoundary;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.installer.InstallResult.Type;
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.installer.presenter.InstallPresenter;
-import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
+import org.hydev.mcpm.client.display.presenters.InstallPresenter;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
 
 import java.io.File;

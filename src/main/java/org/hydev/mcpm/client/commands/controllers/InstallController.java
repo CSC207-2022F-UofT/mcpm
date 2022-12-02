@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.commands.controllers;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 
 /**
  * Controller class for the installation use case.
