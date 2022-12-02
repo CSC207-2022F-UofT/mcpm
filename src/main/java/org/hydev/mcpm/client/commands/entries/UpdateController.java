@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.commands.entries;
 
 import org.hydev.mcpm.client.commands.presenters.UpdatePresenter;
+import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
 import org.hydev.mcpm.client.updater.UpdateBoundary;
 import org.hydev.mcpm.client.updater.UpdateInput;
 
@@ -20,8 +21,9 @@ public record UpdateController(UpdateBoundary boundary) {
      * @param noCache Whether to force fetch the database before updating.
      * @param presenter A presenter object to format the update boundary result.
      */
-    public void update(List<String> names, boolean load, boolean noCache, UpdatePresenter presenter) {
-        var input = new UpdateInput(names, load, noCache);
+    public void update(List<String> names, boolean load, boolean noCache, UpdatePresenter presenter,
+                       InstallResultPresenter installResultPresenter) {
+        var input = new UpdateInput(names, load, noCache, installResultPresenter);
         var result = boundary.update(input);
 
         // This is being done in the Controller for this time being.

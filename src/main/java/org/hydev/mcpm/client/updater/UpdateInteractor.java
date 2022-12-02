@@ -10,6 +10,7 @@ import org.hydev.mcpm.client.database.model.PluginVersionId;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.Pair;
@@ -71,7 +72,8 @@ public record UpdateInteractor(
         );
     }
 
-    private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load) {
+    private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load,
+                                        InstallResultPresenter installResultPresenter) {
         var latest = model.getLatestPluginVersion().orElse(null);
 
         if (latest == null || latest.meta() == null || latest.meta().name() == null) {
@@ -92,25 +94,18 @@ public record UpdateInteractor(
 
         var input = new InstallInput(name, SearchPackagesType.BY_NAME, load, manuallyInstalled);
 
-        var result = installer.installPlugin(input);
+        var result = installer.installPlugin(input, installResultPresenter);
 
         // Network error is used for events that aren't necessarily network errors.
         // But I don't want to have too many fail states. Maybe we should go for INTERNAL_ERROR?
-        return switch (result.type()) {
-            case NOT_FOUND -> defaultOutcomeFor(state, MISMATCHED);
-            case SEARCH_INVALID_INPUT -> throw new RuntimeException(); // Something went wrong.
-            case SEARCH_FAILED_TO_FETCH_DATABASE,
-                NO_VERSION_AVAILABLE -> defaultOutcomeFor(state, NETWORK_ERROR);
-            case PLUGIN_EXISTS -> throw new RuntimeException(); // We need to know something went wrong.
-            case SUCCESS_INSTALLED_AND_FAIL_LOADED,
-                SUCCESS_INSTALLED_AND_UNLOADED,
-                SUCCESS_INSTALLED_AND_LOADED -> new UpdateOutcome(
-                    UPDATED, state.versionId().versionString(), latestVersion
-            );
-        };
+        if (result) {
+            return new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
+        }
+        return defaultOutcomeFor(state, NETWORK_ERROR);
     }
 
-    private UpdateOutcome makeOutcome(@Nullable PluginVersionState state, CheckForUpdatesResult result, boolean load) {
+    private UpdateOutcome makeOutcome(@Nullable PluginVersionState state, CheckForUpdatesResult result, boolean load,
+                                      InstallResultPresenter installResultPresenter) {
         // E.g. was filtered in stateMapByNames since there was no associated version.
         if (state == null) {
             defaultOutcomeFor(null, NOT_INSTALLED);
@@ -126,7 +121,7 @@ public record UpdateInteractor(
                 return defaultOutcomeFor(state, UP_TO_DATE);
             }
 
-            return updateByModel(model, state, load);
+            return updateByModel(model, state, load, installResultPresenter);
         }
     }
 
@@ -158,7 +153,7 @@ public record UpdateInteractor(
         for (String name : pluginNames) {
             var state = states.getOrDefault(name, null); // This better succeed.
 
-            results.put(name, makeOutcome(state, checkResult, input.load()));
+            results.put(name, makeOutcome(state, checkResult, input.load(), input.installResultPresenter()));
         }
 
         return new UpdateResult(UpdateResult.State.SUCCESS, results);
