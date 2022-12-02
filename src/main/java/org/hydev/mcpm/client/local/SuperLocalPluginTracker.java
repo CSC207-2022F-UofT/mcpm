@@ -219,8 +219,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 toAdd.add(currentListName.get(pluginRepresentation.getName()));
             } else if (tryPreserveLocalStatus) {
                 // if the plugin exists in both currentList and installedPlugins, but the
-                // version differs
-                // and we are trying to preserve local status, pass it on with the same status
+                // version differs, and we are trying to preserve local status, pass it on with the same status
                 boolean status = currentListName.get(pluginRepresentation.getName()).isManual();
                 pluginRepresentation.setManual(status);
             }
@@ -321,7 +320,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         // Get all the dependencies of the manually installed plugins
         for (String name : manuallyInstalledPlugins) {
             try {
-                // Find the pluginYml file of the plugin with name name from the plugin
+                // Find the pluginYml file of the plugin with name from the plugin
                 // directory
 
                 File pluginYmlPath = getPluginFile(name);
@@ -429,7 +428,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * version on the server.
      * If yes, return true. If no, return false.
      *
-     * @return True if the local version of plugin with name name is outdated, false
+     * @return True if the local version of plugin with name is outdated, false
      *         otherwise
      */
     public Boolean compareVersion(String name, SearchPackagesBoundary searchPackagesBoundary) {
@@ -484,7 +483,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * @return A File object representation of the plugin
      */
     private File getPluginFile(String name) {
-        // Get the file path of the plugin with name name from the local plugin
+        // Get the file path of the plugin with name from the local plugin
         // directory
         // Return the file path as a File
         // Find the file from the plugin directory

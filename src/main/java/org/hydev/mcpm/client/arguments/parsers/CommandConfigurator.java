@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Subparser;
 
 /**
- * Provides an interface for providing Command details and setting up an Subparser object.
+ * Provides an interface for providing Command details and setting up a Subparser object.
  */
 public interface CommandConfigurator {
     /**
