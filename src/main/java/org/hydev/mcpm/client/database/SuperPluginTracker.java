@@ -24,6 +24,10 @@ public interface SuperPluginTracker {
 
     void removeManuallyInstalled(String name);
 
+    Boolean findIfInLockById(String id);
+
+    Boolean findIfInLockByName(String name);
+
     List<String> listManuallyInstalled();
 
     List<String> listOrphanPlugins(boolean considerSoftDependencies);
