@@ -2,6 +2,9 @@ package org.hydev.mcpm.client.commands.presenters;
 
 import org.hydev.mcpm.client.installer.InstallResult;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
  * Interface for presenting the state of plugins
  *
@@ -10,8 +13,7 @@ public interface InstallResultPresenter {
     /**
      * Display the string to the console
      *
-     * @param installResult state of the installation
-     * @param name Description of plugin state
+     * @param results Resulting state of the installation
      */
-    void displayResult(InstallResult installResult, String name);
+    void displayResult(List<InstallResult> results, Consumer<String> log);
 }

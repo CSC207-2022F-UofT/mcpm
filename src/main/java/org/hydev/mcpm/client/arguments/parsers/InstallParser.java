@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * Handles parsing install arguments (to be dispatched to Controller).
  */
 
-public record InstallParser(InstallController controller) implements CommandParser
+public record InstallParser(InstallController controller, InstallResultPresenter presenter) implements CommandParser
 {
     @Override
     public String name() {
@@ -37,12 +37,7 @@ public record InstallParser(InstallController controller) implements CommandPars
     @Override
     public void run(Namespace details, Consumer<String> log) {
         var name = details.getString("name");
-        InstallResultPresenter installResultPresent = new InstallPresenter(log);
-
-        controller.install(name,
-            SearchPackagesType.BY_NAME,
-            !details.getBoolean("noLoad"),
-            installResultPresent
-        );
+        var result = controller.install(name, SearchPackagesType.BY_NAME, !details.getBoolean("noLoad"));
+        presenter.displayResult(result, log);
     }
 }

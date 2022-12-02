@@ -3,11 +3,16 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
+<<<<<<< HEAD
 
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.display.presenters.LogUpdatePresenter;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
+=======
+import org.hydev.mcpm.client.commands.entries.UpdateController;
+import org.hydev.mcpm.client.commands.presenters.LogUpdatePresenter;
+>>>>>>> 8e4cc88 (fix installer presenter and dependendy loaded)
 
 import java.util.function.Consumer;
 
@@ -54,14 +59,16 @@ public record UpdateParser(UpdateController controller) implements CommandParser
         // and I don't want UpdatePresenter to depend on Consumer<String>,
         // I'll instantiate this every call.
         var presenter = new LogUpdatePresenter(log);
+<<<<<<< HEAD
         InstallResultPresenter installPresenter = new InstallPresenter(log);
 
+=======
+>>>>>>> 8e4cc88 (fix installer presenter and dependendy loaded)
         controller.update(
             details.getList("names"),
             details.getBoolean("load"),
             details.getBoolean("no-cache"),
-            presenter,
-            installPresenter
+            presenter
         );
     }
 }

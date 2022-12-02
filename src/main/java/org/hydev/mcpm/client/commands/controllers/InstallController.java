@@ -2,8 +2,11 @@ package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.installer.InstallBoundary;
+import org.hydev.mcpm.client.installer.InstallResult;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
+
+import java.util.List;
 
 /**
  * Controller class for the installation use case.
@@ -16,10 +19,10 @@ public record InstallController(InstallBoundary boundary)
      * @param name Plugin name from repository
      * @param type The type of searching package
      * @param load Whether to load after installing
-     * @param resultPresenter display the state of the plugin
+     * @return Results
      */
-    public void install(String name, SearchPackagesType type, boolean load, InstallResultPresenter resultPresenter) {
+    public List<InstallResult> install(String name, SearchPackagesType type, boolean load) {
         var input = new InstallInput(name, type, load, true);
-        var output = boundary.installPlugin(input, resultPresenter);
+        return boundary.installPlugin(input);
     }
 }

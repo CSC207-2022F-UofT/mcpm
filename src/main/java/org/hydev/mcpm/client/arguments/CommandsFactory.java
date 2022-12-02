@@ -42,6 +42,7 @@ import org.hydev.mcpm.client.injector.LocalJarFinder;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
+import org.hydev.mcpm.client.installer.presenter.InstallPresenter;
 import org.hydev.mcpm.client.uninstall.Uninstaller;
 import org.hydev.mcpm.client.updater.UpdateInteractor;
 
@@ -95,6 +96,9 @@ public class CommandsFactory {
         var updateController = new UpdateController(updater);
         var refreshController = new RefreshController(fetcher, listener, mirror);
 
+        // Presenters
+        var installPresenter = new InstallPresenter();
+
         /*
          * Add general parsers to this list!
          * All versions of MCPM will have access to these parsers.
@@ -106,7 +110,7 @@ public class CommandsFactory {
             new SearchParser(searchController),
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
-            new InstallParser(installController),
+            new InstallParser(installController, installPresenter),
             new RefreshParser(refreshController),
             new PageParser(pager),
             new UninstallParser(uninstallController),

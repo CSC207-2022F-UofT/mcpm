@@ -1,7 +1,10 @@
 package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.commands.presenters.UpdatePresenter;
+<<<<<<< HEAD:src/main/java/org/hydev/mcpm/client/commands/controllers/UpdateController.java
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
+=======
+>>>>>>> 8e4cc88 (fix installer presenter and dependendy loaded):src/main/java/org/hydev/mcpm/client/commands/entries/UpdateController.java
 import org.hydev.mcpm.client.updater.UpdateBoundary;
 import org.hydev.mcpm.client.updater.UpdateInput;
 
@@ -19,11 +22,9 @@ public record UpdateController(UpdateBoundary boundary) {
      * @param names A list of names to update.
      * @param load Whether to reload installed plugins (ignored on CLI environment).
      * @param noCache Whether to force fetch the database before updating.
-     * @param presenter A presenter object to format the update boundary result.
      */
-    public void update(List<String> names, boolean load, boolean noCache, UpdatePresenter presenter,
-                       InstallResultPresenter installResultPresenter) {
-        var input = new UpdateInput(names, load, noCache, installResultPresenter);
+    public void update(List<String> names, boolean load, boolean noCache, UpdatePresenter presenter) {
+        var input = new UpdateInput(names, load, noCache);
         var result = boundary.update(input);
 
         // This is being done in the Controller for this time being.
