@@ -6,6 +6,7 @@ import org.hydev.mcpm.client.display.progress.ProgressBarTheme;
 /**
  * Row of a progress bar.
  */
+@SuppressWarnings("unused")
 public interface ProgressRowBoundary {
     /**
      * Get formatted string of the current progress bar

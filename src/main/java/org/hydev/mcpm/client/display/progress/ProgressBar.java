@@ -8,9 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.String.format;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
@@ -28,12 +26,11 @@ public class ProgressBar implements ProgressBarBoundary {
 
     private final List<ProgressRowBoundary> bars;
     private final ArrayList<ProgressRowBoundary> activeBars;
-    private final Map<ProgressRowBoundary, Integer> id;
 
     private long lastUpdate;
     private double frameDelay;
 
-    private final boolean istty;
+    private final boolean isTty;
 
     private boolean closed = false;
 
@@ -49,7 +46,6 @@ public class ProgressBar implements ProgressBarBoundary {
         this.cu = new ConsoleUtils(this.out);
         this.bars = new ArrayList<>();
         this.activeBars = new ArrayList<>();
-        this.id = new HashMap<>();
         this.cols = AnsiConsole.getTerminalWidth();
 
 
@@ -63,17 +59,15 @@ public class ProgressBar implements ProgressBarBoundary {
         this.frameDelay = 1 / 60d;
 
         // Check if output is a TTY. If not, change frame rate to 0.5 fps to avoid spamming a log.
-        this.istty = isatty(STDOUT_FILENO) == 1;
-        if (!istty) this.frameDelay = 1 / 0.5;
+        this.isTty = isatty(STDOUT_FILENO) == 1;
+        if (!isTty) this.frameDelay = 1 / 0.5;
     }
 
     @Override
     public ProgressRowBoundary appendBar(ProgressRowBoundary bar)
     {
-        int id = this.bars.size();
         this.activeBars.add(bar);
 
-        this.id.put(bar, id);
         this.bars.add(bar);
         bar.setPb(this);
 
@@ -84,8 +78,8 @@ public class ProgressBar implements ProgressBarBoundary {
 
 
     /*
-     * Reprint all the ProgresRows
-     * If printing would overcap the framerate, then skip this update
+     * Reprint all the ProgresRows.
+     * If printing would over do the framerate, then we will skip this update.
      */
     protected void update()
     {
@@ -109,7 +103,7 @@ public class ProgressBar implements ProgressBarBoundary {
     {
         // Roll back to the first line
         activeBars.sort((a, b) -> Double.compare(b.getCompletion(), a.getCompletion()));
-        if (istty) cu.curUp(activeBars.size());
+        if (isTty) cu.curUp(activeBars.size());
         activeBars.forEach(bar -> {
             cu.eraseLine();
             out.println(bar.toString(theme, cols));
