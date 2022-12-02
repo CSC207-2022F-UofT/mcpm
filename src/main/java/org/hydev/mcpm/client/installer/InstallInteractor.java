@@ -156,12 +156,9 @@ public class InstallInteractor implements InstallBoundary {
     public static void main(String[] args) {
         //noinspection ResultOfMethodCallIgnored
         new File(FILEPATH).mkdirs();
-        Consumer<String> log = new Consumer<>() {
-            @Override
-            public void accept(String s) {
-                System.out.println(s);
-            }
-        };
+
+        Consumer<String> log = System.out::println;
+
         InstallResultPresenter resultPresenter = new InstallPresenter(log);
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(() -> host);

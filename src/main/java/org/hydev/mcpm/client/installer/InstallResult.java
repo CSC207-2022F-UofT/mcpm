@@ -1,9 +1,5 @@
 package org.hydev.mcpm.client.installer;
 
-import org.hydev.mcpm.client.models.PluginModel;
-
-import java.util.Collection;
-
 /**
  * Exception during installation of a plugin
  */
