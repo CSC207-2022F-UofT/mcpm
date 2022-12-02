@@ -1,10 +1,6 @@
 package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.commands.presenters.UpdatePresenter;
-<<<<<<< HEAD:src/main/java/org/hydev/mcpm/client/commands/controllers/UpdateController.java
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
-=======
->>>>>>> 8e4cc88 (fix installer presenter and dependendy loaded):src/main/java/org/hydev/mcpm/client/commands/entries/UpdateController.java
 import org.hydev.mcpm.client.updater.UpdateBoundary;
 import org.hydev.mcpm.client.updater.UpdateInput;
 
