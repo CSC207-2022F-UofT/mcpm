@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.commands.presenter;
+package org.hydev.mcpm.client.commands.presenters;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 

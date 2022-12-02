@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.hydev.mcpm.client.commands.presenter.Table.tabulate;
+import static org.hydev.mcpm.client.display.presenters.Table.tabulate;
 
 /**
  * Controller for the mirror selection command

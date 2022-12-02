@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.commands.presenters.UpdatePresenter;
-import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.updater.UpdateBoundary;
 import org.hydev.mcpm.client.updater.UpdateInput;
 

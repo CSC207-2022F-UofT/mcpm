@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.commands.controllers;
 
-import org.hydev.mcpm.client.commands.presenter.PagedPresenter;
+import org.hydev.mcpm.client.commands.presenters.PagedPresenter;
 
 import javax.annotation.Nullable;
 

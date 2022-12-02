@@ -1,7 +1,8 @@
-package org.hydev.mcpm.client.commands.presenter;
+package org.hydev.mcpm.client.display.presenters;
 
 import com.google.common.collect.Streams;
 import org.apache.commons.lang3.StringUtils;
+import org.hydev.mcpm.client.commands.presenters.PagedPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.updater;
 
-import org.hydev.mcpm.client.installer.presenter.InstallResultPresenter;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 
 import java.util.List;
 
