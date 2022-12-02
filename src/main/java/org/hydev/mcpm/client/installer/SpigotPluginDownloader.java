@@ -3,13 +3,13 @@ package org.hydev.mcpm.client.installer;
 import org.hydev.mcpm.client.Downloader;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 import static org.hydev.mcpm.utils.GeneralUtils.concatUri;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * Plugin downloader for the MCPM Plugin Repository

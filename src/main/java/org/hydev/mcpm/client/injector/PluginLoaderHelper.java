@@ -13,6 +13,12 @@ import java.io.File;
  */
 public class PluginLoaderHelper extends JavaPlugin
 {
+    /**
+     * Reload the mcpm plugin through the helper plugin
+     *
+     * @param instance Instance of the mcpm plugin
+     * @param jar Jar file path of the mcpm plugin
+     */
     public void reloadMcpm(Plugin instance, File jar)
     {
         System.out.println("Unloading MCPM...");

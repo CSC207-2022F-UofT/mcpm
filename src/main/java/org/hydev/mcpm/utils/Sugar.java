@@ -66,6 +66,7 @@ public class Sugar
      * @param <V> Type of the value
      * @return Hashmap of values
      */
+    @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> uncheckedMapOf(Object... values)
     {
         var map = new HashMap<>();
@@ -78,7 +79,6 @@ public class Sugar
             if (v != null) map.put(k, v);
         }
 
-        //noinspection unchecked
         return (Map<K, V>) map;
     }
 }

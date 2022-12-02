@@ -1,9 +1,9 @@
 package org.hydev.mcpm.client.commands.presenters;
 
+import org.hydev.mcpm.client.commands.presenter.Table;
 import org.hydev.mcpm.client.updater.UpdateInput;
 import org.hydev.mcpm.client.updater.UpdateOutcome;
 import org.hydev.mcpm.client.updater.UpdateResult;
-import org.hydev.mcpm.utils.FormatUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -69,7 +69,7 @@ public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresente
             .map(LogUpdatePresenter::flattenOutcome)
             .toList();
 
-        return FormatUtils.tabulate(rows, headers);
+        return Table.tabulate(rows, headers);
     }
 
     // Unsure if this should take the input, but it allows for a nicer formatting.

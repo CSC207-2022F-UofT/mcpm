@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.installer;
 
-import org.hydev.mcpm.Constants;
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.LocalPluginTracker;
