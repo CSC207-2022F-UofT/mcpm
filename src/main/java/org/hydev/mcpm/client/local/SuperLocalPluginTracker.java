@@ -152,6 +152,40 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      */
 
     /**
+     * Returns whether a plugin with the given name is within
+     * the lock file
+     *
+     * @param name Id of the plugin
+     * @return Whether the plugin is within the lock file
+     */
+    public Boolean findIfInLockById(String name) {
+        ArrayList<PluginTrackerModel> list = readJson();
+        for (PluginTrackerModel pluginTrackerModel : list) {
+            if (pluginTrackerModel.getPluginId().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether a plugin with the given name is within
+     * the lock file
+     *
+     * @param name Name of the plugin
+     * @return Whether the plugin is within the lock file
+     */
+    public Boolean findIfInLockByName(String name) {
+        ArrayList<PluginTrackerModel> list = readJson();
+        for (PluginTrackerModel pluginTrackerModel : list) {
+            if (pluginTrackerModel.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Add a plugin to the JSON file
      *
      * @param name   Plugin name
