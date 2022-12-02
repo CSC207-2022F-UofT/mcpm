@@ -19,9 +19,7 @@ public record InstallController(InstallBoundary boundary)
      * @param resultPresenter display the state of the plugin
      */
     public void install(String name, SearchPackagesType type, boolean load, InstallResultPresenter resultPresenter) {
-        // TODO: User-friendly outputs
         var input = new InstallInput(name, type, load, true);
         var output = boundary.installPlugin(input, resultPresenter);
-        // log.accept(output.type().reason());
     }
 }
