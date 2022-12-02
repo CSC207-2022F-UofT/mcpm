@@ -1,9 +1,14 @@
 package org.hydev.mcpm.client.database;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
+import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
+import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.client.models.PluginTrackerModel;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Implementation to the ListAll functionality
@@ -26,7 +31,7 @@ public class ListAllInteractor implements ListAllBoundary {
      *                  a request to list all manually installed plugins that are
      *                  outdated.
      */
-    public List<PluginYml> listAll(String parameter) {
+    public List<PluginYml> listAll(String parameter, CheckForUpdatesBoundary checkForUpdatesBoundary) {
         var installed = localPluginTracker.listInstalled();
         switch (parameter) {
             case "all":
@@ -37,7 +42,9 @@ public class ListAllInteractor implements ListAllBoundary {
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
 
             case "outdated":
-                throw new NotImplementedException("Method to print outdated plugins not implemented yet");
+                CheckForUpdatesInput input = new CheckForUpdatesInput(null, false);
+
+                ArrayList<PluginTrackerModel> installedAsModels = localPluginTracker.listInstalledAsModels();
 
             default:
                 return null;

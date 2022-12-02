@@ -253,7 +253,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 toAdd.add(currentListName.get(pluginRepresentation.getName()));
             } else if (tryPreserveLocalStatus) {
                 // if the plugin exists in both currentList and installedPlugins, but the
-                // version differs, and we are trying to preserve local status, pass it on with the same status
+                // version differs, and we are trying to preserve local status, pass it on with
+                // the same status
                 boolean status = currentListName.get(pluginRepresentation.getName()).isManual();
                 pluginRepresentation.setManual(status);
             }
@@ -298,6 +299,19 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         }
 
         saveJson(newList);
+    }
+
+    /**
+     * Returns a list of all plugins, represented in PluginTrackerModel objects
+     *
+     *
+     */
+    public ArrayList<PluginTrackerModel> listInstalledAsModels() {
+        ArrayList<PluginTrackerModel> list = new ArrayList<>();
+        for (PluginYml pluginYml : listInstalled()) {
+            list.add(new PluginTrackerModel(pluginYml.name(), false, pluginYml.version(), "unknown"));
+        }
+        return list;
     }
 
     /**
@@ -420,7 +434,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             for (File child : directoryListing) {
                 if (child.getName().equals(name)) {
                     // We probably want to keep this try catch.
-                    // A plugin can be malformed in many ways, this will just drop it from our list if needed.
+                    // A plugin can be malformed in many ways, this will just drop it from our list
+                    // if needed.
                     try {
                         return readMeta(child).version();
                     } catch (Exception e) {
