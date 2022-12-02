@@ -1,9 +1,9 @@
 package org.hydev.mcpm.client.updater;
 
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.matcher.PluginModelId;
 import org.hydev.mcpm.client.matcher.PluginVersionId;
 import org.hydev.mcpm.client.matcher.PluginVersionState;
@@ -30,7 +30,7 @@ import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
 public record UpdateInteractor(
         CheckForUpdatesBoundary checkBoundary,
         InstallBoundary installer,
-        LocalPluginTracker pluginTracker
+        PluginTracker pluginTracker
 ) implements UpdateBoundary {
     @Nullable
     private PluginVersionState stateByName(Map<String, PluginYml> installed, String name) {
@@ -52,7 +52,7 @@ public record UpdateInteractor(
             .collect(Pair.toMap());
 
         return names.stream()
-            .map(name -> new Pair<>(name, stateByName(installed, name)))
+            .map(name -> Pair.of(name, stateByName(installed, name)))
             .filter(pair -> pair.getValue() != null)
             .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
@@ -101,7 +101,7 @@ public record UpdateInteractor(
                                       InstallResultPresenter installResultPresenter) {
         // E.g. was filtered in stateMapByNames since there was no associated version.
         if (state == null) {
-            defaultOutcomeFor(null, NOT_INSTALLED);
+            return defaultOutcomeFor(null, NOT_INSTALLED);
         }
 
         if (result.mismatched().contains(state)) {
