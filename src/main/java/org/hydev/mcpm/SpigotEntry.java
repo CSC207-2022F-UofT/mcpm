@@ -22,6 +22,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
+    private static SpigotEntry instance;
+
     public SpigotEntry()
     {
         // Let the other parts of our program know that we're in minecraft
@@ -38,6 +40,9 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
     @Override
     public void onEnable()
     {
+        // Initialize instance. This is needed for the PluginLoader.
+        instance = this;
+
         // Initialize logger
         log = getLogger();
         log.info("Enabled!");
@@ -47,6 +52,16 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);
+    }
+
+    /**
+     * Get latest instance
+     *
+     * @return Instance of this
+     */
+    public static SpigotEntry instance()
+    {
+        return instance;
     }
 
     /**

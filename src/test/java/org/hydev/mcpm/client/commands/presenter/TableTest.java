@@ -1,11 +1,11 @@
-package org.hydev.mcpm.utils;
+package org.hydev.mcpm.client.commands.presenter;
 
+import org.hydev.mcpm.client.commands.presenter.Table;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.hydev.mcpm.utils.ColorLogger.printc;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for FormatUtils
@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2022-11-20
  */
-class FormatUtilsTest
+class TableTest
 {
     @Test
     void tabulate()
     {
-        printc(FormatUtils.tabulate(List.of(
+        printc(Table.tabulate(List.of(
             List.of("Azalea", "meow", "Cakes without eggs or sugar"),
             List.of("Lindsey", "meow", "Burgers")
         ), List.of(":Contributor", "Centered", "Favorite Food:")));

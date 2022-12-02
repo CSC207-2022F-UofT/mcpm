@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
@@ -54,5 +57,21 @@ public class PluginJarFile extends ZipFile
     public PluginYml readPluginYaml() throws IOException, PluginYml.InvalidPluginMetaStructure
     {
         return PluginYml.fromYml(readString("plugin.yml"));
+    }
+
+    /**
+     * List entries
+     *
+     * @return List of zip entries
+     */
+    public List<ZipEntry> list()
+    {
+        var entries = new ArrayList<ZipEntry>();
+        var en = this.entries();
+        while (en.hasMoreElements())
+        {
+            entries.add(en.nextElement());
+        }
+        return entries;
     }
 }

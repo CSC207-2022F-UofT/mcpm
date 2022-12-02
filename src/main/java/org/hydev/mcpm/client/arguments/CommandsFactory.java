@@ -41,6 +41,7 @@ public class CommandsFactory {
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
     public static List<CommandParser> baseParsers(boolean isMinecraft) {
+        var pager = new PageController(20);
         var mirror = new MirrorSelector();
         var fetcher = new LocalDatabaseFetcher(mirror.selectedMirrorSupplier());
         var tracker = new LocalPluginTracker();
@@ -61,7 +62,7 @@ public class CommandsFactory {
         // Controllers
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));
-        var searchController = new SearchPackagesController(searcher);
+        var searchController = new SearchPackagesController(searcher, pager);
         var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(tracker);
 
@@ -84,6 +85,7 @@ public class CommandsFactory {
             new InfoParser(infoController),
             new InstallParser(installController),
             new RefreshParser(refreshController),
+            new PageParser(pager),
             new UninstallParser(uninstallController),
             new UpdateParser(updateController)
         );
