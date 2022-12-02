@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Terminal progress bar based on Xterm escape codes
  */
+@SuppressWarnings("unused")
 public interface ProgressBarBoundary extends AutoCloseable {
     /**
      * Append a progress bar at the end
@@ -14,6 +15,7 @@ public interface ProgressBarBoundary extends AutoCloseable {
      * @param bar Row of the progress bar
      * @return bar for fluent access
      */
+    @SuppressWarnings("UnusedReturnValue")
     ProgressRowBoundary appendBar(ProgressRowBoundary bar);
 
     /**
