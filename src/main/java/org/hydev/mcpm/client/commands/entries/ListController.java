@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.commands.entries;
 
 import org.hydev.mcpm.client.database.ListAllBoundary;
+import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -15,14 +16,16 @@ import static org.hydev.mcpm.utils.FormatUtils.tabulate;
  */
 public class ListController {
     private final ListAllBoundary listAllBoundary;
+    private final CheckForUpdatesBoundary checkForUpdatesBoundary;
 
     /**
      * Constructor for ListAllController.
      *
      * @param listAllBoundary The boundary class for ListAllController.
      */
-    public ListController(ListAllBoundary listAllBoundary) {
+    public ListController(ListAllBoundary listAllBoundary, CheckForUpdatesBoundary checkForUpdatesBoundary) {
         this.listAllBoundary = listAllBoundary;
+        this.checkForUpdatesBoundary = checkForUpdatesBoundary;
     }
 
     /**
