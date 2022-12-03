@@ -25,21 +25,21 @@ public record ListAllInteractor(SuperPluginTracker pluginTracker) implements Lis
      *                  a request to list all manually installed plugins that are
      *                  outdated.
      */
-    public List<PluginYml> listAll(String parameter, CheckForUpdatesBoundary checkForUpdatesBoundary) {
+    public List<PluginYml> listAll(ListType parameter, CheckForUpdatesBoundary checkForUpdatesBoundary) {
         var installed = pluginTracker.listInstalled();
         switch (parameter) {
-            case "all":
+            case ALL:
                 return installed;
 
-            case "manual":
+            case MANUAL:
                 var local = pluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
 
-            case "automatic":
+            case AUTOMATIC:
                 var manual = pluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> !manual.contains(it.name())).toList();
 
-            case "outdated":
+            case OUTDATED:
                 ListUpdateableBoundary listUpdateableBoundary = new ListUpdateableHelper();
                 var outdated = listUpdateableBoundary.listUpdateable(pluginTracker, checkForUpdatesBoundary);
                 return installed.stream().filter(it -> outdated.contains(it.name())).toList();

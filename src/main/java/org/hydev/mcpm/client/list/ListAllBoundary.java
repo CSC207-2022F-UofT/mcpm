@@ -22,5 +22,6 @@ public interface ListAllBoundary {
      *                  a request to list all manually installed plugins that are
      *                  outdated.
      */
-    List<PluginYml> listAll(String parameter, CheckForUpdatesBoundary checkForUpdatesBoundary);
+
+    List<PluginYml> listAll(ListType parameter, CheckForUpdatesBoundary checkForUpdatesBoundary);
 }

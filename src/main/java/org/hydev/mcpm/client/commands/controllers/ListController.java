@@ -2,6 +2,7 @@ package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.list.ListAllBoundary;
 import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
+import org.hydev.mcpm.client.list.ListType;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -34,7 +35,27 @@ public class ListController {
      * @param log       Logger
      */
     public void listAll(String parameter, Consumer<String> log) {
-        var list = listAllBoundary.listAll(parameter, checkForUpdatesBoundary);
+
+        ListType listType;
+        switch (parameter) {
+            case "all":
+                listType = ListType.ALL;
+                break;
+            case "manual":
+                listType = ListType.MANUAL;
+                break;
+            case "automatic":
+                listType = ListType.AUTOMATIC;
+                break;
+            case "outdated":
+                listType = ListType.OUTDATED;
+                break;
+            default:
+                log.accept("Invalid parameter. Please use 'all', 'manual', 'automatic', or 'outdated'.");
+                return;
+        }
+
+        var list = listAllBoundary.listAll(listType, checkForUpdatesBoundary);
 
         // Tabulate result
         var table = tabulate(

@@ -22,7 +22,7 @@ import java.util.OptionalLong;
 public class ListUpdateableHelper implements ListUpdateableBoundary {
 
     /**
-     * Returns a list of plugins that are outdated.
+     * Returns a list of plugins names that belong to outdated plugins
      *
      * @param localPluginTracker      The plugin tracker in question
      * @param checkForUpdatesBoundary The boundary to check for updates
