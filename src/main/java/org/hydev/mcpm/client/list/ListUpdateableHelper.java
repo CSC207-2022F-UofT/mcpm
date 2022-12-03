@@ -58,14 +58,17 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
         // to the list of PluginTrackerModels's version
 
         if (rawResult.state() == CheckForUpdatesResult.State.SUCCESS) {
-            ArrayList<String> outdatedNames = new ArrayList<>();
 
             // get the ids of the plugins that are outdated from result
             ArrayList<String> outdated = new ArrayList<>();
             for (PluginModel pluginModel : rawResult.updatable().values()) {
-                outdated.add(pluginModel.getLatestPluginVersion().get().meta().name());
+                var version = pluginModel.getLatestPluginVersion();
+
+                if (version != null) {
+                    outdated.add(version.get().meta().name());
+                }
             }
-            return outdatedNames;
+            return outdated;
         }
 
         return new ArrayList<>();
