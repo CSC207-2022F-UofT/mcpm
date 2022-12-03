@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.list;
 
-import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
+import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.models.PluginYml;
 
 import java.util.List;

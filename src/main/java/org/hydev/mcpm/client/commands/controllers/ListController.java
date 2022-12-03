@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.commands.controllers;
 
-import org.hydev.mcpm.client.database.ListAllBoundary;
-import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
+import org.hydev.mcpm.client.list.ListAllBoundary;
+import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -12,7 +12,6 @@ import static org.hydev.mcpm.client.display.presenters.Table.tabulate;
  * Controller class for the ListAll use case.
  *
  * @author Kevin Chen
- * @author Azalea
  */
 public class ListController {
     private final ListAllBoundary listAllBoundary;
@@ -38,8 +37,8 @@ public class ListController {
         var list = listAllBoundary.listAll(parameter, checkForUpdatesBoundary);
 
         // Tabulate result
-        var table = tabulate(list.stream().map(p -> List.of("&a" + p.name(), "&e"
-                + p.getFirstAuthor(), p.version())).toList(),
+        var table = tabulate(
+                list.stream().map(p -> List.of("&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList(),
                 List.of(":Name", "Author", "Version:"));
 
         log.accept(table);
