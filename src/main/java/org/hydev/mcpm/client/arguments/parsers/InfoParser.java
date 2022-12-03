@@ -2,15 +2,12 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.commands.entries.InfoController;
+import org.hydev.mcpm.client.commands.controllers.InfoController;
 
 import java.util.function.Consumer;
 
 /**
  * Command parser for the info use case
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public record InfoParser(InfoController controller) implements CommandParser
 {

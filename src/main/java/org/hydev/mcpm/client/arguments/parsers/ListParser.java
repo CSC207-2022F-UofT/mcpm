@@ -2,17 +2,12 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import net.sourceforge.argparse4j.inf.Subparsers;
-import org.hydev.mcpm.client.commands.entries.ListController;
-import org.jetbrains.annotations.Nullable;
+import org.hydev.mcpm.client.commands.controllers.ListController;
 
 import java.util.function.Consumer;
 
 /**
  * Command parser for List command
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
  */
 public record ListParser(ListController controller) implements CommandParser
 {

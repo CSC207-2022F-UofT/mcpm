@@ -6,9 +6,6 @@ import java.io.PrintStream;
 
 /**
  * Xterm console interaction utilities
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
  */
 public class ConsoleUtils
 {

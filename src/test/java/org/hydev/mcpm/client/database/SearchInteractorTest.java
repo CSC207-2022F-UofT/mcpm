@@ -1,11 +1,11 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.fetcher.BriefFetcherListener;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
+import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
+import org.hydev.mcpm.client.search.SearchPackagesInput;
+import org.hydev.mcpm.client.search.SearchPackagesType;
+import org.hydev.mcpm.client.search.SearchPackagesResult;
+import org.hydev.mcpm.client.search.SearchInteractor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class SearchInteractorTest {
     @BeforeAll
     public static void setup() {
         var smallFetcher = new ConstantFetcher(PluginMockFactory.generateTestPlugins());
-        var listener = new BriefFetcherListener(true);
+        var listener = new QuietFetcherListener();
         database = new SearchInteractor(smallFetcher, listener);
     }
 
@@ -39,6 +39,7 @@ public class SearchInteractorTest {
      * @param delim Delimiter separating names.
      * @return Formatted names of plugins as a string.
      */
+    @SuppressWarnings("SameParameterValue")
     private String formatStr(SearchPackagesResult result, String delim) {
         return result
                 .plugins()
@@ -94,6 +95,7 @@ public class SearchInteractorTest {
     }
 
     @Test
+    @SuppressWarnings("SpellCheckingInspection")
     void testSearchByCommandSuccessMatch() {
         var result = database.search(
                 new SearchPackagesInput(SearchPackagesType.BY_COMMAND, "/ungod", true));

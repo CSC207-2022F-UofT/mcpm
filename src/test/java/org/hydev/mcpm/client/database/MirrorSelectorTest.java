@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.mirrors.MirrorSelector;
+import org.hydev.mcpm.client.local.MirrorSelector;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,17 +11,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
- * TODO: Write a description for this class!
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-01
+ * This class contains tests for the MirrorSelector class.
+ * This class also makes networking requests.
  */
 class MirrorSelectorTest
 {
-    static MirrorSelector mi = new MirrorSelector();
-    static boolean hasInternet = ping(mi.mirrorListUrl()) != -1;
+    private static final MirrorSelector mi = new MirrorSelector();
+    private static final boolean hasInternet = ping(mi.mirrorListUrl()) != -1;
 
     @Test
+    @Tag("IntegrationTest")
     void listAvailableMirrors() throws IOException
     {
         assumeTrue(hasInternet);
@@ -29,6 +29,7 @@ class MirrorSelectorTest
     }
 
     @Test
+    @Tag("IntegrationTest")
     void updateMirrors() throws IOException
     {
         assumeTrue(hasInternet);
@@ -36,6 +37,7 @@ class MirrorSelectorTest
     }
 
     @Test
+    @Tag("IntegrationTest")
     void pingMirrors() throws IOException
     {
         assumeTrue(hasInternet);

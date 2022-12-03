@@ -24,9 +24,6 @@ import java.util.Comparator;
  * }
  * // directory and contents have been removed
  * }
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-02
  */
 public class TemporaryDir implements AutoCloseable
 {
@@ -40,6 +37,8 @@ public class TemporaryDir implements AutoCloseable
         try
         {
             path = Files.createTempDirectory("mcpm-" + System.currentTimeMillis()).toFile();
+
+            //noinspection ResultOfMethodCallIgnored
             path.mkdirs();
         }
         catch (IOException e)
@@ -59,6 +58,7 @@ public class TemporaryDir implements AutoCloseable
         // Recursively delete files on exit
         try (var w = Files.walk(path.toPath()))
         {
+            //noinspection ResultOfMethodCallIgnored
             w.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
         }
         catch (IOException e)

@@ -2,13 +2,10 @@ package org.hydev.mcpm.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for UnitConverter
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-19
  */
 class UnitConverterTest
 {

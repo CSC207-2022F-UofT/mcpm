@@ -5,9 +5,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
 /**
  * Temporary exception thrown to store a help message
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-20
  */
 public class HelpException extends ArgumentParserException
 {

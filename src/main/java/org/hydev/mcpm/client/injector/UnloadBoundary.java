@@ -4,9 +4,6 @@ import java.io.File;
 
 /**
  * Interface for unloading a locally installed plugin.
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-29
  */
 public interface UnloadBoundary
 {

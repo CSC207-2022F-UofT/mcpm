@@ -26,7 +26,7 @@ public class PluginMockFactory {
      *
      * @param description Description
      * @param aliases Other names
-     * @return A Map<String, PluginCommand> object.
+     * @return A Map[String, PluginCommand] object.
      */
     public static @NotNull Map<String, PluginCommand> createCommand(String description, List<String> aliases) {
         var map = new HashMap<String, PluginCommand>();

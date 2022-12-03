@@ -12,9 +12,6 @@ import java.util.Arrays;
 
 /**
  * Utility for Zstd-jni
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public class ZstdUtils
 {
@@ -84,7 +81,15 @@ public class ZstdUtils
     {
         try
         {
-            if (!nativeSupport()) return compressPure(content);
+            // !nativeSupport()
+            if (!nativeSupport()) {
+                return compressPure(content);
+            }
+
+            // nativeSupport checks this for us, we want to silence the warning
+            assert zstd != null;
+
+            //noinspection RedundantCast
             return (byte[]) zstd.compress.invoke(null, (Object) content, level);
         }
         catch (IllegalAccessException e)
@@ -128,7 +133,14 @@ public class ZstdUtils
     {
         try
         {
-            if (!nativeSupport()) return decompressPure(zst);
+            if (!nativeSupport()) {
+                return decompressPure(zst);
+            }
+
+            // nativeSupport checks this for us, we want to silence the warning
+            assert zstd != null;
+
+            //noinspection RedundantCast
             return (byte[]) zstd.decompress.invoke(null, zst,
                 ((Long) zstd.decompressedSize.invoke(null, (Object) zst)).intValue());
         }

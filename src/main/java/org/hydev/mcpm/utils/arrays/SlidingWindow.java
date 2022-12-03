@@ -7,9 +7,6 @@ import java.util.Queue;
 
 /**
  * An implementation of FixedWindowSum using a queue.
- *
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-11-21
  */
 public class SlidingWindow implements FixedWindowSum {
     private long sum;

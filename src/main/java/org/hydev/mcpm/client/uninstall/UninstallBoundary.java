@@ -1,7 +1,5 @@
 package org.hydev.mcpm.client.uninstall;
 
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
-
 /**
  * Uninstalls a plugin
  */
@@ -11,5 +9,5 @@ public interface UninstallBoundary {
      *
      * @param input Uninstall input
      */
-    UninstallResult uninstall(UninstallInput input) throws PluginNotFoundException;
+    UninstallResult uninstall(UninstallInput input);
 }

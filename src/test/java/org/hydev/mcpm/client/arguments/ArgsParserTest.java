@@ -10,13 +10,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static org.hydev.mcpm.utils.ColorLogger.printc;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Tests for ArgsParser
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-21
+ * Tests for ArgsParser.
  */
 class ArgsParserTest
 {
@@ -51,13 +49,14 @@ class ArgsParserTest
     @Test
     void parse() throws ArgumentParserException
     {
-        var p = new ArgsParser(List.of(new TestCommand()), System.out::println);
-        p.parse(new String[]{"test", "meow"});
+        Consumer<String> out = System.out::println;
+        var p = new ArgsParser(List.of(new TestCommand()));
+        p.parse(new String[]{"test", "meow"}, out);
         // Should print help
-        p.parse(new String[]{});
+        p.parse(new String[]{}, out);
         // Should print test help
-        p.parse(new String[]{"test", "-h"});
-        assertThrows(AssertionError.class, () -> p.parse(new String[]{"test", "asdf"}));
+        p.parse(new String[]{"test", "-h"}, out);
+        assertThrows(AssertionError.class, () -> p.parse(new String[]{"test", "asd"}, out));
         printc(p.help());
         assertEquals(p.getRawSubparsers().size(), 1);
     }
@@ -65,14 +64,10 @@ class ArgsParserTest
     @Test
     void fail()
     {
-        var p = new ArgsParser(List.of(new TestCommand()), System.out::println);
-        try
-        {
-            p.parse(new String[]{"a"});
-        }
-        catch (ArgumentParserException e)
-        {
-            p.fail(e);
-        }
+        Consumer<String> out = System.out::println;
+
+        var p = new ArgsParser(List.of(new TestCommand()));
+
+        assertThrows(ArgumentParserException.class, () -> p.parse(new String[]{"a"}, out));
     }
 }
