@@ -6,10 +6,10 @@ package org.hydev.mcpm.client.models;
  */
 
 public class PluginTrackerModel {
-    private final String name;
-    private boolean isManual;
-    private final String versionId;
-    private final String pluginId;
+    String name;
+    Boolean isManual;
+    String versionId;
+    String pluginId;
 
     /**
      * Constructor for PluginTrackerModel.
@@ -19,7 +19,7 @@ public class PluginTrackerModel {
      * @param versionId The version ID of the plugin.
      * @param pluginId  The plugin ID of the plugin.
      */
-    public PluginTrackerModel(String name, boolean isManual, String versionId, String pluginId) {
+    public PluginTrackerModel(String name, Boolean isManual, String versionId, String pluginId) {
         this.name = name;
         this.isManual = isManual;
         this.versionId = versionId;
@@ -32,7 +32,6 @@ public class PluginTrackerModel {
      */
     public PluginTrackerModel(String stringRepresentation) {
         String[] split = stringRepresentation.split(",");
-
         this.name = split[0];
         this.isManual = Boolean.parseBoolean(split[1]);
         this.versionId = split[2];
