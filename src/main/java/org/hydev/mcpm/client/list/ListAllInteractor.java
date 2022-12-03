@@ -6,10 +6,7 @@ import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
 import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
 import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.client.models.PluginTrackerModel;
-import org.hydev.mcpm.client.database.model.PluginVersionId;
-import org.hydev.mcpm.client.database.model.PluginModelId;
-import org.hydev.mcpm.client.models.PluginModel;
+import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -22,9 +19,7 @@ import java.util.OptionalLong;
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-11-20
  */
-public class ListAllInteractor implements ListAllBoundary {
-    SuperLocalPluginTracker localPluginTracker = new SuperLocalPluginTracker();
-
+public record ListAllInteractor(PluginTracker tracker) implements ListAllBoundary {
     /**
      * listAllInteractor interacts with the LocalPluginTracker to get the list of
      * plugins, according to a specified
@@ -38,7 +33,7 @@ public class ListAllInteractor implements ListAllBoundary {
      *                  outdated.
      */
     public List<PluginYml> listAll(String parameter, CheckForUpdatesBoundary checkForUpdatesBoundary) {
-        var installed = localPluginTracker.listInstalled();
+        var installed = tracker.listInstalled();
         switch (parameter) {
             case "all":
                 return installed;
