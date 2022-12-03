@@ -1,17 +1,10 @@
-package org.hydev.mcpm.client.database;
+package org.hydev.mcpm.client.list;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
-import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
+import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.OptionalLong;
 
 /**
  * Implementation to the ListAll functionality
@@ -19,7 +12,7 @@ import java.util.OptionalLong;
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-11-20
  */
-public record ListAllInteractor(PluginTracker tracker) implements ListAllBoundary {
+public record ListAllInteractor(SuperPluginTracker pluginTracker) implements ListAllBoundary {
     /**
      * listAllInteractor interacts with the LocalPluginTracker to get the list of
      * plugins, according to a specified
@@ -33,57 +26,23 @@ public record ListAllInteractor(PluginTracker tracker) implements ListAllBoundar
      *                  outdated.
      */
     public List<PluginYml> listAll(String parameter, CheckForUpdatesBoundary checkForUpdatesBoundary) {
-        var installed = tracker.listInstalled();
+        var installed = pluginTracker.listInstalled();
         switch (parameter) {
             case "all":
                 return installed;
 
             case "manual":
-                var local = localPluginTracker.listManuallyInstalled();
+                var local = pluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
 
+            case "automatic":
+                var manual = pluginTracker.listManuallyInstalled();
+                return installed.stream().filter(it -> !manual.contains(it.name())).toList();
+
             case "outdated":
-                /*
-                 * ArrayList<PluginVersionState> temp = new ArrayList<>();
-                 * ArrayList<PluginTrackerModel> installedModels =
-                 * localPluginTracker.listInstalledAsModels();
-                 * 
-                 * for (PluginTrackerModel installedModel : installedModels) {
-                 * PluginVersionId pluginVersionId = new PluginVersionId(
-                 * OptionalLong.of(Long.parseLong(installedModel.getVersionId())), null);
-                 * 
-                 * PluginModelId pluginModelId = new PluginModelId(
-                 * OptionalLong.of(Long.parseLong(installedModel.getPluginId())),
-                 * installedModel.getName(),
-                 * null);
-                 * 
-                 * temp.add(new PluginVersionState(pluginModelId, pluginVersionId));
-                 * }
-                 * 
-                 * CheckForUpdatesInput input = new CheckForUpdatesInput(temp, false);
-                 * 
-                 * // Read the list of installedModels and create a CheckForUpdatesInput object
-                 * // with state equal
-                 * // to the list of PluginTrackerModels's version
-                 * 
-                 * CheckForUpdatesResult rawResult = checkForUpdatesBoundary.updates(input);
-                 * 
-                 * if (rawResult.state() == CheckForUpdatesResult.State.SUCCESS) {
-                 * Collection<PluginModel> result = rawResult.updatable().values();
-                 * 
-                 * // get the ids of the plugins that are outdated from result
-                 * ArrayList<String> outdated = new ArrayList<>();
-                 * for (PluginModel pluginModel : result) {
-                 * outdated.add(pluginModel.id() + "");
-                 * }
-                 * 
-                 * // filter the installed plugins by the outdated ids
-                 * 
-                 * }
-                 * // Need to associate the IDs of the outdated plugins with the installed
-                 * plugin YML files, and return all matches
-                 */
-                throw new NotImplementedException("Not implemented yet");
+                ListUpdateableBoundary listUpdateableBoundary = new ListUpdateableHelper();
+                var outdated = listUpdateableBoundary.listUpdateable(pluginTracker, checkForUpdatesBoundary);
+                return installed.stream().filter(it -> outdated.contains(it.name())).toList();
 
             default:
                 return null;
