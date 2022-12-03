@@ -36,7 +36,8 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
 
         // Generates a list of PluginVersionStates from the installed plugins obtained
         // from the
-        // SuperLocalPluginTracker instance
+        // SuperLocalPluginTracker instance. Creates a valid input to
+        // CheckForUpdatesBoundary
 
         for (PluginTrackerModel installedModel : installedModels) {
             PluginVersionId pluginVersionId = new PluginVersionId(
@@ -50,11 +51,11 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
 
         CheckForUpdatesInput input = new CheckForUpdatesInput(temp, false);
 
+        CheckForUpdatesResult rawResult = checkForUpdatesBoundary.updates(input);
+
         // Read the list of installedModels and create a CheckForUpdatesInput object
         // with state equal
         // to the list of PluginTrackerModels's version
-
-        CheckForUpdatesResult rawResult = checkForUpdatesBoundary.updates(input);
 
         if (rawResult.state() == CheckForUpdatesResult.State.SUCCESS) {
             ArrayList<String> outdatedNames = new ArrayList<>();
@@ -65,15 +66,9 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
                 outdated.add(pluginModel.getLatestPluginVersion().get().meta().name());
             }
             return outdatedNames;
-
-            // filter the installed plugins by the outdated ids
-
         }
 
         return new ArrayList<>();
-        // Need to associate the IDs of the outdated plugins with the installed plugin
-        // YML files, and return all matches
-
     }
 
 }
