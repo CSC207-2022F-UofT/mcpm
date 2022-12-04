@@ -135,7 +135,7 @@ public class InstallInteractor implements InstallBoundary {
      *
      * @param input the input pending for installation
      */
-    public SearchPackagesResult getSearchResult(InstallInput input) {
+    private SearchPackagesResult getSearchResult(InstallInput input) {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);
         SearchPackagesResult searchPackageResult = searchInteractor.search(searchPackagesInput);
         return searchPackageResult;
@@ -146,7 +146,7 @@ public class InstallInteractor implements InstallBoundary {
      *
      * @param searchPackagesResult Search Results of the plugin
      */
-    public PluginModel getLastestPluginModel(SearchPackagesResult searchPackagesResult) {
+    private PluginModel getLastestPluginModel(SearchPackagesResult searchPackagesResult) {
         PluginModel latestPluginModel = searchPackagesResult.plugins().get(0);
         long id = latestPluginModel.id();
         for (var plugin : searchPackagesResult.plugins()) {
