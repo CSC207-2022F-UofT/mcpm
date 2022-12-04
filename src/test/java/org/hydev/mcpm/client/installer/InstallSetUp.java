@@ -2,10 +2,10 @@ package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
-import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
 import org.hydev.mcpm.client.search.SearchInteractor;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
@@ -18,7 +18,7 @@ public class InstallSetUp {
     private static final PluginLoader loader = null;
     private static final URI host = URI.create("https://mcpm.hydev.org");
     private static final DatabaseFetcher fetcher = new LocalDatabaseFetcher(() -> host);
-    private static final SuperPluginTracker superTracker = new SuperLocalPluginTracker();
+    private static final LocalPluginTracker localPluginTracker = new LocalPluginTracker();
     private static final SearchPackagesBoundary searcher = new SearchInteractor(fetcher);
     private static final SpigotPluginDownloader spigotPluginDownloader =
                                                                     new SpigotPluginDownloader(downloader, () -> host);
@@ -32,7 +32,7 @@ public class InstallSetUp {
         installInteractor = new InstallInteractor(spigotPluginDownloader,
                                                   loader,
                                                   searcher,
-                                                  superTracker);
+                                                    localPluginTracker);
         installPresenter = new InstallPresenter();
         colorLogger = new ColorLogger();
     }

@@ -33,10 +33,11 @@ public class Downloader
      * @param url Remote file URL
      * @param to Local file path
      */
-    public void downloadFile(String url, File to)
+    public void downloadFile(String url, String to)
     {
         try (var client = HttpClients.createDefault())
         {
+            File fos = new File(to);
             var get = new HttpGet(url);
             var bytes = client.execute(get, (req) ->
             {
@@ -45,7 +46,7 @@ public class Downloader
                 var builder = new ByteArrayOutputStream((int) total);
 
                 // Create progress row
-                var row = new ProgressRow(total).desc(to.getName()).descLen(30);
+                var row = new ProgressRow(total).desc(fos.getName()).descLen(30);
                 bar.appendBar(row);
 
                 try (var stream = entity.getContent())
@@ -64,7 +65,7 @@ public class Downloader
                 return builder.toByteArray();
             });
 
-            Files.write(to.toPath(), bytes);
+            Files.write(fos.toPath(), bytes);
         }
         catch (IOException e)
         {
@@ -79,7 +80,7 @@ public class Downloader
      *
      * @param urls Mapping of remote urls to local file paths
      */
-    public void downloadFiles(Map<String, File> urls)
+    public void downloadFiles(Map<String, String> urls)
     {
         try (ExecutorService executor = Executors.newFixedThreadPool(threads))
         {
@@ -91,7 +92,7 @@ public class Downloader
                 {
                     executor.submit(() ->
                     {
-                        File to = urls.get(url);
+                        String to = urls.get(url);
                         downloadFile(url, to);
                     });
                 }
@@ -128,26 +129,34 @@ public class Downloader
     {
         // Remember to chang link to test
         String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
-        File out = new File("./Introduction_to_Algorithms_Third_Edition.pdf");
+        String out = "./Introduction_to_Algorithms_Third_Edition.pdf";
         String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
-        File out1 = new File("./Math.pdf");
+        String out1 = "./Math.pdf";
         String link2 = "https://ouopentextbooks.org/mathematics/files/2015/07/1503.pdf";
-        File out2 = new File("./1503");
+        String out2 = "./1503";
         String link3 = "https://faculty.math.illinois.edu/~aydin/math220/lecturenotes/m220_Sec1_4.pdf";
-        File out3 = new File("./m220_Sec1_4");
+        String out3 = "./m220_Sec1_4";
         String link4 = "https://ocw.mit.edu/ans7870/9/9.00SC/MIT9_00SCF11_text.pdf";
-        File out4 = new File("./MIT9_00SCF11_text");
+        String out4 = "./MIT9_00SCF11_text";
 
         final var downloader = new Downloader();
 
-        Map<String, File> urls = new HashMap<>();
+        Map<String, String> urls = new HashMap<>();
         urls.put(link, out);
         urls.put(link1, out1);
         urls.put(link2, out2);
         urls.put(link3, out3);
         urls.put(link4, out4);
         downloader.downloadFiles(urls);
-        out.delete();
-        out1.delete();
+        File outFile = new File(out);
+        outFile.delete();
+        File outFile1 = new File(out1);
+        outFile1.delete();
+        File outFile2 = new File(out2);
+        outFile2.delete();
+        File outFile3 = new File(out3);
+        outFile3.delete();
+        File outFile4 = new File(out4);
+        outFile4.delete();
     }
 }

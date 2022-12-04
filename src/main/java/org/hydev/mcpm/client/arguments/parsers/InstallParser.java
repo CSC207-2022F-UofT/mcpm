@@ -4,10 +4,11 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.InstallController;
-import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
+import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -37,7 +38,9 @@ public record InstallParser(InstallController controller, InstallResultPresenter
     @Override
     public void run(Namespace details, Consumer<String> log) {
         var name = details.getString("name");
-        var result = controller.install(name, SearchPackagesType.BY_NAME, !details.getBoolean("noLoad"));
+        List<InstallResult> result = controller.install(name,
+                                                        SearchPackagesType.BY_NAME,
+                                                        !details.getBoolean("noLoad"));
         presenter.displayResult(result, log);
     }
 }

@@ -2,6 +2,7 @@ package org.hydev.mcpm.client.installer;
 
 
 import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.output.InstallResult;
 
 import java.util.List;
 

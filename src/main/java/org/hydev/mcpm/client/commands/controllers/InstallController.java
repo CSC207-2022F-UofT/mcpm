@@ -1,10 +1,9 @@
 package org.hydev.mcpm.client.commands.controllers;
 
+import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.InstallResult;
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 
 import java.util.List;
 

@@ -1,19 +1,22 @@
 package org.hydev.mcpm.client.installer;
 
-import org.hydev.mcpm.client.DatabaseManager;
+import org.bukkit.plugin.Plugin;
 import org.hydev.mcpm.client.Downloader;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.search.SearchInteractor;
+import org.hydev.mcpm.client.installer.output.InstallResult;
+import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
+import org.hydev.mcpm.client.search.*;
 import org.hydev.mcpm.client.injector.LoadBoundary;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
-import org.hydev.mcpm.client.installer.InstallResult.Type;
+import org.hydev.mcpm.client.installer.output.InstallResult.Type;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.utils.ColorLogger;
 
@@ -29,24 +32,28 @@ import java.util.List;
 public class InstallInteractor implements InstallBoundary {
     private static final String FILEPATH = "plugins";
 
-    private final DatabaseManager databaseManager;
     private final PluginDownloader spigotPluginDownloader;
 
     private final LoadBoundary pluginLoader;
+
+    private final SearchPackagesBoundary searchInteractor;
+
+    private final PluginTracker localPluginTracker;
 
     /**
      * Instantiate an interactor for install use case
      *
      * @param spigotPluginDownloader Plugin downloader for the MCPM Plugin Repository
-     * @param databaseManager Database API
      * @param pluginLoader loader for a locally installed plugin.
      */
     public InstallInteractor(PluginDownloader spigotPluginDownloader,
-                             DatabaseManager databaseManager,
-                             LoadBoundary pluginLoader) {
-        this.databaseManager = databaseManager;
+                             LoadBoundary pluginLoader,
+                             SearchPackagesBoundary searchInteractor,
+                             PluginTracker localPluginTracker) {
         this.spigotPluginDownloader = spigotPluginDownloader;
         this.pluginLoader = pluginLoader;
+        this.searchInteractor = searchInteractor;
+        this.localPluginTracker = localPluginTracker;
     }
 
     /**
@@ -57,16 +64,20 @@ public class InstallInteractor implements InstallBoundary {
     @Override
     public List<InstallResult> installPlugin(InstallInput installInput)
     {
-        var name = installInput.name();
+        var pluginName = installInput.name();
 
         // 1. Search the name and get a list of plugins
-        SearchPackagesResult searchResult = databaseManager.getSearchResult(installInput);
-        if (searchResult == null) {
-            return List.of(new InstallResult(Type.SEARCH_INVALID_INPUT, name));
+        SearchPackagesResult searchResult = getSearchResult(installInput);
+        if (searchResult.state() == SearchPackagesResult.State.INVALID_INPUT) {
+            return List.of(new InstallResult(Type.SEARCH_INVALID_INPUT, pluginName));
+        }
+
+        if (searchResult.state() == SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE) {
+            return List.of(new InstallResult(Type.SEARCH_FAILED_TO_FETCH_DATABASE, pluginName));
         }
 
         if (searchResult.plugins().isEmpty()) {
-            return List.of(new InstallResult(Type.NOT_FOUND, name));
+            return List.of(new InstallResult(Type.NOT_FOUND, pluginName));
         }
 
         // 2. Get the latest version of the plugin for the user
@@ -75,22 +86,29 @@ public class InstallInteractor implements InstallBoundary {
         var idPluginModel = pluginModel.id();
         var pluginVersion = pluginModel.getLatestPluginVersion().orElse(null);
         if (pluginVersion == null) {
-            return List.of(new InstallResult(Type.NO_VERSION_AVAILABLE, name));
+            return List.of(new InstallResult(Type.NO_VERSION_AVAILABLE, pluginName));
         }
 
-        // Name of the latest version plugin
-        String pluginName = pluginVersion.meta().name();
-
-        if (databaseManager.checkPluginInstalledByName(pluginName)) {
-            return List.of(new InstallResult(Type.PLUGIN_EXISTS, name));
-        }
-
-        // 3. Download it
-        spigotPluginDownloader.download(idPluginModel, pluginVersion.id(),
-                "plugins/" + pluginVersion.meta().name() + ".jar");
-
-        // 4. Installing the dependency of that plugin
         var results = new ArrayList<InstallResult>();
+        boolean ifPluginDownloaded = localPluginTracker.findIfInLockByName(pluginName);
+        if (ifPluginDownloaded) {
+            results.add(new InstallResult(Type.PLUGIN_EXISTS, pluginName));
+        } else {
+            // 3. Download it
+            spigotPluginDownloader.download(pluginName, idPluginModel, pluginVersion.id());
+            // 4. Add the installed plugin to the json file
+            String pluginVersionId = String.valueOf(pluginVersion.id());
+            String pluginModelId = String.valueOf(idPluginModel);
+            //        superPluginTracker.addEntry(pluginName,
+            //                             installInput.isManuallyInstalled() ||
+            //                                    superPluginTracker.listManuallyInstalled().contains(pluginName),
+            //                                    pluginVersionId,
+            //                                    pluginModelId);
+            // 5. Add success installed
+            results.add(new InstallResult(Type.SUCCESS_INSTALLED, pluginName));
+        }
+
+        // 5. Installing the dependency of that plugin
         if (pluginVersion.meta().depend() != null) {
             for (String dependency : pluginVersion.meta().depend()) {
                 var dependencyInput = new InstallInput(dependency,
@@ -101,13 +119,26 @@ public class InstallInteractor implements InstallBoundary {
             }
         }
 
-        // 5. Load the plugin
-        var loadResult = loadPlugin(name, installInput.load());
-
-        // 6. Add success
-        results.add(0, new InstallResult(Type.SUCCESS_INSTALLED, name, loadResult));
-
+        // 6. Load the plugin
+        var loadResult = loadPlugin(pluginName, installInput.load());
+        if (!loadResult) {
+            results.add(new InstallResult(Type.UNLOADED, pluginName, loadResult));
+        } else {
+            results.add(new InstallResult(Type.LOADED, pluginName, loadResult));
+        }
         return results;
+    }
+
+    /**
+     *
+     * Search if the plugin exists, return the Search Results
+     *
+     * @param input the input pending for installation
+     */
+    public SearchPackagesResult getSearchResult(InstallInput input) {
+        SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);
+        SearchPackagesResult searchPackageResult = searchInteractor.search(searchPackagesInput);
+        return searchPackageResult;
     }
 
     /**
@@ -115,7 +146,7 @@ public class InstallInteractor implements InstallBoundary {
      *
      * @param searchPackagesResult Search Results of the plugin
      */
-    private PluginModel getLastestPluginModel(SearchPackagesResult searchPackagesResult) {
+    public PluginModel getLastestPluginModel(SearchPackagesResult searchPackagesResult) {
         PluginModel latestPluginModel = searchPackagesResult.plugins().get(0);
         long id = latestPluginModel.id();
         for (var plugin : searchPackagesResult.plugins()) {
@@ -156,13 +187,14 @@ public class InstallInteractor implements InstallBoundary {
         var resultPresenter = new InstallPresenter();
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(() -> host);
+        var superTracker = new SuperLocalPluginTracker();
         var searcher = new SearchInteractor(fetcher);
         Downloader downloader = new Downloader();
         PluginLoader loader = null;
         SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
         LocalPluginTracker tracker = new LocalPluginTracker();
-        DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
-        InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager, loader);
+        InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, loader,
+                                                                    searcher, tracker);
         InstallInput installInput = new InstallInput("JedCore",
                                                     SearchPackagesType.BY_NAME,
                                                     true,

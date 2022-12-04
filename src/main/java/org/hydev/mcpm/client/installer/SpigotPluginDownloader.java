@@ -33,21 +33,22 @@ public class SpigotPluginDownloader implements PluginDownloader {
     /**
      * Download the plugin according to its filepath.
      *
+     * @param pluginName   The name of the plugin.
      * @param pluginId      The id of the plugin to download.
      * @param pluginVersion The associated plugin version.
-     * @param destination   The filepath where the plugin will be installed to.
      */
     @Override
-    public void download(long pluginId, long pluginVersion, String destination) {
-        try {
-            // I'm sorry, this is an important for the update API.
-            Files.createDirectories(Paths.get(destination).getParent());
-        } catch (IOException e) {
-            /* ignore */
-        }
+    public void download(String pluginName, long pluginId, long pluginVersion) {
+        //        try {
+        //            // I'm sorry, this is an important for the update API.
+        //            Files.createDirectories(Paths.get(destination).getParent());
+        //        } catch (IOException e) {
+        //            /* ignore */
+        //        }
 
+        String filePath = "plugins/" + pluginName + ".jar";
         String url = constructUrl(pluginId, pluginVersion);
-        downloader.downloadFile(url, new File(destination));
+        downloader.downloadFile(url, filePath);
     }
 
     /**

@@ -2,14 +2,11 @@ package org.hydev.mcpm.client.installer.output;
 
 /**
  * Exception during installation of a plugin
-<<<<<<< HEAD
-=======
  *
  * @param type Status of install result
  * @param name Name of the plugin
  * @param loaded Whether the installed plugin is successfully loaded
  * @since 2022-11-20
->>>>>>> 8e4cc88 (fix installer presenter and dependendy loaded)
  */
 public record InstallResult(Type type, String name, boolean loaded) {
 
@@ -27,14 +24,17 @@ public record InstallResult(Type type, String name, boolean loaded) {
      * Status of install result
      */
     public enum Type {
-        NOT_FOUND(" &cPlugin by that identifier is not found"),
+        NOT_FOUND(" &c The plugin by that identifier is not found"),
         SEARCH_INVALID_INPUT("  &cInvalid search input"),
         SEARCH_FAILED_TO_FETCH_DATABASE("   &cFailed to fetch the MCPM database"),
         NO_VERSION_AVAILABLE("  &cNo versions are available to download"),
         PLUGIN_EXISTS(" &6The plugin is already installed on the system"),
 
-        SUCCESS_INSTALLED(" &aPlugin is installed successfully");
+        SUCCESS_INSTALLED(" &aThe plugin is installed successfully"),
 
+        UNLOADED(" &bThe plugin is unloaded"),
+
+        LOADED(" &bThe plugin is loaded");
         private final String reason;
 
         Type(String reason) {
