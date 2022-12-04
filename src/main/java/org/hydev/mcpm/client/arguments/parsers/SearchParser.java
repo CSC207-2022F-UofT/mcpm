@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.commands.entries.SearchPackagesController;
+import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -12,8 +12,6 @@ import java.util.function.Consumer;
  * SearchParser has two arguments: "type" and "text."
  * When the user runs the search command, the program prompts the user to specify the type of
  * search and the search text.
- *
- * @author Jerry Zhu (https://github.com/jerryzhu509)
  */
 public record SearchParser(SearchPackagesController controller) implements CommandParser {
     @Override

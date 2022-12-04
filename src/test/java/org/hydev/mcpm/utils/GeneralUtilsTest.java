@@ -2,13 +2,12 @@ package org.hydev.mcpm.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for org.hydev.mcpm.utils.GeneralUtils
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-02
  */
 class GeneralUtilsTest
 {

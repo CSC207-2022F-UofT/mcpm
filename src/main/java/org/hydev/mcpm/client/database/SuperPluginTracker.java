@@ -3,9 +3,11 @@ package org.hydev.mcpm.client.database;
 import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.client.models.PluginTrackerModel;
 
 import java.io.File;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Plugin tracker interface
@@ -20,9 +22,15 @@ public interface SuperPluginTracker {
 
     List<PluginYml> listInstalled();
 
+    ArrayList<PluginTrackerModel> listInstalledAsModels();
+
     void setManuallyInstalled(String name);
 
     void removeManuallyInstalled(String name);
+
+    Boolean findIfInLockById(String id);
+
+    Boolean findIfInLockByName(String name);
 
     List<String> listManuallyInstalled();
 

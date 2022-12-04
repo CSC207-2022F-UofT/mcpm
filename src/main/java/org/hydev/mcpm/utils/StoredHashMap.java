@@ -11,9 +11,6 @@ import static org.hydev.mcpm.Constants.JACKSON;
 
 /**
  * A hashmap that's stored in a path
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-03
  */
 public class StoredHashMap<K, V> extends HashMap<K, V>
 {

@@ -5,14 +5,14 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.File;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.*;
+import static com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY;
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_INVALID_SUBTYPE;
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import static com.fasterxml.jackson.databind.DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 
 /**
  * Global constants
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-03
  */
 public class Constants
 {

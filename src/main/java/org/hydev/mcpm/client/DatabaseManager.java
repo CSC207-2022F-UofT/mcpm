@@ -1,22 +1,18 @@
 package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.database.LocalPluginTracker;
-import org.hydev.mcpm.client.database.PluginTracker;
-import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.fetcher.LocalDatabaseFetcher;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
-import org.hydev.mcpm.client.database.searchusecase.SearchInteractor;
-import org.hydev.mcpm.client.installer.InstallResult;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.search.SearchPackagesBoundary;
+import org.hydev.mcpm.client.search.SearchPackagesInput;
+import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 
-import java.net.URI;
 import java.util.List;
 
 /**
- * Database API
+ * Database Manager uses Database API to provide searchResult and check the installed plugin locally
+ * (Goal: avoid the dependency and cluster of parameters to connect to database).
  */
 public class DatabaseManager {
     private final PluginTracker localPluginTracker;
@@ -36,8 +32,10 @@ public class DatabaseManager {
     public SearchPackagesResult getSearchResult(InstallInput input) {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);
         SearchPackagesResult searchPackageResult = searchInteractor.search(searchPackagesInput);
-
-        return searchPackageResult;
+        if (searchPackageResult.state() == SearchPackagesResult.State.SUCCESS) {
+            return searchPackageResult;
+        }
+        return null;
     }
 
     /**
@@ -46,30 +44,27 @@ public class DatabaseManager {
      * @param pluginName The version of the installed plugin
      * */
     public boolean checkPluginInstalledByName(String pluginName) {
-        var name = pluginName;
-
         List<PluginYml> pluginInstalled = localPluginTracker.listInstalled();
         for (PluginYml pluginYml : pluginInstalled) {
-            if (pluginYml != null && pluginYml.name() != null && pluginYml.name().equals(name)) {
+            if (pluginYml != null && pluginYml.name() != null && pluginYml.name().equals(pluginName)) {
                 return true;
             }
         }
         return false;
     }
 
-
     /**
-     * check if plugin with given name already installed locally
+     * Check if plugin with given name already installed locally.
      *
      * @param pluginVersion The version of the installed plugin
      * */
     public boolean checkPluginInstalledByVersion(PluginVersion pluginVersion) {
-        var name = pluginVersion.meta().name();
+        var version = pluginVersion.meta().version();
 
         List<PluginYml> pluginInstalled = localPluginTracker.listInstalled();
         for (PluginYml pluginYml : pluginInstalled) {
             if (pluginYml != null && pluginYml.version() != null &&
-                    pluginYml.version().equals(pluginVersion.meta().version())) {
+                    pluginYml.version().equals(version)) {
                 return true;
             }
         }

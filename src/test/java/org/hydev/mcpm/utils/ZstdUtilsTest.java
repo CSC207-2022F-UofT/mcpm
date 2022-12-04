@@ -4,20 +4,20 @@ import com.google.common.base.Stopwatch;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
 
-import static java.nio.charset.StandardCharsets.*;
-import static org.hydev.mcpm.utils.ZstdUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hydev.mcpm.utils.ZstdUtils.compress;
+import static org.hydev.mcpm.utils.ZstdUtils.compressPure;
+import static org.hydev.mcpm.utils.ZstdUtils.decompress;
+import static org.hydev.mcpm.utils.ZstdUtils.decompressPure;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for ZstdUtils
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 class ZstdUtilsTest
 {

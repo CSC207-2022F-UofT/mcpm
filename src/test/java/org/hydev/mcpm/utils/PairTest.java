@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for Pair class
@@ -14,7 +16,7 @@ class PairTest
     @Test
     void getters()
     {
-        var p = new Pair<>("a", 1);
+        var p = Pair.of("a", 1);
 
         assertEquals(p.k(), p.getKey());
         assertEquals(p.k(), "a");
@@ -25,14 +27,14 @@ class PairTest
     @Test
     void setterFail()
     {
-        var p = new Pair<>("a", 1);
+        var p = Pair.of("a", 1);
         assertThrows(Pair.UnmodifiableException.class, () -> p.setValue(1));
     }
 
     @Test
     void toMap()
     {
-        var ps = List.of(new Pair<>("a", 1), new Pair<>("b", 2));
+        var ps = List.of(Pair.of("a", 1), Pair.of("b", 2));
         var map = ps.stream().collect(Pair.toMap());
 
         assertTrue(map.containsKey("a") && map.containsKey("b"));

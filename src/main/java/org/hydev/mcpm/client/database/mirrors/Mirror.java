@@ -17,9 +17,6 @@ import java.util.Set;
  * @param speed Actual upstream speed in mbps, can be tested on speedtest.net
  * @param interval Interval in hours between updates
  * @param httpEndpoint Endpoint to the http file server (e.g. "abc" means "mcprs.hydev.org/abc")
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-01
  */
 public record Mirror(
     String host,

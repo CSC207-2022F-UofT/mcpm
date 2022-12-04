@@ -1,16 +1,15 @@
 package org.hydev.mcpm.utils;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for ConsoleUtils
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
  */
 class ConsoleUtilsTest
 {
     @Test
+    @Tag("IntegrationTest")
     void move()
     {
         // NOTE: You must be on a Xterm-compatible TTY for this test to work, which is why it's

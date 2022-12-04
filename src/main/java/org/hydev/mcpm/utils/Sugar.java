@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Syntax sugar that java lacks
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-30
+ * This class provides convenience methods for an easier time manipulating array content.
+ * For example, this includes a subscript method that handles negative array subscripting.
  */
 public class Sugar
 {
@@ -66,6 +64,7 @@ public class Sugar
      * @param <V> Type of the value
      * @return Hashmap of values
      */
+    @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> uncheckedMapOf(Object... values)
     {
         var map = new HashMap<>();
@@ -78,7 +77,6 @@ public class Sugar
             if (v != null) map.put(k, v);
         }
 
-        //noinspection unchecked
         return (Map<K, V>) map;
     }
 }

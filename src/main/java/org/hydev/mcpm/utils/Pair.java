@@ -6,9 +6,6 @@ import java.util.stream.Collectors;
 
 /**
  * Simple unmodifiable generic pair
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-01
  */
 public record Pair<K, V>(K k, V v) implements Map.Entry<K, V>
 {

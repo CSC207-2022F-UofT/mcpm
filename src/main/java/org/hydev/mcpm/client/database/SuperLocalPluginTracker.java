@@ -14,7 +14,6 @@ import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.models.PluginYml.InvalidPluginMetaStructure;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.client.models.PluginTrackerModel;
-import org.hydev.mcpm.client.database.SuperPluginTracker;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -66,12 +65,9 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
         } catch (IOException e) {
-            System.out.println("Error reading plugin.yml from " + jar);
-            return null;
+            throw new RuntimeException("Error reading plugin.yml from " + jar.getAbsolutePath());
         } catch (InvalidPluginMetaStructure e) {
-            System.out.println("Invalid plugin.yml structure in " + jar);
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Invalid plugin.yml structure in " + jar.getAbsolutePath());
         }
     }
 
@@ -106,7 +102,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * plugin names and install
      * status
      *
-     * @param csv The mapping between plugin name and boolean status
      */
     private ArrayList<PluginTrackerModel> readJson() {
         try {
@@ -161,6 +156,40 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * }
      * }
      */
+
+    /**
+     * Returns whether a plugin with the given name is within
+     * the lock file
+     *
+     * @param name Id of the plugin
+     * @return Whether the plugin is within the lock file
+     */
+    public Boolean findIfInLockById(String name) {
+        ArrayList<PluginTrackerModel> list = readJson();
+        for (PluginTrackerModel pluginTrackerModel : list) {
+            if (pluginTrackerModel.getPluginId().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether a plugin with the given name is within
+     * the lock file
+     *
+     * @param name Name of the plugin
+     * @return Whether the plugin is within the lock file
+     */
+    public Boolean findIfInLockByName(String name) {
+        ArrayList<PluginTrackerModel> list = readJson();
+        for (PluginTrackerModel pluginTrackerModel : list) {
+            if (pluginTrackerModel.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Add a plugin to the JSON file
@@ -282,6 +311,19 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     }
 
     /**
+     * Returns a list of all plugins, represented in PluginTrackerModel objects
+     *
+     *
+     */
+    public ArrayList<PluginTrackerModel> listInstalledAsModels() {
+        ArrayList<PluginTrackerModel> list = new ArrayList<>();
+        for (PluginYml pluginYml : listInstalled()) {
+            list.add(new PluginTrackerModel(pluginYml.name(), false, pluginYml.version(), "unknown"));
+        }
+        return list;
+    }
+
+    /**
      * Remove a plugin from the manually installed plugin list
      *
      * @param name Plugin name
@@ -361,8 +403,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                         requiredDependencies.addAll(p.softdepend());
                 }
 
-            } catch (Exception e) {
-                System.out.println("Error getting dependencies of " + name);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -415,8 +457,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 System.out.println("Plugin with id " + name + " not found");
                 return "";
             }
-        } catch (Exception e) {
-            System.out.println("Error reading plugin.yml from " + name);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
         return "";
     }
@@ -466,8 +508,8 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
                 if (compareVersion(plugin.name(), searchPackagesBoundary)) {
                     outdatedPlugins.add(plugin);
                 }
-            } catch (Exception e) {
-                System.out.println("Error checking if plugin " + plugin.name() + " is outdated");
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -505,13 +547,11 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
                 }
             } else {
-                System.out.println("Error getting hash from server");
                 return false;
             }
 
         } catch (Exception e) {
-            System.out.println("Error fetching local plugin version");
-            return false;
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -531,8 +571,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
             String remoteVersion = remote.versions().get(0).meta().version();
             return localVersion.equals(remoteVersion);
         } catch (Exception e) {
-            System.out.println("Error comparing versions");
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
@@ -562,21 +601,4 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         return null;
     }
 
-    /**
-     * Tests. TODO: Move this to tests
-     *
-     * @param args Arguments (not used)
-     */
-    public static void main(String[] args) {
-        LocalPluginTracker myLocalPluginTracker = new LocalPluginTracker();
-
-        // Test listInstalled
-        List<PluginYml> installedPlugins = myLocalPluginTracker.listInstalled();
-        for (PluginYml plugin : installedPlugins) {
-            System.out.println(plugin.name());
-        }
-
-        // Test listOutdated
-
-    }
 }

@@ -11,10 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * TODO: Write a description for this class!
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-10-29
+ * This class provides tests for the reflection related tools we use when hot reloading plugins.
  */
 class ReflectionUtilsTest
 {

@@ -1,15 +1,13 @@
 package org.hydev.mcpm.client.updater;
 
-import org.hydev.mcpm.client.database.PluginTracker;
-import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.results.CheckForUpdatesResult;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.model.PluginModelId;
-import org.hydev.mcpm.client.database.model.PluginVersionId;
-import org.hydev.mcpm.client.database.model.PluginVersionState;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.search.SearchPackagesType;
+import org.hydev.mcpm.client.matcher.PluginModelId;
+import org.hydev.mcpm.client.matcher.PluginVersionId;
+import org.hydev.mcpm.client.matcher.PluginVersionState;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.Pair;
@@ -20,7 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.MISMATCHED;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.NETWORK_ERROR;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.NOT_INSTALLED;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.UPDATED;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.UP_TO_DATE;
 
 /**
  * Handles update requests (installing, etc.)
@@ -36,7 +38,7 @@ public record UpdateInteractor(
 ) implements UpdateBoundary {
     @Nullable
     private PluginVersionState stateByName(String name) {
-        // Weirdly enough, seems like getVersion expects the full file name in the plugins dir.
+        // Weirdly enough, seems like getVersion expects the full file name in the plugin's dir.
         var version = pluginTracker.getVersion(name + ".jar");
 
         /* In case of something breaking:
@@ -71,7 +73,8 @@ public record UpdateInteractor(
         );
     }
 
-    private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load) {
+    private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load,
+                                        InstallResultPresenter installResultPresenter) {
         var latest = model.getLatestPluginVersion().orElse(null);
 
         if (latest == null || latest.meta() == null || latest.meta().name() == null) {
@@ -92,25 +95,18 @@ public record UpdateInteractor(
 
         var input = new InstallInput(name, SearchPackagesType.BY_NAME, load, manuallyInstalled);
 
-        var result = installer.installPlugin(input);
+        var result = installer.installPlugin(input, installResultPresenter);
 
         // Network error is used for events that aren't necessarily network errors.
         // But I don't want to have too many fail states. Maybe we should go for INTERNAL_ERROR?
-        return switch (result.type()) {
-            case NOT_FOUND -> defaultOutcomeFor(state, MISMATCHED);
-            case SEARCH_INVALID_INPUT -> throw new RuntimeException(); // Something went wrong.
-            case SEARCH_FAILED_TO_FETCH_DATABASE,
-                NO_VERSION_AVAILABLE -> defaultOutcomeFor(state, NETWORK_ERROR);
-            case PLUGIN_EXISTS -> throw new RuntimeException(); // We need to know something went wrong.
-            case SUCCESS_INSTALLED_AND_FAIL_LOADED,
-                SUCCESS_INSTALLED_AND_UNLOADED,
-                SUCCESS_INSTALLED_AND_LOADED -> new UpdateOutcome(
-                    UPDATED, state.versionId().versionString(), latestVersion
-            );
-        };
+        if (result) {
+            return new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
+        }
+        return defaultOutcomeFor(state, NETWORK_ERROR);
     }
 
-    private UpdateOutcome makeOutcome(@Nullable PluginVersionState state, CheckForUpdatesResult result, boolean load) {
+    private UpdateOutcome makeOutcome(@Nullable PluginVersionState state, CheckForUpdatesResult result, boolean load,
+                                      InstallResultPresenter installResultPresenter) {
         // E.g. was filtered in stateMapByNames since there was no associated version.
         if (state == null) {
             defaultOutcomeFor(null, NOT_INSTALLED);
@@ -126,7 +122,7 @@ public record UpdateInteractor(
                 return defaultOutcomeFor(state, UP_TO_DATE);
             }
 
-            return updateByModel(model, state, load);
+            return updateByModel(model, state, load, installResultPresenter);
         }
     }
 
@@ -158,7 +154,7 @@ public record UpdateInteractor(
         for (String name : pluginNames) {
             var state = states.getOrDefault(name, null); // This better succeed.
 
-            results.put(name, makeOutcome(state, checkResult, input.load()));
+            results.put(name, makeOutcome(state, checkResult, input.load(), input.installResultPresenter()));
         }
 
         return new UpdateResult(UpdateResult.State.SUCCESS, results);

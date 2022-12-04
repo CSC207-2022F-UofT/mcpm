@@ -5,9 +5,6 @@ package org.hydev.mcpm.utils.arrays;
  * and querying the sum of all values in a fixed window size.
  * This only supports addition non-decreasing index pairs, and queries of non-increasing indices,
  * and queries of a fixed window size.
- *
- * @author Peter (https://github.com/MstrPikachu)
- * @since 2022-11-21
  */
 public interface FixedWindowSum {
 

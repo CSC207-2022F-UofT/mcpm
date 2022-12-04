@@ -2,10 +2,12 @@ package org.hydev.mcpm.client.models;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.yaml.JacksonYAMLParseException;
-import com.fasterxml.jackson.dataformat.yaml.snakeyaml.error.MarkedYAMLException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PluginYmlTest
 {

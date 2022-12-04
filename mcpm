@@ -5,4 +5,4 @@ set -e
 ./gradlew :compileJava
 classpath=$(./gradlew :printCp 2>& 1>/dev/null)
 
-java -cp $classpath org.hydev.mcpm.client.arguments.ArgsParser "$@"
+java -cp "$classpath" org.hydev.mcpm.client.arguments.ArgsParser "$@"

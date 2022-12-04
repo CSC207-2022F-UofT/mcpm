@@ -1,16 +1,19 @@
 package org.hydev.mcpm.utils;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class TemporaryDirTest
 {
     @Test
+    @Tag("IntegrationTest")
     void test() throws IOException
     {
         var t = new TemporaryDir();

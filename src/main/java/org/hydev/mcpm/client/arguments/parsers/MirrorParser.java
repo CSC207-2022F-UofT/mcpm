@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.commands.entries.MirrorController;
+import org.hydev.mcpm.client.commands.controllers.MirrorController;
 
 import java.util.function.Consumer;
 
@@ -11,8 +11,6 @@ import java.util.function.Consumer;
  * Parser for the mirror selector command
  *
  * @param controller Mirror controller
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-22
  */
 public record MirrorParser(MirrorController controller) implements CommandParser
 {
