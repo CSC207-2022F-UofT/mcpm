@@ -1,15 +1,14 @@
 package org.hydev.mcpm.client.updater;
 
-import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
-import org.hydev.mcpm.client.search.SearchPackagesType;
+import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
+import org.hydev.mcpm.client.installer.InstallBoundary;
+import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.matcher.PluginModelId;
 import org.hydev.mcpm.client.matcher.PluginVersionId;
 import org.hydev.mcpm.client.matcher.PluginVersionState;
-import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,11 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.hydev.mcpm.client.updater.UpdateOutcome.State.MISMATCHED;
-import static org.hydev.mcpm.client.updater.UpdateOutcome.State.NETWORK_ERROR;
-import static org.hydev.mcpm.client.updater.UpdateOutcome.State.NOT_INSTALLED;
-import static org.hydev.mcpm.client.updater.UpdateOutcome.State.UPDATED;
-import static org.hydev.mcpm.client.updater.UpdateOutcome.State.UP_TO_DATE;
+import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
 
 /**
  * Handles update requests (installing, etc.)
@@ -37,30 +32,26 @@ public record UpdateInteractor(
         org.hydev.mcpm.client.local.SuperLocalPluginTracker pluginTracker
 ) implements UpdateBoundary {
     @Nullable
-    private PluginVersionState stateByName(String name) {
-        // Weirdly enough, seems like getVersion expects the full file name in the plugin's dir.
-        var version = pluginTracker.getVersion(name + ".jar");
+    private PluginVersionState stateByName(Map<String, PluginYml> installed, String name) {
+        var version = installed.get(name);
 
-        /* In case of something breaking:
-         * var version = pluginTracker.listInstalled().stream()
-         *     .filter(x -> x.name().equals(name))
-         *     .findFirst()
-         *     .orElse(null);
-         */
-
-        if (version == null || version.isEmpty())
+        if (version == null)
             return null;
 
         return new PluginVersionState(
             PluginModelId.byName(name),
-            PluginVersionId.byString(version)
+            PluginVersionId.byString(version.version())
         );
     }
 
     // This is hacky. It would be nice if we could look up states by name in update() so we return a map.
     private Map<String, PluginVersionState> stateMapByNames(List<String> names) {
+        // 
+        var installed = pluginTracker.listInstalled().stream().map(it -> new Pair<>(it.name(), it))
+            .collect(Pair.toMap());
+
         return names.stream()
-            .map(name -> new Pair<>(name, stateByName(name)))
+            .map(name -> new Pair<>(name, stateByName(installed, name)))
             .filter(pair -> pair.getValue() != null)
             .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }

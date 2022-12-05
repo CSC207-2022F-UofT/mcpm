@@ -71,10 +71,10 @@ public class Uninstaller implements UninstallBoundary {
         if (input.recursive()) {
             var orphans = tracker.listOrphanPlugins(false);
             for (var orphan : orphans) {
-                var rec = uninstall(new UninstallInput(orphan, true));
+                var rec = uninstall(new UninstallInput(orphan.name(), true));
 
                 // Recursive result
-                result.dependencies().put(orphan, rec.state());
+                result.dependencies().put(orphan.name(), rec.state());
                 for (var pair : rec.dependencies().entrySet()) {
                     if (!result.dependencies().containsKey(pair.getKey())) {
                         result.dependencies().put(pair.getKey(), pair.getValue());

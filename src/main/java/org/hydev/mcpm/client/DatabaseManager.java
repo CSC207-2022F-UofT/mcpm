@@ -78,8 +78,6 @@ public class DatabaseManager {
      * */
     public void addManualInstalled(long id, PluginVersion pluginVersion, boolean isManuallyInstalled) {
         localPluginTracker.addEntry(pluginVersion.meta().name(),
-                isManuallyInstalled,
-                pluginVersion.id() + "",
-                id + "");
+                isManuallyInstalled, pluginVersion.id(), id);
     }
 }

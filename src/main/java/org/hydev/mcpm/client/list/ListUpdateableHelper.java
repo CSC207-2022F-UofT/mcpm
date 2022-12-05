@@ -14,6 +14,7 @@ import org.hydev.mcpm.client.updater.CheckForUpdatesInput;
 
 import java.util.ArrayList;
 
+import java.util.List;
 import java.util.OptionalLong;
 
 /**
@@ -32,7 +33,7 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
             SuperPluginTracker localPluginTracker, CheckForUpdatesBoundary checkForUpdatesBoundary) {
 
         ArrayList<PluginVersionState> temp = new ArrayList<>();
-        ArrayList<PluginTrackerModel> installedModels = localPluginTracker.listInstalledAsModels();
+        List<PluginTrackerModel> installedModels = localPluginTracker.listEntries();
 
         // Generates a list of PluginVersionStates from the installed plugins obtained
         // from the
@@ -41,10 +42,10 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
 
         for (PluginTrackerModel installedModel : installedModels) {
             PluginVersionId pluginVersionId = new PluginVersionId(
-                    OptionalLong.of(Long.parseLong(installedModel.getVersionId())), null);
+                    OptionalLong.of(installedModel.getVersionId()), null);
 
             PluginModelId pluginModelId = new PluginModelId(
-                    OptionalLong.of(Long.parseLong(installedModel.getPluginId())), installedModel.getName(), null);
+                    OptionalLong.of(installedModel.getPluginId()), installedModel.getName(), null);
 
             temp.add(new PluginVersionState(pluginModelId, pluginVersionId));
         }
@@ -62,11 +63,8 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
             // get the ids of the plugins that are outdated from result
             ArrayList<String> outdated = new ArrayList<>();
             for (PluginModel pluginModel : rawResult.updatable().values()) {
-                var version = pluginModel.getLatestPluginVersion();
-
-                if (version != null) {
-                    outdated.add(version.get().meta().name());
-                }
+                pluginModel.getLatestPluginVersion()
+                    .ifPresent(pluginVersion -> outdated.add(pluginVersion.meta().name()));
             }
             return outdated;
         }

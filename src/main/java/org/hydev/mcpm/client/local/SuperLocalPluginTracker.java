@@ -211,19 +211,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     }
 
     /**
-     * Returns a list of all plugins, represented in PluginTrackerModel objects
-     *
-     *
-     */
-    public ArrayList<PluginTrackerModel> listInstalledAsModels() {
-        ArrayList<PluginTrackerModel> list = new ArrayList<>();
-        for (PluginYml pluginYml : listInstalled()) {
-            list.add(new PluginTrackerModel(pluginYml.name(), false, pluginYml.version(), "unknown"));
-        }
-        return list;
-    }
-
-    /**
      * Remove a plugin from the manually installed plugin list
      *
      * @param name Plugin name
@@ -317,7 +304,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      *
      * @return List of plugin names
      */
-    @Override
     public List<PluginVersion> listOutdatedPlugins(Database database) {
         // Database plugins' latest versions
         var versions = database.plugins().stream().map(PluginModel::getLatestPluginVersion)
