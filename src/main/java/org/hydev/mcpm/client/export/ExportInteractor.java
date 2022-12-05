@@ -23,7 +23,7 @@ public record ExportInteractor(PluginTracker tracker, StringStorage storage) imp
         if (plugins == null) {
             return new ExportPluginsResult(ExportPluginsResult.State.FAILED_TO_FETCH_PLUGINS, null);
         }
-        var models = plugins.stream().map(p -> new ExportModel(p.name(), p.version()));
+        var models = plugins.stream().map(p -> new ExportModel(p.name(), p.version())).toList();
 
         try {
             var answer = JACKSON.writeValueAsString(models);
