@@ -1,42 +1,49 @@
 package org.hydev.mcpm.client.local;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.client.models.*;
 import org.hydev.mcpm.client.models.PluginYml.InvalidPluginMetaStructure;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesInput;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
+import org.hydev.mcpm.utils.Pair;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.client.models.PluginTrackerModel;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * This class keeps track of locally installed packages
  */
 public class SuperLocalPluginTracker implements SuperPluginTracker {
-    // CSV file storing the list of manually installed plugins.
-    // Now, each row in the csv file represents something as follows:
-    // ""name", "boolean", "versionId", "pluginId"
+    /** Lock file containing installed plugin information */
+    private final String mainLockFile;
 
-    private String mainLockFile = "plugins/mcpm.lock.json";
+    /** Directory containing all the plugins */
+    private final String pluginDirectory;
 
-    // Directory containing the plugins
-    private String pluginDirectory = "plugins";
-
+    /** Json deserializer */
     final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Instantiates a LocalPluginTracker with default parameters for general use
      */
     public SuperLocalPluginTracker() {
+        this("plugins/mcpm.lock.json", "plugins");
     }
 
     /**
