@@ -27,6 +27,7 @@ public record LocalJarFinder(File dir) implements LocalJarBoundary
         if (!dir.isDirectory()) throw new PluginNotFoundException(name);
         return Arrays.stream(Optional.ofNullable(dir.listFiles()).orElseThrow(() -> new PluginNotFoundException(name)))
             .filter(f -> f.getName().endsWith(".jar"))
+            .parallel()
             .filter(f -> {
                 try (var jf = new PluginJarFile(f))
                 {

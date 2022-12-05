@@ -29,7 +29,7 @@ import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
 import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
-import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
+import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.list.ListAllInteractor;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
@@ -68,7 +68,7 @@ public class CommandsFactory {
         var mirror = new MirrorSelector();
         var fetcher = new LocalDatabaseFetcher(mirror.selectedMirrorSupplier());
         // TODO: Change all implementation to SuperLocalPluginTracker
-        var superTracker = new SuperLocalPluginTracker();
+        var superTracker = new LocalPluginTracker();
         var jarFinder = new LocalJarFinder();
 
         var loader = isMinecraft ? new PluginLoader(jarFinder) : null;

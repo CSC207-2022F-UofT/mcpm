@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.uninstall;
 
-import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.injector.LocalJarBoundary;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.injector.UnloadBoundary;
@@ -14,7 +14,7 @@ import static org.hydev.mcpm.client.uninstall.UninstallResult.State.*;
  * Uninstall use case interactor
  */
 public class Uninstaller implements UninstallBoundary {
-    private final SuperPluginTracker tracker;
+    private final PluginTracker tracker;
     private final UnloadBoundary unloader;
     private final LocalJarBoundary jarFinder;
 
@@ -25,7 +25,7 @@ public class Uninstaller implements UninstallBoundary {
      * @param unloader Unload implementation
      * @param jarFinder Local jar finder
      */
-    public Uninstaller(SuperPluginTracker tracker, UnloadBoundary unloader, LocalJarBoundary jarFinder) {
+    public Uninstaller(PluginTracker tracker, UnloadBoundary unloader, LocalJarBoundary jarFinder) {
         this.tracker = tracker;
         this.unloader = unloader;
         this.jarFinder = jarFinder;
@@ -71,10 +71,10 @@ public class Uninstaller implements UninstallBoundary {
         if (input.recursive()) {
             var orphans = tracker.listOrphanPlugins(false);
             for (var orphan : orphans) {
-                var rec = uninstall(new UninstallInput(orphan, true));
+                var rec = uninstall(new UninstallInput(orphan.name(), true));
 
                 // Recursive result
-                result.dependencies().put(orphan, rec.state());
+                result.dependencies().put(orphan.name(), rec.state());
                 for (var pair : rec.dependencies().entrySet()) {
                     if (!result.dependencies().containsKey(pair.getKey())) {
                         result.dependencies().put(pair.getKey(), pair.getValue());

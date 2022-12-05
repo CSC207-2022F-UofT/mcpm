@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.installer;
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
-import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
+import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.search.SearchInteractor;
@@ -165,7 +165,7 @@ public class InstallInteractor implements InstallBoundary {
         var searcher = new SearchInteractor(fetcher);
         Downloader downloader = new Downloader();
         SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
-        DatabaseManager databaseManager = new DatabaseManager(new SuperLocalPluginTracker(), searcher);
+        DatabaseManager databaseManager = new DatabaseManager(new LocalPluginTracker(), searcher);
         InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager, null);
         InstallInput installInput = new InstallInput(
             "JedCore",
