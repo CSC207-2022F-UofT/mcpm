@@ -4,6 +4,7 @@ import org.hydev.mcpm.client.models.PluginYml;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -30,7 +31,9 @@ public class PluginJarFile extends ZipFile
      */
     public byte[] readBytes(String innerPath) throws IOException
     {
-        return getInputStream(getEntry(innerPath)).readAllBytes();
+        var entry = getEntry(innerPath);
+        if (entry == null) throw new FileNotFoundException("File " + innerPath + " not found inside " + getName());
+        return getInputStream(entry).readAllBytes();
     }
 
     /**

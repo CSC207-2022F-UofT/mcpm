@@ -44,6 +44,10 @@ public class DatabaseManager {
      * @param pluginName The version of the installed plugin
      * */
     public boolean checkPluginInstalledByName(String pluginName) {
+        if (!localPluginTracker.findIfInLockByName(pluginName)) {
+            return false;
+        }
+
         List<PluginYml> pluginInstalled = localPluginTracker.listInstalled();
         for (PluginYml pluginYml : pluginInstalled) {
             if (pluginYml != null && pluginYml.name() != null && pluginYml.name().equals(pluginName)) {
@@ -65,7 +69,8 @@ public class DatabaseManager {
         for (PluginYml pluginYml : pluginInstalled) {
             if (pluginYml != null && pluginYml.version() != null &&
                     pluginYml.version().equals(version)) {
-                return true;
+                // Yes, if it is not in the plugin tracker lock file, we ignore.
+                return localPluginTracker.findIfInLockByName(pluginYml.name());
             }
         }
         return false;
@@ -76,10 +81,8 @@ public class DatabaseManager {
      *
      * @param pluginVersion The version of the installed plugin
      * */
-    public void addManualInstalled(PluginVersion pluginVersion, boolean isManuallyInstalled) {
-        String pluginName = pluginVersion.meta().name();
-        localPluginTracker.addEntry(pluginName, isManuallyInstalled || localPluginTracker.listManuallyInstalled()
-                .contains(pluginName));
-
+    public void addManualInstalled(long id, PluginVersion pluginVersion, boolean isManuallyInstalled) {
+        localPluginTracker.addEntry(pluginVersion.meta().name(),
+                isManuallyInstalled, pluginVersion.id(), id);
     }
 }

@@ -1,15 +1,17 @@
 package org.hydev.mcpm.client.models;
 
 /**
- * 
  * Representation of a plugin for use in the local plugin tracker.
  */
-
 public class PluginTrackerModel {
-    private final String name;
+    private String name;
     private boolean isManual;
-    private final String versionId;
-    private final String pluginId;
+    private Long versionId;
+    private Long pluginId;
+
+    public PluginTrackerModel()
+    {
+    }
 
     /**
      * Constructor for PluginTrackerModel.
@@ -19,24 +21,11 @@ public class PluginTrackerModel {
      * @param versionId The version ID of the plugin.
      * @param pluginId  The plugin ID of the plugin.
      */
-    public PluginTrackerModel(String name, boolean isManual, String versionId, String pluginId) {
+    public PluginTrackerModel(String name, boolean isManual, Long versionId, Long pluginId) {
         this.name = name;
         this.isManual = isManual;
         this.versionId = versionId;
         this.pluginId = pluginId;
-    }
-
-    /**
-     * Constructor for PluginTrackerModel.
-     * Instantiates a PluginTrackerModel object from a string.
-     */
-    public PluginTrackerModel(String stringRepresentation) {
-        String[] split = stringRepresentation.split(",");
-
-        this.name = split[0];
-        this.isManual = Boolean.parseBoolean(split[1]);
-        this.versionId = split[2];
-        this.pluginId = split[3];
     }
 
     public String getName() {
@@ -47,11 +36,11 @@ public class PluginTrackerModel {
         return isManual;
     }
 
-    public String getVersionId() {
+    public Long getVersionId() {
         return versionId;
     }
 
-    public String getPluginId() {
+    public Long getPluginId() {
         return pluginId;
     }
 

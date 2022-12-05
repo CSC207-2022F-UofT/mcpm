@@ -9,29 +9,24 @@ import java.util.function.Consumer;
 /**
  * Command parser for List command
  */
-public record ListParser(ListController controller) implements CommandParser
-{
+public record ListParser(ListController controller) implements CommandParser {
     @Override
-    public String name()
-    {
+    public String name() {
         return "list";
     }
 
     @Override
-    public String description()
-    {
+    public String description() {
         return "List installed plugins";
     }
 
     @Override
-    public void configure(Subparser parser)
-    {
-        parser.addArgument("type").choices("all", "manual", "outdated").setDefault("all").nargs("?");
+    public void configure(Subparser parser) {
+        parser.addArgument("type").choices("all", "manual", "automatic", "outdated").setDefault("all").nargs("?");
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
-    {
+    public void run(Namespace details, Consumer<String> log) {
         controller.listAll(details.getString("type"), log);
     }
 }

@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.export;
 
-import org.hydev.mcpm.client.local.LocalPluginTracker;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 
 import java.io.PrintStream;
 
@@ -9,9 +9,9 @@ import java.io.PrintStream;
  */
 public class ExportInteractor implements ExportPluginsBoundary {
 
-    private final LocalPluginTracker tracker;
+    private final PluginTracker tracker;
 
-    public ExportInteractor(LocalPluginTracker tracker) {
+    public ExportInteractor(PluginTracker tracker) {
         this.tracker = tracker;
     }
 

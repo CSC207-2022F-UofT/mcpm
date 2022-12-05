@@ -68,6 +68,18 @@ public class PluginMockFactory {
     }
 
     /**
+     * Creates a mock PluginYml object.
+     *
+     * @param name The name of the plugin.
+     * @param version The version string for the plugin.
+     * @param description The description for the plugin.
+     * @return A PluginYml object.
+     */
+    public static PluginYml meta(String name, String version, String description) {
+        return meta(name, version, description, null);
+    }
+
+    /**
      * Creates a mock PluginVersion object.
      *
      * @param id The version id.
@@ -76,7 +88,7 @@ public class PluginMockFactory {
      * @return A PluginVersion object.
      */
     public static PluginVersion version(long id, String name, String string) {
-        return new PluginVersion(id, 0, "", meta(name, string, null, null));
+        return version(id, name, string, name, null);
     }
 
     /**
@@ -89,8 +101,10 @@ public class PluginMockFactory {
      * @param commands The commands in the plugin.
      * @return A PluginVersion object.
      */
-    public static PluginVersion version(long id, String name, String string, String description,
-                                        Map<String, PluginCommand> commands) {
+    public static PluginVersion version(
+        long id, String name, String string, String description,
+        Map<String, PluginCommand> commands
+    ) {
         return new PluginVersion(id, 0, "", meta(name, string, description, commands));
     }
 
@@ -123,6 +137,20 @@ public class PluginMockFactory {
     /**
      * Creates a mock PluginModel object.
      * The first version in versionNames will have id 0, the next will have id 1, and so on...
+     * Commands are defaulted to null.
+     *
+     * @param id The plugin id.
+     * @param name The plugin name.
+     * @param versionNames The individual version strings for each version.
+     * @return A PluginModel object.
+     */
+    public static PluginModel model(long id, String name, List<String> versionNames) {
+        return model(id, name, name, versionNames, null);
+    }
+
+    /**
+     * Creates a mock PluginModel object.
+     * The first version in versionNames will have id 0, the next will have id 1, and so on...
      *
      * @param id The plugin id.
      * @param name The plugin name.
@@ -147,15 +175,18 @@ public class PluginMockFactory {
      * @return List of plugins for testing.
      */
     public static @Unmodifiable List<PluginModel> generateTestPlugins() {
-        String[] descriptions = {"WorldGuard lets you and players guard areas " +
-                "of land against griefers and undesirables as well " +
-                "as tweak and disable various gameplay features of Minecraft.",
-                "Multiverse was created at the dawn of Bukkit multiworld support. " +
-                        "It has since then grown into a complete world management " +
-                        "solution including special treatment of your nether worlds with " +
-                        "Multiverse NetherPortals.",
-                "Create futuristic holograms to display text and items to players!"
-        };
+        var worldGuardDescription = "WorldGuard lets you and players guard areas " +
+            "of land against griefers and undesirables as well " +
+            "as tweak and disable various gameplay features of Minecraft.";
+
+        var multiverseDescription = "Multiverse was created at the dawn of Bukkit multiworld support. " +
+            "It has since then grown into a complete world management " +
+            "solution including special treatment of your nether worlds with " +
+            "Multiverse NetherPortals.";
+
+        var hologramDescription = "Create futuristic holograms to display text and items to players!";
+
+        String[] descriptions = { worldGuardDescription, multiverseDescription, hologramDescription };
 
         return List.of(
                 PluginMockFactory.model(1),
@@ -165,7 +196,7 @@ public class PluginMockFactory {
                         createCommand(descriptions[0], List.of("/god", "/ungod"))),
                 PluginMockFactory.model(3, "Multiverse-Core", descriptions[1],
                         List.of("1.19.2", "1.19.1"),
-                        createCommand(descriptions[1],List.of("/mvlist", "/mvl"))),
+                        createCommand(descriptions[1], List.of("/mvlist", "/mvl"))),
                 PluginMockFactory.model(4, "Holographic Displays", descriptions[2],
                         List.of("1.19.2", "1.19.1", "1.19"),
                         createCommand(descriptions[2], List.of("/hd", "/ungod")))

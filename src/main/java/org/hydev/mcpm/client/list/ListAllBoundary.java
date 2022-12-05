@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.list;
 
-
+import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.models.PluginYml;
 
 import java.util.List;
@@ -11,12 +11,17 @@ import java.util.List;
 public interface ListAllBoundary {
 
     /**
-     * listAllInteractor interacts with the LocalPluginTracker to get the list of plugins, according to a specified
+     * listAllInteractor interacts with the LocalPluginTracker to get the list of
+     * plugins, according to a specified
      * parameter
      *
-     * @param parameter The parameter for the ListAll use case. 'All' denotes a request to list all manually
-     *     installed plugins, 'manual' denotes a request to list all manually installed plugins, and 'outdated' denotes
-     *     a request to list all manually installed plugins that are outdated.
+     * @param parameter The parameter for the ListAll use case. 'All' denotes a
+     *                  request to list all manually
+     *                  installed plugins, 'manual' denotes a request to list all
+     *                  manually installed plugins, and 'outdated' denotes
+     *                  a request to list all manually installed plugins that are
+     *                  outdated.
      */
-    List<PluginYml> listAll(String parameter);
+
+    List<PluginYml> listAll(ListType parameter, CheckForUpdatesBoundary checkForUpdatesBoundary);
 }
