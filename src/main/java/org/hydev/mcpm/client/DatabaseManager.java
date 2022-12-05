@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client;
 
-import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesInput;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
@@ -15,10 +15,10 @@ import java.util.List;
  * (Goal: avoid the dependency and cluster of parameters to connect to database).
  */
 public class DatabaseManager {
-    private final PluginTracker localPluginTracker;
+    private final SuperPluginTracker localPluginTracker;
     private final SearchPackagesBoundary searchInteractor;
 
-    public DatabaseManager(PluginTracker tracker, SearchPackagesBoundary searcher) {
+    public DatabaseManager(SuperPluginTracker tracker, SearchPackagesBoundary searcher) {
         this.localPluginTracker = tracker;
         this.searchInteractor = searcher;
     }
@@ -76,10 +76,10 @@ public class DatabaseManager {
      *
      * @param pluginVersion The version of the installed plugin
      * */
-    public void addManualInstalled(PluginVersion pluginVersion, boolean isManuallyInstalled) {
-        String pluginName = pluginVersion.meta().name();
-        localPluginTracker.addEntry(pluginName, isManuallyInstalled || localPluginTracker.listManuallyInstalled()
-                .contains(pluginName));
-
+    public void addManualInstalled(long id, PluginVersion pluginVersion, boolean isManuallyInstalled) {
+        localPluginTracker.addEntry(pluginVersion.meta().name(),
+                isManuallyInstalled,
+                pluginVersion.id() + "",
+                id + "");
     }
 }

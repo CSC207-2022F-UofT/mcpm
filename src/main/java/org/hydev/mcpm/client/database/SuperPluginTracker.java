@@ -1,9 +1,9 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.models.PluginTrackerModel;
+import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 
 import java.io.File;
 import java.util.List;

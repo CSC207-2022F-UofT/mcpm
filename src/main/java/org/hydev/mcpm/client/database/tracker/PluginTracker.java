@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Plugin tracker interface
  */
+
 public interface PluginTracker {
     void addEntry(String name, boolean status);
 

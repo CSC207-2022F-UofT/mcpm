@@ -2,8 +2,8 @@ package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
-import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
+import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.search.SearchInteractor;
@@ -87,7 +87,7 @@ public class InstallInteractor implements InstallBoundary {
             // 3. Download it
             spigotPluginDownloader.download(idPluginModel, pluginVersion.id(),
                     "plugins/" + pluginVersion.meta().name() + ".jar");
-            databaseManager.addManualInstalled(pluginVersion, installInput.isManuallyInstalled());
+            databaseManager.addManualInstalled(idPluginModel, pluginVersion, installInput.isManuallyInstalled());
 
             // 4. Load the plugin
             loadPlugin(installInput, installPresenter);
@@ -162,11 +162,10 @@ public class InstallInteractor implements InstallBoundary {
         InstallResultPresenter resultPresenter = new InstallPresenter(log);
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(() -> host);
-        var tracker = new LocalPluginTracker();
         var searcher = new SearchInteractor(fetcher);
         Downloader downloader = new Downloader();
         SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
-        DatabaseManager databaseManager = new DatabaseManager(tracker, searcher);
+        DatabaseManager databaseManager = new DatabaseManager(new SuperLocalPluginTracker(), searcher);
         InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, databaseManager, null);
         InstallInput installInput = new InstallInput(
             "JedCore",

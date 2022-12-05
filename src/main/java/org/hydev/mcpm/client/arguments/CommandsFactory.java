@@ -29,9 +29,9 @@ import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
 import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
+import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.list.ListAllInteractor;
-import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
 import org.hydev.mcpm.client.export.ExportInteractor;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
@@ -67,7 +67,8 @@ public class CommandsFactory {
         var pager = new PageController(20);
         var mirror = new MirrorSelector();
         var fetcher = new LocalDatabaseFetcher(mirror.selectedMirrorSupplier());
-        var tracker = new LocalPluginTracker();
+        // TODO: Change all implementation to SuperLocalPluginTracker
+        var superTracker = new SuperLocalPluginTracker();
         var jarFinder = new LocalJarFinder();
 
         var loader = isMinecraft ? new PluginLoader(jarFinder) : null;
@@ -75,22 +76,22 @@ public class CommandsFactory {
         var searcher = new SearchInteractor(fetcher, listener);
         var installer = new InstallInteractor(
             new SpigotPluginDownloader(new Downloader(), mirror.selectedMirrorSupplier()),
-            new DatabaseManager(tracker, searcher),
+            new DatabaseManager(superTracker, searcher),
             loader
         );
         var matcher = new MatchPluginsInteractor(fetcher, listener);
         var updateChecker = new CheckForUpdatesInteractor(matcher);
-        var updater = new UpdateInteractor(updateChecker, installer, tracker);
+        var updater = new UpdateInteractor(updateChecker, installer, superTracker);
 
         // Controllers
-        var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
-        var listController = new ListController(new ListAllInteractor(tracker));
+        var exportPluginsController = new ExportPluginsController(new ExportInteractor(superTracker));
+        var listController = new ListController(new ListAllInteractor(superTracker), updateChecker);
         var searchController = new SearchPackagesController(searcher, pager);
         var mirrorController = new MirrorController(mirror);
-        var infoController = new InfoController(tracker);
+        var infoController = new InfoController(superTracker);
 
         var installController = new InstallController(installer);
-        var uninstallController = new UninstallController(new Uninstaller(tracker, loader, jarFinder));
+        var uninstallController = new UninstallController(new Uninstaller(superTracker, loader, jarFinder));
         var updateController = new UpdateController(updater);
         var refreshController = new RefreshController(fetcher, listener, mirror);
 

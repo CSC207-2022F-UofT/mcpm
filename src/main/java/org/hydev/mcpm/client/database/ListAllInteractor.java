@@ -1,20 +1,10 @@
 package org.hydev.mcpm.client.database;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.hydev.mcpm.client.database.boundary.CheckForUpdatesBoundary;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesInput;
-import org.hydev.mcpm.client.database.inputs.CheckForUpdatesResult;
-import org.hydev.mcpm.client.database.model.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.client.models.PluginTrackerModel;
-import org.hydev.mcpm.client.database.model.PluginVersionId;
-import org.hydev.mcpm.client.database.model.PluginModelId;
-import org.hydev.mcpm.client.models.PluginModel;
+import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.OptionalLong;
 
 /**
  * Implementation to the ListAll functionality

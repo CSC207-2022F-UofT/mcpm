@@ -4,14 +4,14 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hydev.mcpm.client.database.boundary.SearchPackagesBoundary;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesInput;
-import org.hydev.mcpm.client.database.inputs.SearchPackagesType;
-import org.hydev.mcpm.client.database.results.SearchPackagesResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.models.PluginYml.InvalidPluginMetaStructure;
+import org.hydev.mcpm.client.search.SearchPackagesBoundary;
+import org.hydev.mcpm.client.search.SearchPackagesInput;
+import org.hydev.mcpm.client.search.SearchPackagesResult;
+import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.utils.PluginJarFile;
 import org.hydev.mcpm.client.models.PluginTrackerModel;
 
