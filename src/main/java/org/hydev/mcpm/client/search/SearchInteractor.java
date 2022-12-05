@@ -8,7 +8,6 @@ import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
 /**
  * Handles searching within the database.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearchInteractor implements SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;

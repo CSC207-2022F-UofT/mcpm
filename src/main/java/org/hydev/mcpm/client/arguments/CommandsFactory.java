@@ -29,6 +29,7 @@ import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
 import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
+import org.hydev.mcpm.client.display.presenters.SearchPresenter;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.list.ListAllInteractor;
 import org.hydev.mcpm.client.local.LocalPluginTracker;
@@ -85,7 +86,7 @@ public class CommandsFactory {
         // Controllers
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker));
         var listController = new ListController(new ListAllInteractor(tracker));
-        var searchController = new SearchPackagesController(searcher, pager);
+        var searchController = new SearchPackagesController(searcher);
         var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(tracker);
 
@@ -93,6 +94,8 @@ public class CommandsFactory {
         var uninstallController = new UninstallController(new Uninstaller(tracker, loader, jarFinder));
         var updateController = new UpdateController(updater);
         var refreshController = new RefreshController(fetcher, listener, mirror);
+
+        var searchPresenter = new SearchPresenter(pager);
 
         /*
          * Add general parsers to this list!
@@ -102,7 +105,7 @@ public class CommandsFactory {
         return List.of(
             new ExportPluginsParser(exportPluginsController),
             new ListParser(listController),
-            new SearchParser(searchController),
+            new SearchParser(searchController, searchPresenter),
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
             new InstallParser(installController),

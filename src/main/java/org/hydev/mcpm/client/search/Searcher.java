@@ -8,7 +8,6 @@ import java.util.Map;
 /**
  * Interface for searchers that return Maps based on the list of plugins.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public interface Searcher {
     /**

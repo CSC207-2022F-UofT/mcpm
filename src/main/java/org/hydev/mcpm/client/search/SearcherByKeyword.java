@@ -12,7 +12,6 @@ import java.util.Set;
 /**
  * Searcher that returns a map based on keywords.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearcherByKeyword implements Searcher {
 

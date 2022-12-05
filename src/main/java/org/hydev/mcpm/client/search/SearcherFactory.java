@@ -3,7 +3,6 @@ package org.hydev.mcpm.client.search;
 /**
  * Factory that produces Searcher objects based on the input type.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearcherFactory {
 
