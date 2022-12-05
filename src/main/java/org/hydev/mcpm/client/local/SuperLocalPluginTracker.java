@@ -298,41 +298,4 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         return installed.values().stream()
             .filter(it -> !manual.contains(it.name()) && !deps.contains(it.name())).toList();
     }
-
-    /**
-     * Get a list of plugin (as pluginYml) that are outdated
-     *
-     * @return List of plugin names
-     */
-    public List<PluginVersion> listOutdatedPlugins(Database database) {
-        // Database plugins' latest versions
-        var versions = database.plugins().stream().map(PluginModel::getLatestPluginVersion)
-            .filter(Optional::isPresent).map(Optional::get).toList();
-
-        // Database index map by plugin ID
-        var dbIdIndex = versions.stream().map(it -> new Pair<>(it.id(), it)).collect(Pair.toMap());
-
-        // Database index map by fuzzy identifier ("{name},{main}")
-        var dbFuzzyIndex = versions.stream()
-            .map(it -> new Pair<>(String.format("%s,%s", it.meta().name(), it.meta().main()), it))
-            .collect(Pair.toMap());
-
-        var installed = listInstalled();
-        var entries = mapLock();
-
-        // For plugins that have plugin id and version ids recorded:
-        var outdatedEntries = entries.values().stream().filter(it -> dbIdIndex.containsKey(it.getPluginId()))
-            .map(it -> new Pair<>(it, dbIdIndex.get(it.getPluginId())))
-            .filter(it -> it.v() != null && it.v().id() > it.k().getVersionId())
-            .map(Pair::v);
-
-        // For plugins that are installed through other means that don't have a plugin id recorded.
-        // It requires an exact match of the plugin name + plugin main class
-        var outdatedFuzzy = installed.stream().filter(it -> !entries.containsKey(it.name()))
-            .map(it -> String.format("%s,%s", it.name(), it.main()))
-            .filter(dbFuzzyIndex::containsKey)
-            .map(dbFuzzyIndex::get);
-
-        return Stream.concat(outdatedFuzzy, outdatedEntries).toList();
-    }
 }
