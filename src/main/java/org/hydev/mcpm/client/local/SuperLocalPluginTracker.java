@@ -161,7 +161,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      *
      * @param name Plugin name
      */
-
+    @Override
     public void removeEntry(String name) {
         ArrayList<PluginTrackerModel> currentList = this.readJson();
         currentList.removeIf(pluginTrackerModel -> pluginTrackerModel.getName().equals(name));
@@ -169,59 +169,14 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     }
 
     /**
-     * Add a plugin to the JSON file
+     * List locally tracked plugin entries
      *
-     * @param tryPreserveLocalStatus if true, attempt to preserve the local status
-     *                               of the plugin using
-     *                               the local status of the plugin with the same
-     *                               name. This may be inaccurate
-     *                               if multiple plugins share the same name
-     * 
+     * @return Entries
      */
-    public void syncMainLockFile(Boolean tryPreserveLocalStatus) {
-        ArrayList<PluginTrackerModel> currentList = readJson();
-
-        HashMap<String, PluginTrackerModel> currentListName = new HashMap<>();
-
-        for (PluginTrackerModel pluginTrackerModel : currentList) {
-            currentListName.put(pluginTrackerModel.getName(), pluginTrackerModel);
-        }
-
-        List<PluginYml> installedPlugins = listInstalled();
-
-        // Iterate through each plugin in installedPlugins. If the plugin exists in both
-        // currentList and installedPlugins
-        // add its representation in currentList to toAdd. If the plugin exists only in
-        // installedPlugins, instantiate
-        // a new PluginTrackerModel representing this newly-installed plugin, with
-        // default manuallyInstalled false.
-
-        ArrayList<PluginTrackerModel> toAdd = new ArrayList<>();
-
-        for (PluginYml pluginYml : installedPlugins) {
-            PluginTrackerModel pluginRepresentation = new PluginTrackerModel(pluginYml.name(), false,
-                    pluginYml.version(), "unknown");
-
-            // if the plugin exists in currentList and installedPlugins,
-            // add it to toAdd with its currently stored parameters and status
-
-            var model = currentListName.getOrDefault(pluginRepresentation.getName(), null);
-
-            if (model != null) {
-                // if the plugin exists in both currentList and installedPlugins, pass it on
-                toAdd.add(currentListName.get(pluginRepresentation.getName()));
-            } else if (tryPreserveLocalStatus) {
-                // if the plugin exists in both currentList and installedPlugins, but the
-                // version differs, and we are trying to preserve local status, pass it on with
-                // the same status
-                boolean status = currentListName.get(pluginRepresentation.getName()).isManual();
-                pluginRepresentation.setManual(status);
-            }
-
-            toAdd.add(pluginRepresentation);
-        }
-
-        saveJson(toAdd);
+    @Override
+    public List<PluginTrackerModel> listEntries()
+    {
+        return readJson();
     }
 
     /**

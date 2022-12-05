@@ -18,6 +18,8 @@ public interface SuperPluginTracker {
 
     void removeEntry(String name);
 
+    List<PluginTrackerModel> listEntries();
+
     List<PluginYml> listInstalled();
 
     ArrayList<PluginTrackerModel> listInstalledAsModels();
