@@ -55,15 +55,13 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * Read metadata from a plugin's jar
      *
      * @param jar Local plugin jar path
-     * @return Metadata
+     * @return Metadata or null if it cannot be read
      */
-    private PluginYml readMeta(File jar) {
+    private static @Nullable PluginYml readMeta(File jar) {
         try (PluginJarFile InstancePluginJarFile = new PluginJarFile(jar)) {
             return InstancePluginJarFile.readPluginYaml();
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading plugin.yml from " + jar.getAbsolutePath());
-        } catch (InvalidPluginMetaStructure e) {
-            throw new RuntimeException("Invalid plugin.yml structure in " + jar.getAbsolutePath());
+        } catch (IOException | InvalidPluginMetaStructure e) {
+            return null;
         }
     }
 
@@ -75,16 +73,13 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      */
     private ArrayList<PluginTrackerModel> readJson() {
         try {
-            // ObjectMapper mapper = new ObjectMapper();
             // Reads the json file and converts it to a list of PluginTrackerModel objects
-            return this.mapper.readValue(new File(mainLockFile), mapper.getTypeFactory()
-                    .constructCollectionType(ArrayList.class, PluginTrackerModel.class));
+            return this.mapper.readValue(new File(mainLockFile), new TypeReference<>() {});
         } catch (FileNotFoundException e) {
-            return (new ArrayList<>());
+            return new ArrayList<>();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new PluginTrackerError(e);
         }
-
     }
 
     /**
@@ -97,18 +92,18 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         try {
             this.mapper.writeValue(Paths.get(mainLockFile).toFile(), list);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new PluginTrackerError(e);
         }
     }
 
-    /*
-     * Save an ArrayList's contents, overwriting a CSV file
+    /**
+     * Create an index map of the json lock file
      *
-     * @param list ArrayList of PluginTrackerModel instances to save
-     *
+     * @return Index map (dict[name: lock model])
      */
+    private Map<String, PluginTrackerModel> mapLock() {
+        return readJson().stream().map(it -> new Pair<>(it.getName(), it)).collect(Pair.toMap());
+    }
 
     /**
      * Returns whether a plugin with the given name is within
@@ -185,6 +180,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     /**
      * List all currently installed plugins in an ArrayList
      */
+    @Override
     public List<PluginYml> listInstalled() {
         // Go into the plugin directory and list files
         File dir = new File(pluginDirectory);
@@ -194,7 +190,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
         // Filter only java files, return all metadata that's not null
         return Arrays.stream(list).filter(f -> f.isFile() && f.getName().endsWith(".jar"))
-                .map(this::readMeta).filter(Objects::nonNull).toList();
+            .parallel().map(SuperLocalPluginTracker::readMeta).filter(Objects::nonNull).toList();
     }
 
     /**
@@ -204,18 +200,17 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      *
      * @param name Plugin name
      */
+    @Override
     public void setManuallyInstalled(String name) {
-        ArrayList<PluginTrackerModel> currentList = readJson();
-        ArrayList<PluginTrackerModel> newList = new ArrayList<>();
+        ArrayList<PluginTrackerModel> lock = readJson();
 
-        for (PluginTrackerModel pluginTrackerModel : currentList) {
-            if (pluginTrackerModel.getName().equals(name)) {
-                pluginTrackerModel.setManual(true);
+        for (var model : lock) {
+            if (model.getName().equals(name)) {
+                model.setManual(true);
             }
-            newList.add(pluginTrackerModel);
         }
 
-        saveJson(newList);
+        saveJson(lock);
     }
 
     /**
@@ -236,22 +231,18 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      *
      * @param name Plugin name
      */
+    @Override
     public void removeManuallyInstalled(String name) {
-        // Locate the name in the list of installed plugins and set the value in the
-        // second row as false
-        // Load in the csv file
-        ArrayList<PluginTrackerModel> currentList = readJson();
+        // Locate the name in the list of installed plugins and set the manually installed flag to false
+        ArrayList<PluginTrackerModel> lock = readJson();
 
-        ArrayList<PluginTrackerModel> newList = new ArrayList<>();
-
-        for (PluginTrackerModel pluginTrackerModel : currentList) {
-            if (pluginTrackerModel.getName().equals(name)) {
-                pluginTrackerModel.setManual(false);
+        for (var model : lock) {
+            if (model.getName().equals(name)) {
+                model.setManual(false);
             }
-            newList.add(pluginTrackerModel);
         }
 
-        saveJson(newList);
+        saveJson(lock);
     }
 
     /**
