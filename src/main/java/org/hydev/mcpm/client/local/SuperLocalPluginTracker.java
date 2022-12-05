@@ -2,23 +2,13 @@ package org.hydev.mcpm.client.local;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
-import org.hydev.mcpm.client.models.PluginModel;
-import org.hydev.mcpm.client.models.PluginVersion;
-import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.models.*;
 import org.hydev.mcpm.client.models.PluginYml.InvalidPluginMetaStructure;
-import org.hydev.mcpm.client.search.SearchPackagesBoundary;
-import org.hydev.mcpm.client.search.SearchPackagesInput;
-import org.hydev.mcpm.client.search.SearchPackagesResult;
-import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.utils.Pair;
 import org.hydev.mcpm.utils.PluginJarFile;
-import org.hydev.mcpm.client.models.PluginTrackerModel;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -273,141 +263,4 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
         return Stream.concat(inLock, noLock).toList();
     }
-
-    /**
-     * Return the version data of a plugin from the pluginYML file
-     *
-     * @param name Plugin id
-     * @return Version data
-     */
-
-    public String getVersion(String name) {
-        // Locate the file in the plugin directory and read the version from the
-        // plugin.yml
-        // If the plugin is not found, throw an error
-
-        File dir = new File(pluginDirectory);
-        File[] directoryListing = dir.listFiles();
-        if (directoryListing != null) {
-            for (File child : directoryListing) {
-                if (child.getName().equals(name)) {
-                    // We probably want to keep this try catch.
-                    // A plugin can be malformed in many ways, this will just drop it from our list
-                    // if needed.
-                    try {
-                        return readMeta(child).version();
-                    } catch (Exception e) {
-                        System.out.println("Error reading plugin.yml version from " + child);
-                    }
-                }
-            }
-        } else {
-            System.out.println("Plugin with id " + name + " not found");
-            return "";
-        }
-
-        return "";
-    }
-
-    /**
-     * Get a list of plugin (as pluginYml) that are outdated
-     *
-     * @return List of plugin names
-     */
-    public List<PluginYml> listOutdatedPluginYml(SearchPackagesBoundary searchPackagesBoundary) {
-        List<PluginYml> outdatedPlugins = new ArrayList<>();
-        List<PluginYml> installedPlugins = listInstalled();
-
-        // For each plugin in the list of installed plugins, check if the version in the
-        // plugin.yml file is outdated
-        // If it is, add the plugin name to the list of outdated plugins
-        for (PluginYml plugin : installedPlugins) {
-            if (compareVersion(plugin.name(), searchPackagesBoundary)) {
-                outdatedPlugins.add(plugin);
-            }
-        }
-
-        return outdatedPlugins;
-    }
-
-    /**
-     * Compare whether the locally installed version of the plugin matches the
-     * version on the server.
-     * If yes, return true. If no, return false.
-     *
-     * @return True if the local version of plugin with name is outdated, false
-     *         otherwise
-     */
-    public Boolean compareVersion(String name, SearchPackagesBoundary searchPackagesBoundary) {
-        File pluginYmlPath = getPluginFile(name);
-        PluginYml currPlugin = readMeta(pluginYmlPath);
-        String localVersion = currPlugin.version();
-
-        SearchPackagesInput searchPackagesInput = new SearchPackagesInput(SearchPackagesType.BY_NAME, name,
-                false);
-        SearchPackagesResult searchPackagesResult = searchPackagesBoundary.search(searchPackagesInput);
-
-        // Get the version of the plugin from the server: Query for all, see if there's
-        // a match
-        if (searchPackagesResult.state().equals(SearchPackagesResult.State.SUCCESS)) {
-            for (PluginModel plugin : searchPackagesResult.plugins()) {
-                PluginVersion latest = plugin.getLatestPluginVersion().orElse(null);
-                if (latest != null) {
-                    if (latest.meta().version().equals(localVersion)) {
-                        return true;
-                    }
-                }
-
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get whether a local plugin File matches the version of the plugin on the
-     * server
-     *
-     * @param local  the local plugin File
-     * @param remote a PluginModel object representing the plugin on the server
-     * @return True if this plugin is up-to-date.
-     */
-    public Boolean compareVersionNew(File local, PluginModel remote) {
-        try {
-            PluginYml localPlugin = readMeta(local);
-            String localVersion = localPlugin.version();
-            String remoteVersion = remote.versions().get(0).meta().version();
-            return localVersion.equals(remoteVersion);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Retrieves the file path of a plugin with a specified name as a File
-     *
-     * @param name Plugin name
-     * @return A File object representation of the plugin
-     */
-    private File getPluginFile(String name) {
-        // Get the file path of the plugin with name from the local plugin
-        // directory
-        // Return the file path as a File
-        // Find the file from the plugin directory
-
-        File dir = new File(pluginDirectory);
-        File[] directoryListing = dir.listFiles();
-        if (directoryListing != null) {
-            for (File child : directoryListing) {
-                if (child.getName().equals(name)) {
-                    return child;
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("Plugin not found, verify whether installed.");
-        }
-
-        return null;
-    }
-
 }
