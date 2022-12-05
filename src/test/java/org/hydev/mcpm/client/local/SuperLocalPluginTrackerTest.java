@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests for SuperLocalPluginTracker
  */
+@Tag("IntegrationTest")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SuperLocalPluginTrackerTest
 {
@@ -109,22 +110,5 @@ class SuperLocalPluginTrackerTest
         var installed = tracker.listInstalled();
         assertTrue(installed.stream().anyMatch(it -> it.name().equals("ActiveList")));
         assertTrue(installed.stream().anyMatch(it -> it.name().equals(TESTING_PLUGIN)));
-    }
-
-    @Test
-    void listOutdatedPluginYml()
-    {
-
-    }
-
-    @Test
-    void compareVersion()
-    {
-
-    }
-
-    @Test
-    void compareVersionNew()
-    {
     }
 }
