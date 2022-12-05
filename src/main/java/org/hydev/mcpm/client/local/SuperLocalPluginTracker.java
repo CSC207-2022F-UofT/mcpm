@@ -147,12 +147,15 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     /**
      * Add a plugin to the JSON file
      *
-     * @param name   Plugin name
-     * @param status Plugin status (true = manual, false = auto)
+     * @param name Plugin name
+     * @param manual Plugin status (true = manual, false = auto)
+     * @param pluginId Plugin unique ID
+     * @param versionId Plugin version's unique ID
      */
-    public void addEntry(String name, boolean status, String versionId, String pluginId) {
+    @Override
+    public void addEntry(String name, boolean manual, long versionId, long pluginId) {
         ArrayList<PluginTrackerModel> currentList = this.readJson();
-        currentList.add(new PluginTrackerModel(name, status, versionId, pluginId));
+        currentList.add(new PluginTrackerModel(name, manual, versionId, pluginId));
         saveJson(currentList);
     }
 

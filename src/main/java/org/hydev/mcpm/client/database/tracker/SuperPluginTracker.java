@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * versionId/pluginId).
  */
 public interface SuperPluginTracker {
-    void addEntry(String name, boolean status, String versionId, String pluginId);
+    void addEntry(String name, boolean status, long versionId, long pluginId);
 
     void removeEntry(String name);
 
