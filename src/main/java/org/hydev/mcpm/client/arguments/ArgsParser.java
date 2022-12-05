@@ -5,6 +5,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.parsers.CommandHandler;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
+import org.hydev.mcpm.utils.ColorLogger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -118,9 +119,9 @@ public class ArgsParser
         var parser = CommandsFactory.baseArgsParser();
 
         try {
-            parser.parse(args, System.out::println);
+            parser.parse(args, ColorLogger.toStdOut());
         } catch (ArgumentParserException e) {
-            parser.fail(e, System.out::println);
+            parser.fail(e, ColorLogger.toStdOut());
         }
     }
 }
