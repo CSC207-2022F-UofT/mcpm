@@ -4,7 +4,7 @@ package org.hydev.mcpm.client.list;
 import org.hydev.mcpm.client.models.PluginTrackerModel;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
-import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.matcher.PluginVersionState;
 import org.hydev.mcpm.client.matcher.PluginModelId;
 import org.hydev.mcpm.client.matcher.PluginVersionId;
@@ -30,7 +30,7 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
      * @return A list of plugins that are outdated.
      */
     public ArrayList<String> listUpdateable(
-            SuperPluginTracker localPluginTracker, CheckForUpdatesBoundary checkForUpdatesBoundary) {
+        PluginTracker localPluginTracker, CheckForUpdatesBoundary checkForUpdatesBoundary) {
 
         ArrayList<PluginVersionState> temp = new ArrayList<>();
         List<PluginTrackerModel> installedModels = localPluginTracker.listEntries();

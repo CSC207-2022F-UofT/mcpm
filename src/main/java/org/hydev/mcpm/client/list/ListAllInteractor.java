@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.list;
 
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
-import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-11-20
  */
-public record ListAllInteractor(SuperPluginTracker pluginTracker) implements ListAllBoundary {
+public record ListAllInteractor(PluginTracker pluginTracker) implements ListAllBoundary {
     /**
      * listAllInteractor interacts with the LocalPluginTracker to get the list of
      * plugins, according to a specified

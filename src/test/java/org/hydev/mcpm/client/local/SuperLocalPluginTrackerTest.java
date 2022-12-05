@@ -21,7 +21,7 @@ class SuperLocalPluginTrackerTest
     private static String TESTING_PLUGIN = "TestingPlugin";
     
     static TemporaryDir tmp;
-    static SuperLocalPluginTracker tracker;
+    static LocalPluginTracker tracker;
 
     @BeforeAll
     static void init()
@@ -29,7 +29,7 @@ class SuperLocalPluginTrackerTest
         tmp = new TemporaryDir();
         var lock = new File(tmp.path, "lock.json");
         var f = Objects.requireNonNull(GeneralUtils.getResourceFile("test-plugin-activelist.jar"));
-        tracker = new SuperLocalPluginTracker(lock.getAbsolutePath(), f.getParentFile().getAbsolutePath());
+        tracker = new LocalPluginTracker(lock.getAbsolutePath(), f.getParentFile().getAbsolutePath());
     }
 
     @AfterAll

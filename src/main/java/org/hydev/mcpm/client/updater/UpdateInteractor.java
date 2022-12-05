@@ -3,6 +3,7 @@ package org.hydev.mcpm.client.updater;
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.matcher.PluginModelId;
 import org.hydev.mcpm.client.matcher.PluginVersionId;
 import org.hydev.mcpm.client.matcher.PluginVersionState;
@@ -29,7 +30,7 @@ import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
 public record UpdateInteractor(
         CheckForUpdatesBoundary checkBoundary,
         InstallBoundary installer,
-        org.hydev.mcpm.client.local.SuperLocalPluginTracker pluginTracker
+        LocalPluginTracker pluginTracker
 ) implements UpdateBoundary {
     @Nullable
     private PluginVersionState stateByName(Map<String, PluginYml> installed, String name) {
@@ -46,7 +47,7 @@ public record UpdateInteractor(
 
     // This is hacky. It would be nice if we could look up states by name in update() so we return a map.
     private Map<String, PluginVersionState> stateMapByNames(List<String> names) {
-        // 
+        //
         var installed = pluginTracker.listInstalled().stream().map(it -> new Pair<>(it.name(), it))
             .collect(Pair.toMap());
 

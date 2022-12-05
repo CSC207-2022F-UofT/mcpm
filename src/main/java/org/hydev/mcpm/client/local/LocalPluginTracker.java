@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.local;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.models.*;
 import org.hydev.mcpm.client.models.PluginYml.InvalidPluginMetaStructure;
 import org.hydev.mcpm.utils.Pair;
@@ -19,7 +19,8 @@ import java.util.stream.Stream;
 /**
  * This class keeps track of locally installed packages
  */
-public class SuperLocalPluginTracker implements SuperPluginTracker {
+public class LocalPluginTracker implements PluginTracker
+{
     /** Lock file containing installed plugin information */
     private final String mainLockFile;
 
@@ -32,7 +33,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     /**
      * Instantiates a LocalPluginTracker with default parameters for general use
      */
-    public SuperLocalPluginTracker() {
+    public LocalPluginTracker() {
         this("plugins/mcpm.lock.json", "plugins");
     }
 
@@ -43,7 +44,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      * @param mainLockFile    The path to the main lock file
      * @param pluginDirectory The path to the plugin directory
      */
-    public SuperLocalPluginTracker(String mainLockFile, String pluginDirectory) {
+    public LocalPluginTracker(String mainLockFile, String pluginDirectory) {
         this.mainLockFile = mainLockFile;
         this.pluginDirectory = pluginDirectory;
     }
@@ -187,7 +188,7 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
         // Filter only java files, return all metadata that's not null
         return Arrays.stream(list).filter(f -> f.isFile() && f.getName().endsWith(".jar"))
-            .parallel().map(SuperLocalPluginTracker::readMeta).filter(Objects::nonNull).toList();
+            .parallel().map(LocalPluginTracker::readMeta).filter(Objects::nonNull).toList();
     }
 
     /**

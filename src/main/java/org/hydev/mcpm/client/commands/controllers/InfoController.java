@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.commands.controllers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
-import org.hydev.mcpm.client.database.tracker.SuperPluginTracker;
+import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.utils.ColorLogger;
 
 import javax.annotation.Nullable;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 /**
  * Controller for the info use case
  */
-public record InfoController(SuperPluginTracker tracker)
+public record InfoController(PluginTracker tracker)
 {
     private static final int LEN_LEFT = 12;
     private static final int LEN_RIGHT = 60;
