@@ -263,4 +263,90 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
 
         return Stream.concat(inLock, noLock).toList();
     }
+
+    /**
+     * List installed plugins in an index map
+     *
+     * @return Index map (dict[name: plugin])
+     */
+    private Map<String, PluginYml> mapInstalled() {
+        return listInstalled().stream()
+            .map(it -> new Pair<>(it.name(), it))
+            .collect(Pair.toMap());
+    }
+
+    /**
+     * Get a list of automatically installed plugin dependencies that are no longer required
+     *
+     * @param considerSoftDependencies Whether to preserve soft dependencies (should be false)
+     * @return List of plugins
+     */
+    @Override
+    public List<PluginYml> listOrphanPlugins(boolean considerSoftDependencies) {
+        Map<String, PluginYml> installed = mapInstalled();
+        List<String> manual = listManuallyInstalled();
+        List<String> deps = new ArrayList<>();
+
+        // Get all the dependencies of the manually installed plugins
+        for (String name : manual) {
+
+            // If the plugin is not in the local installed folder, skip it
+            if (!installed.containsKey(name)) continue;
+
+            // Read plugin yml
+            var p = installed.get(name);
+
+            // Add the dependencies of the plugin to the list of required dependencies
+            if (p.depend() != null)
+                deps.addAll(p.depend());
+
+            // If considerSoftDependencies is true, add the soft dependencies to the list of
+            // required dependencies
+            if (p.softdepend() != null && considerSoftDependencies)
+                deps.addAll(p.softdepend());
+        }
+
+        // Get the difference between the set of manually installed plugins,
+        // the set of required dependencies, and the set of all installed plugins.
+        return installed.values().stream()
+            .filter(it -> !manual.contains(it.name()) && !deps.contains(it.name())).toList();
+    }
+
+    /**
+     * Get a list of plugin (as pluginYml) that are outdated
+     *
+     * @return List of plugin names
+     */
+    @Override
+    public List<PluginVersion> listOutdatedPlugins(Database database) {
+        // Database plugins' latest versions
+        var versions = database.plugins().stream().map(PluginModel::getLatestPluginVersion)
+            .filter(Optional::isPresent).map(Optional::get).toList();
+
+        // Database index map by plugin ID
+        var dbIdIndex = versions.stream().map(it -> new Pair<>(it.id(), it)).collect(Pair.toMap());
+
+        // Database index map by fuzzy identifier ("{name},{main}")
+        var dbFuzzyIndex = versions.stream()
+            .map(it -> new Pair<>(String.format("%s,%s", it.meta().name(), it.meta().main()), it))
+            .collect(Pair.toMap());
+
+        var installed = listInstalled();
+        var entries = mapLock();
+
+        // For plugins that have plugin id and version ids recorded:
+        var outdatedEntries = entries.values().stream().filter(it -> dbIdIndex.containsKey(it.getPluginId()))
+            .map(it -> new Pair<>(it, dbIdIndex.get(it.getPluginId())))
+            .filter(it -> it.v() != null && it.v().id() > it.k().getVersionId())
+            .map(Pair::v);
+
+        // For plugins that are installed through other means that don't have a plugin id recorded.
+        // It requires an exact match of the plugin name + plugin main class
+        var outdatedFuzzy = installed.stream().filter(it -> !entries.containsKey(it.name()))
+            .map(it -> String.format("%s,%s", it.name(), it.main()))
+            .filter(dbFuzzyIndex::containsKey)
+            .map(dbFuzzyIndex::get);
+
+        return Stream.concat(outdatedFuzzy, outdatedEntries).toList();
+    }
 }
