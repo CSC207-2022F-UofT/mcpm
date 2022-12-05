@@ -67,32 +67,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
         }
     }
 
-    /*
-     * Read the CSV file and return a mapping between plugin names and install
-     * status
-     *
-     * @return Mapping between plugin name and boolean status
-     */
-    /*
-     * private ArrayList<PluginTrackerModel> readCsv() {
-     * ArrayList<PluginTrackerModel> accumulator = new ArrayList<>();
-     * try {
-     * CSVReader reader = new CSVReader(new FileReader(mainLockFile));
-     * String[] line;
-     * while ((line = reader.readNext()) != null) {
-     * accumulator.add(new PluginTrackerModel(line[0],
-     * Boolean.parseBoolean(line[1]), line[2], line[3]));
-     * }
-     * reader.close();
-     * return accumulator;
-     * } catch (FileNotFoundException e) {
-     * return accumulator;
-     * } catch (CsvException | IOException e) {
-     * throw new RuntimeException(e);
-     * }
-     * }
-     */
-
     /**
      * Read a JSON file at the given location file and return a mapping between
      * plugin names and install
@@ -134,21 +108,6 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
      *
      * @param list ArrayList of PluginTrackerModel instances to save
      *
-     */
-    /*
-     * private void saveCsv(ArrayList<PluginTrackerModel> listToSave) {
-     * String csvFile = mainLockFile;
-     * try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
-     * for (PluginTrackerModel pluginTrackerModel : listToSave) {
-     * String[] data = { pluginTrackerModel.getName(),
-     * pluginTrackerModel.isManual().toString(),
-     * pluginTrackerModel.getVersionId(), pluginTrackerModel.getPluginId() };
-     * writer.writeNext(data);
-     * }
-     * } catch (IOException e) {
-     * throw new RuntimeException(e);
-     * }
-     * }
      */
 
     /**
