@@ -246,82 +246,25 @@ public class SuperLocalPluginTracker implements SuperPluginTracker {
     }
 
     /**
-     * Get a list of manually installed plugins
+     * Get a list of manually installed plugins. This should assume that everything that's installed
+     * on the file system but not in the lock file is manually installed. (Maybe installed via other
+     * means such as manually dragging the jar file into the directory).
      *
      * @return List of plugin names
      */
+    @Override
     public List<String> listManuallyInstalled() {
-        ArrayList<PluginTrackerModel> currentList = readJson();
+        var lock = mapLock();
 
-        ArrayList<String> newList = new ArrayList<>();
+        // Manually installed plugins that are in the lock file
+        var inLock = lock.values().stream().filter(PluginTrackerModel::isManual)
+            .map(PluginTrackerModel::getName);
 
-        for (PluginTrackerModel pluginTrackerModel : currentList) {
-            if (pluginTrackerModel.isManual()) {
-                newList.add(pluginTrackerModel.getName());
-            }
-        }
-        return newList;
-    }
+        // Installed plugins that are not in the lock file
+        var noLock = listInstalled().stream().map(PluginYml::name)
+            .filter(it -> !lock.containsKey(it));
 
-    /**
-     * Get a list of automatically installed plugin dependencies that are no longer
-     * required
-     *
-     * @return List of plugin names
-     */
-    public List<String> listOrphanPlugins(boolean considerSoftDependencies) {
-        List<String> manuallyInstalledPlugins = listManuallyInstalled();
-        List<String> requiredDependencies = new ArrayList<>();
-
-        // Get all the dependencies of the manually installed plugins
-        for (String name : manuallyInstalledPlugins) {
-            try {
-                // Find the pluginYml file of the plugin with name from the plugin
-                // directory
-
-                File pluginYmlPath = getPluginFile(name);
-                if (pluginYmlPath == null) {
-                    throw new FileNotFoundException("Plugin " + name + " not found");
-                }
-                PluginYml p = readMeta(pluginYmlPath);
-                if (p == null)
-                    continue;
-
-                // String pluginYmlPath = pluginDirectory + "/" + name + "/plugin.yml";
-                // PluginYml currPlugin = readMeta(new File(pluginYmlPath));
-                // Add the dependencies of the plugin to the list of required dependencies
-                if (p.depend() != null)
-                    requiredDependencies.addAll(p.depend());
-
-                // If considerSoftDependencies is true, add the soft dependencies to the list of
-                // required dependencies
-                if (considerSoftDependencies) {
-                    if (p.softdepend() != null)
-                        requiredDependencies.addAll(p.softdepend());
-                }
-
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        // Get the difference between the set of manually installed plugins,
-        // the set of required dependencies, and the set of all installed plugins.
-        List<PluginYml> installedPluginsYml = listInstalled();
-
-        // Create a list of all installed plugin names in string format from the
-        // installedPluginsYML list
-        List<String> installedPlugins = new ArrayList<>();
-        for (PluginYml plugin : installedPluginsYml) {
-            installedPlugins.add(plugin.name());
-        }
-
-        // Get the difference between the set of manually installed plugins,
-        // the set of required dependencies, and the set of all installed plugins
-        installedPlugins.removeAll(requiredDependencies);
-        installedPlugins.removeAll(manuallyInstalledPlugins);
-
-        return installedPlugins;
+        return Stream.concat(inLock, noLock).toList();
     }
 
     /**
