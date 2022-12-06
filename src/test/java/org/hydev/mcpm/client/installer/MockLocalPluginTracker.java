@@ -29,7 +29,7 @@ public class MockLocalPluginTracker implements PluginTracker {
     public void removeEntry(String name) {
         localJarFilesTracker.remove(name);
         for (PluginYml pluginYml:pluginInstalled) {
-            if (pluginYml.name() == name) {
+            if (pluginYml.name().equals(name)) {
                 listInstalled().remove(pluginYml);
             }
         }

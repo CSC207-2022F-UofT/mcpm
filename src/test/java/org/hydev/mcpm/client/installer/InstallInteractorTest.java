@@ -120,9 +120,9 @@ public class InstallInteractorTest {
     @Test
     public void testSearchPluginNotFound(){
         InstallInput installInput = new InstallInput("UwU",
-                SearchPackagesType.BY_NAME,
-                false,
-                true);
+                                                        SearchPackagesType.BY_NAME,
+                                                        false,
+                                                        true);
         List<InstallResult> listInstallResult = installInteractor.installPlugin(installInput);
         InstallResult installResult = listInstallResult.get(0);
         assertEquals(installResult.name(), "UwU");
@@ -177,10 +177,10 @@ public class InstallInteractorTest {
     @Test
     public void test_InstallMissingDependency_OfInputPlugin() {
         InstallInput installInput = new InstallInput("JedCore",
-                SearchPackagesType.BY_NAME,
-                false,
-                true);
-        installInteractor.installPlugin(installInput);
+                                                        SearchPackagesType.BY_NAME,
+                                                        false,
+                                                        true);
+                                                        installInteractor.installPlugin(installInput);
         // Assume the user doesn't like ProjectKorra dependency, and he/she/they uninstalled it
         mockLocalTracker.removeEntry("ProjectKorra");
         assertEquals(mockLocalTracker.listInstalled().size(), 1);
@@ -190,12 +190,12 @@ public class InstallInteractorTest {
         assertEquals(listInstallResult.size(), 2);
         assertEquals(mockLocalTracker.listInstalled().size(), 2);
 
-        InstallResult JedCoreInstallResult = listInstallResult.get(1);
-        assertEquals(JedCoreInstallResult.name(),"JedCore");
-        assertEquals(JedCoreInstallResult.type(), InstallResult.Type.PLUGIN_EXISTS);
+        InstallResult jedCoreInstallResult = listInstallResult.get(1);
+        assertEquals(jedCoreInstallResult.name(),"JedCore");
+        assertEquals(jedCoreInstallResult.type(), InstallResult.Type.PLUGIN_EXISTS);
 
-        InstallResult ProjectKorraInstallResult = listInstallResult.get(0);
-        assertEquals(ProjectKorraInstallResult.name(),"ProjectKorra");
-        assertEquals(ProjectKorraInstallResult.type(), InstallResult.Type.SUCCESS_INSTALLED);
+        InstallResult projectKorraInstallResult = listInstallResult.get(0);
+        assertEquals(projectKorraInstallResult.name(),"ProjectKorra");
+        assertEquals(projectKorraInstallResult.type(), InstallResult.Type.SUCCESS_INSTALLED);
     }
 }
