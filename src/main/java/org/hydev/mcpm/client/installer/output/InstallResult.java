@@ -30,11 +30,7 @@ public record InstallResult(Type type, String name, boolean loaded) {
         NO_VERSION_AVAILABLE("  &cNo versions are available to download"),
         PLUGIN_EXISTS(" &6The plugin is already installed on the system"),
 
-        SUCCESS_INSTALLED(" &aThe plugin is installed successfully"),
-
-        UNLOADED(" &bThe plugin is unloaded"),
-
-        LOADED(" &bThe plugin is loaded");
+        SUCCESS_INSTALLED(" &aThe plugin is installed successfully");
         private final String reason;
 
         Type(String reason) {

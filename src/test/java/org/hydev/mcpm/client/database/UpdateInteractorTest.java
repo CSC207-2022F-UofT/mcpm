@@ -192,7 +192,7 @@ public class UpdateInteractorTest {
     void testEmptyDatabase() {
         var mock = emptyInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -207,7 +207,7 @@ public class UpdateInteractorTest {
     void testMismatchedPlugin() {
         var mock = emptyWithInstalledInteractor();
 
-        var input = new UpdateInput(List.of("JedCore"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("JedCore"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -222,7 +222,7 @@ public class UpdateInteractorTest {
     void testMismatchedName() {
         var mock = emptyInteractor();
 
-        var input = new UpdateInput(List.of("JedCore"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("JedCore"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -237,7 +237,7 @@ public class UpdateInteractorTest {
     void testAllUpToDate() {
         var mock = upToDateInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -255,7 +255,7 @@ public class UpdateInteractorTest {
     void testOneUpToDate() {
         var mock = upToDateInteractor();
 
-        var input = new UpdateInput(List.of("Apples+"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("Apples+"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -271,7 +271,7 @@ public class UpdateInteractorTest {
     void testAllOutOfDate() {
         var mock = outOfDateInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -289,7 +289,7 @@ public class UpdateInteractorTest {
     void testOneOutOfDate() {
         var mock = outOfDateInteractor();
 
-        var input = new UpdateInput(List.of("Apples+"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("Apples+"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -305,7 +305,7 @@ public class UpdateInteractorTest {
     void testAllMixed() {
         var mock = oneOldInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -323,7 +323,7 @@ public class UpdateInteractorTest {
     void testFailingInstaller() {
         var mock = failingOneOldInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);

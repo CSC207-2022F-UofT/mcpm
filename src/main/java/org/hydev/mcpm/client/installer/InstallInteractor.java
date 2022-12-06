@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.installer;
 
-import org.bukkit.plugin.Plugin;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.injector.PluginLoader;
@@ -10,7 +9,6 @@ import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.search.SearchInteractor;
 import org.hydev.mcpm.client.installer.output.InstallResult;
-import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
 import org.hydev.mcpm.client.search.*;
 import org.hydev.mcpm.client.injector.LoadBoundary;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
@@ -62,8 +60,7 @@ public class InstallInteractor implements InstallBoundary {
      * @param installInput the plugin submitted by the user for installing
      */
     @Override
-    public List<InstallResult> installPlugin(InstallInput installInput)
-    {
+    public List<InstallResult> installPlugin(InstallInput installInput) {
         var pluginName = installInput.name();
 
         // 1. Search the name and get a list of plugins
@@ -90,25 +87,7 @@ public class InstallInteractor implements InstallBoundary {
         }
 
         var results = new ArrayList<InstallResult>();
-        boolean ifPluginDownloaded = localPluginTracker.findIfInLockByName(pluginName);
-        if (ifPluginDownloaded) {
-            results.add(new InstallResult(Type.PLUGIN_EXISTS, pluginName));
-        } else {
-            // 3. Download it
-            spigotPluginDownloader.download(pluginName, idPluginModel, pluginVersion.id());
-            // 4. Add the installed plugin to the json file
-            String pluginVersionId = String.valueOf(pluginVersion.id());
-            String pluginModelId = String.valueOf(idPluginModel);
-            //        superPluginTracker.addEntry(pluginName,
-            //                             installInput.isManuallyInstalled() ||
-            //                                    superPluginTracker.listManuallyInstalled().contains(pluginName),
-            //                                    pluginVersionId,
-            //                                    pluginModelId);
-            // 5. Add success installed
-            results.add(new InstallResult(Type.SUCCESS_INSTALLED, pluginName));
-        }
-
-        // 5. Installing the dependency of that plugin
+        // 3. Installing the dependency of that plugin
         if (pluginVersion.meta().depend() != null) {
             for (String dependency : pluginVersion.meta().depend()) {
                 var dependencyInput = new InstallInput(dependency,
@@ -118,13 +97,27 @@ public class InstallInteractor implements InstallBoundary {
                 results.addAll(rec);
             }
         }
+        boolean ifPluginDownloaded = localPluginTracker.findIfInLockByName(pluginName);
+        if (!ifPluginDownloaded) {
+            // 4. Download the plugin
+            spigotPluginDownloader.download(pluginName, idPluginModel, pluginVersion.id());
+            // 5. Add the installed plugin to the json file
+            long pluginVersionId = pluginVersion.id();
+            long pluginModelId = idPluginModel;
+            localPluginTracker.addEntry(pluginName,
+                    installInput.isManuallyInstalled(),
+                    pluginVersionId,
+                    pluginModelId);
+        }
 
         // 6. Load the plugin
         var loadResult = loadPlugin(pluginName, installInput.load());
-        if (!loadResult) {
-            results.add(new InstallResult(Type.UNLOADED, pluginName, loadResult));
+
+        // 7. Add success installed
+        if (ifPluginDownloaded) {
+            results.add(new InstallResult(Type.PLUGIN_EXISTS, pluginName));
         } else {
-            results.add(new InstallResult(Type.LOADED, pluginName, loadResult));
+            results.add(new InstallResult(Type.SUCCESS_INSTALLED, pluginName));
         }
         return results;
     }
@@ -187,7 +180,7 @@ public class InstallInteractor implements InstallBoundary {
         var resultPresenter = new InstallPresenter();
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(() -> host);
-        var superTracker = new SuperLocalPluginTracker();
+        var superTracker = new LocalPluginTracker();
         var searcher = new SearchInteractor(fetcher);
         Downloader downloader = new Downloader();
         PluginLoader loader = null;

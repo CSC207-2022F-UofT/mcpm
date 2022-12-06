@@ -64,8 +64,12 @@ public class Downloader
 
                 return builder.toByteArray();
             });
-
-            Files.write(fos.toPath(), bytes);
+            try {
+                Files.write(fos.toPath(), bytes);
+            }
+            catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
         }
         catch (IOException e)
         {

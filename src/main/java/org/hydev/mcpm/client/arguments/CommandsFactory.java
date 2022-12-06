@@ -30,7 +30,6 @@ import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
-import org.hydev.mcpm.client.local.SuperLocalPluginTracker;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.list.ListAllInteractor;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;

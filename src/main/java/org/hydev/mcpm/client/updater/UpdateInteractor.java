@@ -96,9 +96,7 @@ public record UpdateInteractor(
             case SEARCH_FAILED_TO_FETCH_DATABASE,
                 NO_VERSION_AVAILABLE -> defaultOutcomeFor(state, NETWORK_ERROR);
             case PLUGIN_EXISTS -> throw new RuntimeException(); // We need to know something went wrong.
-            case SUCCESS_INSTALLED,
-                 LOADED,
-                 UNLOADED -> new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
+            case SUCCESS_INSTALLED -> new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
         };
     }
 
