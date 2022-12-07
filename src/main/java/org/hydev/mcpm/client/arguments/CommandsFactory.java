@@ -21,7 +21,7 @@ import org.hydev.mcpm.client.commands.controllers.InstallController;
 import org.hydev.mcpm.client.commands.controllers.ListController;
 import org.hydev.mcpm.client.commands.controllers.LoadController;
 import org.hydev.mcpm.client.commands.controllers.MirrorController;
-import org.hydev.mcpm.client.commands.controllers.PageController;
+import org.hydev.mcpm.client.local.PageController;
 import org.hydev.mcpm.client.commands.controllers.RefreshController;
 import org.hydev.mcpm.client.commands.controllers.ReloadController;
 import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
@@ -87,7 +87,7 @@ public class CommandsFactory {
 
         // Controllers
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(superTracker));
-        var listController = new ListController(new ListAllInteractor(superTracker), updateChecker);
+        var listController = new ListController(new ListAllInteractor(superTracker, updateChecker));
         var searchController = new SearchPackagesController(searcher);
         var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(superTracker);

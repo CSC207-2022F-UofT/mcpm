@@ -52,7 +52,6 @@ public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, Un
         return loadPlugin(jarFinder.findJar(name));
     }
 
-    @Override
     public boolean loadPlugin(File jar)
     {
         return loadPluginHelper(jar) != null;

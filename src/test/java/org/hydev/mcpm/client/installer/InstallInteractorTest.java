@@ -15,11 +15,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests the Install Interactor
+ * Tests the `install` interactor classes for correct behaviour.
  */
 public class InstallInteractorTest {
     private InstallInteractor installInteractor;
-    private InstallInteractor emptyDatabaseInstallInteractor;
     private MockLocalPluginTracker mockLocalTracker;
 
     /**
@@ -28,16 +27,13 @@ public class InstallInteractorTest {
     @BeforeEach
     public void setup() {
         var fetcher = new LocalDatabaseFetcher(() -> URI.create("https://mcpm.hydev.org"));
-        var failFetcher = new LocalDatabaseFetcher(() -> URI.create(""));
         mockLocalTracker = new MockLocalPluginTracker();
-        installInteractor = new InstallInteractor(new MockDownloader(null),
-                                        null,
-                                                   new SearchInteractor(fetcher),
-                                                    mockLocalTracker);
-        emptyDatabaseInstallInteractor = new InstallInteractor(new MockDownloader(null),
-                                                null,
-                                                new SearchInteractor(failFetcher),
-                                                mockLocalTracker);
+        installInteractor = new InstallInteractor(
+            new MockDownloader(null),
+            null,
+            new SearchInteractor(fetcher),
+            mockLocalTracker
+        );
     }
 
 

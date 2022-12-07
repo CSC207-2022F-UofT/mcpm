@@ -7,6 +7,7 @@ import org.hydev.mcpm.client.models.PluginYml;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class PluginMockFactory {
      * @return A PluginYml object.
      */
     public static PluginYml meta(String name, String version, String description,
-                                 Map<String, PluginCommand> commands) {
+                                 Map<String, PluginCommand> commands, List<String> authors) {
         return new PluginYml(
                 "org." + name,
                 name,
@@ -56,7 +57,7 @@ public class PluginMockFactory {
                 null,
                 null,
                 null,
-                null,
+                authors != null ? new ArrayList<>(authors) : null, // optional chaining?
                 null,
                 null,
                 null,
@@ -76,7 +77,7 @@ public class PluginMockFactory {
      * @return A PluginYml object.
      */
     public static PluginYml meta(String name, String version, String description) {
-        return meta(name, version, description, null);
+        return meta(name, version, description, null, null);
     }
 
     /**
@@ -105,7 +106,7 @@ public class PluginMockFactory {
         long id, String name, String string, String description,
         Map<String, PluginCommand> commands
     ) {
-        return new PluginVersion(id, 0, "", meta(name, string, description, commands));
+        return new PluginVersion(id, 0, "", meta(name, string, description, commands, null));
     }
 
 
