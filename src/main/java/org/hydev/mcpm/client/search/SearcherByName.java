@@ -10,7 +10,6 @@ import java.util.Map;
 /**
  * Searcher that returns a map based on names.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearcherByName implements Searcher {
 
