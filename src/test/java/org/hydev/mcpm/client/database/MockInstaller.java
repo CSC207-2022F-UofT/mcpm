@@ -49,26 +49,26 @@ public class MockInstaller implements InstallBoundary {
     @Override
     // TODO InstallPlugin
     public List<InstallResult> installPlugin(InstallInput installInput) {
-//        Assertions.assertEquals(installInput.type(), SearchPackagesType.BY_NAME);
-//
-//        if (tracker.findIfInLockByName(installInput.name()))
-//            return false;
-//
-//        var model = plugins.stream()
-//            .filter(plugin -> plugin.getLatestPluginVersion()
-//                .map(x -> x.meta() != null && installInput.name().equals(x.meta().name()))
-//                .orElse(false)
-//            ).findFirst();
-//
-//        var modelId = model.map(PluginModel::id).orElse(0L);
-//        var versionId = model.map(x -> x.getLatestPluginVersion()
-//            .map(PluginVersion::id).orElse(0L)
-//        ).orElse(0L);
-//
-//        requested.add(installInput.name());
-//        tracker.addEntry(installInput.name(), true, versionId, modelId);
-//
-//        return defaultResult;
+        //        Assertions.assertEquals(installInput.type(), SearchPackagesType.BY_NAME);
+        //
+        //        if (tracker.findIfInLockByName(installInput.name()))
+        //            return false;
+        //
+        //        var model = plugins.stream()
+        //            .filter(plugin -> plugin.getLatestPluginVersion()
+        //                .map(x -> x.meta() != null && installInput.name().equals(x.meta().name()))
+        //                .orElse(false)
+        //            ).findFirst();
+        //
+        //        var modelId = model.map(PluginModel::id).orElse(0L);
+        //        var versionId = model.map(x -> x.getLatestPluginVersion()
+        //            .map(PluginVersion::id).orElse(0L)
+        //        ).orElse(0L);
+        //
+        //        requested.add(installInput.name());
+        //        tracker.addEntry(installInput.name(), true, versionId, modelId);
+        //
+        //        return defaultResult;
         return null;
     }
 

@@ -21,6 +21,7 @@ public class InstallInteractorTest {
     private InstallInteractor installInteractor;
     private InstallInteractor emptyDatabaseInstallInteractor;
     private MockLocalPluginTracker mockLocalTracker;
+
     /**
      * Test Setup: Create an empty directory before testing
      */
@@ -52,9 +53,9 @@ public class InstallInteractorTest {
                                                             true);
         List<InstallResult> listInstallResult = installInteractor.installPlugin(installInput);
 
-        InstallResult pandaPLInstallResult = listInstallResult.get(0);
-        assertEquals(pandaPLInstallResult.name(),"PandaPL");
-        assertEquals(pandaPLInstallResult.type(), InstallResult.Type.SUCCESS_INSTALLED);
+        InstallResult pandaplInstallResult = listInstallResult.get(0);
+        assertEquals(pandaplInstallResult.name(), "PandaPL");
+        assertEquals(pandaplInstallResult.type(), InstallResult.Type.SUCCESS_INSTALLED);
 
         // Test behaviour: file exists after installing
         List<String> listFileInstalled = new ArrayList<>();
@@ -76,9 +77,9 @@ public class InstallInteractorTest {
                                                             true);
         List<InstallResult> listInstallResult = installInteractor.installPlugin(installInput);
 
-        InstallResult pandaPLLoadResult = listInstallResult.get(0);
-        assertEquals(pandaPLLoadResult.name(),"PandaPL");
-        assertFalse(pandaPLLoadResult.loaded());
+        InstallResult pandaplLoadResult = listInstallResult.get(0);
+        assertEquals(pandaplLoadResult.name(), "PandaPL");
+        assertFalse(pandaplLoadResult.loaded());
     }
 
     /**
@@ -93,9 +94,9 @@ public class InstallInteractorTest {
                                                     true,
                                                     true);
         List<InstallResult> listInstallResult = installInteractor.installPlugin(installInput);
-        InstallResult pandaPLLoadResult = listInstallResult.get(0);
-        assertEquals(pandaPLLoadResult.name(),"PandaPL");
-        assertFalse(pandaPLLoadResult.loaded());
+        InstallResult pandaplLoadResult = listInstallResult.get(0);
+        assertEquals(pandaplLoadResult.name(), "PandaPL");
+        assertFalse(pandaplLoadResult.loaded());
     }
 
     /**
@@ -118,7 +119,7 @@ public class InstallInteractorTest {
      *             not match with database
      */
     @Test
-    public void testSearchPluginNotFound(){
+    public void testSearchPluginNotFound() {
         InstallInput installInput = new InstallInput("UwU",
                                                         SearchPackagesType.BY_NAME,
                                                         false,
@@ -133,7 +134,7 @@ public class InstallInteractorTest {
      * Test case: plugin shouldn't be installed if it already exists locally
      */
     @Test
-    public void testPluginAlreadyInstalledLocally(){
+    public void testPluginAlreadyInstalledLocally() {
         InstallInput installInput = new InstallInput("JedCore",
                 SearchPackagesType.BY_NAME,
                 false,
@@ -160,11 +161,11 @@ public class InstallInteractorTest {
         assertEquals(listInstallResult.size(), 2);
 
         InstallResult jedcoreInstallResult = listInstallResult.get(1);
-        assertEquals(jedcoreInstallResult.name(),"JedCore");
-        assertEquals(jedcoreInstallResult.type(), InstallResult.Type.SUCCESS_INSTALLED);
+        assertEquals(jedcoreInstallResult.name(), "JedCore");
+        assertEquals(jedcoreInstallResult.type(),  InstallResult.Type.SUCCESS_INSTALLED);
 
         InstallResult korraInstallResult = listInstallResult.get(0);
-        assertEquals(korraInstallResult.name(),"ProjectKorra");
+        assertEquals(korraInstallResult.name(), "ProjectKorra");
         assertEquals(korraInstallResult.type(), InstallResult.Type.SUCCESS_INSTALLED);
 
         assertEquals(mockLocalTracker.listInstalled().size(), 2);
@@ -180,7 +181,7 @@ public class InstallInteractorTest {
                                                         SearchPackagesType.BY_NAME,
                                                         false,
                                                         true);
-                                                        installInteractor.installPlugin(installInput);
+        installInteractor.installPlugin(installInput);
         // Assume the user doesn't like ProjectKorra dependency, and he/she/they uninstalled it
         mockLocalTracker.removeEntry("ProjectKorra");
         assertEquals(mockLocalTracker.listInstalled().size(), 1);
@@ -191,11 +192,11 @@ public class InstallInteractorTest {
         assertEquals(mockLocalTracker.listInstalled().size(), 2);
 
         InstallResult jedCoreInstallResult = listInstallResult.get(1);
-        assertEquals(jedCoreInstallResult.name(),"JedCore");
-        assertEquals(jedCoreInstallResult.type(), InstallResult.Type.PLUGIN_EXISTS);
+        assertEquals(jedCoreInstallResult.name(), "JedCore");
+        assertEquals(jedCoreInstallResult.type(),  InstallResult.Type.PLUGIN_EXISTS);
 
         InstallResult projectKorraInstallResult = listInstallResult.get(0);
-        assertEquals(projectKorraInstallResult.name(),"ProjectKorra");
+        assertEquals(projectKorraInstallResult.name(), "ProjectKorra");
         assertEquals(projectKorraInstallResult.type(), InstallResult.Type.SUCCESS_INSTALLED);
     }
 }
