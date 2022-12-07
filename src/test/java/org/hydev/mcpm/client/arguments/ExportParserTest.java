@@ -23,12 +23,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Contains tests for testing the export controller and parser objects.
+ * E.g. whether strings commands will result in correct inputs, call the right methods in the boundary, etc.
+ */
 public class ExportParserTest {
     private MockExportBoundary exporter;
     private ExportPluginsController controller;
 
     private ArgsParser args;
 
+
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         exporter = new MockExportBoundary();
@@ -37,6 +45,9 @@ public class ExportParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests if export parser will correctly fail when no arguments are passed.
+     */
     @Test
     void testNoArguments() {
         var exception = assertThrows(
@@ -47,6 +58,9 @@ public class ExportParserTest {
         assertEquals(exception.getMessage(), "too few arguments");
     }
 
+    /**
+     * Tests whether an output stream is created when passed an outfile.
+     */
     @Test
     @Tag("IntegrationTest")
     void testWithOutfile() throws ArgumentParserException, IOException {
@@ -64,6 +78,9 @@ public class ExportParserTest {
         assertTrue(input.cache());
     }
 
+    /**
+     * Tests whether no-cache is correctly set when the --cache option is provided.
+     */
     @Test
     @Tag("IntegrationTest")
     void testWithNoCache() throws ArgumentParserException, IOException {
@@ -80,6 +97,9 @@ public class ExportParserTest {
         assertFalse(input.cache());
     }
 
+    /**
+     * Tests whether the controller will properly generate an input object when invoked.
+     */
     @Test
     void testControllerWithRegularStream() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -93,6 +113,9 @@ public class ExportParserTest {
         assertTrue(input.cache());
     }
 
+    /**
+     * Tests whether a controller will still fail gracefully when passed a default result.
+     */
     @Test
     void testControllerWithFailState() {
         exporter.setDefaultResult(ExportPluginsResult.State.FAILED_TO_FETCH_PLUGINS);

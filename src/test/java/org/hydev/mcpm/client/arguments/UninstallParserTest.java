@@ -21,6 +21,9 @@ public class UninstallParserTest {
     private UninstallController controller;
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         uninstaller = new MockUninstallBoundary();
@@ -29,6 +32,9 @@ public class UninstallParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests if uninstall parser will correctly fail when no arguments are passed.
+     */
     @Test
     public void testNoArguments() {
         var exception = assertThrows(
@@ -39,6 +45,9 @@ public class UninstallParserTest {
         assertEquals(exception.getMessage(), "too few arguments");
     }
 
+    /**
+     * Tests if uninstall parser will correctly make a request to remove one plugin when it is provided.
+     */
     @Test
     public void testOnePlugin() throws ArgumentParserException {
         args.parse(new String[] { "uninstall", "myPlugin" }, log -> { });
@@ -51,6 +60,9 @@ public class UninstallParserTest {
         assertTrue(input.recursive());
     }
 
+    /**
+     * Tests if uninstall parser will set the noRecursive variable when the --no-recursive option is provided.
+     */
     @Test
     public void testWithRecursive() throws ArgumentParserException {
         args.parse(new String[] { "uninstall", "newPlugin", "--no-recursive" }, log -> { });
@@ -63,12 +75,31 @@ public class UninstallParserTest {
         assertFalse(input.recursive());
     }
 
+    /**
+     * Tests if uninstall parser will fail gracefully when the uninstaller fails to delete a plugin.
+     */
     @Test
     public void testWithFailResult() throws ArgumentParserException {
         uninstaller.setDefaultState(UninstallResult.State.FAILED_TO_DELETE);
 
         args.parse(new String[] { "uninstall", "my hello" }, log -> { });
         // Should still pass.
+
+        var inputs = uninstaller.getInputs();
+        assertEquals(inputs.size(), 1);
+
+        // Should still put in a request.
+        var input = inputs.get(0);
+        assertEquals(input.name(), "my hello");
+        assertTrue(input.recursive());
+    }
+
+    /**
+     * Tests if uninstall controller will correctly make a request to uninstall a plugin.
+     */
+    @Test
+    public void testWithController() {
+        controller.uninstall("my hello", true);
 
         var inputs = uninstaller.getInputs();
         assertEquals(inputs.size(), 1);

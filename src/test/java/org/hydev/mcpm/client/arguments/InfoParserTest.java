@@ -18,14 +18,20 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Contains tests for testing the info controller and parser objects.
+ * E.g. whether strings commands will result in correct inputs, call the right methods in the boundary, etc.
+ */
 public class InfoParserTest {
     private AtomicReference<String> output;
     private Consumer<String> log;
-    private MockPluginTracker tracker;
     private InfoController controller;
 
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         output = new AtomicReference<>("");
@@ -43,12 +49,16 @@ public class InfoParserTest {
             PluginMockFactory.meta("Plugin Plus", "v1.2", "def")
         );
 
-        tracker = new MockPluginTracker(plugins);
+        var tracker = new MockPluginTracker(plugins);
         controller = new InfoController(tracker);
         var parser = new InfoParser(controller);
         args = new ArgsParser(List.of(parser));
     }
 
+
+    /**
+     * Tests if info parser will correctly fail when no arguments are passed.
+     */
     @Test
     void testNoArguments() {
         var exception = assertThrows(
@@ -60,9 +70,12 @@ public class InfoParserTest {
     }
 
     // Here we'll be interacting with log strings more since info only writes to log.
-    // Not sure how we can do better than this, we're gonna lock in InfoController into a format.
+    // Not sure how we can do better than this, we will lock in InfoController into a format.
     // This would be moved to presenter when info is moved to presenter.
 
+    /**
+     * Tests whether the info parser will present the correct message when passed a plugin that does not exist.
+     */
     @Test
     void testPluginAbsent() throws ArgumentParserException {
         args.parse(new String[] { "info", "what" }, log);
@@ -71,6 +84,9 @@ public class InfoParserTest {
         assertEquals(ColorLogger.trimNoColor(output.get()), expected);
     }
 
+    /**
+     * Tests whether the info parser will print the correct plugin details for a small plugin.
+     */
     @Test
     void testPluginDetails() throws ArgumentParserException {
         args.parse(new String[] { "info", "My Plugin" }, log);
@@ -85,9 +101,31 @@ Plugin Info:
         assertEquals(ColorLogger.trimNoColor(output.get()), expected);
     }
 
+    /**
+     * Tests whether the info parser will present the correct message when pass a plugin with non-null list/map values.
+     */
     @Test
     void testPluginDetailsExtended() throws ArgumentParserException {
         args.parse(new String[] { "info", "My Plugin2" }, log);
+
+        var expected = """
+Plugin Info:
+> Name         : My Plugin2
+> Main         : org.My Plugin2
+> Version      : v1.1
+> Description  : bc
+> Authors      : Hello world
+> Commands     : comm
+            """.trim() + "\n";
+        assertEquals(ColorLogger.trimNoColor(output.get()), expected);
+    }
+
+    /**
+     * Tests whether the info parser will present the correct message when invoked via controller.
+     */
+    @Test
+    void testPluginDetailsDirectly() {
+        controller.info("My Plugin2", log);
 
         var expected = """
 Plugin Info:

@@ -39,7 +39,7 @@ public record ControllerFactory(InteractorFactoryBoundary boundary) implements C
 
     @Override
     public SearchPackagesController searchController() {
-        return new SearchPackagesController(boundary.searchBoundary(), pageBoundary());
+        return new SearchPackagesController(boundary.searchBoundary());
     }
 
     @Override

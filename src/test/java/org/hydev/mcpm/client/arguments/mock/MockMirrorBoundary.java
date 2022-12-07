@@ -19,7 +19,7 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
 
     private boolean didUpdateMirrors = false;
     private boolean didPingMirrors = false;
-    private boolean throwsIOException = false;
+    private boolean throwsException = false;
 
     public MockMirrorBoundary(List<Mirror> mirrors) {
         this.mirrors = mirrors;
@@ -46,7 +46,7 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
 
     @Override
     public @NotNull List<Mirror> listAvailableMirrors() throws IOException {
-        if (throwsIOException) {
+        if (throwsException) {
             throw new IOException();
         }
 
@@ -59,7 +59,7 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
 
         didPingMirrors = true;
 
-        if (throwsIOException) {
+        if (throwsException) {
             throw new IOException();
         }
 
@@ -72,7 +72,7 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
     public void updateMirrors() throws IOException {
         didUpdateMirrors = true;
 
-        if (throwsIOException) {
+        if (throwsException) {
             throw new IOException();
         }
         /* do nothing... shouldn't this be automatic? */
@@ -80,7 +80,7 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
 
     @Override
     public Mirror getSelectedMirror() throws IOException {
-        if (throwsIOException) {
+        if (throwsException) {
             throw new IOException();
         }
 
@@ -89,7 +89,7 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
 
     @Override
     public void setSelectedMirror(Mirror mirror) throws IOException {
-        if (throwsIOException) {
+        if (throwsException) {
             throw new IOException();
         }
 
@@ -119,7 +119,7 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
      *
      * @param value If true, every boundary method that can throw an IOException will throw one.
      */
-    public void setThrowsIOException(boolean value) {
-        throwsIOException = value;
+    public void setThrowsException(boolean value) {
+        throwsException = value;
     }
 }

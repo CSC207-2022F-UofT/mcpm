@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.arguments;
 
-import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcher;
 import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
@@ -151,10 +150,9 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         var tracker = pluginTracker();
         var searcher = searchBoundary();
         var downloader = pluginDownloader();
-        var manager = new DatabaseManager(tracker, searcher);
         var loader = loadBoundary();
 
-        return cache(InstallInteractor.class, () -> new InstallInteractor(downloader, manager, loader));
+        return cache(InstallInteractor.class, () -> new InstallInteractor(downloader, loader, searcher, tracker));
     }
 
     @Override

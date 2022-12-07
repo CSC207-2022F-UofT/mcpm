@@ -17,11 +17,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Contains tests for testing the refresh controller and parser objects.
+ * E.g. whether strings commands will result in correct inputs, call the right methods in the boundary, etc.
+ */
 public class RefreshParserTest {
     private MockRefreshFetcher fetcher;
     private RefreshController controller;
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         fetcher = new MockRefreshFetcher();
@@ -34,6 +41,9 @@ public class RefreshParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests that the refresh command actually makes a request for the database.
+     */
     @Test
     void testFetchDatabase() throws ArgumentParserException {
         args.parse(new String[] { "refresh" }, log -> { });
@@ -41,6 +51,9 @@ public class RefreshParserTest {
         assertTrue(fetcher.getFetched());
     }
 
+    /**
+     * Tests that the refresh command fails gracefully when the database is failed to be acquired.
+     */
     @Test
     void testFailedToFetch() throws ArgumentParserException {
         fetcher.setDefaultResult(null);
@@ -53,7 +66,9 @@ public class RefreshParserTest {
         assertTrue(fetcher.getFetched());
     }
 
-
+    /**
+     * Tests that the refresh controller will directly make a request for the database.
+     */
     @Test
     void testController() throws IOException {
         controller.refresh();

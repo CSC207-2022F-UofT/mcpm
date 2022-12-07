@@ -9,7 +9,17 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Contains tests for testing the parser factory class.
+ * Generally, we only want to make sure that we have entries for all the basic commands
+ * that are required for our app to work.
+ */
 public class ParserFactoryTest {
+    /**
+     * Tests if ParserFactory will generate a list of plugins that has entries for all main commands.
+     * Ex. export, list, search...
+     * The use should be able to invoke these commands so it's important that we support this.
+     */
     @Test
     @Tag("IntegrationTest")
     void testBasePlugins() {

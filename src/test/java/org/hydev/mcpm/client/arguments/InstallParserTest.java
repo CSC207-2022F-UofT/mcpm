@@ -25,6 +25,9 @@ public class InstallParserTest {
 
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         installer = new MockInstallBoundary();
@@ -41,6 +44,9 @@ public class InstallParserTest {
         assertTrue(input.isManuallyInstalled());
     }
 
+    /**
+     * Tests if install parser will correctly fail when no arguments are passed.
+     */
     @Test
     void testNoArguments() {
         var exception = assertThrows(
@@ -51,6 +57,9 @@ public class InstallParserTest {
         assertEquals(exception.getMessage(), "too few arguments");
     }
 
+    /**
+     * Tests whether the `install` parser will correctly invoke the boundary with one name.
+     */
     @Test
     void testInstallSingleName() throws ArgumentParserException {
 
@@ -61,6 +70,9 @@ public class InstallParserTest {
         assertAcceptable(inputs.get(0), "JedCore", true);
     }
 
+    /**
+     * Tests whether the `install` parser will correctly set the noLoad parameter when the --no-load option is provided.
+     */
     @Test
     void testInstallNoLoad() throws ArgumentParserException {
         args.parse(new String[] { "install", "ABC", "--no-load" }, log -> {});
@@ -70,7 +82,9 @@ public class InstallParserTest {
         assertAcceptable(inputs.get(0), "ABC", false);
     }
 
-
+    /**
+     * Tests whether the `install` controller will correctly invoke the boundary (with different package types).
+     */
     @Test
     void testInstallController() {
         controller.install("MyPlugin", SearchPackagesType.BY_COMMAND, false);

@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.installer;
 
+import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
@@ -31,7 +32,7 @@ public class InstallInteractorTest {
         installInteractor = new InstallInteractor(
             new MockDownloader(null),
             null,
-            new SearchInteractor(fetcher),
+            new SearchInteractor(fetcher, new QuietFetcherListener()),
             mockLocalTracker
         );
     }

@@ -12,11 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Contains tests for testing the mirror controller and parser objects.
+ * E.g. whether strings commands will result in correct inputs, call the right methods in the boundary, etc.
+ */
 public class MirrorParserTest {
     private MockMirrorBoundary mirrors;
 
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         var mirrorList = List.of(
@@ -32,6 +39,9 @@ public class MirrorParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests whether the mirror parser will throw when provided no arguments.
+     */
     @Test
     void testNoArguments() {
         var exception = assertThrows(
@@ -42,6 +52,9 @@ public class MirrorParserTest {
         assertEquals(exception.getMessage(), "too few arguments");
     }
 
+    /**
+     * Tests whether the mirror parser will actually invoke the ping method when passed the "ping" option.
+     */
     @Test
     void testPing() throws ArgumentParserException {
         args.parse(new String[] { "mirror", "ping" }, log -> { });
@@ -51,13 +64,16 @@ public class MirrorParserTest {
         assertTrue(mirrors.getDidPingMirrors());
     }
 
+    /**
+     * Tests whether the mirror parser will avoid failure when the ping fails (throws an IOException).
+     */
     @Test
     void testPingThrowing() throws ArgumentParserException {
-        mirrors.setThrowsIOException(true);
+        mirrors.setThrowsException(true);
 
         args.parse(new String[] { "mirror", "ping" }, log -> { });
 
-        mirrors.setThrowsIOException(false);
+        mirrors.setThrowsException(false);
 
         // Not going to bother to test log output, just expected behaviour for the MirrorBoundary.
         // Feel free to contribute something like InfoController's tests if you want.
@@ -67,6 +83,9 @@ public class MirrorParserTest {
         assertFalse(mirrors.getDidPingMirrors());
     }
 
+    /**
+     * Tests whether the mirror parser will refresh plugins before pinging if provided the --refresh option.
+     */
     @Test
     void testPingRefreshing() throws ArgumentParserException {
         args.parse(new String[] { "mirror", "ping", "--refresh" }, log -> { });
@@ -76,6 +95,9 @@ public class MirrorParserTest {
         assertTrue(mirrors.getDidPingMirrors());
     }
 
+    /**
+     * Tests whether the mirror parser will not switch selection when no host is provided to "select".
+     */
     @Test
     void testSelectNoArguments() throws ArgumentParserException, IOException {
         args.parse(new String[] { "mirror", "select" }, log -> { });
@@ -85,6 +107,9 @@ public class MirrorParserTest {
         assertEquals(mirrors.getSelectedMirror().host(), "mcpm.pizza.com");
     }
 
+    /**
+     * Tests whether the mirror parser will switch the mirror selection with a valid host.
+     */
     @Test
     void testSelectHost() throws ArgumentParserException, IOException {
         args.parse(new String[] { "mirror", "select", "mcpm.something.com" }, log -> { });
@@ -92,6 +117,9 @@ public class MirrorParserTest {
         assertEquals(mirrors.getSelectedMirror().host(), "mcpm.something.com");
     }
 
+    /**
+     * Tests whether the mirror parser will not switch selection when provided a host that does not exist.
+     */
     @Test
     void testSelectMissing() throws ArgumentParserException, IOException {
         args.parse(new String[] { "mirror", "select", "mcpm.some.mirror.com" }, log -> { });
@@ -100,25 +128,16 @@ public class MirrorParserTest {
         assertEquals(mirrors.getSelectedMirror().host(), "mcpm.pizza.com");
     }
 
+    /**
+     * Tests whether the mirror parser will not change the selected host when the mirrors fail to be acquired.
+     */
     @Test
     void testSelectThrows() throws ArgumentParserException, IOException {
-        mirrors.setThrowsIOException(true);
+        mirrors.setThrowsException(true);
 
         args.parse(new String[] { "mirror", "select", "mcpm.something.com" }, log -> { });
 
-        mirrors.setThrowsIOException(false);
-
-        // This is the default value for MockMirrorSelector, again no change is expected.
-        assertEquals(mirrors.getSelectedMirror().host(), "mcpm.pizza.com");
-    }
-
-    @Test
-    void testInvalidOp() throws ArgumentParserException, IOException {
-        mirrors.setThrowsIOException(true);
-
-        args.parse(new String[] { "mirror", "select", "mcpm.something.com" }, log -> { });
-
-        mirrors.setThrowsIOException(false);
+        mirrors.setThrowsException(false);
 
         // This is the default value for MockMirrorSelector, again no change is expected.
         assertEquals(mirrors.getSelectedMirror().host(), "mcpm.pizza.com");

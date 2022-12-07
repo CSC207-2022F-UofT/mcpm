@@ -21,6 +21,9 @@ public class ListParserTest {
     private ListController controller;
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         lister = new MockListBoundary();
@@ -29,6 +32,9 @@ public class ListParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests whether the `list` parser will try to list all plugins when no input is provided.
+     */
     @Test
     void testListDefault() throws ArgumentParserException {
         args.parse(new String[] { "list" }, log -> { });
@@ -38,6 +44,9 @@ public class ListParserTest {
         assertEquals(types.get(0), ListType.ALL);
     }
 
+    /**
+     * Tests whether the `list` parser will try to list all plugins with the "all" option.
+     */
     @Test
     void testListAll() throws ArgumentParserException {
         args.parse(new String[] { "list", "all" }, log -> { });
@@ -47,6 +56,9 @@ public class ListParserTest {
         assertEquals(types.get(0), ListType.ALL);
     }
 
+    /**
+     * Tests whether the `list` parser will try to list all plugins with the "manual" option.
+     */
     @Test
     void testListManual() throws ArgumentParserException {
         args.parse(new String[] { "list", "manual" }, log -> { });
@@ -56,6 +68,9 @@ public class ListParserTest {
         assertEquals(types.get(0), ListType.MANUAL);
     }
 
+    /**
+     * Tests whether the `list` parser will try to list all plugins with the "automatic" option.
+     */
     @Test
     void testListAutomatic() throws ArgumentParserException {
         args.parse(new String[] { "list", "automatic" }, log -> { });
@@ -65,6 +80,9 @@ public class ListParserTest {
         assertEquals(types.get(0), ListType.AUTOMATIC);
     }
 
+    /**
+     * Tests whether the `list` parser will try to list all plugins with the "outdated" option.
+     */
     @Test
     void testListOutdated() throws ArgumentParserException {
         args.parse(new String[] { "list", "outdated" }, log -> { });
@@ -74,6 +92,9 @@ public class ListParserTest {
         assertEquals(types.get(0), ListType.OUTDATED);
     }
 
+    /**
+     * Tests whether the `list` parser will throw an error when provided an invalid option.
+     */
     @Test
     void testListInvalid() {
         var exception = assertThrows(
@@ -86,6 +107,9 @@ public class ListParserTest {
         assertEquals(exception.getMessage(), error);
     }
 
+    /**
+     * Tests whether the `list` parser will throw an error when provided too many list options.
+     */
     @Test
     void testTooManyArguments() {
         assertThrows(
@@ -94,6 +118,9 @@ public class ListParserTest {
         );
     }
 
+    /**
+     * Tests whether the `list` controller will correctly queue a input object when provided.
+     */
     @Test
     void testController() {
         controller.listAll("manual", log -> { });
@@ -103,7 +130,9 @@ public class ListParserTest {
         assertEquals(types.get(0), ListType.MANUAL);
     }
 
-
+    /**
+     * Tests whether the `list` controller will avoid queuing an object when provided an invalid input.
+     */
     @Test
     void testControllerInvalid() {
         controller.listAll("pizza", log -> { });

@@ -22,6 +22,9 @@ public class SearchParserTest {
     private SearchPackagesController controller;
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         searcher = new MockSearchBoundary();
@@ -30,6 +33,9 @@ public class SearchParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests if search parser will correctly fail when no arguments are passed.
+     */
     @Test
     void testNoArguments() {
         var exception = assertThrows(
@@ -40,6 +46,9 @@ public class SearchParserTest {
         assertEquals(exception.getMessage(), "too few arguments");
     }
 
+    /**
+     * Tests that the search parser will correctly queue an object to search for a single term.
+     */
     @Test
     void testSearchOneTerm() throws ArgumentParserException {
         args.parse(new String[] { "search", "test" }, log -> {});
@@ -53,6 +62,9 @@ public class SearchParserTest {
         assertEquals(input.searchStr(), "test");
     }
 
+    /**
+     * Tests that the search parser will correctly queue an object to search for many terms (concat keywords).
+     */
     @Test
     void testSearchManyTerms() throws ArgumentParserException {
         args.parse(new String[] { "search", "test", "two", "three" }, log -> {});
@@ -66,6 +78,9 @@ public class SearchParserTest {
         assertEquals(input.searchStr(), "test two three");
     }
 
+    /**
+     * Tests that the search parser will set the noCache option when --no-cache is provided.
+     */
     @Test
     void testSearchNoCache() throws ArgumentParserException {
         args.parse(new String[] { "search", "test", "two", "--no-cache" }, log -> {});
@@ -79,6 +94,9 @@ public class SearchParserTest {
         assertEquals(input.searchStr(), "test two");
     }
 
+    /**
+     * Tests that the search parser will correctly set the search type to command when the --command option is provided.
+     */
     @Test
     void testSearchByCommand() throws ArgumentParserException {
         args.parse(new String[] { "search", "--command", "hello" }, log -> {});
@@ -92,6 +110,9 @@ public class SearchParserTest {
         assertEquals(input.searchStr(), "hello");
     }
 
+    /**
+     * Tests that the search parser will correctly set the search type to keyword when the --keyword option is provided.
+     */
     @Test
     void testSearchByKeyword() throws ArgumentParserException {
         args.parse(new String[] { "search", "--keyword", "hello", "world" }, log -> {});
@@ -105,6 +126,9 @@ public class SearchParserTest {
         assertEquals(input.searchStr(), "hello world");
     }
 
+    /**
+     * Tests that the search controller will queue up a correct input object for two names.
+     */
     @Test
     void testSearchController() {
         controller.searchPackages("name", List.of("pizza", "man"), false);
@@ -118,10 +142,14 @@ public class SearchParserTest {
         assertEquals(input.searchStr(), "pizza man");
     }
 
+    /**
+     * Tests that the search controller will throw when passed an invalid type.
+     */
     @Test
     void testSearchControllerInvalidType() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            controller.searchPackages("pizza", List.of("abc"), false);
-        });
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> controller.searchPackages("pizza", List.of("abc"), false)
+        );
     }
 }

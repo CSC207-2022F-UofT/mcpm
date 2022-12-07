@@ -25,6 +25,9 @@ public class UpdateParserTest {
 
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         updater = new MockUpdateBoundary();
@@ -33,6 +36,9 @@ public class UpdateParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests that the correct "update all" input is generated when the user does not pass a parameter.
+     */
     @Test
     void testUpdateAll() throws ArgumentParserException {
         args.parse(new String[] { "update" }, log -> {});
@@ -47,6 +53,9 @@ public class UpdateParserTest {
         assertTrue(input.pluginNames().isEmpty());
     }
 
+    /**
+     * Tests that the input object has noCache set when the no-cache parameter is provided.
+     */
     @Test
     void testUpdateNoCache() throws ArgumentParserException {
         args.parse(new String[] { "update", "--no-cache" }, log -> {});
@@ -61,6 +70,9 @@ public class UpdateParserTest {
         assertTrue(input.pluginNames().isEmpty());
     }
 
+    /**
+     * Tests that the input object has the load field set when the load parameter is provided.
+     */
     @Test
     void testUpdateWithLoad() throws ArgumentParserException {
         args.parse(new String[] { "update", "--load" }, log -> {});
@@ -75,6 +87,9 @@ public class UpdateParserTest {
         assertTrue(input.pluginNames().isEmpty());
     }
 
+    /**
+     * Tests that the plugin names list is properly set with the correct plugin name when a plugin name is provided.
+     */
     @Test
     void testUpdateSingleName() throws ArgumentParserException {
         args.parse(new String[] { "update", "HelloWorld" }, log -> {});
@@ -89,6 +104,9 @@ public class UpdateParserTest {
         assertEquals(new HashSet<>(input.pluginNames()), Set.of("HelloWorld"));
     }
 
+    /**
+     * Tests that all plugin names are provided in the input object when many are provided.
+     */
     @Test
     void testUpdateManyNames() throws ArgumentParserException {
         args.parse(new String[] { "update", "TpProtect", "RealWorld" }, log -> {});
@@ -103,6 +121,9 @@ public class UpdateParserTest {
         assertEquals(new HashSet<>(input.pluginNames()), Set.of("TpProtect", "RealWorld"));
     }
 
+    /**
+     * Tests that the correct input object is generated when controller is invoked.
+     */
     @Test
     void testControllerInvocation() {
         var updatePresenter = new SilentUpdatePresenter();

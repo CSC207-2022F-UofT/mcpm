@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Tests both the UnloadParser and UnloadController classes (since they are invoked in a similar way).
+ * Tests both the ReloadParser and ReloadController classes (since they are invoked in a similar way).
  * Since these classes require a similar setup, I've moved them together into this class.
  */
 public class ReloadParserTest {
@@ -27,6 +27,9 @@ public class ReloadParserTest {
 
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         reloader = new MockReloadBoundary();
@@ -35,7 +38,9 @@ public class ReloadParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
-    // Similar set of tests to unloader and loader.
+    /**
+     * Tests if reload parser will correctly fail when no arguments are passed.
+     */
     @Test
     void testNoArguments() {
         var exception = assertThrows(
@@ -46,6 +51,9 @@ public class ReloadParserTest {
         assertEquals(exception.getMessage(), "too few arguments");
     }
 
+    /**
+     * Test that the `reload` boundary is correctly called with one plugin name.
+     */
     @Test
     void testOnePlugin() throws ArgumentParserException {
         args.parse(new String[] { "reload", "myPlugin" }, log -> { });
@@ -53,6 +61,9 @@ public class ReloadParserTest {
         assertEquals(new HashSet<>(reloader.getNames()), Set.of("myPlugin"));
     }
 
+    /**
+     * Test that the `reload` boundary is correctly called when provided multiple names.
+     */
     @Test
     void testManyPlugins() throws ArgumentParserException {
         args.parse(new String[] { "reload", "plugin1", "plugin2", "plugin3" }, log -> { });
@@ -60,6 +71,10 @@ public class ReloadParserTest {
         assertEquals(new HashSet<>(reloader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));
     }
 
+
+    /**
+     * Test that the `reload` controller correctly calls the boundary with multiple names.
+     */
     @Test
     void testController() {
         controller.reload(List.of("plugin1", "plugin2", "plugin3"), log -> { });
@@ -67,7 +82,9 @@ public class ReloadParserTest {
         assertEquals(new HashSet<>(reloader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));
     }
 
-
+    /**
+     * Test that the `reload` boundary is still invoked with all plugins even when one plugin is marked as not found.
+     */
     @Test
     void testNotFound() {
         reloader.setThrowsNotFound(true);

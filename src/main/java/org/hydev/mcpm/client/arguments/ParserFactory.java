@@ -14,6 +14,8 @@ import org.hydev.mcpm.client.arguments.parsers.SearchParser;
 import org.hydev.mcpm.client.arguments.parsers.UninstallParser;
 import org.hydev.mcpm.client.arguments.parsers.UnloadParser;
 import org.hydev.mcpm.client.arguments.parsers.UpdateParser;
+import org.hydev.mcpm.client.display.presenters.InstallPresenter;
+import org.hydev.mcpm.client.display.presenters.SearchPresenter;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,6 +33,9 @@ public class ParserFactory {
      * @return Returns a list of argument parsers that work in any environment (Server & CLI).
      */
     public static List<CommandParser> baseParsers(ControllerFactoryBoundary factory) {
+        var searchPresenter = new SearchPresenter(factory.pageBoundary());
+        var installPresenter = new InstallPresenter();
+
         /*
          * Add general parsers to this list!
          * All versions of MCPM will have access to these parsers.
@@ -39,10 +44,10 @@ public class ParserFactory {
         return List.of(
             new ExportPluginsParser(factory.exportController()),
             new ListParser(factory.listController()),
-            new SearchParser(factory.searchController()),
+            new SearchParser(factory.searchController(), searchPresenter),
             new MirrorParser(factory.mirrorController()),
             new InfoParser(factory.infoController()),
-            new InstallParser(factory.installController()),
+            new InstallParser(factory.installController(), installPresenter),
             new RefreshParser(factory.refreshController()),
             new PageParser(factory.pageBoundary()),
             new UninstallParser(factory.uninstallController()),

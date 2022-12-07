@@ -23,6 +23,9 @@ public class UnloadParserTest {
 
     private ArgsParser args;
 
+    /**
+     * Initializes the various fields (controllers, etc.) before a test starts.
+     */
     @BeforeEach
     public void setup() {
         unloader = new MockUnloadBoundary();
@@ -31,6 +34,9 @@ public class UnloadParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
+    /**
+     * Tests if unload parser will correctly fail when no arguments are passed.
+     */
     @Test
     void testNoArguments() {
         var exception = assertThrows(
@@ -41,6 +47,9 @@ public class UnloadParserTest {
         assertEquals(exception.getMessage(), "too few arguments");
     }
 
+    /**
+     * Test that the `unload` boundary is correctly called with one plugin name.
+     */
     @Test
     void testOnePlugin() throws ArgumentParserException {
         args.parse(new String[] { "unload", "myPlugin" }, log -> { });
@@ -48,6 +57,9 @@ public class UnloadParserTest {
         assertEquals(new HashSet<>(unloader.getNames()), Set.of("myPlugin"));
     }
 
+    /**
+     * Test that the `unload` boundary is correctly called when provided multiple names.
+     */
     @Test
     void testManyPlugins() throws ArgumentParserException {
         args.parse(new String[] { "unload", "plugin1", "plugin2", "plugin3" }, log -> { });
@@ -55,6 +67,9 @@ public class UnloadParserTest {
         assertEquals(new HashSet<>(unloader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));
     }
 
+    /**
+     * Test that the `unload` controller correctly calls the boundary with multiple names.
+     */
     @Test
     void testController() {
         controller.unload(List.of("plugin1", "plugin2", "plugin3"), log -> { });
@@ -62,6 +77,9 @@ public class UnloadParserTest {
         assertEquals(new HashSet<>(unloader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));
     }
 
+    /**
+     * Test that the `unload` boundary is still invoked with all plugin names even when one fails.
+     */
     @Test
     void testNotFound() {
         unloader.setThrowsNotFound(true);
