@@ -44,6 +44,7 @@ public class SearchInteractor implements SearchPackagesBoundary {
     @Override
     public SearchPackagesResult search(SearchPackagesInput input) {
         var database = fetcher.fetchDatabase(!input.noCache(), listener);
+        var factory = new SearcherFactory();
 
         if (database == null) {
             return SearchPackagesResult.by(SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE);
@@ -56,6 +57,6 @@ public class SearchInteractor implements SearchPackagesBoundary {
         var plugins = database.plugins();
 
         return new SearchPackagesResult(SearchPackagesResult.State.SUCCESS,
-                SearcherFactory.createSearcher(input).getSearchList(searchStr, plugins));
+                factory.createSearcher(input).getSearchList(searchStr, plugins));
     }
 }
