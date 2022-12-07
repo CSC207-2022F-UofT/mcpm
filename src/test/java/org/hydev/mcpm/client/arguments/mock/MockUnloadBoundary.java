@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.arguments.mock;
 
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
-import org.hydev.mcpm.client.injector.UnloadBoundary;
+import org.hydev.mcpm.client.loader.PluginNotFoundException;
+import org.hydev.mcpm.client.loader.UnloadBoundary;
 
 import java.io.File;
 import java.util.ArrayList;

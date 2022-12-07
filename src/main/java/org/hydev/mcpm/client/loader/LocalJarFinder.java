@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.injector;
+package org.hydev.mcpm.client.loader;
 
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.PluginJarFile;

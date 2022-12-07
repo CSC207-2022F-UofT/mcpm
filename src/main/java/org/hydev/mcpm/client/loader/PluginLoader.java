@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.injector;
+package org.hydev.mcpm.client.loader;
 
 import com.google.common.reflect.TypeToken;
 import org.bukkit.Bukkit;
@@ -235,7 +235,7 @@ public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, 
                     """.stripIndent();
 
                 var classes = ji.list().stream().map(ZipEntry::getName)
-                    .filter(it -> it.contains("org/hydev/mcpm/client/injector") ||
+                    .filter(it -> it.contains("org/hydev/mcpm/client/loader") ||
                         it.contains("org/hydev/mcpm/utils/ReflectionUtils") ||
                         it.contains("org/hydev/mcpm/client/models/PluginYml") ||
                         it.contains("org/hydev/mcpm/utils/PluginJarFile")).toList();

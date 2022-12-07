@@ -1,6 +1,4 @@
-package org.hydev.mcpm.client.injector;
-
-import java.io.File;
+package org.hydev.mcpm.client.loader;
 
 /**
  * Interface for loading a locally installed plugin.
