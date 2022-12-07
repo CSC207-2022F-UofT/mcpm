@@ -7,8 +7,8 @@ import java.util.Map;
  * Class storing results of the
  */
 public class ImportResult {
-    private State state;
-    private Map<String, Boolean> installResults;
+    private final State state;
+    private final Map<String, Boolean> installResults;
 
     /**
      * Result for importing plugins
@@ -17,27 +17,6 @@ public class ImportResult {
      */
     public ImportResult(Map<String, Boolean> installResults) {
         this.installResults = installResults;
-    }
-
-
-    /**
-     * State of a single import
-     */
-    public enum State {
-        SUCCESS,
-        PARTIAL_SUCCESS,
-        FAILURE
-    }
-
-    /**
-     * Infer the state from the state of the install results
-     *
-     * @return Overall state of the import
-     */
-    public State getState()
-    {
-        if (state != null)
-            return state;
         boolean success = true;
         boolean fail = false;
 
@@ -52,10 +31,31 @@ public class ImportResult {
         for (var x : installResults.values()) {
             success &= x;
             fail |= x;
-            if (!success && fail) // not a full success nor full failure
-                return state = State.PARTIAL_SUCCESS;
+            if (!success && fail) { // not a full success nor full failure
+                state = State.PARTIAL_SUCCESS;
+                return;
+            }
         }
+        state = success ? State.SUCCESS : State.FAILURE;
+    }
 
-        return state = success ? State.SUCCESS : State.FAILURE;
+
+    /**
+     * State of a single import
+     */
+    public enum State {
+        SUCCESS,
+        PARTIAL_SUCCESS,
+        FAILURE
+    }
+
+    /**
+     * Infer the state from the state of the installation results
+     *
+     * @return Overall state of the import
+     */
+    public State getState()
+    {
+        return state;
     }
 }
