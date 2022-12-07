@@ -85,7 +85,7 @@ public class CommandsFactory {
 
         // Controllers
         var exportPluginsController = new ExportPluginsController(new ExportInteractor(superTracker));
-        var listController = new ListController(new ListAllInteractor(superTracker), updateChecker);
+        var listController = new ListController(new ListAllInteractor(superTracker, updateChecker), updateChecker);
         var searchController = new SearchPackagesController(searcher, pager);
         var mirrorController = new MirrorController(mirror);
         var infoController = new InfoController(superTracker);
