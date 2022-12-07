@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+/**
+ * Provides a mock implementation of the MirrorSelectBoundary class.
+ */
 public class MockMirrorBoundary implements MirrorSelectBoundary {
     private Mirror selected;
     private final List<Mirror> mirrors;
@@ -23,6 +26,12 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
         this.selected = mirrors.stream().findFirst().orElse(null);
     }
 
+    /**
+     * Creates a mock Mirror object to pass to this object.
+     *
+     * @param host The provided host that will be used in the mirror initialzation.
+     * @return A Mirror object.
+     */
     public static Mirror mockMirror(String host) {
         return new Mirror(
             host,
@@ -87,14 +96,29 @@ public class MockMirrorBoundary implements MirrorSelectBoundary {
         selected = mirror;
     }
 
+    /**
+     * Gets if the mock mirrors object was udpated.
+     *
+     * @return True if the updateMirrors method was invoked at least once.
+     */
     public boolean getDidUpdateMirrors() {
         return didUpdateMirrors;
     }
 
+    /**
+     * Gets if the mirrors were pinged.
+     *
+     * @return True if the pingMirrors object was invoked at least once.
+     */
     public boolean getDidPingMirrors() {
         return didPingMirrors;
     }
 
+    /**
+     * Sets if the methods will throw an exception.
+     *
+     * @param value If true, every boundary method that can throw an IOException will throw one.
+     */
     public void setThrowsIOException(boolean value) {
         throwsIOException = value;
     }

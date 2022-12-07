@@ -7,6 +7,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides a mock implementation of the LoadBoundary interface for testing.
+ */
 public class MockLoadBoundary implements LoadBoundary {
     private final List<String> names = new ArrayList<>();
 
@@ -24,14 +27,29 @@ public class MockLoadBoundary implements LoadBoundary {
         return defaultResult;
     }
 
+    /**
+     * Sets the default result that this interface will return when invoked.
+     *
+     * @param result The default return value for the load method.
+     */
     public void setDefaultResult(boolean result) {
         this.defaultResult = result;
     }
 
+    /**
+     * Sets whether this interface should throw an exception when invoked.
+     *
+     * @param notFound If true, this interface will throw an exception on invocation.
+     */
     public void setThrowsNotFound(boolean notFound) {
         this.throwsNotFound = notFound;
     }
 
+    /**
+     * Gets a list of all names that this interface was invoked with.
+     *
+     * @return A list of strings that represent plugin names.
+     */
     public List<String> getNames() {
         return List.copyOf(names);
     }

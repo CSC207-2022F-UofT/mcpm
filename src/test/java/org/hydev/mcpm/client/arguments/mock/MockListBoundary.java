@@ -8,6 +8,9 @@ import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides a mock implementation of the ListAllBoundary interface for testing.
+ */
 public class MockListBoundary implements ListAllBoundary {
     private final List<ListType> types = new ArrayList<>();
 
@@ -18,6 +21,11 @@ public class MockListBoundary implements ListAllBoundary {
         return List.of();
     }
 
+    /**
+     * Gets a list of all types that this interface was invoked with.
+     *
+     * @return A list of type objects.
+     */
     public List<ListType> getTypes() {
         return List.copyOf(types);
     }

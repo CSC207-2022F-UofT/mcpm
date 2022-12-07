@@ -4,6 +4,9 @@ import org.hydev.mcpm.client.commands.controllers.PageBoundary;
 import org.hydev.mcpm.client.commands.presenters.PagedPresenter;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Provides a mock implementation of the PageBoundary interface for testing.
+ */
 public class MockPageController implements PageBoundary {
     @Override
     public int pageSize() {
