@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class SearcherByName implements Searcher {
 
-    private static Map<String, List<PluginModel>> nameMap = null;
+    private Map<String, List<PluginModel>> nameMap = null;
 
     /**
      * Returns a dictionary mapping the different names to the matching plugins.
@@ -50,9 +50,9 @@ public class SearcherByName implements Searcher {
     @Override
     public List<PluginModel> getSearchList(String inp, List<PluginModel> plugins) {
         // Instantiate if null
-        if (SearcherByName.nameMap == null) {
-            SearcherByName.nameMap = constructSearchMaps(plugins);
+        if (nameMap == null) {
+            nameMap = constructSearchMaps(plugins);
         }
-        return SearcherByName.nameMap.getOrDefault(inp, List.of());
+        return nameMap.getOrDefault(inp, List.of());
     }
 }

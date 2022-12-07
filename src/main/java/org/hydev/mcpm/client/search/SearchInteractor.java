@@ -12,6 +12,7 @@ import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
 public class SearchInteractor implements SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
+    private final SearcherFactory factory = new SearcherFactory();
 
     /**
      * Creates a new database with the provided database fetcher.
@@ -56,6 +57,6 @@ public class SearchInteractor implements SearchPackagesBoundary {
         var plugins = database.plugins();
 
         return new SearchPackagesResult(SearchPackagesResult.State.SUCCESS,
-                SearcherFactory.createSearcher(input).getSearchList(searchStr, plugins));
+                factory.createSearcher(input).getSearchList(searchStr, plugins));
     }
 }
