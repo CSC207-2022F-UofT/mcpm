@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Mock implementation of the PluginTracker interface.
+ *
+ */
 public class MockLocalPluginTracker implements PluginTracker {
     private Map<String, Boolean> localJarFilesTracker;
     private List<PluginYml> pluginInstalled;
@@ -19,6 +23,10 @@ public class MockLocalPluginTracker implements PluginTracker {
         this.pluginInstalled = new ArrayList<>();
     }
 
+    /**
+     * status: true - manual, false - auto
+     *
+     */
     @Override
     public void addEntry(String name, boolean status, long versionId, long pluginId) {
         localJarFilesTracker.put(name, false);
