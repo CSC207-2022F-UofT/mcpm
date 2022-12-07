@@ -12,14 +12,11 @@ import java.util.List;
  * @param load Whether to reload plugins that are installed.
  *             Ignored on a CLI environment.
  * @param noCache Whether to force fetch the database before checking updates.
- * @param installResultPresenter Presenter for installing state.
  */
 public record UpdateInput(
     List<String> pluginNames,
     boolean load,
-    boolean noCache,
-
-    InstallResultPresenter installResultPresenter
+    boolean noCache
 ) {
     /**
      * True if the input object should update all plugins (an empty pluginNames list).

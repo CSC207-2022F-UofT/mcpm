@@ -3,8 +3,10 @@ package org.hydev.mcpm.client.database;
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
+import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
 import org.hydev.mcpm.client.models.PluginModel;
+import org.hydev.mcpm.client.search.SearchInteractor;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.updater.UpdateBoundary;
 import org.hydev.mcpm.client.updater.UpdateInput;
@@ -18,10 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test methods related to the Update plugins use case.
@@ -37,7 +36,7 @@ public class UpdateInteractorTest {
     ) { }
 
     /**
-     * Create an interactor with provided paramters.
+     * Create an interactor with provided parameters.
      *
      * @param plugins A repository of all plugins. Will be passed to database unless emptyDatabase is true.
      * @param installedVersions Maps from plugin id to versions of plugins that are "installed" in the mock tracker.
@@ -67,8 +66,12 @@ public class UpdateInteractorTest {
             .map(version -> version.get().meta())
             .toList();
 
+        var defaultResult = installerSucceeds
+                ? InstallResult.Type.SUCCESS_INSTALLED
+                : InstallResult.Type.SEARCH_FAILED_TO_FETCH_DATABASE;
+
         var tracker = new MockPluginTracker(installed);
-        var installer = new MockInstaller(plugins, tracker, installerSucceeds);
+        var installer = new MockInstaller(plugins, tracker, defaultResult);
 
         var interactor = new UpdateInteractor(checker, installer, tracker);
 
@@ -192,7 +195,7 @@ public class UpdateInteractorTest {
     void testEmptyDatabase() {
         var mock = emptyInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -207,7 +210,7 @@ public class UpdateInteractorTest {
     void testMismatchedPlugin() {
         var mock = emptyWithInstalledInteractor();
 
-        var input = new UpdateInput(List.of("JedCore"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("JedCore"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -222,7 +225,7 @@ public class UpdateInteractorTest {
     void testMismatchedName() {
         var mock = emptyInteractor();
 
-        var input = new UpdateInput(List.of("JedCore"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("JedCore"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -237,7 +240,7 @@ public class UpdateInteractorTest {
     void testAllUpToDate() {
         var mock = upToDateInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -255,7 +258,7 @@ public class UpdateInteractorTest {
     void testOneUpToDate() {
         var mock = upToDateInteractor();
 
-        var input = new UpdateInput(List.of("Apples+"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("Apples+"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -271,7 +274,7 @@ public class UpdateInteractorTest {
     void testAllOutOfDate() {
         var mock = outOfDateInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -289,7 +292,7 @@ public class UpdateInteractorTest {
     void testOneOutOfDate() {
         var mock = outOfDateInteractor();
 
-        var input = new UpdateInput(List.of("Apples+"), false, false, installPresenter);
+        var input = new UpdateInput(List.of("Apples+"), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -305,7 +308,8 @@ public class UpdateInteractorTest {
     void testAllMixed() {
         var mock = oneOldInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
+        //assertNotNull(mock.updator);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);
@@ -323,7 +327,7 @@ public class UpdateInteractorTest {
     void testFailingInstaller() {
         var mock = failingOneOldInteractor();
 
-        var input = new UpdateInput(List.of(), false, false, installPresenter);
+        var input = new UpdateInput(List.of(), false, false);
         var result = mock.updator.update(input);
 
         assertEquals(result.state(), UpdateResult.State.SUCCESS);

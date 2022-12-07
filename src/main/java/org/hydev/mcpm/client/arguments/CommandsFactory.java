@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.arguments;
 
-import org.hydev.mcpm.client.DatabaseManager;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 import org.hydev.mcpm.client.arguments.parsers.ExportPluginsParser;
@@ -31,6 +30,7 @@ import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.display.presenters.SearchPresenter;
 import org.hydev.mcpm.client.local.LocalPluginTracker;
+import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.list.ListAllInteractor;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
@@ -77,8 +77,9 @@ public class CommandsFactory {
         var searcher = new SearchInteractor(fetcher, listener);
         var installer = new InstallInteractor(
             new SpigotPluginDownloader(new Downloader(), mirror.selectedMirrorSupplier()),
-            new DatabaseManager(superTracker, searcher),
-            loader
+            loader,
+            searcher,
+                superTracker
         );
         var matcher = new MatchPluginsInteractor(fetcher, listener);
         var updateChecker = new CheckForUpdatesInteractor(matcher);
@@ -96,6 +97,8 @@ public class CommandsFactory {
         var updateController = new UpdateController(updater);
         var refreshController = new RefreshController(fetcher, listener, mirror);
 
+        // Presenters
+        var installPresenter = new InstallPresenter();
         var searchPresenter = new SearchPresenter(pager);
 
         /*
@@ -109,7 +112,7 @@ public class CommandsFactory {
             new SearchParser(searchController, searchPresenter),
             new MirrorParser(mirrorController),
             new InfoParser(infoController),
-            new InstallParser(installController),
+            new InstallParser(installController, installPresenter),
             new RefreshParser(refreshController),
             new PageParser(pager),
             new UninstallParser(uninstallController),
