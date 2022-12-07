@@ -33,7 +33,9 @@ public class ListPresenter implements ListResultPresenter {
             var table = tabulate(
                 list.stream().map(p -> List.of("&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList(),
                 List.of(":Name", "Author", "Version:"));
-            this.log.accept(listResult.type().reason() + "\n" + table);
+
+                this.log.accept(listResult.type().reason() + "\n" + table);
+
         }
     }
 }

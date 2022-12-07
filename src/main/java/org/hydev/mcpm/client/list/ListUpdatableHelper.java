@@ -47,11 +47,14 @@ public class ListUpdatableHelper implements ListUpdatableBoundary {
             PluginModelId pluginModelId = new PluginModelId(
                     OptionalLong.of(installedModel.getPluginId()), installedModel.getName(), null);
 
-            temp.add(new PluginVersionState(pluginModelId, pluginVersionId));
+            try {
+                temp.add(new PluginVersionState(pluginModelId, pluginVersionId));
+            } catch (Exception e) {
+                break;
+            }
         }
 
         CheckForUpdatesInput input = new CheckForUpdatesInput(temp, false);
-
         CheckForUpdatesResult rawResult = checkForUpdatesBoundary.updates(input);
 
         // Read the list of installedModels and create a CheckForUpdatesInput object
@@ -60,7 +63,7 @@ public class ListUpdatableHelper implements ListUpdatableBoundary {
 
         if (rawResult.state() == CheckForUpdatesResult.State.SUCCESS) {
 
-            // get the ids of the plugins that are outdated from result
+            // get the names of the plugins that are outdated from result
             ArrayList<String> outdated = new ArrayList<>();
             for (PluginModel pluginModel : rawResult.updatable().values()) {
                 pluginModel.getLatestPluginVersion()

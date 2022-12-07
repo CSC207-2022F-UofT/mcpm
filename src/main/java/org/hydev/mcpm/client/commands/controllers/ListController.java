@@ -63,8 +63,15 @@ public class ListController {
 
         try {
             var list = listAllBoundary.listAll(listType);
-            ListResult queryResult = new ListResult(list, ListResult.Type.SUCCESS_RETRIEVING_LOCAL_AND_UPDATABLE);
-            listPresenter.displayResult(queryResult);
+
+            // if list is empty
+            if (list.isEmpty()) {
+                ListResult queryResult = new ListResult(list, ListResult.Type.SUCCESS_RETRIEVING_BUT_NO_MATCHES);
+                listPresenter.displayResult(queryResult);
+            } else {
+                ListResult queryResult = new ListResult(list, ListResult.Type.SUCCESS_RETRIEVING_LOCAL_AND_UPDATABLE);
+                listPresenter.displayResult(queryResult);
+            }
         } catch (Exception e) {
             ListResult queryResult = new ListResult(null, ListResult.Type.SEARCH_FAILED_TO_FETCH_INSTALLED);
             listPresenter.displayResult(queryResult);
