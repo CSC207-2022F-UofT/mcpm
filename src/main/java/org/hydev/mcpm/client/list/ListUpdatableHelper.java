@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.OptionalLong;
 
 /**
- * A helper class for ListUpdateableBoundary.
+ * A helper class for ListUpdatableBoundary.
  */
-public class ListUpdateableHelper implements ListUpdateableBoundary {
+public class ListUpdatableHelper implements ListUpdatableBoundary {
 
     /**
      * Returns a list of plugins names that belong to outdated plugins
@@ -29,7 +29,7 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
      * @param checkForUpdatesBoundary The boundary to check for updates
      * @return A list of plugins that are outdated.
      */
-    public ArrayList<String> listUpdateable(
+    public ArrayList<String> listUpdatable(
         PluginTracker localPluginTracker, CheckForUpdatesBoundary checkForUpdatesBoundary) {
 
         ArrayList<PluginVersionState> temp = new ArrayList<>();
@@ -56,7 +56,7 @@ public class ListUpdateableHelper implements ListUpdateableBoundary {
 
         // Read the list of installedModels and create a CheckForUpdatesInput object
         // with state equal
-        // to the list of PluginTrackerModels's version
+        // to the list of PluginTrackerModels' version
 
         if (rawResult.state() == CheckForUpdatesResult.State.SUCCESS) {
 

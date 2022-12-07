@@ -7,7 +7,7 @@ import org.hydev.mcpm.client.database.tracker.PluginTracker;
 /**
  * Defines an interface for obtaining a list of plugin names that may be updated
  */
-public interface ListUpdateableBoundary {
-    ArrayList<String> listUpdateable(PluginTracker superPluginTracker,
-                                     CheckForUpdatesBoundary checkForUpdatesBoundary);
+public interface ListUpdatableBoundary {
+    ArrayList<String> listUpdatable(PluginTracker superPluginTracker,
+                                    CheckForUpdatesBoundary checkForUpdatesBoundary);
 }
