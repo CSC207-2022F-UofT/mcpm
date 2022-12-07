@@ -15,16 +15,6 @@ public class SearchInteractor implements SearchPackagesBoundary {
     private final SearcherFactory factory = new SearcherFactory();
 
     /**
-     * Creates a new database with the provided database fetcher.
-     * Consider passing LocalDatabaseFetcher. Defaults to the ProgressBarFetcherListener.
-     *
-     * @param fetcher The fetcher that will be used to request the database object in boundary calls.
-     */
-    public SearchInteractor(DatabaseFetcher fetcher) {
-        this(fetcher, new ProgressBarFetcherListener());
-    }
-
-    /**
      * Creates a new database with the provided fetcher and upload listener.
      *
      * @param fetcher The fetcher that will be used to request the database object in boundary calls.

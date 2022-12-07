@@ -116,7 +116,7 @@ public class ArgsParser
      * @param args Arguments are ignored.
      */
     public static void main(String[] args) {
-        var parser = CommandsFactory.baseArgsParser();
+        var parser = ArgsParserFactory.baseArgsParser();
 
         try {
             parser.parse(args, ColorLogger.toStdOut());

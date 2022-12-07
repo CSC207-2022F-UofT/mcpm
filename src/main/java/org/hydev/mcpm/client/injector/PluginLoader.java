@@ -36,7 +36,7 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
 /**
  * Implementation of plugin hot-loading/unloading
  */
-public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
+public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
     private static final File HELPER_JAR = new File("plugins/mcpm-helper.jar");
 

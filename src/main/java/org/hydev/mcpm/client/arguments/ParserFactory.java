@@ -1,0 +1,69 @@
+package org.hydev.mcpm.client.arguments;
+
+import org.hydev.mcpm.client.arguments.parsers.CommandParser;
+import org.hydev.mcpm.client.arguments.parsers.ExportPluginsParser;
+import org.hydev.mcpm.client.arguments.parsers.InfoParser;
+import org.hydev.mcpm.client.arguments.parsers.InstallParser;
+import org.hydev.mcpm.client.arguments.parsers.ListParser;
+import org.hydev.mcpm.client.arguments.parsers.LoadParser;
+import org.hydev.mcpm.client.arguments.parsers.MirrorParser;
+import org.hydev.mcpm.client.arguments.parsers.PageParser;
+import org.hydev.mcpm.client.arguments.parsers.RefreshParser;
+import org.hydev.mcpm.client.arguments.parsers.ReloadParser;
+import org.hydev.mcpm.client.arguments.parsers.SearchParser;
+import org.hydev.mcpm.client.arguments.parsers.UninstallParser;
+import org.hydev.mcpm.client.arguments.parsers.UnloadParser;
+import org.hydev.mcpm.client.arguments.parsers.UpdateParser;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+public class ParserFactory {
+    private ParserFactory() { }
+
+    /**
+     * Creates a list of general parsers for the ArgsParser class.
+     *
+     * @return Returns a list of argument parsers that work in any environment (Server & CLI).
+     */
+    public static List<CommandParser> baseParsers(ControllerFactoryBoundary factory) {
+        /*
+         * Add general parsers to this list!
+         * All versions of MCPM will have access to these parsers.
+         * If you're not sure if your command is server-only, add it to this list!
+         */
+        return List.of(
+            new ExportPluginsParser(factory.exportController()),
+            new ListParser(factory.listController()),
+            new SearchParser(factory.searchController()),
+            new MirrorParser(factory.mirrorController()),
+            new InfoParser(factory.infoController()),
+            new InstallParser(factory.installController()),
+            new RefreshParser(factory.refreshController()),
+            new PageParser(factory.pageBoundary()),
+            new UninstallParser(factory.uninstallController()),
+            new UpdateParser(factory.updateController())
+        );
+    }
+
+    /**
+     * Creates a list of server-only parsers for the ArgsParser class.
+     *
+     * @return Returns a list of argument parsers that require the Server (Minecraft Bukkit Plugin) environment.
+     */
+    public static List<CommandParser> serverParsers(ControllerFactoryBoundary factory) {
+        /*
+         * Add server-only parsers to this list!
+         * Server only commands will not show up in the MCPM CLI.
+         * They'll only be accessible when a user tries to execute a command from the MCPM Server Plugin (in-game).
+         */
+        var serverOnly = List.of(
+            new LoadParser(factory.loadController()),
+            new ReloadParser(factory.reloadController()),
+            new UnloadParser(factory.unloadController())
+        );
+
+        return Stream.concat(baseParsers(factory).stream(), serverOnly.stream()).toList();
+    }
+
+}

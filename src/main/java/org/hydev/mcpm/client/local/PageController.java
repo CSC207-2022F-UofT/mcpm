@@ -89,7 +89,7 @@ public class PageController implements PageBoundary
         }
         catch (IOException e)
         {
-            System.err.println("Failed to save pagination detials.");
+            System.err.println("Failed to save pagination details.");
             e.printStackTrace();
         }
     }

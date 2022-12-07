@@ -2,14 +2,15 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.local.PageController;
+
+import org.hydev.mcpm.client.commands.controllers.PageBoundary;
 
 import java.util.function.Consumer;
 
 /**
  * Parser for the pagination command
  */
-public record PageParser(PageController controller) implements CommandParser
+public record PageParser(PageBoundary controller) implements CommandParser
 {
     @Override
     public String name()

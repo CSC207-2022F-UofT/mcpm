@@ -2,6 +2,7 @@ package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.local.LocalPluginTracker;
@@ -180,8 +181,8 @@ public class InstallInteractor implements InstallBoundary {
         var resultPresenter = new InstallPresenter();
         var host = URI.create("https://mcpm.hydev.org");
         var fetcher = new LocalDatabaseFetcher(() -> host);
-        var superTracker = new LocalPluginTracker();
-        var searcher = new SearchInteractor(fetcher);
+        var listener = new ProgressBarFetcherListener();
+        var searcher = new SearchInteractor(fetcher, listener);
         Downloader downloader = new Downloader();
         PluginLoader loader = null;
         SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
