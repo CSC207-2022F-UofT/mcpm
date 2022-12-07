@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.commands.controllers;
 
+import org.hydev.mcpm.client.display.presenters.LogExportPresenter;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
 
@@ -7,18 +8,14 @@ import java.util.function.Consumer;
 
 /**
  * Controller for the export plugins use case.
+ *
+ * @param boundary The export implementation
+ * @param presenter The presenter to show the result
  */
-public class ExportPluginsController {
-    private final ExportPluginsBoundary boundary;
-
-    /**
-     * Create a controller using the given boundary to process
-     *
-     * @param boundary the boundary to process the use case
-     */
-    public ExportPluginsController(ExportPluginsBoundary boundary) {
-        this.boundary = boundary;
-    }
+public record ExportPluginsController(
+        ExportPluginsBoundary boundary,
+        LogExportPresenter presenter
+) {
 
     /**
      * Call the boundary to perform an export.
@@ -28,6 +25,6 @@ public class ExportPluginsController {
      */
     public void export(ExportPluginsInput input, Consumer<String> log) {
         var result = boundary.export(input);
-        log.accept(String.format("Export status: %s\n", result.state().toString()));
+        presenter.present(result, log);
     }
 }

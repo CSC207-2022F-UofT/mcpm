@@ -7,10 +7,8 @@ import java.util.function.Consumer;
 
 /**
  * ExportPresenter that presents to a log.
- *
- * @param log The log to present to
  */
-public record LogExportPresenter(Consumer<String> log) implements ExportPresenter {
+public class LogExportPresenter implements ExportPresenter {
 
     private String getColor(ExportPluginsResult exportPluginsResult) {
         return switch (exportPluginsResult.state()) {
@@ -28,7 +26,7 @@ public record LogExportPresenter(Consumer<String> log) implements ExportPresente
 
 
     @Override
-    public void present(ExportPluginsResult exportPluginsResult) {
+    public void present(ExportPluginsResult exportPluginsResult, Consumer<String> log) {
         log.accept(getColor(exportPluginsResult) + getMessage(exportPluginsResult));
     }
 }
