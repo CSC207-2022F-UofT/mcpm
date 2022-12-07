@@ -32,7 +32,7 @@ public record ImportInteractor(InstallBoundary install) implements ImportPlugins
                                     })))
                     .collect(Pair.toMap());
 
-            return new ImportResult(null); // install borked for now
+            return new ImportResult(results);
         } catch (JsonProcessingException e) {
             throw new ImportException(e);
         }
