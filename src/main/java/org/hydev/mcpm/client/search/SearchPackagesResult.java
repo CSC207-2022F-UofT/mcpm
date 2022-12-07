@@ -10,7 +10,6 @@ import java.util.List;
  * @param state The outcome of the request. Must be Success for the other values to be valid.
  * @param plugins The list of plugins corresponding to the search.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public record SearchPackagesResult(SearchPackagesResult.State state, List<PluginModel> plugins) {
     /**
