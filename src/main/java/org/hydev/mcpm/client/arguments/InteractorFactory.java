@@ -40,6 +40,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * Default factory for interactor.
+ * This handles caching the various objects used for interactors, and is on the highest level of CA.
+ */
 public class InteractorFactory implements InteractorFactoryBoundary {
     // Lazy solution, not going to store variables.
     private final Map<Class<?>, Object> localCache = new HashMap<>();
@@ -49,6 +53,15 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         this.server = server;
     }
 
+    /**
+     * Returns an object of type `type` that it previously returned with an identical `type`.
+     * Otherwise, it invokes `create` and returns the value of that.
+     *
+     * @param type The type of the object to cache.
+     * @param create A creation method if this object is not already cached.
+     * @param <T> The type of the cached object.
+     * @return An object of type T.
+     */
     private <T> T cache(Class<T> type, Supplier<T> create) {
         var value = localCache.getOrDefault(type, null);
 

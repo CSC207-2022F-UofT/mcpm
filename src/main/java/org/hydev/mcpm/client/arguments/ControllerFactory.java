@@ -15,6 +15,12 @@ import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.local.PageController;
 
+/**
+ * Handles the creation of default factory classes.
+ * The required parameters to initialize these classes are acquired from the `boundary` object.
+ *
+ * @param boundary A provider to acquire the required interactors to initialize the controllers.
+ */
 public record ControllerFactory(InteractorFactoryBoundary boundary) implements ControllerFactoryBoundary {
     @Override
     public PageBoundary pageBoundary() {

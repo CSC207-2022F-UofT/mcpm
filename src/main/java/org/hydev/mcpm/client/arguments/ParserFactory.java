@@ -18,6 +18,10 @@ import org.hydev.mcpm.client.arguments.parsers.UpdateParser;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Handles the creation of CommandParser list.
+ * This is a simple factory that just invokes the methods of ControllerFactoryBoundary and returns a list of parsers.
+ */
 public class ParserFactory {
     private ParserFactory() { }
 

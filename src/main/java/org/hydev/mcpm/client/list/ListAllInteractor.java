@@ -9,7 +9,10 @@ import java.util.List;
 /**
  * Implementation to the ListAll functionality
  */
-public record ListAllInteractor(PluginTracker pluginTracker, CheckForUpdatesBoundary updates) implements ListAllBoundary {
+public record ListAllInteractor(
+    PluginTracker pluginTracker,
+    CheckForUpdatesBoundary updates
+) implements ListAllBoundary {
     /**
      * listAllInteractor interacts with the LocalPluginTracker to get the list of
      * plugins, according to a specified
@@ -25,24 +28,25 @@ public record ListAllInteractor(PluginTracker pluginTracker, CheckForUpdatesBoun
     public List<PluginYml> listAll(ListType parameter) {
         var installed = pluginTracker.listInstalled();
         switch (parameter) {
-            case ALL:
+            case ALL -> {
                 return installed;
-
-            case MANUAL:
+            }
+            case MANUAL -> {
                 var local = pluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
-
-            case AUTOMATIC:
+            }
+            case AUTOMATIC -> {
                 var manual = pluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> !manual.contains(it.name())).toList();
-
-            case OUTDATED:
+            }
+            case OUTDATED -> {
                 ListUpdateableBoundary listUpdateableBoundary = new ListUpdateableHelper();
                 var outdated = listUpdateableBoundary.listUpdateable(pluginTracker, updates);
                 return installed.stream().filter(it -> outdated.contains(it.name())).toList();
-
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
     }
 }

@@ -24,7 +24,8 @@ public class ExportPluginsController {
     /**
      * Call the boundary to perform an export.
      *
-     * @param input Input specifying the export parameters
+     * @param stream Input specifying the export parameters
+     * @param cache Whether to use the cached version of the database.
      * @param log where to log the operation
      */
     public void export(OutputStream stream, boolean cache, Consumer<String> log) {
