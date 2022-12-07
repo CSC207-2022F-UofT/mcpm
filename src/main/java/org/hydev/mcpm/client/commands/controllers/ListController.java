@@ -37,7 +37,7 @@ public class ListController {
     public void listAll(String parameter, Consumer<String> log) {
 
         ListType listType;
-        switch (parameter) {
+        switch (parameter.toLowerCase()) {
             case "all":
                 listType = ListType.ALL;
                 break;
@@ -55,7 +55,7 @@ public class ListController {
                 return;
         }
 
-        var list = listAllBoundary.listAll(listType, checkForUpdatesBoundary);
+        var list = listAllBoundary.listAll(listType);
 
         // Tabulate result
         var table = tabulate(

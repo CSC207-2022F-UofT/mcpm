@@ -12,7 +12,7 @@ import java.util.List;
  * @author Kevin (https://github.com/kchprog)
  * @since 2022-11-20
  */
-public record ListAllInteractor(PluginTracker pluginTracker) implements ListAllBoundary {
+public record ListAllInteractor(PluginTracker pluginTracker, CheckForUpdatesBoundary checkForUpdatesBoundary) implements ListAllBoundary {
     /**
      * listAllInteractor interacts with the LocalPluginTracker to get the list of
      * plugins, according to a specified
@@ -25,7 +25,7 @@ public record ListAllInteractor(PluginTracker pluginTracker) implements ListAllB
      *                  a request to list all manually installed plugins that are
      *                  outdated.
      */
-    public List<PluginYml> listAll(ListType parameter, CheckForUpdatesBoundary checkForUpdatesBoundary) {
+    public List<PluginYml> listAll(ListType parameter) {
         var installed = pluginTracker.listInstalled();
         switch (parameter) {
             case ALL:
