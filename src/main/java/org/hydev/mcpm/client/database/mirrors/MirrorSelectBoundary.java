@@ -44,7 +44,7 @@ public interface MirrorSelectBoundary
     {
         return listAvailableMirrors().stream().filter(Mirror::isWeb)
             .parallel()
-            .map(m -> new Pair<>(m, ping(m.url())))
+            .map(m -> Pair.of(m, ping(m.url())))
             .sorted(comparingInt(Map.Entry::getValue))
             .toList();
     }
