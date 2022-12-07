@@ -1,16 +1,25 @@
 package org.hydev.mcpm.client.export;
 
-import org.hydev.mcpm.client.installer.InstallResult;
-
-import java.util.EnumSet;
 import java.util.Map;
 
+
 /**
- * Result for importing plugins
- *
- * @param installResults Result of each install
+ * Class storing results of the
  */
-public record ImportResult(Map<String, InstallResult> installResults) {
+public class ImportResult {
+    private State state;
+    private Map<String, Boolean> installResults;
+
+    /**
+     * Result for importing plugins
+     *
+     * @param installResults Result of each install
+     */
+    public ImportResult(Map<String, Boolean> installResults) {
+        this.installResults = installResults;
+    }
+
+
     /**
      * State of a single import
      */
@@ -27,16 +36,26 @@ public record ImportResult(Map<String, InstallResult> installResults) {
      */
     public State getState()
     {
+        if (state != null)
+            return state;
         boolean success = true;
         boolean fail = false;
 
-        /*
-        EnumSet<InstallResult> = new RegularEnumSet<>();
-        for (InstallResult x : installResults.values()) {
-            success &= x.type();
-            fail |= x.type();
+        /* Code for when import returns ImportResult instead of boolean
+        Set<Type> good = new HashSet<>();
+        for (Type type : Type.values()) {
+            if (type.name().contains("SUCCESS")) // definitely legit
+                good.add(type);
         }
-        */
-        return State.SUCCESS;
+         */
+
+        for (var x : installResults.values()) {
+            success &= x;
+            fail |= x;
+            if (!success && fail) // not a full success nor full failure
+                return state = State.PARTIAL_SUCCESS;
+        }
+
+        return state = success ? State.SUCCESS : State.FAILURE;
     }
 }
