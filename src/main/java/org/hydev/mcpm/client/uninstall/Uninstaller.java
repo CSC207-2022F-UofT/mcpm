@@ -4,6 +4,7 @@ import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.injector.LocalJarBoundary;
 import org.hydev.mcpm.client.injector.PluginNotFoundException;
 import org.hydev.mcpm.client.injector.UnloadBoundary;
+import org.hydev.mcpm.client.uninstall.FileRemove;
 
 import java.io.File;
 
@@ -29,39 +30,32 @@ public class Uninstaller implements UninstallBoundary {
         this.tracker = tracker;
         this.unloader = unloader;
         this.jarFinder = jarFinder;
+
     }
 
     @Override
-    public UninstallResult uninstall(UninstallInput input) {
+    public UninstallResult uninstall(UninstallInput input)  {
         // 1. Unload plugin
         // This will throw PluginNotFoundException if the plugin isn't loaded. If it is loaded,
         // this will return the jar of the currently loaded plugin, which is the most precise.
         // Since people may still uninstall a plugin when it's not loaded, we ignore the not
         // found error here.
-        File jar = null;
         if (unloader != null) {
             try {
-                jar = unloader.unloadPlugin(input.name());
+                unloader.unloadPlugin(input.name());
             }
             catch (PluginNotFoundException ignored) { }
         }
 
-        // 2. If it isn't loaded, find the plugin jar file in local file system
-        if (jar == null) {
-            // This will throw PluginNotFoundException when a plugin of the name in the file system
-            // could not be found.
-            try {
-                jar = jarFinder.findJar(input.name());
-            }
-            catch (PluginNotFoundException e) {
-                return new UninstallResult(NOT_FOUND);
-            }
-        }
+        // Steps 2. + 3.
+        RemoveFile fileRemover = new RemoveFile(jarFinder);
 
-        // 3. Delete plugin jar
-        if (!jar.delete()) {
+        if (fileRemover.removeFile(input.name())==1) {
+            return new UninstallResult(NOT_FOUND);
+        } else if (fileRemover.removeFile(input.name())==2) {
             return new UninstallResult(FAILED_TO_DELETE);
         }
+
 
         // 4. Remove manually installed flag from the tracker
         tracker.removeEntry(input.name());
@@ -85,4 +79,5 @@ public class Uninstaller implements UninstallBoundary {
 
         return result;
     }
+
 }
