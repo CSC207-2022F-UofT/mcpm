@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
@@ -20,7 +19,7 @@ import java.util.Set;
 public class MockInstaller implements InstallBoundary {
     private final List<PluginModel> plugins;
     private final PluginTracker tracker;
-    private final boolean defaultResult;
+    private final InstallResult.Type defaultResult;
     private final Set<String> requested = new HashSet<>();
 
     /**
@@ -30,7 +29,7 @@ public class MockInstaller implements InstallBoundary {
      * @param tracker A plugin tracker to query whether a plugin is installed.
      */
     public MockInstaller(List<PluginModel> plugins, PluginTracker tracker) {
-        this(plugins, tracker, true);
+        this(plugins, tracker, InstallResult.Type.SUCCESS_INSTALLED);
     }
 
     /**
@@ -40,36 +39,35 @@ public class MockInstaller implements InstallBoundary {
      * @param tracker A plugin tracker to query whether a plugin is installed.
      * @param defaultResult Determines what the installer should return when installPlugin is invoked.
      */
-    public MockInstaller(List<PluginModel> plugins, PluginTracker tracker, boolean defaultResult) {
+    public MockInstaller(List<PluginModel> plugins, PluginTracker tracker, InstallResult.Type defaultResult) {
         this.plugins = plugins;
         this.tracker = tracker;
         this.defaultResult = defaultResult;
     }
 
     @Override
-    // TODO InstallPlugin
     public List<InstallResult> installPlugin(InstallInput installInput) {
-        //        Assertions.assertEquals(installInput.type(), SearchPackagesType.BY_NAME);
-        //
-        //        if (tracker.findIfInLockByName(installInput.name()))
-        //            return false;
-        //
-        //        var model = plugins.stream()
-        //            .filter(plugin -> plugin.getLatestPluginVersion()
-        //                .map(x -> x.meta() != null && installInput.name().equals(x.meta().name()))
-        //                .orElse(false)
-        //            ).findFirst();
-        //
-        //        var modelId = model.map(PluginModel::id).orElse(0L);
-        //        var versionId = model.map(x -> x.getLatestPluginVersion()
-        //            .map(PluginVersion::id).orElse(0L)
-        //        ).orElse(0L);
-        //
-        //        requested.add(installInput.name());
-        //        tracker.addEntry(installInput.name(), true, versionId, modelId);
-        //
-        //        return defaultResult;
-        return null;
+        Assertions.assertEquals(installInput.type(), SearchPackagesType.BY_NAME);
+        var name = installInput.name();
+
+        if (tracker.findIfInLockByName(installInput.name()))
+            return List.of(new InstallResult(InstallResult.Type.PLUGIN_EXISTS, name));
+
+        var model = plugins.stream()
+            .filter(plugin -> plugin.getLatestPluginVersion()
+                .map(x -> x.meta() != null && installInput.name().equals(x.meta().name()))
+                .orElse(false)
+            ).findFirst();
+
+        var modelId = model.map(PluginModel::id).orElse(0L);
+        var versionId = model.map(x -> x.getLatestPluginVersion()
+            .map(PluginVersion::id).orElse(0L)
+        ).orElse(0L);
+
+        requested.add(installInput.name());
+        tracker.addEntry(installInput.name(), true, versionId, modelId);
+
+        return List.of(new InstallResult(defaultResult, name));
     }
 
     /**
