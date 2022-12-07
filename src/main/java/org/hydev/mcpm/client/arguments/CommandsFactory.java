@@ -29,6 +29,7 @@ import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
 import org.hydev.mcpm.client.commands.controllers.UnloadController;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
+import org.hydev.mcpm.client.display.presenters.LogExportPresenter;
 import org.hydev.mcpm.client.export.PasteBinStorage;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.list.ListAllInteractor;
@@ -45,10 +46,8 @@ import org.hydev.mcpm.client.installer.InstallInteractor;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
 import org.hydev.mcpm.client.uninstall.Uninstaller;
 import org.hydev.mcpm.client.updater.UpdateInteractor;
-import org.hydev.mcpm.utils.ColorLogger;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -88,7 +87,8 @@ public class CommandsFactory {
         var storage = new PasteBinStorage();
 
         // Controllers
-        var exportPluginsController = new ExportPluginsController(new ExportInteractor(tracker, storage));
+        var exportPluginsController = new ExportPluginsController(
+                new ExportInteractor(tracker, storage), new LogExportPresenter());
         var listController = new ListController(new ListAllInteractor(tracker));
         var searchController = new SearchPackagesController(searcher, pager);
         var mirrorController = new MirrorController(mirror);
