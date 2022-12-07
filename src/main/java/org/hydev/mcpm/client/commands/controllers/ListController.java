@@ -46,7 +46,7 @@ public class ListController {
             case "automatic" -> listType = ListType.AUTOMATIC;
             case "outdated" -> listType = ListType.OUTDATED;
             default -> {
-                ListResult queryResult = new ListResult(null, ListResult.Type.SEARCH_INVALID_INPUT);
+                ListResult queryResult = new ListResult(null, ListResult.Type.SEARCH_INVALID_INPUT, null);
                 listPresenter.displayResult(queryResult);
                 return;
             }
@@ -58,13 +58,13 @@ public class ListController {
             // if list is empty
             ListResult queryResult;
             if (list.isEmpty()) {
-                queryResult = new ListResult(list, ListResult.Type.SUCCESS_RETRIEVING_BUT_NO_MATCHES);
+                queryResult = new ListResult(list, ListResult.Type.SUCCESS_RETRIEVING_BUT_NO_MATCHES, listType);
             } else {
-                queryResult = new ListResult(list, ListResult.Type.SUCCESS_RETRIEVING_LOCAL_AND_UPDATABLE);
+                queryResult = new ListResult(list, ListResult.Type.SUCCESS_RETRIEVING_LOCAL_AND_UPDATABLE, listType);
             }
             listPresenter.displayResult(queryResult);
         } catch (Exception e) {
-            ListResult queryResult = new ListResult(null, ListResult.Type.SEARCH_FAILED_TO_FETCH_INSTALLED);
+            ListResult queryResult = new ListResult(null, ListResult.Type.SEARCH_FAILED_TO_FETCH_INSTALLED, listType);
             listPresenter.displayResult(queryResult);
         }
 

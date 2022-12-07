@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Exception during installation of a plugin
  */
-public record ListResult(List<PluginYml> queryResult, Type type) {
+public record ListResult(List<PluginYml> queryResult, Type type, ListType listType) {
     /**
      * Type of list failure
      */
