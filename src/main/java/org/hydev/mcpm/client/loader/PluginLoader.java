@@ -134,7 +134,7 @@ public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, 
         // 3. Unregister listeners
         getPrivateField(pm, "listeners", new TypeToken<Map<Event, SortedSet<RegisteredListener>>>(){})
             .ifPresentOrElse(listeners -> listeners.values().forEach(set -> set.removeIf(l -> l.getPlugin() == plugin)),
-                () -> System.err.println("listeners cannot be accessed"));
+                () -> debug("listeners cannot be accessed"));
 
         // 4. Remove command from command map
         getPrivateField(pm, "commandMap", new TypeToken<SimpleCommandMap>(){}).ifPresentOrElse(cmdMap ->
