@@ -5,8 +5,10 @@ import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.commands.controllers.*;
 import org.hydev.mcpm.client.display.presenters.LogExportPresenter;
+import org.hydev.mcpm.client.display.presenters.LogImportPresenter;
 import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.export.ExportInteractor;
+import org.hydev.mcpm.client.export.ImportInteractor;
 import org.hydev.mcpm.client.injector.LocalJarFinder;
 import org.hydev.mcpm.client.injector.PluginLoader;
 import org.hydev.mcpm.client.installer.InstallInteractor;
@@ -61,6 +63,7 @@ public class CommandsFactory {
         // Controllers
         var exportPluginsController = new ExportController(
                 new ExportInteractor(tracker), new LogExportPresenter());
+        var importController = new ImportController(new ImportInteractor(installer), new LogImportPresenter());
         var listController = new ListController(new ListAllInteractor(tracker));
         var searchController = new SearchPackagesController(searcher, pager);
         var mirrorController = new MirrorController(mirror);

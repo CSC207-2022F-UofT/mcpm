@@ -10,15 +10,8 @@ import java.util.function.Consumer;
 /**
  * Parser for the ExportPluginsBoundary interface.
  */
-public class ExportPluginsParser implements CommandParser
+public record ExportPluginsParser(ExportController controller) implements CommandParser
 {
-    private final ExportController controller;
-
-    public ExportPluginsParser(ExportController controller)
-    {
-        this.controller = controller;
-    }
-
     @Override
     public String name()
     {
