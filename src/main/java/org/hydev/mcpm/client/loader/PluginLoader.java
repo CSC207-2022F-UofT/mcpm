@@ -227,7 +227,7 @@ public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, 
             try (var ji = new PluginJarFile(jar))
             {
                 var yml = """
-                    main: org.hydev.mcpm.client.injector.PluginLoaderHelper
+                    main: org.hydev.mcpm.client.loader.PluginLoaderHelper
                     name: MCPM-Helper
                     version: 1.0
                     api-version: 1.19
