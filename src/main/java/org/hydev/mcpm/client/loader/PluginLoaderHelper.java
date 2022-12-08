@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.injector;
+package org.hydev.mcpm.client.loader;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,9 +1,9 @@
 package org.hydev.mcpm.client.uninstall;
 
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
-import org.hydev.mcpm.client.injector.LocalJarBoundary;
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
-import org.hydev.mcpm.client.injector.UnloadBoundary;
+import org.hydev.mcpm.client.loader.LocalJarBoundary;
+import org.hydev.mcpm.client.loader.PluginNotFoundException;
+import org.hydev.mcpm.client.loader.UnloadBoundary;
 
 import java.io.File;
 

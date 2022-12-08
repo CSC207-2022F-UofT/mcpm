@@ -5,7 +5,6 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 import org.hydev.mcpm.client.commands.presenters.SearchResultPresenter;
-import org.hydev.mcpm.client.display.presenters.SearchPresenter;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -54,8 +53,8 @@ public record SearchParser(SearchPackagesController controller,
 
         // Call searchPackages
         List<String> t = details.getList("text");
-        var result = controller.searchPackages(type,
-                String.join(" ", t), !details.getBoolean("noCache"));
+
+        var result = controller.searchPackages(type, t, details.getBoolean("noCache"));
         presenter.displayResult(result, log);
     }
 }

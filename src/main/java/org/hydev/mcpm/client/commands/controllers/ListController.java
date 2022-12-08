@@ -16,16 +16,14 @@ import static org.hydev.mcpm.client.display.presenters.Table.tabulate;
  */
 public class ListController {
     private final ListAllBoundary listAllBoundary;
-    private final CheckForUpdatesBoundary checkForUpdatesBoundary;
 
     /**
      * Constructor for ListAllController.
      *
      * @param listAllBoundary The boundary class for ListAllController.
      */
-    public ListController(ListAllBoundary listAllBoundary, CheckForUpdatesBoundary checkForUpdatesBoundary) {
+    public ListController(ListAllBoundary listAllBoundary) {
         this.listAllBoundary = listAllBoundary;
-        this.checkForUpdatesBoundary = checkForUpdatesBoundary;
     }
 
     /**
@@ -35,27 +33,19 @@ public class ListController {
      * @param log       Logger
      */
     public void listAll(String parameter, Consumer<String> log) {
-
         ListType listType;
         switch (parameter) {
-            case "all":
-                listType = ListType.ALL;
-                break;
-            case "manual":
-                listType = ListType.MANUAL;
-                break;
-            case "automatic":
-                listType = ListType.AUTOMATIC;
-                break;
-            case "outdated":
-                listType = ListType.OUTDATED;
-                break;
-            default:
+            case "all" -> listType = ListType.ALL;
+            case "manual" -> listType = ListType.MANUAL;
+            case "automatic" -> listType = ListType.AUTOMATIC;
+            case "outdated" -> listType = ListType.OUTDATED;
+            default -> {
                 log.accept("Invalid parameter. Please use 'all', 'manual', 'automatic', or 'outdated'.");
                 return;
+            }
         }
 
-        var list = listAllBoundary.listAll(listType, checkForUpdatesBoundary);
+        var list = listAllBoundary.listAll(listType);
 
         // Tabulate result
         var table = tabulate(

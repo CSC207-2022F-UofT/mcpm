@@ -1,6 +1,4 @@
-package org.hydev.mcpm.client.injector;
-
-import java.io.File;
+package org.hydev.mcpm.client.loader;
 
 /**
  * Interface for loading a locally installed plugin.
@@ -15,12 +13,4 @@ public interface LoadBoundary
      * @throws PluginNotFoundException Plugin of the name is not found in the plugins directory
      */
     boolean loadPlugin(String name) throws PluginNotFoundException;
-
-    /**
-     * Dynamically load a local plugin through JVM reflections and classloader hacks
-     *
-     * @param jar Local jar file path
-     * @return True if success, false if failed
-     */
-    boolean loadPlugin(File jar);
 }

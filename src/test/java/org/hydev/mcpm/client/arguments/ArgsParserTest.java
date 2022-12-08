@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Tests for ArgsParser.
+ * Tests for the ArgsParser class (whether it can handle parsing basic commands, etc).
  */
 class ArgsParserTest
 {
@@ -46,8 +46,11 @@ class ArgsParserTest
         }
     }
 
+    /**
+     * Tests whether the argument parser can parse basic strings for a test command.
+     */
     @Test
-    void parse() throws ArgumentParserException
+    void testParse() throws ArgumentParserException
     {
         Consumer<String> out = System.out::println;
         var p = new ArgsParser(List.of(new TestCommand()));
@@ -61,8 +64,11 @@ class ArgsParserTest
         assertEquals(p.getRawSubparsers().size(), 1);
     }
 
+    /**
+     * Tests whether the argument parser will fail on invalid invocations.
+     */
     @Test
-    void fail()
+    void testFail()
     {
         Consumer<String> out = System.out::println;
 

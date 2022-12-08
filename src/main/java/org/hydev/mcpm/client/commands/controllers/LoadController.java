@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.commands.controllers;
 
-import org.hydev.mcpm.client.injector.LoadBoundary;
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
+import org.hydev.mcpm.client.loader.LoadBoundary;
+import org.hydev.mcpm.client.loader.PluginNotFoundException;
 
 import java.util.List;
 import java.util.function.Consumer;

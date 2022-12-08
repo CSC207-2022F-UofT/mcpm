@@ -3,6 +3,7 @@ package org.hydev.mcpm.client.commands.controllers;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
 
+import java.io.OutputStream;
 import java.util.function.Consumer;
 
 /**
@@ -23,11 +24,12 @@ public class ExportPluginsController {
     /**
      * Call the boundary to perform an export.
      *
-     * @param input Input specifying the export parameters
+     * @param stream Input specifying the export parameters
+     * @param cache Whether to use the cached version of the database.
      * @param log where to log the operation
      */
-    public void export(ExportPluginsInput input, Consumer<String> log) {
-        var result = boundary.export(input);
+    public void export(OutputStream stream, boolean cache, Consumer<String> log) {
+        var result = boundary.export(new ExportPluginsInput(cache, stream));
         log.accept(String.format("Export status: %s\n", result.state().toString()));
     }
 }

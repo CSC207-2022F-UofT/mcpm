@@ -5,6 +5,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.ExportPluginsController;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
 
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.function.Consumer;
 
@@ -36,14 +37,15 @@ public class ExportPluginsParser implements CommandParser
     public void configure(Subparser parser)
     {
         parser.addArgument("outfile") // add optional output file
-            .type(OutputStream.class).dest("outfile"); // of type OutputStream
+            .type(FileOutputStream.class).dest("outfile"); // of type OutputStream
         parser.addArgument("-c", "--cache")
+            .setDefault(true)
             .type(boolean.class).dest("cache");
     }
 
     @Override
     public void run(Namespace details, Consumer<String> log)
     {
-        controller.export(new ExportPluginsInput(details.get("cache"), details.get("outfile")), log);
+        controller.export(details.get("outfile"), details.get("cache"), log);
     }
 }

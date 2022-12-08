@@ -17,21 +17,21 @@ import java.util.function.Consumer;
  *
  */
 public record SearchPackagesController(SearchPackagesBoundary searcher) {
-
     /**
      * Load plugins and output status to log.
      *
      * @param type String that specifies the type of search.
-     * @param text String that specifies the search text.
+     * @param keywords Strings that specifies the search text.
      * @param noCache Specifies whether to use local cache or not.
      *
      * @return The search result.
      */
-    public SearchPackagesResult searchPackages(String type, String text, boolean noCache) {
+    public SearchPackagesResult searchPackages(String type, List<String> keywords, boolean noCache) {
         SearchPackagesInput inp = new SearchPackagesInput(
                 SearchPackagesType.valueOf("BY_" + type.toUpperCase()),
-                text,
+                String.join(" ", keywords),
                 noCache);
+
         return searcher.search(inp);
     }
 }

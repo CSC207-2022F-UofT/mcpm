@@ -1,4 +1,4 @@
-package org.hydev.mcpm.client.injector;
+package org.hydev.mcpm.client.loader;
 
 import com.google.common.reflect.TypeToken;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
 /**
  * Implementation of plugin hot-loading/unloading
  */
-public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
+public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
     private static final File HELPER_JAR = new File("plugins/mcpm-helper.jar");
 
@@ -52,7 +52,6 @@ public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, Un
         return loadPlugin(jarFinder.findJar(name));
     }
 
-    @Override
     public boolean loadPlugin(File jar)
     {
         return loadPluginHelper(jar) != null;
@@ -236,7 +235,7 @@ public record PluginLoader(LocalJarFinder jarFinder) implements LoadBoundary, Un
                     """.stripIndent();
 
                 var classes = ji.list().stream().map(ZipEntry::getName)
-                    .filter(it -> it.contains("org/hydev/mcpm/client/injector") ||
+                    .filter(it -> it.contains("org/hydev/mcpm/client/loader") ||
                         it.contains("org/hydev/mcpm/utils/ReflectionUtils") ||
                         it.contains("org/hydev/mcpm/client/models/PluginYml") ||
                         it.contains("org/hydev/mcpm/utils/PluginJarFile")).toList();

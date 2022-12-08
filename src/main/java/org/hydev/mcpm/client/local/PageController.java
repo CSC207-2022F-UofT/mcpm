@@ -1,8 +1,9 @@
-package org.hydev.mcpm.client.commands.controllers;
+package org.hydev.mcpm.client.local;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.hydev.mcpm.Constants;
+import org.hydev.mcpm.client.commands.controllers.PageBoundary;
 import org.hydev.mcpm.client.commands.presenters.PagedPresenter;
 
 import javax.annotation.Nullable;
@@ -88,7 +89,7 @@ public class PageController implements PageBoundary
         }
         catch (IOException e)
         {
-            System.err.println("Failed to save pagination detials.");
+            System.err.println("Failed to save pagination details.");
             e.printStackTrace();
         }
     }

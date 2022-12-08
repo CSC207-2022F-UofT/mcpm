@@ -23,5 +23,5 @@ public interface ListAllBoundary {
      *                  outdated.
      */
 
-    List<PluginYml> listAll(ListType parameter, CheckForUpdatesBoundary checkForUpdatesBoundary);
+    List<PluginYml> listAll(ListType parameter);
 }
