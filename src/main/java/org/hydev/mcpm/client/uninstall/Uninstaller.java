@@ -5,6 +5,8 @@ import org.hydev.mcpm.client.loader.LocalJarBoundary;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.loader.UnloadBoundary;
 
+import java.io.File;
+
 import static org.hydev.mcpm.client.uninstall.UninstallResult.State.*;
 
 
@@ -37,21 +39,23 @@ public class Uninstaller implements UninstallBoundary {
         // this will return the jar of the currently loaded plugin, which is the most precise.
         // Since people may still uninstall a plugin when it's not loaded, we ignore the not
         // found error here.
+        File jar = null;
         if (unloader != null) {
             try {
                 // In the minecraft server environment, we can find the exact jar of the loaded
                 // plugin because java's url class loader keeps track of jar file paths.
-                var jar = unloader.unloadPlugin(input.name());
-
-                // Delete file
-                if (input.delete() && !jar.delete()) {
-                    return new UninstallResult(FAILED_TO_DELETE);
-                }
+                jar = unloader.unloadPlugin(input.name());
             }
             catch (PluginNotFoundException ignored) { }
         }
-        else if (input.delete())
-        {
+
+        if (jar != null) {
+            // Delete file
+            if (input.delete() && !jar.delete()) {
+                return new UninstallResult(FAILED_TO_DELETE);
+            }
+        }
+        else if (input.delete()) {
             // When unloader is not null, it means that we are in CLI environment, so we need to
             // find the plugin of the name
             PluginRemover fileRemover = new PluginRemover(jarFinder);
@@ -60,7 +64,8 @@ public class Uninstaller implements UninstallBoundary {
             var deleteResult = fileRemover.removeFile(input.name());
             if (deleteResult == FileRemoveResult.NOT_FOUND) {
                 return new UninstallResult(NOT_FOUND);
-            } else if (deleteResult == FileRemoveResult.FAILED_TO_DELETE) {
+            }
+            else if (deleteResult == FileRemoveResult.FAILED_TO_DELETE) {
                 return new UninstallResult(FAILED_TO_DELETE);
             }
         }

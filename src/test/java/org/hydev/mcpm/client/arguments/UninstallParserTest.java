@@ -4,13 +4,14 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.mock.MockUninstallBoundary;
 import org.hydev.mcpm.client.arguments.parsers.UninstallParser;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
+import org.hydev.mcpm.client.display.presenters.UninstallPresenter;
 import org.hydev.mcpm.client.uninstall.UninstallResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests both the UninstallParser and UninstallController classes (since they are invoked in a similar way).
@@ -28,7 +29,7 @@ public class UninstallParserTest {
     public void setup() {
         uninstaller = new MockUninstallBoundary();
         controller = new UninstallController(uninstaller);
-        var parser = new UninstallParser(controller);
+        var parser = new UninstallParser(controller, new UninstallPresenter());
         args = new ArgsParser(List.of(parser));
     }
 

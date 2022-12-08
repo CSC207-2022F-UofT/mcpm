@@ -8,6 +8,9 @@ import java.util.function.Consumer;
 
 import static org.hydev.mcpm.client.display.presenters.Table.tabulate;
 
+/**
+ * Presenter for the list result
+ */
 public class ListPresenter implements ListResultPresenter {
     private final Consumer<String> log;
 
@@ -34,8 +37,7 @@ public class ListPresenter implements ListResultPresenter {
                 list.stream().map(p -> List.of("&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList(),
                 List.of(":Name", "Author", "Version:"));
 
-                this.log.accept(listResult.type().reason() + " (Parameter " + listResult.listType() + ")\n" + table);
-
+            this.log.accept(listResult.type().reason() + " (Parameter " + listResult.listType() + ")\n" + table);
         }
     }
 }

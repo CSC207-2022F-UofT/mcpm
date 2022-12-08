@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * Removes file for FileRemove.java
  */
-public class PluginRemover implements FileRemove{
+public class PluginRemover implements FileRemove {
     private final LocalJarBoundary jarFinder;
 
     public PluginRemover(LocalJarBoundary jarFinder) {

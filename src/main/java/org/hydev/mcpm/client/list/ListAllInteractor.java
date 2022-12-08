@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * Implementation for the ListAll functionality
  */
-public record ListAllInteractor(PluginTracker pluginTracker, CheckForUpdatesBoundary checkForUpdatesBoundary) implements ListAllBoundary {
+public record ListAllInteractor(PluginTracker pluginTracker, CheckForUpdatesBoundary checkForUpdatesBoundary)
+    implements ListAllBoundary {
     /**
      * listAllInteractor interacts with the LocalPluginTracker to get the list of
      * plugins, according to a specified
