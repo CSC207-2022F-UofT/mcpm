@@ -31,6 +31,10 @@ public class ImportResult {
         // Code for when import returns ImportResult instead of boolean
         Set<InstallResult.Type> good = Set.of(InstallResult.Type.SUCCESS_INSTALLED, InstallResult.Type.PLUGIN_EXISTS);
         for (var result : installResults) {
+            if (result.name().equalsIgnoreCase("mcpm") ||
+                    result.name().equalsIgnoreCase("mcpm-helper")) // ignore mcpm imports
+                continue;
+
             boolean successfulInstall = good.contains(result.type());
             allSuccessful &= successfulInstall;
             allFailed &= !successfulInstall;
