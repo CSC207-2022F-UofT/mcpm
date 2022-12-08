@@ -66,8 +66,7 @@ def update_build(mc_path: Path):
 
 if __name__ == '__main__':
     # Download JDK
-#     java = ensure_java("19")
-    java = Path("/Users/Peter/Library/Java/JavaVirtualMachines/temurin-19/Contents/Home/bin/java")
+    java = ensure_java("19")
 
     # Download server tar
     mc_path = Path('build/mc-server')
