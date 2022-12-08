@@ -23,7 +23,7 @@ public class LogImportPresenter implements ImportPresenter {
         return switch (result.state()) {
             case SUCCESS -> "All plugins installed";
             case PARTIAL_SUCCESS -> "Some plugins failed to install:\n"
-                    + String.join("\n", result.noninstalledPlugins);
+                    + String.join("\n", result.nonInstalledPlugins);
             case FAILURE -> "All plugins failed to install";
             case IMPORT_ERROR -> "Import failed. " + result.error;
         };

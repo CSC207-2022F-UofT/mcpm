@@ -10,13 +10,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public record ExportPluginsResult(
         State state,
-        @Nullable String export
+        @Nullable String export,
+        @Nullable String error
 ) {
     /**
      * Outcome of the plugin export
      */
     public enum State {
         SUCCESS,
-        FAILED_TO_FETCH_PLUGINS
+        FAILED
     }
 }

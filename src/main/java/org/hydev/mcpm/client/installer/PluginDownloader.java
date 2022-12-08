@@ -7,10 +7,10 @@ public interface PluginDownloader {
     /**
      * Download a plugin
      *
+     * @param pluginName   The name of the plugin.
      * @param pluginId      Spigot Plugin ID
      * @param pluginVersion Spigot Plugin Version ID
-     * @param destination   File path to write to
      */
-    void download(long pluginId, long pluginVersion, String destination);
+    void download(String pluginName, long pluginId, long pluginVersion);
 }
 

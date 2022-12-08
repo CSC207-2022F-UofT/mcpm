@@ -1,17 +1,18 @@
 package org.hydev.mcpm.client.export;
 
+import org.hydev.mcpm.client.installer.output.InstallResult;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 
 /**
  * Class storing results of the import for each imported plugin
  */
 public class ImportResult {
-    private State state;
-    private final Map<String, Boolean> installResults;
-    public final List<String> noninstalledPlugins;
+    private final State state;
+    public final List<String> nonInstalledPlugins;
     public final String error;
 
 
@@ -20,37 +21,33 @@ public class ImportResult {
      *
      * @param installResults Result of each install
      */
-    public ImportResult(Map<String, Boolean> installResults) {
-        this.installResults = installResults;
-        noninstalledPlugins = new ArrayList<>();
+    public ImportResult(List<InstallResult> installResults) {
+        nonInstalledPlugins = new ArrayList<>();
         error = null;
 
-        boolean success = true;
-        boolean fail = false;
+        boolean allSuccessful = true;
+        boolean allFailed = true;
 
-        /* Code for when import returns ImportResult instead of boolean
-        Set<Type> good = new HashSet<>();
-        for (Type type : Type.values()) {
-            if (type.name().contains("SUCCESS")) // definitely legit
-                good.add(type);
-        }
-         */
+        // Code for when import returns ImportResult instead of boolean
+        Set<InstallResult.Type> good = Set.of(InstallResult.Type.SUCCESS_INSTALLED, InstallResult.Type.PLUGIN_EXISTS);
+        for (var result : installResults) {
+            boolean successfulInstall = good.contains(result.type());
+            allSuccessful &= successfulInstall;
+            allFailed &= !successfulInstall;
 
-        for (var x : installResults.entrySet()) {
-            success &= x.getValue();
-            fail |= x.getValue();
-
-            if (!x.getValue()) {
-                noninstalledPlugins.add(x.getKey());
-            }
-
-            if (!success && fail) { // not a full success nor full failure
-                state = State.PARTIAL_SUCCESS;
+            if (!successfulInstall) {
+                nonInstalledPlugins.add(result.name());
             }
         }
-
-        if (state == null)
-            state = success ? State.SUCCESS : State.FAILURE;
+        if (allSuccessful) {
+            state = State.SUCCESS;
+        }
+        else if (allFailed) {
+            state = State.FAILURE;
+        }
+        else {
+            state = State.PARTIAL_SUCCESS;
+        }
     }
 
     /**
@@ -61,8 +58,7 @@ public class ImportResult {
     public ImportResult(String error) {
         this.error = error;
         state = State.IMPORT_ERROR;
-        noninstalledPlugins = null;
-        installResults = null;
+        nonInstalledPlugins = null;
     }
 
     /**

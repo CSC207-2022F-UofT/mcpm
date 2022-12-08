@@ -12,11 +12,10 @@ import java.util.Set;
 /**
  * Searcher that returns a map based on keywords.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearcherByKeyword implements Searcher {
 
-    private static Map<String, List<PluginModel>> keywordMap = null;
+    private Map<String, List<PluginModel>> keywordMap = null;
 
     /**
      * Returns a dictionary mapping the different keywords to the matching plugins
@@ -60,13 +59,13 @@ public class SearcherByKeyword implements Searcher {
     public List<PluginModel> getSearchList(String inp, List<PluginModel> plugins) {
 
         // Instantiate if null
-        if (SearcherByKeyword.keywordMap == null) {
-            SearcherByKeyword.keywordMap = constructSearchMaps(plugins);
+        if (keywordMap == null) {
+            keywordMap = constructSearchMaps(plugins);
         }
         String [] keywords = inp.split(" "); // Should be a string
-        Set<PluginModel> res = new HashSet<>(SearcherByKeyword.keywordMap.getOrDefault(keywords[0], List.of()));
+        Set<PluginModel> res = new HashSet<>(keywordMap.getOrDefault(keywords[0], List.of()));
         for (int i = 1; i < keywords.length; i++) {
-            List<PluginModel> pl = SearcherByKeyword.keywordMap.getOrDefault(keywords[i], List.of());
+            List<PluginModel> pl = keywordMap.getOrDefault(keywords[i], List.of());
             res.retainAll(pl);
             if (res.isEmpty())
                 return List.of();

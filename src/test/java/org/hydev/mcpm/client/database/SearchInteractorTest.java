@@ -16,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test suite for the SearchInteractor class.
- *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearchInteractorTest {
     private static SearchInteractor database;
@@ -50,6 +48,10 @@ public class SearchInteractorTest {
                 .collect(Collectors.joining(delim));
     }
 
+    /**
+     * Tests search by name when there is a match. Using lower-case to ensure that the search is not
+     * case-sensitive.
+     */
     @Test
     void testSearchByNameSuccessMatch() {
         var result = database.search(
@@ -58,9 +60,12 @@ public class SearchInteractorTest {
         assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assertEquals(text, "Multiverse-Core");
+        assertEquals("Multiverse-Core", text);
     }
 
+    /**
+     * Tests search by name when there is no match. Expect an empty string.
+     */
     @Test
     void testSearchByNameSuccessNoMatch() {
         var result = database.search(
@@ -69,9 +74,12 @@ public class SearchInteractorTest {
         assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assertEquals(text, "");
+        assertEquals("", text);
     }
 
+    /**
+     * Tests search by keyword when there is a match.
+     */
     @Test
     void testSearchByKeywordSuccessMatch() {
         var result = database.search(
@@ -80,9 +88,12 @@ public class SearchInteractorTest {
         assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assertEquals(text, "Holographic Displays, WorldGuard");
+        assertEquals("Holographic Displays, WorldGuard", text);
     }
 
+    /**
+     * Tests search by keyword when there is no match. Expect an empty string.
+     */
     @Test
     void testSearchByKeywordSuccessNoMatch() {
         var result = database.search(
@@ -91,9 +102,13 @@ public class SearchInteractorTest {
         assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assertEquals(text, "");
+        assertEquals("", text);
     }
 
+
+    /**
+     * Tests search by command when there is a match.
+     */
     @Test
     @SuppressWarnings("SpellCheckingInspection")
     void testSearchByCommandSuccessMatch() {
@@ -103,9 +118,13 @@ public class SearchInteractorTest {
         assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assertEquals(text, "WorldGuard, Holographic Displays");
+        assertEquals("WorldGuard, Holographic Displays", text);
     }
 
+
+    /**
+     * Tests search by command when there is no match.
+     */
     @Test
     void testSearchByCommandSuccessNoMatch() {
         var result = database.search(
@@ -114,9 +133,12 @@ public class SearchInteractorTest {
         assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assertEquals(text, "");
+        assertEquals("", text);
     }
 
+    /**
+     * Tests invalid searches due to empty inputs.
+     */
     @Test
     void testInvalidSearch() {
         var result1 = database.search(

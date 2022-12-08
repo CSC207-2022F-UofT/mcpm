@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.hydev.mcpm.client.arguments.ArgsParser;
-import org.hydev.mcpm.client.arguments.CommandsFactory;
+import org.hydev.mcpm.client.arguments.ArgsParserFactory;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
 import org.hydev.mcpm.utils.ColorLogger;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +48,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
         log.info("Enabled!");
 
         // Initialize controller
-        parser = CommandsFactory.serverArgsParser();
+        parser = ArgsParserFactory.serverArgsParser();
 
         // Register mcpm command
         requireNonNull(this.getCommand("mcpm")).setExecutor(this);

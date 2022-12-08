@@ -5,7 +5,6 @@ import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.export.storage.StringStorage;
 import org.hydev.mcpm.client.export.storage.StringStorageFactory;
 
-
 import java.io.IOException;
 
 import static org.hydev.mcpm.Constants.JACKSON;
@@ -25,7 +24,8 @@ public record ExportInteractor(PluginTracker tracker) implements ExportPluginsBo
     public ExportPluginsResult export(ExportPluginsInput input) {
         var plugins = tracker.listInstalled();
         if (plugins == null) {
-            return new ExportPluginsResult(ExportPluginsResult.State.FAILED_TO_FETCH_PLUGINS, null);
+            return new ExportPluginsResult(ExportPluginsResult.State.FAILED, null,
+                    "Could not fetch plugins");
         }
         var models = plugins.stream().map(p -> new ExportModel(p.name(), p.version())).toList();
 
@@ -33,12 +33,12 @@ public record ExportInteractor(PluginTracker tracker) implements ExportPluginsBo
             var answer = JACKSON.writeValueAsString(models);
             StringStorage storage = StringStorageFactory.createStringStorage(input);
             var token = storage.store(answer);
-            return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS, token);
+            return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS, token, null);
         } catch (JsonProcessingException e) {
             // Should never happen
             throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return new ExportPluginsResult(ExportPluginsResult.State.FAILED, null, e.getMessage());
         }
     }
 }

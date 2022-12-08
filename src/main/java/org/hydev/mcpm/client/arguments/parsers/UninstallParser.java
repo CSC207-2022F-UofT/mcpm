@@ -26,7 +26,11 @@ public record UninstallParser(UninstallController controller) implements Command
     public void configure(Subparser parser) {
         parser.addArgument("name")
             .help("Name of the plugin to uninstall");
-        parser.addArgument("-r", "--recursive").action(Arguments.storeTrue())
+
+        parser.addArgument("-n", "--no-recursive")
+            .action(Arguments.storeFalse())
+            .setDefault(true)
+            .dest("recursive")
             .help("Recursively remove orphan dependencies");
     }
 

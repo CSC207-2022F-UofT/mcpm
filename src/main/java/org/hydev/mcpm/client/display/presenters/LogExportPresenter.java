@@ -13,14 +13,14 @@ public class LogExportPresenter implements ExportPresenter {
     private String getColor(ExportPluginsResult result) {
         return switch (result.state()) {
             case SUCCESS -> "&a";
-            case FAILED_TO_FETCH_PLUGINS -> "&c";
+            case FAILED -> "&c";
         };
     }
 
     private String getMessage(ExportPluginsResult result) {
         return switch ((result.state())) {
             case SUCCESS -> "Exported to " + result.export();
-            case FAILED_TO_FETCH_PLUGINS -> "Export failed to fetch plugins";
+            case FAILED -> result.error();
         };
     }
 

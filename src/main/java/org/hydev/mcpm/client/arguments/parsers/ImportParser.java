@@ -26,7 +26,7 @@ public record ImportParser(ImportController controller) implements CommandParser
         parser.addArgument("type").nargs("?").choices("pastebin", "file", "literal")
                 .setDefault("pastebin") // type of input
                 .type(String.class).dest("type"); // of type OutputStream
-        parser.addArgument("input").nargs("?")
+        parser.addArgument("input")
                 .type(String.class).dest("input");
     }
 

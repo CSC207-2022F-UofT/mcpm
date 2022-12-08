@@ -4,6 +4,7 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
+import org.hydev.mcpm.client.commands.presenters.SearchResultPresenter;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -13,7 +14,8 @@ import java.util.function.Consumer;
  * When the user runs the search command, the program prompts the user to specify the type of
  * search and the search text.
  */
-public record SearchParser(SearchPackagesController controller) implements CommandParser {
+public record SearchParser(SearchPackagesController controller,
+                           SearchResultPresenter presenter) implements CommandParser {
     @Override
     public String name() {
         return "search";
@@ -51,6 +53,8 @@ public record SearchParser(SearchPackagesController controller) implements Comma
 
         // Call searchPackages
         List<String> t = details.getList("text");
-        controller.searchPackages(type, String.join(" ", t), !details.getBoolean("noCache"), log);
+
+        var result = controller.searchPackages(type, t, details.getBoolean("noCache"));
+        presenter.displayResult(result, log);
     }
 }

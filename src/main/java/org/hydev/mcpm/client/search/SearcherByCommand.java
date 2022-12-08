@@ -10,11 +10,10 @@ import java.util.Map;
 /**
  * Searcher that returns a map based on commands.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearcherByCommand implements Searcher {
 
-    private static Map<String, List<PluginModel>> commandMap = null;
+    private Map<String, List<PluginModel>> commandMap = null;
 
     /**
      * Returns a dictionary mapping the different commands to the matching plugins.
@@ -53,9 +52,9 @@ public class SearcherByCommand implements Searcher {
     @Override
     public List<PluginModel> getSearchList(String inp, List<PluginModel> plugins) {
         // Instantiate if null
-        if (SearcherByCommand.commandMap == null) {
-            SearcherByCommand.commandMap = constructSearchMaps(plugins);
+        if (commandMap == null) {
+            commandMap = constructSearchMaps(plugins);
         }
-        return SearcherByCommand.commandMap.getOrDefault(inp, List.of());
+        return commandMap.getOrDefault(inp, List.of());
     }
 }

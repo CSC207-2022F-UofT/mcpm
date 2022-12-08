@@ -29,7 +29,7 @@ public record ExportPluginsParser(ExportController controller) implements Comman
     {
         parser.addArgument("type").nargs("?").choices("pastebin", "file", "literal")
                 .setDefault("pastebin") // type of output
-            .type(String.class).dest("type"); // of type OutputStream
+            .type(String.class).dest("type");
         parser.addArgument("out").nargs("?")
             .type(String.class).dest("out");
     }

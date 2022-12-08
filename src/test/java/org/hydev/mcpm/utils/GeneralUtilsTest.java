@@ -1,5 +1,6 @@
 package org.hydev.mcpm.utils;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,6 +20,7 @@ class GeneralUtilsTest
     }
 
     @Test
+    @Tag("IntegrationTest")
     void safeSleep()
     {
         long time = System.currentTimeMillis();
