@@ -13,5 +13,5 @@ public interface UnloadBoundary
      * @param name Loaded plugin name
      * @throws PluginNotFoundException If a loaded plugin of the name isn't found
      */
-    void unloadPlugin(String name) throws PluginNotFoundException;
+    File unloadPlugin(String name) throws PluginNotFoundException;
 }

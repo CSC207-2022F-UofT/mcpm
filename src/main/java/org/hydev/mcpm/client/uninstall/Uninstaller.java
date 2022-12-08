@@ -1,15 +1,9 @@
 package org.hydev.mcpm.client.uninstall;
 
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
-import org.hydev.mcpm.client.injector.LocalJarBoundary;
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
-import org.hydev.mcpm.client.injector.UnloadBoundary;
-import org.hydev.mcpm.client.uninstall.FileRemove;
 import org.hydev.mcpm.client.loader.LocalJarBoundary;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.loader.UnloadBoundary;
-
-import java.io.File;
 
 import static org.hydev.mcpm.client.uninstall.UninstallResult.State.*;
 
@@ -45,20 +39,31 @@ public class Uninstaller implements UninstallBoundary {
         // found error here.
         if (unloader != null) {
             try {
-                unloader.unloadPlugin(input.name());
+                // In the minecraft server environment, we can find the exact jar of the loaded
+                // plugin because java's url class loader keeps track of jar file paths.
+                var jar = unloader.unloadPlugin(input.name());
+
+                // Delete file
+                if (input.delete() && !jar.delete()) {
+                    return new UninstallResult(FAILED_TO_DELETE);
+                }
             }
             catch (PluginNotFoundException ignored) { }
         }
+        else if (input.delete())
+        {
+            // When unloader is not null, it means that we are in CLI environment, so we need to
+            // find the plugin of the name
+            PluginRemover fileRemover = new PluginRemover(jarFinder);
 
-        // Steps 2. + 3.
-        RemoveFile fileRemover = new RemoveFile(jarFinder);
-
-        if (fileRemover.removeFile(input.name())==1) {
-            return new UninstallResult(NOT_FOUND);
-        } else if (fileRemover.removeFile(input.name())==2) {
-            return new UninstallResult(FAILED_TO_DELETE);
+            // Delete file
+            var deleteResult = fileRemover.removeFile(input.name());
+            if (deleteResult == FileRemoveResult.NOT_FOUND) {
+                return new UninstallResult(NOT_FOUND);
+            } else if (deleteResult == FileRemoveResult.FAILED_TO_DELETE) {
+                return new UninstallResult(FAILED_TO_DELETE);
+            }
         }
-
 
         // 4. Remove manually installed flag from the tracker
         tracker.removeEntry(input.name());

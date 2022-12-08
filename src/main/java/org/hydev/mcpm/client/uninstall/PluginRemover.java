@@ -1,22 +1,22 @@
 package org.hydev.mcpm.client.uninstall;
 
-import org.hydev.mcpm.client.injector.LocalJarBoundary;
-import org.hydev.mcpm.client.injector.PluginNotFoundException;
-import org.hydev.mcpm.client.uninstall.FileRemove;
+import org.hydev.mcpm.client.loader.LocalJarBoundary;
+import org.hydev.mcpm.client.loader.PluginNotFoundException;
 
 import java.io.File;
 
 /**
  * Removes file for FileRemove.java
  */
-public class RemoveFile implements FileRemove{
+public class PluginRemover implements FileRemove{
     private final LocalJarBoundary jarFinder;
 
-    public RemoveFile(LocalJarBoundary jarFinder) {
+    public PluginRemover(LocalJarBoundary jarFinder) {
         this.jarFinder = jarFinder;
     }
 
-    public int removeFile(String pluginName) {
+    @Override
+    public FileRemoveResult removeFile(String pluginName) {
         // 2. If it isn't loaded, find the plugin jar file in local file system
         // (This will throw PluginNotFoundException when a plugin of the name in the file system
         // could not be found).
@@ -24,13 +24,13 @@ public class RemoveFile implements FileRemove{
         try {
             jar = jarFinder.findJar(pluginName);
         } catch (PluginNotFoundException e) {
-            return 1;
+            return FileRemoveResult.NOT_FOUND;
         }
 
         // 3. Delete plugin jar
         if (!jar.delete()) {
-            return 2;
+            return FileRemoveResult.FAILED_TO_DELETE;
         }
-        return 0;
+        return FileRemoveResult.SUCCESS;
     }
 }
