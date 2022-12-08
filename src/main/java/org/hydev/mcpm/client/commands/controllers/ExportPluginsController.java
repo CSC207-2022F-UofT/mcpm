@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.commands.controllers;
 
-import org.hydev.mcpm.client.display.presenters.LogExportPresenter;
+import org.hydev.mcpm.client.commands.presenters.ExportPresenter;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
 
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  */
 public record ExportPluginsController(
         ExportPluginsBoundary boundary,
-        LogExportPresenter presenter
+        ExportPresenter presenter
 ) {
 
     /**

@@ -1,5 +1,6 @@
-package org.hydev.mcpm.client.export;
+package org.hydev.mcpm.client.export.storage;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,6 +11,11 @@ import java.nio.file.Path;
  */
 public record FixedFileStorage(Path path) implements StringStorage
 {
+    public FixedFileStorage(String path) {
+        this(new File(path).toPath());
+    }
+
+
     @Override
     public String store(String content) throws IOException
     {

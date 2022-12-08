@@ -2,14 +2,18 @@ package org.hydev.mcpm.client.export;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.export.storage.StringStorage;
+import org.hydev.mcpm.client.export.storage.StringStorageFactory;
 
+
+import java.io.IOException;
 
 import static org.hydev.mcpm.Constants.JACKSON;
 
 /**
  * An implementation of ExportPluginsBoundary that fetches from a database.
  */
-public record ExportInteractor(PluginTracker tracker, StringStorage storage) implements ExportPluginsBoundary {
+public record ExportInteractor(PluginTracker tracker) implements ExportPluginsBoundary {
 
     /**
      * Outputs the plugins on each line as its name and version separated by a space.
@@ -27,9 +31,13 @@ public record ExportInteractor(PluginTracker tracker, StringStorage storage) imp
 
         try {
             var answer = JACKSON.writeValueAsString(models);
-            return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS, answer);
+            StringStorage storage = StringStorageFactory.createStringStorage(input);
+            var token = storage.store(answer);
+            return new ExportPluginsResult(ExportPluginsResult.State.SUCCESS, token);
         } catch (JsonProcessingException e) {
             // Should never happen
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

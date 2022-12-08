@@ -19,8 +19,8 @@ public class LogExportPresenter implements ExportPresenter {
 
     private String getMessage(ExportPluginsResult exportPluginsResult) {
         return switch ((exportPluginsResult.state())) {
-            case SUCCESS -> exportPluginsResult.export();
-            case FAILED_TO_FETCH_PLUGINS -> "Failed to fetch plugins";
+            case SUCCESS -> "Exported to " + exportPluginsResult.export();
+            case FAILED_TO_FETCH_PLUGINS -> "Export failed to fetch plugins";
         };
     }
 
