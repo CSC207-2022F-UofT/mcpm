@@ -22,10 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
@@ -38,12 +35,23 @@ import static org.hydev.mcpm.utils.ReflectionUtils.setPrivateField;
  */
 public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, UnloadBoundary, ReloadBoundary
 {
+    private static final boolean DEBUG = false;
     private static final File HELPER_JAR = new File("plugins/mcpm-helper.jar");
 
     public PluginLoader
     {
         // Delete helper when this class is loaded
         deleteHelper();
+    }
+
+    /**
+     * Warning for debugging the program
+     *
+     * @param msg Debug message
+     */
+    private static void debug(Object msg)
+    {
+        if (DEBUG) System.err.println(msg);
     }
 
     @Override
@@ -136,25 +144,25 @@ public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, 
                     .filter(cmd -> cmd.getPlugin() == plugin).toList().forEach(cmd -> {
                         cmd.unregister(cmdMap);
                         cmds.values().removeIf(cmd::equals);
-                    }), () -> System.err.println("knownCommands cannot be accessed")
-            ), () -> System.err.println("commandMap cannot be accessed")
+                    }), () -> debug("knownCommands cannot be accessed")
+            ), () -> debug("commandMap cannot be accessed")
         );
 
         // 5. Remove plugin from list
         getPrivateField(pm, "plugins", new TypeToken<List<Plugin>>(){})
             .ifPresentOrElse(plugins -> plugins.remove(plugin),
-                () -> System.err.println("plugins cannot be accessed"));
+                () -> debug("plugins cannot be accessed"));
 
         // 6. Remove lookup name
         getPrivateField(pm, "lookupNames", new TypeToken<Map<String, Plugin>>(){})
             .ifPresentOrElse(names -> names.remove(plugin.getName()),
-                () -> System.err.println("lookupNames cannot be accessed"));
+                () -> debug("lookupNames cannot be accessed"));
 
         // 7. Unload Java classes so that the jar can be deleted on Windows
         if (plugin.getClass().getClassLoader() instanceof URLClassLoader cl)
         {
             if (!setPrivateField(cl, "plugin", null) || !setPrivateField(cl, "pluginInit", null))
-                System.err.println("Error in setPrivateField, skipping unload");
+                debug("Error in setPrivateField, skipping unload");
 
             // Close classloader
             try
@@ -198,8 +206,8 @@ public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, 
             // 4. Reflect! Since MCPM and MCPM-Helper are in different class loaders, I cannot call/cast it directly
             // or else it would give me a nonsense error "class PluginLoaderHelper cannot be cast to PluginLoaderHelper"
             var cls = pl.getClass();
-            System.out.println(cls);
-            System.out.println(Arrays.toString(cls.getDeclaredMethods()));
+            debug(cls);
+            debug(Arrays.toString(cls.getDeclaredMethods()));
             var reload = cls.getDeclaredMethod("reloadMcpm", Plugin.class, File.class);
             reload.setAccessible(true);
             reload.invoke(pl, SpigotEntry.instance(), jar);
@@ -223,7 +231,7 @@ public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, 
         {
             // 1. Get the class bytecode from the jar
             var jar = new File(PluginLoader.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            System.out.println(jar);
+            debug(jar);
             try (var ji = new PluginJarFile(jar))
             {
                 var yml = """
@@ -241,13 +249,13 @@ public record PluginLoader(LocalJarBoundary jarFinder) implements LoadBoundary, 
                         it.contains("org/hydev/mcpm/utils/PluginJarFile")).toList();
 
                 // 2. Create a new jar file
-                System.out.println("Creating jar file...");
+                debug("Creating jar file...");
                 try (var jo = new JarOutputStream(new FileOutputStream(HELPER_JAR)))
                 {
                     // Copy classes
                     for (String c : classes)
                     {
-                        System.out.println("Copying " + c);
+                        debug("Copying " + c);
                         jo.putNextEntry(new JarEntry(c));
                         jo.write(ji.readBytes(c));
                         jo.closeEntry();
