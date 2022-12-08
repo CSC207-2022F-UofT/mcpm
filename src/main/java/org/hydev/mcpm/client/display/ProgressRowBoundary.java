@@ -1,12 +1,10 @@
 package org.hydev.mcpm.client.display;
 
-import org.hydev.mcpm.client.display.progress.ProgressBar;
 import org.hydev.mcpm.client.display.progress.ProgressBarTheme;
 
 /**
  * Row of a progress bar.
  */
-@SuppressWarnings("unused")
 public interface ProgressRowBoundary {
     /**
      * Get formatted string of the current progress bar
@@ -16,8 +14,6 @@ public interface ProgressRowBoundary {
      * @return Formatted string
      */
     String toString(ProgressBarTheme theme, int cols);
-
-    void setPb(ProgressBar pb);
 
     /**
      * Increase progress by incr.
@@ -41,36 +37,9 @@ public interface ProgressRowBoundary {
     double getCompletion();
 
     /**
-     * Sets the description of this object.
+     * Set the current progress bar for this row.
      *
-     * @param desc The description to set
-     * @return This object for chaining.
+     * @param bar The bar to set as the row's parent.
      */
-    ProgressRowBoundary desc(String desc);
-
-    /**
-     * Sets the maximum description length. This value is used for padding.
-     *
-     * @param descLen The description length.
-     * @return This object for chaining.
-     */
-    ProgressRowBoundary descLen(int descLen);
-
-    /**
-     * Sets the unit indicator for the speed indicator.
-     *
-     * @param unit A unit string, beginning with an empty space.
-     * @return This object for chaining.
-     */
-    ProgressRowBoundary unit(String unit);
-
-    /**
-     * Sets the overall format of the progress bar.
-     * This is specified using indicators like {speed}, {desc}.
-     * For a full list see class implementation.
-     *
-     * @param fmt The format string.
-     * @return This object for chaining.
-     */
-    ProgressRowBoundary fmt(String fmt);
+    void setPb(ProgressBarBoundary bar);
 }

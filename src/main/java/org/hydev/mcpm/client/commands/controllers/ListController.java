@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.commands.controllers;
 
+import org.hydev.mcpm.client.commands.presenters.ListResultPresenter;
 import org.hydev.mcpm.client.display.presenters.ListPresenter;
 import org.hydev.mcpm.client.list.ListAllBoundary;
 import org.hydev.mcpm.client.list.ListType;
@@ -31,7 +32,7 @@ public class ListController {
      * @param parameter The parameter for the ListAll use case.
      */
     public void listAll(String parameter, Consumer<String> log) {
-        ListPresenter listPresenter = new ListPresenter(log);
+        ListResultPresenter listPresenter = new ListPresenter(log);
         ListType listType;
         switch (parameter.toLowerCase()) {
             case "all" -> listType = ListType.ALL;

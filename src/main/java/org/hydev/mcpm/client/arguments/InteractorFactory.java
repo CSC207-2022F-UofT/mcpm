@@ -29,6 +29,8 @@ import org.hydev.mcpm.client.matcher.MatchPluginsBoundary;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
 import org.hydev.mcpm.client.search.SearchInteractor;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
+import org.hydev.mcpm.client.uninstall.FileRemove;
+import org.hydev.mcpm.client.uninstall.PluginRemover;
 import org.hydev.mcpm.client.uninstall.UninstallBoundary;
 import org.hydev.mcpm.client.uninstall.Uninstaller;
 import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
@@ -94,7 +96,6 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(LocalPluginTracker.class, () -> new LocalPluginTracker(lockPath, pluginsDirectory));
     }
 
-    @Override
     public LocalJarBoundary jarBoundary() {
         return cache(LocalJarFinder.class, LocalJarFinder::new);
     }
@@ -137,7 +138,6 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(SearchInteractor.class, () -> new SearchInteractor(fetcher, listener));
     }
 
-    @Override
     public PluginDownloader pluginDownloader() {
         var mirror = mirrorSelector();
 
@@ -157,7 +157,6 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(InstallInteractor.class, () -> new InstallInteractor(downloader, loader, searcher, tracker));
     }
 
-    @Override
     public MatchPluginsBoundary matchBoundary() {
         var fetcher = databaseFetcher();
         var listener = fetcherListener();
@@ -165,7 +164,6 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(MatchPluginsInteractor.class, () -> new MatchPluginsInteractor(fetcher, listener));
     }
 
-    @Override
     public CheckForUpdatesBoundary checkForUpdatesBoundary() {
         var matcher = matchBoundary();
 
@@ -203,12 +201,18 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(ListAllInteractor.class, () -> new ListAllInteractor(tracker, checkForUpdates));
     }
 
+    public FileRemove fileRemover() {
+        var boundary = jarBoundary();
+
+        return cache(PluginRemover.class, () -> new PluginRemover(boundary));
+    }
+
     @Override
     public UninstallBoundary uninstallBoundary() {
         var tracker = pluginTracker();
         var unload = unloadBoundary(); // ...er
-        var boundary = jarBoundary();
+        var remover = fileRemover();
 
-        return cache(Uninstaller.class, () -> new Uninstaller(tracker, unload, boundary));
+        return cache(Uninstaller.class, () -> new Uninstaller(tracker, unload, remover));
     }
 }

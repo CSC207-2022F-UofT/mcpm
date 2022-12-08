@@ -1,9 +1,5 @@
 package org.hydev.mcpm.client.display;
 
-import org.hydev.mcpm.client.display.progress.ProgressBar;
-
-import java.util.List;
-
 /**
  * Terminal progress bar based on Xterm escape codes
  */
@@ -31,20 +27,8 @@ public interface ProgressBarBoundary extends AutoCloseable {
     @Override
     void close();
 
-    ProgressBar setFrameDelay(double frameDelay);
-
     /**
-     * Set frame rate in the unit of frames per second
-     *
-     * @param fps FPS
-     * @return Self for fluent access
+     * Update the actual progress bar string (write to output).
      */
-    ProgressBar setFps(int fps);
-
-    /**
-     * Return a list of ProgressRowBoundary that this ProgressBarBoundary uses
-     *
-     * @return the bars attached to this object
-     */
-    List<ProgressRowBoundary> getBars();
+    void update();
 }

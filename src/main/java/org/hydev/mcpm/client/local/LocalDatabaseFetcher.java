@@ -138,6 +138,8 @@ public class LocalDatabaseFetcher implements DatabaseFetcher {
         var builder = new ByteArrayOutputStream((int) total);
 
         try (var stream = entity.getContent()) {
+            // We use the size of 8096 here since it's typically the internal buffer size of an OS stream.
+            // This allows us to grab the entire buffer in one go and allow the OS to continue reading.
             var buffer = new byte[8096];
             long completed = 0;
 

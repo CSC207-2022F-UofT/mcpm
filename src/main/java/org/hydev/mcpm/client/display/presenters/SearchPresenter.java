@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  */
 public class SearchPresenter implements SearchResultPresenter {
     @Nullable
-    PageBoundary pageController;
+    private final PageBoundary pageController;
 
     /**
      * Instantiate Install Presenter

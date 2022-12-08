@@ -22,7 +22,6 @@ public class SearcherByName implements Searcher {
      * @param plugins A list of all plugins in the database.
      * @return A dictionary associating the name to the matching plugins.
      */
-    @Override
     public Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins) {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {

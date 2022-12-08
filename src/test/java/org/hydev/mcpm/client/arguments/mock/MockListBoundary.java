@@ -3,7 +3,6 @@ package org.hydev.mcpm.client.arguments.mock;
 import org.hydev.mcpm.client.list.ListAllBoundary;
 import org.hydev.mcpm.client.list.ListType;
 import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 
 import java.util.ArrayList;
 import java.util.List;

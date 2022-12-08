@@ -15,8 +15,8 @@ import java.util.Map;
  *
  */
 public class MockLocalPluginTracker implements PluginTracker {
-    private Map<String, Boolean> localJarFilesTracker;
-    private List<PluginYml> pluginInstalled;
+    private final Map<String, Boolean> localJarFilesTracker;
+    private final List<PluginYml> pluginInstalled;
 
     public MockLocalPluginTracker() {
         this.localJarFilesTracker = new HashMap<>();
@@ -54,32 +54,8 @@ public class MockLocalPluginTracker implements PluginTracker {
     }
 
     @Override
-    public void setManuallyInstalled(String name) {
-        if (!localJarFilesTracker.containsKey(name)) {
-            return;
-        }
-        localJarFilesTracker.put(name, true);
-    }
-
-    @Override
-    public void removeManuallyInstalled(String name) {
-        if (!localJarFilesTracker.containsKey(name)) {
-            return;
-        }
-        localJarFilesTracker.put(name, false);
-    }
-
-    @Override
-    public Boolean findIfInLockById(String id) {
-        return null;
-    }
-
-    @Override
     public Boolean findIfInLockByName(String name) {
-        if (localJarFilesTracker.containsKey(name)) {
-            return true;
-        }
-        return false;
+        return localJarFilesTracker.containsKey(name);
     }
 
     @Override

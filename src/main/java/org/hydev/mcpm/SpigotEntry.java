@@ -24,6 +24,7 @@ public class SpigotEntry extends JavaPlugin implements CommandExecutor
 {
     private static SpigotEntry instance;
 
+    @SuppressWarnings("unused")
     public SpigotEntry()
     {
         // Let the other parts of our program know that we're in minecraft

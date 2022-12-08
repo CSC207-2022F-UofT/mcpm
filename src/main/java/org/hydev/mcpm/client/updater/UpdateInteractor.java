@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.updater;
 
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;

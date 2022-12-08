@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.arguments.mock;
 
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.installer.InstallBoundary;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;

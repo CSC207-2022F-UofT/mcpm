@@ -2,7 +2,6 @@ package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.Downloader;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -39,14 +38,15 @@ public class SpigotPluginDownloader implements PluginDownloader {
      */
     @Override
     public void download(String pluginName, long pluginId, long pluginVersion) {
-        //        try {
-        //            // I'm sorry, this is an important for the update API.
-        //            Files.createDirectories(Paths.get(destination).getParent());
-        //        } catch (IOException e) {
-        //            /* ignore */
-        //        }
-
         String filePath = "plugins/" + pluginName + ".jar";
+
+        try {
+            // I'm sorry, this is an important for the update API.
+            Files.createDirectories(Paths.get(filePath).getParent());
+        } catch (IOException e) {
+            /* ignore */
+        }
+
         String url = constructUrl(pluginId, pluginVersion);
         downloader.downloadFile(url, filePath);
     }

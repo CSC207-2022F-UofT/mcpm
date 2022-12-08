@@ -51,6 +51,8 @@ public class Downloader
 
                 try (var stream = entity.getContent())
                 {
+                    // We use the size of 8096 here since it's typically the internal buffer size of an OS stream.
+                    // This allows us to grab the entire buffer in one go and allow the OS to continue reading.
                     var buffer = new byte[8096];
 
                     var count = stream.read(buffer);
@@ -117,50 +119,10 @@ public class Downloader
      * @param threads Number of simultaneous downloads
      * @return this (for fluent access)
      */
+    @SuppressWarnings("unused")
     public Downloader threads(int threads)
     {
         this.threads = threads;
         return this;
-    }
-
-    /**
-     * Displays a demo for downloader.
-     *
-     * @param args Not used
-     */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void main(String[] args)
-    {
-        // Remember to chang link to test
-        String link = "https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf";
-        String out = "./Introduction_to_Algorithms_Third_Edition.pdf";
-        String link1 = "https://www.iusb.edu/students/academic-success-programs/academic-centers-for-excellence/docs/Basic%20Math%20Review%20Card.pdf";
-        String out1 = "./Math.pdf";
-        String link2 = "https://ouopentextbooks.org/mathematics/files/2015/07/1503.pdf";
-        String out2 = "./1503";
-        String link3 = "https://faculty.math.illinois.edu/~aydin/math220/lecturenotes/m220_Sec1_4.pdf";
-        String out3 = "./m220_Sec1_4";
-        String link4 = "https://ocw.mit.edu/ans7870/9/9.00SC/MIT9_00SCF11_text.pdf";
-        String out4 = "./MIT9_00SCF11_text";
-
-        final var downloader = new Downloader();
-
-        Map<String, String> urls = new HashMap<>();
-        urls.put(link, out);
-        urls.put(link1, out1);
-        urls.put(link2, out2);
-        urls.put(link3, out3);
-        urls.put(link4, out4);
-        downloader.downloadFiles(urls);
-        File outFile = new File(out);
-        outFile.delete();
-        File outFile1 = new File(out1);
-        outFile1.delete();
-        File outFile2 = new File(out2);
-        outFile2.delete();
-        File outFile3 = new File(out3);
-        outFile3.delete();
-        File outFile4 = new File(out4);
-        outFile4.delete();
     }
 }

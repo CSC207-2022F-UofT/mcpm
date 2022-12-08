@@ -20,7 +20,7 @@ public class PluginRemover implements FileRemove {
         // 2. If it isn't loaded, find the plugin jar file in local file system
         // (This will throw PluginNotFoundException when a plugin of the name in the file system
         // could not be found).
-        File jar = null;
+        File jar;
         try {
             jar = jarFinder.findJar(pluginName);
         } catch (PluginNotFoundException e) {

@@ -23,16 +23,6 @@ public class MockInstaller implements InstallBoundary {
     private final Set<String> requested = new HashSet<>();
 
     /**
-     * Creates a new MockInstaller object that always succeeds (when it is not already installed).
-     *
-     * @param plugins A list of plugins to lookup plugin related information about (to pass to PluginTracker).
-     * @param tracker A plugin tracker to query whether a plugin is installed.
-     */
-    public MockInstaller(List<PluginModel> plugins, PluginTracker tracker) {
-        this(plugins, tracker, InstallResult.Type.SUCCESS_INSTALLED);
-    }
-
-    /**
      * Creates a new MockInstaller object.
      *
      * @param plugins A list of plugins to lookup plugin related information about (to pass to PluginTracker).

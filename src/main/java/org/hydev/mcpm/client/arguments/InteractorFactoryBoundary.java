@@ -7,16 +7,12 @@ import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
 import org.hydev.mcpm.client.export.ImportPluginsBoundary;
 import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.PluginDownloader;
 import org.hydev.mcpm.client.list.ListAllBoundary;
 import org.hydev.mcpm.client.loader.LoadBoundary;
-import org.hydev.mcpm.client.loader.LocalJarBoundary;
 import org.hydev.mcpm.client.loader.ReloadBoundary;
 import org.hydev.mcpm.client.loader.UnloadBoundary;
-import org.hydev.mcpm.client.matcher.MatchPluginsBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.uninstall.UninstallBoundary;
-import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.updater.UpdateBoundary;
 
 /**
@@ -73,13 +69,6 @@ public interface InteractorFactoryBoundary {
     UnloadBoundary unloadBoundary();
 
     /**
-     * Creates a jar boundary object for looking up plugins by name.
-     *
-     * @return A LocalJarBoundary object.
-     */
-    LocalJarBoundary jarBoundary();
-
-    /**
      * Creates a fetcher listener object for sending database fetching updates to the user.
      *
      * @return A DatabaseFetcherListener object.
@@ -94,32 +83,11 @@ public interface InteractorFactoryBoundary {
     SearchPackagesBoundary searchBoundary();
 
     /**
-     * Creates a plugin downloader object for downloading plugins to the filesystem.
-     *
-     * @return A PluginDownloader object.
-     */
-    PluginDownloader pluginDownloader();
-
-    /**
      * Creates an `install` boundary object for installing new plugins.
      *
      * @return A InstallBoundary object.
      */
     InstallBoundary installBoundary();
-
-    /**
-     * Creates an `match` boundary object for finding plugins by id.
-     *
-     * @return A MatchPluginsBoundary object.
-     */
-    MatchPluginsBoundary matchBoundary();
-
-    /**
-     * Creates an `check for updates` boundary object for checking if plugins have available updates.
-     *
-     * @return A CheckForUpdatesBoundary object.
-     */
-    CheckForUpdatesBoundary checkForUpdatesBoundary();
 
     /**
      * Creates an `update` boundary object for updating installed plugins.

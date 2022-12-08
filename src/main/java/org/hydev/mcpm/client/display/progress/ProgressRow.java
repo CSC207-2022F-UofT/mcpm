@@ -1,5 +1,6 @@
 package org.hydev.mcpm.client.display.progress;
 
+import org.hydev.mcpm.client.display.ProgressBarBoundary;
 import org.hydev.mcpm.client.display.ProgressRowBoundary;
 import org.hydev.mcpm.client.display.ProgressSpeedBoundary;
 import org.hydev.mcpm.utils.UnitConverter;
@@ -14,7 +15,7 @@ import java.util.function.Function;
 public class ProgressRow implements ProgressRowBoundary {
     private final long total;
     private long completed;
-    private ProgressBar pb;
+    private ProgressBarBoundary pb;
     private String desc;
     private int descLen;
     private String fmt;
@@ -80,8 +81,7 @@ public class ProgressRow implements ProgressRowBoundary {
         return t.replace("{progbar}", bar);
     }
 
-    @Override
-    public void setPb(ProgressBar pb)
+    public void setPb(ProgressBarBoundary pb)
     {
         this.pb = pb;
     }
@@ -132,7 +132,7 @@ public class ProgressRow implements ProgressRowBoundary {
      * @param desc The description to set
      * @return This object for chaining.
      */
-    @Override
+    @SuppressWarnings("unused")
     public ProgressRow desc(String desc)
     {
         this.desc = desc;
@@ -145,7 +145,7 @@ public class ProgressRow implements ProgressRowBoundary {
      * @param descLen The description length.
      * @return This object for chaining.
      */
-    @Override
+    @SuppressWarnings("unused")
     public ProgressRow descLen(int descLen)
     {
         this.descLen = descLen;
@@ -158,7 +158,7 @@ public class ProgressRow implements ProgressRowBoundary {
      * @param unit A unit string, beginning with an empty space.
      * @return This object for chaining.
      */
-    @Override
+    @SuppressWarnings("unused")
     public ProgressRow unit(String unit)
     {
         // Add leading space
@@ -174,7 +174,7 @@ public class ProgressRow implements ProgressRowBoundary {
      * @param fmt The foramt string.
      * @return This object for chaining.
      */
-    @Override
+    @SuppressWarnings("unused")
     public ProgressRow fmt(String fmt)
     {
         this.fmt = fmt;

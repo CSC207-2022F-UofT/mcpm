@@ -1,7 +1,6 @@
 package org.hydev.mcpm.client.uninstall;
 
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
-import org.hydev.mcpm.client.loader.LocalJarBoundary;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.loader.UnloadBoundary;
 
@@ -16,19 +15,19 @@ import static org.hydev.mcpm.client.uninstall.UninstallResult.State.*;
 public class Uninstaller implements UninstallBoundary {
     private final PluginTracker tracker;
     private final UnloadBoundary unloader;
-    private final LocalJarBoundary jarFinder;
+    private final FileRemove remover;
 
     /**
      * Constructor for uninstaller
      *
      * @param tracker Local plugin tracker
      * @param unloader Unload implementation
-     * @param jarFinder Local jar finder
+     * @param remover File remover interface
      */
-    public Uninstaller(PluginTracker tracker, UnloadBoundary unloader, LocalJarBoundary jarFinder) {
+    public Uninstaller(PluginTracker tracker, UnloadBoundary unloader, FileRemove remover) {
         this.tracker = tracker;
         this.unloader = unloader;
-        this.jarFinder = jarFinder;
+        this.remover = remover;
 
     }
 
@@ -58,10 +57,9 @@ public class Uninstaller implements UninstallBoundary {
         else if (input.delete()) {
             // When unloader is not null, it means that we are in CLI environment, so we need to
             // find the plugin of the name
-            PluginRemover fileRemover = new PluginRemover(jarFinder);
 
             // Delete file
-            var deleteResult = fileRemover.removeFile(input.name());
+            var deleteResult = remover.removeFile(input.name());
             if (deleteResult == FileRemoveResult.NOT_FOUND) {
                 return new UninstallResult(NOT_FOUND);
             }

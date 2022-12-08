@@ -22,11 +22,4 @@ public interface StringStorage
      * @return String content
      */
     String load(String token) throws IOException;
-
-    /**
-     * Instruction for manually generating the file
-     *
-     * @return Instructions text
-     */
-    String instruction();
 }

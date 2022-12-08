@@ -10,13 +10,6 @@ import javax.annotation.Nullable;
 public interface PageBoundary
 {
     /**
-     * Getter for page size
-     *
-     * @return Lines per page
-     */
-    int pageSize();
-
-    /**
      * Get a printable formatted page
      *
      * @param page Page number

@@ -66,12 +66,6 @@ public class PageController implements PageBoundary
                 page, pager.total(pageSize));
     }
 
-    @Override
-    public int pageSize()
-    {
-        return pageSize;
-    }
-
     /**
      * Set pager
      *

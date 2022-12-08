@@ -107,23 +107,6 @@ public class LocalPluginTracker implements PluginTracker
      * Returns whether a plugin with the given name is within
      * the lock file
      *
-     * @param name Id of the plugin
-     * @return Whether the plugin is within the lock file
-     */
-    public Boolean findIfInLockById(String name) {
-        ArrayList<PluginTrackerModel> list = readJson();
-        for (PluginTrackerModel pluginTrackerModel : list) {
-            if (pluginTrackerModel.getPluginId().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether a plugin with the given name is within
-     * the lock file
-     *
      * @param name Name of the plugin
      * @return Whether the plugin is within the lock file
      */
@@ -189,45 +172,6 @@ public class LocalPluginTracker implements PluginTracker
         // Filter only java files, return all metadata that's not null
         return Arrays.stream(list).filter(f -> f.isFile() && f.getName().endsWith(".jar"))
             .parallel().map(LocalPluginTracker::readMeta).filter(Objects::nonNull).toList();
-    }
-
-    /**
-     * Mark a plugin as manually installed (as opposed to a dependency)
-     * Precondition: mainLockFile is a JSON file containing a list of valid
-     * PluginTrackerModel entries
-     *
-     * @param name Plugin name
-     */
-    @Override
-    public void setManuallyInstalled(String name) {
-        ArrayList<PluginTrackerModel> lock = readJson();
-
-        for (var model : lock) {
-            if (model.getName().equals(name)) {
-                model.setManual(true);
-            }
-        }
-
-        saveJson(lock);
-    }
-
-    /**
-     * Remove a plugin from the manually installed plugin list
-     *
-     * @param name Plugin name
-     */
-    @Override
-    public void removeManuallyInstalled(String name) {
-        // Locate the name in the list of installed plugins and set the manually installed flag to false
-        ArrayList<PluginTrackerModel> lock = readJson();
-
-        for (var model : lock) {
-            if (model.getName().equals(name)) {
-                model.setManual(false);
-            }
-        }
-
-        saveJson(lock);
     }
 
     /**

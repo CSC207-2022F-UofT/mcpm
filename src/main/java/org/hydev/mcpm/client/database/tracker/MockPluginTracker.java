@@ -11,7 +11,7 @@ import java.util.List;
  * A MockPluginTracker that only stores the yml.
  */
 public class MockPluginTracker extends LocalPluginTracker {
-    List<PluginYml> ymls;
+    private final List<PluginYml> ymls;
 
     /**
      * Creates a MockPluginTracker with the given plugins.
@@ -21,7 +21,9 @@ public class MockPluginTracker extends LocalPluginTracker {
     public MockPluginTracker(List<PluginModel> plugins) {
         ymls = new ArrayList<>();
         for (var plugin : plugins) {
-            ymls.add(plugin.getLatestPluginVersion().get().meta());
+            var version = plugin.getLatestPluginVersion();
+
+            version.ifPresent(pluginVersion -> ymls.add(pluginVersion.meta()));
         }
     }
 

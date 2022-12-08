@@ -30,7 +30,7 @@ public class InstallInteractorTest {
         var fetcher = new LocalDatabaseFetcher(() -> URI.create("https://mcpm.hydev.org"));
         mockLocalTracker = new MockLocalPluginTracker();
         installInteractor = new InstallInteractor(
-            new MockDownloader(null),
+            new MockDownloader(),
             null,
             new SearchInteractor(fetcher, new QuietFetcherListener()),
             mockLocalTracker
@@ -57,7 +57,7 @@ public class InstallInteractorTest {
         // Test behaviour: file exists after installing
         List<String> listFileInstalled = new ArrayList<>();
         List<PluginYml> pluginYmlInstalled = mockLocalTracker.listInstalled();
-        pluginYmlInstalled.stream().forEach(pluginYml -> listFileInstalled.add(pluginYml.name()));
+        pluginYmlInstalled.forEach(pluginYml -> listFileInstalled.add(pluginYml.name()));
         assertEquals(pluginYmlInstalled.size(), 1);
         assertTrue(listFileInstalled.contains(installInput.name()));
     }
