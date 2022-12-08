@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import org.hydev.mcpm.client.commands.controllers.ExportPluginsController;
+import org.hydev.mcpm.client.commands.controllers.ExportController;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
 
 import java.util.function.Consumer;
@@ -12,9 +12,9 @@ import java.util.function.Consumer;
  */
 public class ExportPluginsParser implements CommandParser
 {
-    private final ExportPluginsController controller;
+    private final ExportController controller;
 
-    public ExportPluginsParser(ExportPluginsController controller)
+    public ExportPluginsParser(ExportController controller)
     {
         this.controller = controller;
     }

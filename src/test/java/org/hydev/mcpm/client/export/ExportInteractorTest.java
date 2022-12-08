@@ -1,6 +1,6 @@
 package org.hydev.mcpm.client.export;
 
-import org.hydev.mcpm.client.commands.controllers.ExportPluginsController;
+import org.hydev.mcpm.client.commands.controllers.ExportController;
 import org.hydev.mcpm.client.database.PluginMockFactory;
 import org.hydev.mcpm.client.database.tracker.MockPluginTracker;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
@@ -28,7 +28,7 @@ class ExportInteractorTest {
     @Test
     @Tag("IntegrationTest")
     void testExportImport() {
-        var exportController = new ExportPluginsController(interactor, (exportPluginsResult, log) -> {});
+        var exportController = new ExportController(interactor, (exportPluginsResult, log) -> {});
         exportController.export(new ExportPluginsInput("literal", ""), System.out::println);
     }
 }

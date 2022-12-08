@@ -10,16 +10,16 @@ import java.util.function.Consumer;
  */
 public class LogExportPresenter implements ExportPresenter {
 
-    private String getColor(ExportPluginsResult exportPluginsResult) {
-        return switch (exportPluginsResult.state()) {
+    private String getColor(ExportPluginsResult result) {
+        return switch (result.state()) {
             case SUCCESS -> "&a";
             case FAILED_TO_FETCH_PLUGINS -> "&c";
         };
     }
 
-    private String getMessage(ExportPluginsResult exportPluginsResult) {
-        return switch ((exportPluginsResult.state())) {
-            case SUCCESS -> "Exported to " + exportPluginsResult.export();
+    private String getMessage(ExportPluginsResult result) {
+        return switch ((result.state())) {
+            case SUCCESS -> "Exported to " + result.export();
             case FAILED_TO_FETCH_PLUGINS -> "Export failed to fetch plugins";
         };
     }

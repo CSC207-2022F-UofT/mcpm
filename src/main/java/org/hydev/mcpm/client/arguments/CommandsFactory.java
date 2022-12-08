@@ -59,7 +59,7 @@ public class CommandsFactory {
         var updater = new UpdateInteractor(updateChecker, installer, tracker);
 
         // Controllers
-        var exportPluginsController = new ExportPluginsController(
+        var exportPluginsController = new ExportController(
                 new ExportInteractor(tracker), new LogExportPresenter());
         var listController = new ListController(new ListAllInteractor(tracker));
         var searchController = new SearchPackagesController(searcher, pager);

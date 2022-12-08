@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * @param boundary The export implementation
  * @param presenter The presenter to show the result
  */
-public record ExportPluginsController(
+public record ExportController(
         ExportPluginsBoundary boundary,
         ExportPresenter presenter
 ) {
