@@ -2,12 +2,8 @@ package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.display.presenters.ListPresenter;
 import org.hydev.mcpm.client.list.ListAllBoundary;
-
-import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.list.ListType;
 import org.hydev.mcpm.client.list.ListResult;
-
-
 
 import java.util.function.Consumer;
 
@@ -18,7 +14,6 @@ import java.util.function.Consumer;
  */
 public class ListController {
     private final ListAllBoundary listAllBoundary;
-    private final CheckForUpdatesBoundary checkForUpdatesBoundary;
 
 
     /**
@@ -26,10 +21,8 @@ public class ListController {
      *
      * @param listAllBoundary The boundary class for ListAllController.
      */
-    public ListController(ListAllBoundary listAllBoundary, CheckForUpdatesBoundary checkForUpdatesBoundary) {
+    public ListController(ListAllBoundary listAllBoundary) {
         this.listAllBoundary = listAllBoundary;
-        this.checkForUpdatesBoundary = checkForUpdatesBoundary;
-
     }
 
     /**

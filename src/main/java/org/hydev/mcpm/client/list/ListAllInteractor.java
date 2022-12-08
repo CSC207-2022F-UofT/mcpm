@@ -26,24 +26,25 @@ public record ListAllInteractor(PluginTracker pluginTracker, CheckForUpdatesBoun
     public List<PluginYml> listAll(ListType parameter) {
         var installed = pluginTracker.listInstalled();
         switch (parameter) {
-            case ALL:
+            case ALL -> {
                 return installed;
-
-            case MANUAL:
+            }
+            case MANUAL -> {
                 var local = pluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> local.contains(it.name())).toList();
-
-            case AUTOMATIC:
+            }
+            case AUTOMATIC -> {
                 var manual = pluginTracker.listManuallyInstalled();
                 return installed.stream().filter(it -> !manual.contains(it.name())).toList();
-
-            case OUTDATED:
+            }
+            case OUTDATED -> {
                 ListUpdatableBoundary listUpdatableBoundary = new ListUpdatableHelper();
                 var outdated = listUpdatableBoundary.listUpdatable(pluginTracker, checkForUpdatesBoundary);
                 return installed.stream().filter(it -> outdated.contains(it.name())).toList();
-
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
     }
 }

@@ -65,8 +65,7 @@ public record UpdateInteractor(
         );
     }
 
-    private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load,
-                                        InstallResultPresenter installResultPresenter) {
+    private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load) {
         var latest = model.getLatestPluginVersion().orElse(null);
 
         if (latest == null || latest.meta() == null || latest.meta().name() == null) {
@@ -87,18 +86,21 @@ public record UpdateInteractor(
 
         var input = new InstallInput(name, SearchPackagesType.BY_NAME, load, manuallyInstalled);
 
-        var result = installer.installPlugin(input, installResultPresenter);
+        var result = installer.installPlugin(input);
 
         // Network error is used for events that aren't necessarily network errors.
         // But I don't want to have too many fail states. Maybe we should go for INTERNAL_ERROR?
-        if (result) {
-            return new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
-        }
-        return defaultOutcomeFor(state, NETWORK_ERROR);
+        return switch (result.get(0).type()) {
+            case NOT_FOUND -> defaultOutcomeFor(state, MISMATCHED);
+            case SEARCH_INVALID_INPUT -> throw new RuntimeException(); // Something went wrong.
+            case SEARCH_FAILED_TO_FETCH_DATABASE,
+                NO_VERSION_AVAILABLE -> defaultOutcomeFor(state, NETWORK_ERROR);
+            case PLUGIN_EXISTS -> throw new RuntimeException(); // We need to know something went wrong.
+            case SUCCESS_INSTALLED -> new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
+        };
     }
 
-    private UpdateOutcome makeOutcome(@Nullable PluginVersionState state, CheckForUpdatesResult result, boolean load,
-                                      InstallResultPresenter installResultPresenter) {
+    private UpdateOutcome makeOutcome(@Nullable PluginVersionState state, CheckForUpdatesResult result, boolean load) {
         // E.g. was filtered in stateMapByNames since there was no associated version.
         if (state == null) {
             return defaultOutcomeFor(null, NOT_INSTALLED);
@@ -114,7 +116,7 @@ public record UpdateInteractor(
                 return defaultOutcomeFor(state, UP_TO_DATE);
             }
 
-            return updateByModel(model, state, load, installResultPresenter);
+            return updateByModel(model, state, load);
         }
     }
 
@@ -146,7 +148,7 @@ public record UpdateInteractor(
         for (String name : pluginNames) {
             var state = states.getOrDefault(name, null); // This better succeed.
 
-            results.put(name, makeOutcome(state, checkResult, input.load(), input.installResultPresenter()));
+            results.put(name, makeOutcome(state, checkResult, input.load()));
         }
 
         return new UpdateResult(UpdateResult.State.SUCCESS, results);

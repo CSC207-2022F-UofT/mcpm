@@ -3,7 +3,6 @@ package org.hydev.mcpm.client.search;
 /**
  * Interface for searching plugins.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public interface SearchPackagesBoundary {
     /**

@@ -8,21 +8,11 @@ import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
 /**
  * Handles searching within the database.
  *
- * @author Jerry Zhu (<a href="https://github.com/jerryzhu509">...</a>)
  */
 public class SearchInteractor implements SearchPackagesBoundary {
     private final DatabaseFetcher fetcher;
     private final DatabaseFetcherListener listener;
-
-    /**
-     * Creates a new database with the provided database fetcher.
-     * Consider passing LocalDatabaseFetcher. Defaults to the ProgressBarFetcherListener.
-     *
-     * @param fetcher The fetcher that will be used to request the database object in boundary calls.
-     */
-    public SearchInteractor(DatabaseFetcher fetcher) {
-        this(fetcher, new ProgressBarFetcherListener());
-    }
+    private final SearcherFactory factory = new SearcherFactory();
 
     /**
      * Creates a new database with the provided fetcher and upload listener.
@@ -57,6 +47,6 @@ public class SearchInteractor implements SearchPackagesBoundary {
         var plugins = database.plugins();
 
         return new SearchPackagesResult(SearchPackagesResult.State.SUCCESS,
-                SearcherFactory.createSearcher(input).getSearchList(searchStr, plugins));
+                factory.createSearcher(input).getSearchList(searchStr, plugins));
     }
 }
