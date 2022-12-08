@@ -8,12 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.List;
 
-import static java.lang.String.format;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
 import static org.fusesource.jansi.internal.CLibrary.isatty;
-import static org.hydev.mcpm.utils.GeneralUtils.safeSleep;
 
 /**
  * Terminal progress bar based on Xterm escape codes
@@ -24,7 +21,6 @@ public class ProgressBar implements ProgressBarBoundary {
     private final PrintStream out;
     private int cols;
 
-    private final List<ProgressRowBoundary> bars;
     private final ArrayList<ProgressRowBoundary> activeBars;
 
     private long lastUpdate;
@@ -44,7 +40,6 @@ public class ProgressBar implements ProgressBarBoundary {
         this.theme = theme;
         this.out = ConsoleUtils.RAW_OUT;
         this.cu = new ConsoleUtils(this.out);
-        this.bars = new ArrayList<>();
         this.activeBars = new ArrayList<>();
         this.cols = AnsiConsole.getTerminalWidth();
 
@@ -68,7 +63,6 @@ public class ProgressBar implements ProgressBarBoundary {
     {
         this.activeBars.add(bar);
 
-        this.bars.add(bar);
         bar.setPb(this);
 
         out.println();
@@ -78,10 +72,11 @@ public class ProgressBar implements ProgressBarBoundary {
 
 
     /*
-     * Reprint all the ProgresRows.
+     * Reprint all the ProgressRows.
      * If printing would over do the framerate, then we will skip this update.
      */
-    protected void update()
+    @Override
+    public void update()
     {
         // if the progress bar is closed, don't do anything
         if (closed)
@@ -110,7 +105,9 @@ public class ProgressBar implements ProgressBarBoundary {
         });
     }
 
+    // This should be used, but I don't exactly want to put the right stuff.
     @Override
+    @SuppressWarnings("unused")
     public void finishBar(ProgressRowBoundary bar)
     {
         if (!activeBars.contains(bar)) return;
@@ -119,99 +116,35 @@ public class ProgressBar implements ProgressBarBoundary {
         this.activeBars.remove(bar);
     }
 
-
     @Override
     public void close()
     {
         closed = true;
     }
 
-
-    @Override
+    /**
+     * Set the progress bar's frame delay.
+     *
+     * @param frameDelay The frame delay in seconds.
+     * @return The current progress bar (this for chaining).
+     */
+    @SuppressWarnings("unused")
     public ProgressBar setFrameDelay(double frameDelay)
     {
         this.frameDelay = frameDelay;
         return this;
     }
 
-    @Override
+    /**
+     * Set the progress bar's frames per second.
+     *
+     * @param fps The amount of frames per second the bar should send update.
+     * @return The current progress bar (this for chaining).
+     */
+    @SuppressWarnings("unused")
     public ProgressBar setFps(int fps)
     {
         this.frameDelay = 1d / fps;
         return this;
-    }
-
-    @Override
-    public List<ProgressRowBoundary> getBars()
-    {
-        return bars;
-    }
-
-    @NotNull
-    private static ArrayList<ProgressRowBoundary> createRows(ProgressBar b) {
-        var all = new ArrayList<ProgressRowBoundary>();
-        for (int i = 0; i < 36; i++) {
-            ProgressRow bar = new ProgressRow(300 * 1_000_000).desc(String.format("File %s.tar.gz", i)).descLen(30);
-            b.appendBar(bar);
-            all.add(bar);
-        }
-        return all;
-    }
-
-    /**
-     * Displays a demo progress bar.
-     *
-     * @param args Arguments are ignored.
-     */
-    public static void main(String[] args)
-    {
-        try (var b = new ProgressBar(ProgressBarTheme.ASCII_THEME))
-        {
-            var all = new ArrayList<ProgressRowBoundary>();
-            for (int i = 0; i < 1300; i++)
-            {
-                if (i < 1000 && i % 100 == 0) {
-                    var row = new ProgressRow(300 * 1_000_000)
-                        .desc(format("File %s.tar.gz", all.size()))
-                        .descLen(30);
-
-                    b.appendBar(row);
-                    all.add(row);
-                }
-
-                for (ProgressRowBoundary progressRowBoundary : all) {
-                    progressRowBoundary.increase(1_000_000);
-                }
-
-                safeSleep(3);
-            }
-
-            System.out.println("Done 1");
-        }
-        try (var b = new ProgressBar(ProgressBarTheme.CLASSIC_THEME))
-        {
-            ArrayList<ProgressRowBoundary> all = createRows(b);
-            for (int t = 0; t < 300; t++) {
-                for (int i = 0; i < 36; i++) {
-                    double speed = Math.cos(Math.PI / 18 * i);
-                    speed = speed * speed * 5 + 1;
-                    all.get(i).increase((long) Math.ceil(speed) * 1_000_000);
-                }
-                safeSleep(15);
-            }
-        }
-
-        try (var b = new ProgressBar(ProgressBarTheme.FLOWER_THEME)) {
-            ArrayList<ProgressRowBoundary> all = createRows(b);
-
-            for (int t = 0; t < 400; t++) {
-                for (int i = 0; i < 36; i++) {
-                    double speed = Math.cos(Math.PI / 18 * (i + t * 36.0 / 150.0));
-                    speed = Math.abs(speed) * 5;
-                    all.get(i).increase((long) Math.ceil(speed * 1_000_000));
-                }
-                safeSleep(30);
-            }
-        }
     }
 }

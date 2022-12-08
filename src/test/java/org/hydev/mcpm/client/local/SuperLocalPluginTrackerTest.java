@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SuperLocalPluginTrackerTest
 {
-    private static String TESTING_PLUGIN = "TestingPlugin";
+    private static final String TESTING_PLUGIN = "TestingPlugin";
     
     static TemporaryDir tmp;
     static LocalPluginTracker tracker;
@@ -57,35 +57,6 @@ class SuperLocalPluginTrackerTest
 
     @Test
     @Order(3)
-    void removeManuallyInstalled()
-    {
-        tracker.removeManuallyInstalled(TESTING_PLUGIN);
-
-        assertFalse(tracker.listManuallyInstalled().contains(TESTING_PLUGIN));
-        assertTrue(tracker.listEntries().stream().anyMatch(it -> it.getName().equals(TESTING_PLUGIN)));
-    }
-
-    @Test
-    @Order(4)
-    void listOrphanPlugins()
-    {
-        var orphans = tracker.listOrphanPlugins(false).stream().map(PluginYml::name).toList();
-
-        assertTrue(orphans.contains(TESTING_PLUGIN));
-        assertFalse(orphans.contains("ActiveList"));
-    }
-
-    @Test
-    @Order(5)
-    void setManuallyInstalled()
-    {
-        tracker.setManuallyInstalled(TESTING_PLUGIN);
-
-        assertTrue(tracker.listManuallyInstalled().contains(TESTING_PLUGIN));
-    }
-
-    @Test
-    @Order(6)
     void removeEntry()
     {
         tracker.removeEntry(TESTING_PLUGIN);
@@ -95,7 +66,7 @@ class SuperLocalPluginTrackerTest
     }
 
     @Test
-    @Order(7)
+    @Order(4)
     void listOrphanPlugins2()
     {
         var orphans = tracker.listOrphanPlugins(false).stream().map(PluginYml::name).toList();

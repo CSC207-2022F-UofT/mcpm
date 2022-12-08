@@ -62,7 +62,7 @@ public class ImportResult {
     public ImportResult(String error) {
         this.error = error;
         state = State.IMPORT_ERROR;
-        nonInstalledPlugins = null;
+        nonInstalledPlugins = List.of();
     }
 
     /**

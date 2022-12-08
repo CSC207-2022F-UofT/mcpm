@@ -30,10 +30,4 @@ public record FixedFileStorage(Path path) implements StringStorage
         // Read file
         return Files.readString(path, StandardCharsets.UTF_8);
     }
-
-    @Override
-    public String instruction()
-    {
-        return String.format("Please save your content to %s.", path.toAbsolutePath());
-    }
 }

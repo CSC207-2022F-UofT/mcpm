@@ -1,27 +1,17 @@
 package org.hydev.mcpm.client.installer;
 
-import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
-import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.loader.LoadBoundary;
-import org.hydev.mcpm.client.loader.PluginLoader;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
-import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
-import org.hydev.mcpm.client.local.LocalPluginTracker;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesInput;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
-import org.hydev.mcpm.client.search.SearchInteractor;
 import org.hydev.mcpm.client.installer.input.InstallInput;
-import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
-import org.hydev.mcpm.utils.ColorLogger;
 import org.hydev.mcpm.client.installer.output.InstallResult.Type;
 
-import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +20,6 @@ import java.util.List;
  * */
 
 public class InstallInteractor implements InstallBoundary {
-    private static final String FILEPATH = "plugins";
-
     private final PluginDownloader spigotPluginDownloader;
 
     private final LoadBoundary pluginLoader;
@@ -105,15 +93,14 @@ public class InstallInteractor implements InstallBoundary {
             spigotPluginDownloader.download(pluginName, idPluginModel, pluginVersion.id());
             // 5. Add the installed plugin to the json file
             long pluginVersionId = pluginVersion.id();
-            long pluginModelId = idPluginModel;
             localPluginTracker.addEntry(pluginName,
                     installInput.isManuallyInstalled(),
                     pluginVersionId,
-                    pluginModelId);
+                idPluginModel);
         }
 
         // 6. Load the plugin
-        var loadResult = loadPlugin(pluginName, installInput.load());
+        loadPlugin(pluginName, installInput.load());
 
         // 7. Add success installed
         if (ifPluginDownloaded) {
@@ -132,8 +119,7 @@ public class InstallInteractor implements InstallBoundary {
      */
     private SearchPackagesResult getSearchResult(InstallInput input) {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);
-        SearchPackagesResult searchPackageResult = searchInteractor.search(searchPackagesInput);
-        return searchPackageResult;
+        return searchInteractor.search(searchPackagesInput);
     }
 
     /**
@@ -159,6 +145,7 @@ public class InstallInteractor implements InstallBoundary {
      * @param load Whether to load the plugin
      * @return Whether the plugin is successfully loaded
      */
+    @SuppressWarnings("UnusedReturnValue")
     private boolean loadPlugin(String name, boolean load) {
         if (!load || pluginLoader == null) return false;
 
@@ -168,33 +155,5 @@ public class InstallInteractor implements InstallBoundary {
         } catch (PluginNotFoundException e) {
             return false;
         }
-    }
-
-    /**
-     * A demo for installer.
-     *
-     * @param args Arguments are ignored.
-     */
-    public static void main(String[] args) {
-        //noinspection ResultOfMethodCallIgnored
-        new File(FILEPATH).mkdirs();
-        var log = ColorLogger.toStdOut();
-        var resultPresenter = new InstallPresenter();
-        var host = URI.create("https://mcpm.hydev.org");
-        var fetcher = new LocalDatabaseFetcher(() -> host);
-        var listener = new ProgressBarFetcherListener();
-        var searcher = new SearchInteractor(fetcher, listener);
-        Downloader downloader = new Downloader();
-        PluginLoader loader = null;
-        SpigotPluginDownloader spigotPluginDownloader = new SpigotPluginDownloader(downloader, () -> host);
-        LocalPluginTracker tracker = new LocalPluginTracker();
-        InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, loader,
-                                                                    searcher, tracker);
-        InstallInput installInput = new InstallInput("JedCore",
-                                                    SearchPackagesType.BY_NAME,
-                                                    true,
-                                                    true);
-        var result = installInteractor.installPlugin(installInput);
-        resultPresenter.displayResult(result, log);
     }
 }

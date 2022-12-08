@@ -3,12 +3,16 @@ package org.hydev.mcpm.client.models;
 /**
  * Representation of a plugin for use in the local plugin tracker.
  */
+@SuppressWarnings("unused")
 public class PluginTrackerModel {
     private String name;
     private boolean isManual;
     private Long versionId;
     private Long pluginId;
 
+    /**
+     * Default constructor.
+     */
     public PluginTrackerModel()
     {
     }

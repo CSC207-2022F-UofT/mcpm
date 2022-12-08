@@ -1,14 +1,11 @@
 package org.hydev.mcpm.client.arguments;
 
 import org.hydev.mcpm.client.arguments.mock.MockExportBoundary;
-import org.hydev.mcpm.client.arguments.parsers.ExportPluginsParser;
 import org.hydev.mcpm.client.commands.controllers.ExportController;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
 import org.hydev.mcpm.client.export.ExportPluginsResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -21,9 +18,6 @@ public class ExportParserTest {
     private MockExportBoundary exporter;
     private ExportController controller;
 
-    private ArgsParser args;
-
-
     /**
      * Initializes the various fields (controllers, etc.) before a test starts.
      */
@@ -31,10 +25,7 @@ public class ExportParserTest {
     public void setup() {
         exporter = new MockExportBoundary();
         controller = new ExportController(exporter, (presenter, log) -> { });
-        var parser = new ExportPluginsParser(controller);
-        args = new ArgsParser(List.of(parser));
     }
-
 
     /**
      * Tests whether a controller will still fail gracefully when passed a default result.

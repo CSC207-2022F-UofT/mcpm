@@ -43,10 +43,4 @@ public record PasteBinStorage(String host) implements StringStorage
             .addHeader("content-type", "text/plain")
             .execute().returnContent().asString();
     }
-
-    @Override
-    public String instruction()
-    {
-        return String.format("Please save the content to the pastebin at %s, and paste in the URL", host);
-    }
 }

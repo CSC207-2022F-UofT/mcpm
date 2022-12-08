@@ -22,7 +22,6 @@ public class SearcherByCommand implements Searcher {
      * @return A dictionary associating the command to the matching plugins.
      *         Returns null if inp is not a string.
      */
-    @Override
     public Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins) {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {

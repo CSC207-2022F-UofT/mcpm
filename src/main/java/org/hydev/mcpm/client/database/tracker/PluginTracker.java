@@ -19,12 +19,6 @@ public interface PluginTracker
 
     List<PluginYml> listInstalled();
 
-    void setManuallyInstalled(String name);
-
-    void removeManuallyInstalled(String name);
-
-    Boolean findIfInLockById(String id);
-
     Boolean findIfInLockByName(String name);
 
     List<String> listManuallyInstalled();

@@ -50,29 +50,6 @@ public record MockPluginTracker(
     }
 
     @Override
-    public void setManuallyInstalled(String name) {
-        if (!entries.containsKey(name)) {
-            return;
-        }
-
-        entries.put(name, true);
-    }
-
-    @Override
-    public void removeManuallyInstalled(String name) {
-        if (!entries.containsKey(name)) {
-            return;
-        }
-
-        entries.put(name, false);
-    }
-
-    @Override
-    public Boolean findIfInLockById(String id) {
-        return null;
-    }
-
-    @Override
     public List<String> listManuallyInstalled() {
         return entries().entrySet().stream()
             .filter(Map.Entry::getValue)

@@ -1,12 +1,10 @@
 package org.hydev.mcpm.client.database;
 
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.database.fetcher.ConstantFetcher;
 import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.matcher.MatchPluginsInteractor;
 import org.hydev.mcpm.client.models.PluginModel;
-import org.hydev.mcpm.client.search.SearchInteractor;
 import org.hydev.mcpm.client.updater.CheckForUpdatesInteractor;
 import org.hydev.mcpm.client.updater.UpdateBoundary;
 import org.hydev.mcpm.client.updater.UpdateInput;
@@ -27,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * To accomplish this, we use mock installers, plugin trackers and databases.
  */
 public class UpdateInteractorTest {
-    private static final InstallResultPresenter installPresenter = new SilentInstallPresenter();
-
     private record MockPackage(
         UpdateBoundary updator,
         MockPluginTracker pluginTracker,

@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * Presenter for paginated content
- *
- * @author Azalea (https://github.com/hykilpikonna)
- * @since 2022-11-24
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "type")
 public interface PagedPresenter<T>

@@ -4,7 +4,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.mock.MockUpdateBoundary;
 import org.hydev.mcpm.client.arguments.parsers.UpdateParser;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
-import org.hydev.mcpm.client.database.SilentInstallPresenter;
 import org.hydev.mcpm.client.database.SilentUpdatePresenter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -127,7 +126,6 @@ public class UpdateParserTest {
     @Test
     void testControllerInvocation() {
         var updatePresenter = new SilentUpdatePresenter();
-        var installPresenter = new SilentInstallPresenter();
 
         controller.update(List.of("One", "Two"), true, false, updatePresenter);
 

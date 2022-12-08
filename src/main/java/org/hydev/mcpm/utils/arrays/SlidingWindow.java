@@ -13,7 +13,6 @@ public class SlidingWindow implements FixedWindowSum {
     private long window;
     private final Queue<Pair<Long, Long>> queue = new ArrayDeque<>();
 
-    @Override
     public FixedWindowSum setWindowSize(long window) {
         this.window = window;
         return this;
@@ -24,11 +23,6 @@ public class SlidingWindow implements FixedWindowSum {
         queue.add(new Pair<>(index, inc));
         sum += inc; // increase sum after adding a new value
         restore(index);
-    }
-
-    @Override
-    public long sum() {
-        return sum;
     }
 
     @Override

@@ -1,16 +1,11 @@
 package org.hydev.mcpm.client.commands.controllers;
 
-import org.hydev.mcpm.client.display.presenters.Table;
-import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesInput;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Handles the user input for a search.

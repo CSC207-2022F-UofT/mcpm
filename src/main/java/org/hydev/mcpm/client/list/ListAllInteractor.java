@@ -16,7 +16,6 @@ public record ListAllInteractor(PluginTracker pluginTracker, CheckForUpdatesBoun
      * plugins, according to a specified
      * parameter
      *
-     *
      * @param parameter The parameter for the ListAll use case. 'All' denotes a
      *                  request to list all manually
      *                  installed plugins, 'manual' denotes a request to list all

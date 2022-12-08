@@ -28,7 +28,6 @@ public class SearcherByKeyword implements Searcher {
      * @param plugins A list of all plugins in the database.
      * @return A dictionary associating each keyword to the matching plugins.
      */
-    @Override
     public Map<String, List<PluginModel>> constructSearchMaps(List<PluginModel> plugins) {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
@@ -37,7 +36,7 @@ public class SearcherByKeyword implements Searcher {
             if (v.isPresent() && v.get().meta() != null &&
                     v.get().meta().description() != null && !v.get().meta().description().equals("")) {
                 String[] keywords = v.get().meta().description()
-                        .replaceAll("[^a-zA-Z\s]", "").toLowerCase().split("\s+");
+                        .replaceAll("[^a-zA-Z\\s]", "").toLowerCase().split("\\s+");
                 for (String keyword : new HashSet<>(List.of(keywords))) {
                     if (!models.containsKey(keyword))
                         models.put(keyword, new ArrayList<>());

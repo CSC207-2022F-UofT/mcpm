@@ -19,6 +19,7 @@ import java.util.Map;
  * @param existenceStatus Existence status, IDK what this means
  * @param version Latest version ID and UUID
  */
+@SuppressWarnings("unused")
 public record SpigetResource(
     long id,
     String name,

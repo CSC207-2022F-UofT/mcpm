@@ -16,8 +16,6 @@ public record ListResult(List<PluginYml> queryResult, Type type, ListType listTy
     public enum Type {
         SEARCH_INVALID_INPUT("Invalid search input"),
         SEARCH_FAILED_TO_FETCH_INSTALLED("Failed to fetch local files."),
-        SUCCESS_RETRIEVING_LOCAL_BUT_FAIL_UPDATABLE("Successfully retrieved local files," +
-                " but failed to retrieve updatable files."),
         SUCCESS_RETRIEVING_LOCAL_AND_UPDATABLE("Successfully retrieved local files."),
         SUCCESS_RETRIEVING_BUT_NO_MATCHES("Successfully retrieved local files, but no matches found.");
 

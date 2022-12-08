@@ -4,7 +4,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.mock.MockInstallBoundary;
 import org.hydev.mcpm.client.arguments.parsers.InstallParser;
 import org.hydev.mcpm.client.commands.controllers.InstallController;
-import org.hydev.mcpm.client.database.SilentInstallPresenter;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.search.SearchPackagesType;
