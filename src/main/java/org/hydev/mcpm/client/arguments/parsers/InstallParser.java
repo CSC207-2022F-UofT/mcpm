@@ -5,9 +5,6 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.InstallController;
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
-import org.hydev.mcpm.client.display.presenters.InstallPresenter;
-import org.hydev.mcpm.client.installer.InstallInteractor;
-import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 

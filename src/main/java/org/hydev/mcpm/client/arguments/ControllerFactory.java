@@ -1,18 +1,8 @@
 package org.hydev.mcpm.client.arguments;
 
-import org.hydev.mcpm.client.commands.controllers.ExportPluginsController;
-import org.hydev.mcpm.client.commands.controllers.InfoController;
-import org.hydev.mcpm.client.commands.controllers.InstallController;
-import org.hydev.mcpm.client.commands.controllers.ListController;
-import org.hydev.mcpm.client.commands.controllers.LoadController;
-import org.hydev.mcpm.client.commands.controllers.MirrorController;
-import org.hydev.mcpm.client.commands.controllers.PageBoundary;
-import org.hydev.mcpm.client.commands.controllers.RefreshController;
-import org.hydev.mcpm.client.commands.controllers.ReloadController;
-import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
-import org.hydev.mcpm.client.commands.controllers.UninstallController;
-import org.hydev.mcpm.client.commands.controllers.UnloadController;
-import org.hydev.mcpm.client.commands.controllers.UpdateController;
+import org.hydev.mcpm.client.commands.controllers.*;
+import org.hydev.mcpm.client.display.presenters.LogExportPresenter;
+import org.hydev.mcpm.client.display.presenters.LogImportPresenter;
 import org.hydev.mcpm.client.local.PageController;
 
 /**
@@ -28,8 +18,13 @@ public record ControllerFactory(InteractorFactoryBoundary boundary) implements C
     }
 
     @Override
-    public ExportPluginsController exportController() {
-        return new ExportPluginsController(boundary.exportBoundary());
+    public ExportController exportController() {
+        return new ExportController(boundary.exportBoundary(), new LogExportPresenter()); // temporary presenter bandage
+    }
+
+    @Override
+    public ImportController importController() {
+        return new ImportController(boundary.importBoundary(), new LogImportPresenter()); // temporary presenter bandage
     }
 
     @Override

@@ -19,7 +19,7 @@ public class MockExportBoundary implements ExportPluginsBoundary {
     public ExportPluginsResult export(ExportPluginsInput input) {
         inputs.add(input);
 
-        return new ExportPluginsResult(defaultResult);
+        return new ExportPluginsResult(defaultResult, "", null);
     }
 
     /**

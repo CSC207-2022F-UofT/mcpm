@@ -7,10 +7,10 @@ import org.hydev.mcpm.client.commands.controllers.MirrorController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.IOException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Contains tests for testing the mirror controller and parser objects.

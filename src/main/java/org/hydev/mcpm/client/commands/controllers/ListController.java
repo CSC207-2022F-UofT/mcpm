@@ -1,7 +1,6 @@
 package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.list.ListAllBoundary;
-import org.hydev.mcpm.client.updater.CheckForUpdatesBoundary;
 import org.hydev.mcpm.client.list.ListType;
 
 import java.util.List;

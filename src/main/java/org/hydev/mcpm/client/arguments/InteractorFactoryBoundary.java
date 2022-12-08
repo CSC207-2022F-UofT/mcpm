@@ -5,13 +5,14 @@ import org.hydev.mcpm.client.database.fetcher.DatabaseFetcherListener;
 import org.hydev.mcpm.client.database.mirrors.MirrorSelectBoundary;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
+import org.hydev.mcpm.client.export.ImportPluginsBoundary;
+import org.hydev.mcpm.client.installer.InstallBoundary;
+import org.hydev.mcpm.client.installer.PluginDownloader;
+import org.hydev.mcpm.client.list.ListAllBoundary;
 import org.hydev.mcpm.client.loader.LoadBoundary;
 import org.hydev.mcpm.client.loader.LocalJarBoundary;
 import org.hydev.mcpm.client.loader.ReloadBoundary;
 import org.hydev.mcpm.client.loader.UnloadBoundary;
-import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.PluginDownloader;
-import org.hydev.mcpm.client.list.ListAllBoundary;
 import org.hydev.mcpm.client.matcher.MatchPluginsBoundary;
 import org.hydev.mcpm.client.search.SearchPackagesBoundary;
 import org.hydev.mcpm.client.uninstall.UninstallBoundary;
@@ -135,10 +136,17 @@ public interface InteractorFactoryBoundary {
     ExportPluginsBoundary exportBoundary();
 
     /**
+     * Creates an `import` boundary object for exporting a list of installed plugins.
+     *
+     * @return A ImportPluginsBoundary object.
+     */
+    ImportPluginsBoundary importBoundary();
+    /**
      * Creates an `list` boundary object for listing installed plugins.
      *
      * @return A ListAllBoundary object.
      */
+
     ListAllBoundary listBoundary();
 
     /**

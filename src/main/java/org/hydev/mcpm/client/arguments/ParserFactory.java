@@ -1,19 +1,6 @@
 package org.hydev.mcpm.client.arguments;
 
-import org.hydev.mcpm.client.arguments.parsers.CommandParser;
-import org.hydev.mcpm.client.arguments.parsers.ExportPluginsParser;
-import org.hydev.mcpm.client.arguments.parsers.InfoParser;
-import org.hydev.mcpm.client.arguments.parsers.InstallParser;
-import org.hydev.mcpm.client.arguments.parsers.ListParser;
-import org.hydev.mcpm.client.arguments.parsers.LoadParser;
-import org.hydev.mcpm.client.arguments.parsers.MirrorParser;
-import org.hydev.mcpm.client.arguments.parsers.PageParser;
-import org.hydev.mcpm.client.arguments.parsers.RefreshParser;
-import org.hydev.mcpm.client.arguments.parsers.ReloadParser;
-import org.hydev.mcpm.client.arguments.parsers.SearchParser;
-import org.hydev.mcpm.client.arguments.parsers.UninstallParser;
-import org.hydev.mcpm.client.arguments.parsers.UnloadParser;
-import org.hydev.mcpm.client.arguments.parsers.UpdateParser;
+import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.display.presenters.SearchPresenter;
 
@@ -43,6 +30,7 @@ public class ParserFactory {
          */
         return List.of(
             new ExportPluginsParser(factory.exportController()),
+            new ImportParser(factory.importController()),
             new ListParser(factory.listController()),
             new SearchParser(factory.searchController(), searchPresenter),
             new MirrorParser(factory.mirrorController()),

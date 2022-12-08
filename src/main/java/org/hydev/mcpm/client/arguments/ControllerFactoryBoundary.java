@@ -1,18 +1,6 @@
 package org.hydev.mcpm.client.arguments;
 
-import org.hydev.mcpm.client.commands.controllers.ExportPluginsController;
-import org.hydev.mcpm.client.commands.controllers.InfoController;
-import org.hydev.mcpm.client.commands.controllers.InstallController;
-import org.hydev.mcpm.client.commands.controllers.ListController;
-import org.hydev.mcpm.client.commands.controllers.LoadController;
-import org.hydev.mcpm.client.commands.controllers.MirrorController;
-import org.hydev.mcpm.client.commands.controllers.PageBoundary;
-import org.hydev.mcpm.client.commands.controllers.RefreshController;
-import org.hydev.mcpm.client.commands.controllers.ReloadController;
-import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
-import org.hydev.mcpm.client.commands.controllers.UninstallController;
-import org.hydev.mcpm.client.commands.controllers.UnloadController;
-import org.hydev.mcpm.client.commands.controllers.UpdateController;
+import org.hydev.mcpm.client.commands.controllers.*;
 
 /**
  * Abstract factory for creating controller classes.
@@ -35,15 +23,22 @@ public interface ControllerFactoryBoundary {
     /**
      * Creates an export controller that interfaces with ExportPluginsBoundary.
      *
-     * @return A ExportPluginsController object.
+     * @return A ExportController object.
      */
-    ExportPluginsController exportController();
+    ExportController exportController();
 
+    /**
+     * Creates an import controller that interfaces with ImportPluginsBoundary.
+     *
+     * @return A ImportController object.
+     */
+    ImportController importController();
     /**
      * Creates a list controller that interfaces with ListAllBoundary.
      *
      * @return A ListController object.
      */
+
     ListController listController();
 
     /**

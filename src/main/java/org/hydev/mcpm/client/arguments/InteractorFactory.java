@@ -8,6 +8,8 @@ import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
 import org.hydev.mcpm.client.export.ExportInteractor;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
+import org.hydev.mcpm.client.export.ImportInteractor;
+import org.hydev.mcpm.client.export.ImportPluginsBoundary;
 import org.hydev.mcpm.client.loader.LoadBoundary;
 import org.hydev.mcpm.client.loader.LocalJarBoundary;
 import org.hydev.mcpm.client.loader.LocalJarFinder;
@@ -184,6 +186,13 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         var tracker = pluginTracker();
 
         return cache(ExportInteractor.class, () -> new ExportInteractor(tracker));
+    }
+
+    @Override
+    public ImportPluginsBoundary importBoundary() {
+        var installer = installBoundary();
+
+        return cache(ImportInteractor.class, () -> new ImportInteractor(installer));
     }
 
     @Override
