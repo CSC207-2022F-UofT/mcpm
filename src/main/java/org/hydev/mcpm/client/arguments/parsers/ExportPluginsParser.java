@@ -34,7 +34,8 @@ public class ExportPluginsParser implements CommandParser
     @Override
     public void configure(Subparser parser)
     {
-        parser.addArgument("type").nargs("?").setDefault("pastebin") // type of output
+        parser.addArgument("type").nargs("?").choices("pastebin", "file", "literal")
+                .setDefault("pastebin") // type of output
             .type(String.class).dest("type"); // of type OutputStream
         parser.addArgument("out").nargs("?")
             .type(String.class).dest("out");

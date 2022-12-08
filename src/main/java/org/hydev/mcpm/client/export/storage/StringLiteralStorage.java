@@ -2,6 +2,9 @@ package org.hydev.mcpm.client.export.storage;
 
 import java.io.IOException;
 
+/**
+ * A StringStorage where the token is literally the content itself.
+ */
 public class StringLiteralStorage implements StringStorage {
     @Override
     public String store(String content) {
