@@ -123,12 +123,27 @@ public class ColorLogger
      * @param in Input string
      * @return True length
      */
-    public static int lengthNoColor(String in)
+    public static String trimNoColor(String in)
     {
-        if (in == null) return 0;
+        if (in == null) {
+            return "";
+        }
+
         for (var key : ansiReplacements.keySet()) {
             in = in.replace(key, "");
         }
-        return in.length();
+
+        return in;
+    }
+
+    /**
+     * Calculate string length removing color escape codes
+     *
+     * @param in Input string
+     * @return True length
+     */
+    public static int lengthNoColor(String in)
+    {
+        return trimNoColor(in).length();
     }
 }

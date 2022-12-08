@@ -5,23 +5,28 @@ package org.hydev.mcpm.client.search;
  *
  */
 public class SearcherFactory {
+    SearcherByName nameSearcher;
+    SearcherByKeyword keywordSearcher;
+    SearcherByCommand commandSearcher;
 
     /**
      * Returns the new searcher object based on the input type.
      *
      * @param input Contains the search type in particular. See SearchPackagesInput for details.
      */
-    public static Searcher createSearcher(SearchPackagesInput input) {
+    public Searcher createSearcher(SearchPackagesInput input) {
         return switch (input.type()) {
             case BY_NAME ->
-                    new SearcherByName();
+                nameSearcher == null ?
+                    nameSearcher = new SearcherByName() : nameSearcher;
 
             case BY_COMMAND ->
-                    new SearcherByCommand();
+                commandSearcher == null ?
+                        commandSearcher = new SearcherByCommand() : commandSearcher;
 
             case BY_KEYWORD ->
-                    new SearcherByKeyword();
-
+                keywordSearcher == null ?
+                        keywordSearcher = new SearcherByKeyword() : keywordSearcher;
         };
     }
 }

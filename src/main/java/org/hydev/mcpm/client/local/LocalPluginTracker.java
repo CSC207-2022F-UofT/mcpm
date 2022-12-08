@@ -176,7 +176,7 @@ public class LocalPluginTracker implements PluginTracker
     }
 
     /**
-     * List all currently installed plugins in an ArrayList
+     * List all currently installed plugins in an List
      */
     @Override
     public List<PluginYml> listInstalled() {
