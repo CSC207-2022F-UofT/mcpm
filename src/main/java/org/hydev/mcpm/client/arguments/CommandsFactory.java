@@ -81,6 +81,7 @@ public class CommandsFactory {
          */
         return List.of(
             new ExportPluginsParser(exportPluginsController),
+            new ImportParser(importController),
             new ListParser(listController),
             new SearchParser(searchController),
             new MirrorParser(mirrorController),
