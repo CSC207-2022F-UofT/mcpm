@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.input.FuzzyInstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.local.LocalDatabaseFetcher;
 import org.hydev.mcpm.client.models.PluginYml;
@@ -44,7 +44,7 @@ public class InstallInteractorTest {
     @Test
     public void testPluginInstalledSuccess() {
 
-        InstallInput installInput = new InstallInput("PandaPL",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("PandaPL",
                                                             SearchPackagesType.BY_NAME,
                                                             false,
                                                             true);
@@ -68,7 +68,7 @@ public class InstallInteractorTest {
     @Test
     public void testPluginInstalledUnLoad() {
 
-        InstallInput installInput = new InstallInput("PandaPL",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("PandaPL",
                                                             SearchPackagesType.BY_NAME,
                                                             false,
                                                             true);
@@ -86,7 +86,7 @@ public class InstallInteractorTest {
      */
     @Test
     public void testPluginInstalledLoad_But_Unloaded() {
-        InstallInput installInput = new InstallInput("PandaPL",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("PandaPL",
                                                      SearchPackagesType.BY_NAME,
                                                     true,
                                                     true);
@@ -101,7 +101,7 @@ public class InstallInteractorTest {
      */
     @Test
     public void testInvalidInput() {
-        InstallInput installInput = new InstallInput("",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("",
                 SearchPackagesType.BY_NAME,
                 false,
                 true);
@@ -117,7 +117,7 @@ public class InstallInteractorTest {
      */
     @Test
     public void testSearchPluginNotFound() {
-        InstallInput installInput = new InstallInput("UwU",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("UwU",
                                                         SearchPackagesType.BY_NAME,
                                                         false,
                                                         true);
@@ -132,7 +132,7 @@ public class InstallInteractorTest {
      */
     @Test
     public void testPluginAlreadyInstalledLocally() {
-        InstallInput installInput = new InstallInput("JedCore",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("JedCore",
                 SearchPackagesType.BY_NAME,
                 false,
                 true);
@@ -150,7 +150,7 @@ public class InstallInteractorTest {
      */
     @Test
     public void test_InstallDependency_OfInputPlugin() {
-        InstallInput installInput = new InstallInput("JedCore",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("JedCore",
                                                             SearchPackagesType.BY_NAME,
                                                             false,
                                                             true);
@@ -174,7 +174,7 @@ public class InstallInteractorTest {
      */
     @Test
     public void test_InstallMissingDependency_OfInputPlugin() {
-        InstallInput installInput = new InstallInput("JedCore",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("JedCore",
                                                         SearchPackagesType.BY_NAME,
                                                         false,
                                                         true);

@@ -1,19 +1,24 @@
 package org.hydev.mcpm.client.installer.input;
 
-import org.hydev.mcpm.client.search.SearchPackagesType;
-
 /**
- * Install Plugin Input
+ * TODO: Write a description for this class!
  *
- * @param name     Plugin name from repository
- * @param type     Search packages type (BY_NAME, BY_KEYWORD, BY_COMMAND)
- * @param load     Whether to load after installing
- * @param isManuallyInstalled Whether the user already asked installing the plugin
+ * @author Azalea (https://github.com/hykilpikonna)
+ * @since 2022-12-08
  */
-public record InstallInput(String name,
-         SearchPackagesType type,
-         boolean load,
-         boolean isManuallyInstalled) {
+public interface InstallInput
+{
+    /**
+     * Returns the value of the final field "load"
+     *
+     * @return Whether the plugin should be loaded after installing
+     */
+    boolean load();
 
+    /**
+     * Returns the value of the final field "load"
+     *
+     * @return Whether the plugin should be marked as manually installed.
+     */
+    boolean isManuallyInstalled();
 }
-

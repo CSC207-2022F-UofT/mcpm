@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.database;
 
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.input.FuzzyInstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
@@ -46,7 +46,7 @@ public class MockInstaller implements InstallBoundary {
     }
 
     @Override
-    public List<InstallResult> installPlugin(InstallInput installInput) {
+    public List<InstallResult> installPlugin(FuzzyInstallInput installInput) {
         Assertions.assertEquals(installInput.type(), SearchPackagesType.BY_NAME);
         var name = installInput.name();
 

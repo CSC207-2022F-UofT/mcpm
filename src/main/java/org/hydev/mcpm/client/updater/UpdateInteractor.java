@@ -1,9 +1,8 @@
 package org.hydev.mcpm.client.updater;
 
-import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.input.FuzzyInstallInput;
 import org.hydev.mcpm.client.matcher.PluginModelId;
 import org.hydev.mcpm.client.matcher.PluginVersionId;
 import org.hydev.mcpm.client.matcher.PluginVersionState;
@@ -84,7 +83,7 @@ public record UpdateInteractor(
         // We should assume InstallBoundary has the same PluginTracker.
         pluginTracker.removeEntry(name);
 
-        var input = new InstallInput(name, SearchPackagesType.BY_NAME, load, manuallyInstalled);
+        var input = new FuzzyInstallInput(name, SearchPackagesType.BY_NAME, load, manuallyInstalled);
 
         var result = installer.installPlugin(input);
 

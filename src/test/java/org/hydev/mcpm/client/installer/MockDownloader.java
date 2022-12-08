@@ -1,10 +1,6 @@
 package org.hydev.mcpm.client.installer;
 
 import org.hydev.mcpm.client.Downloader;
-import org.hydev.mcpm.client.installer.input.InstallInput;
-
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Mock implementation of the PluginDownloader interface.

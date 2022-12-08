@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.hydev.mcpm.client.export.storage.StringStorage;
 import org.hydev.mcpm.client.export.storage.StringStorageFactory;
 import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.input.FuzzyInstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 
@@ -31,7 +31,7 @@ public record ImportInteractor(InstallBoundary install) implements ImportPlugins
             var results = new ArrayList<InstallResult>();
             for (var p : plugins) {
                 results.addAll(install.installPlugin(
-                        new InstallInput(p.name(), SearchPackagesType.BY_NAME, true, true)));
+                        new FuzzyInstallInput(p.name(), SearchPackagesType.BY_NAME, true, true)));
             }
 
             return new ImportResult(results);

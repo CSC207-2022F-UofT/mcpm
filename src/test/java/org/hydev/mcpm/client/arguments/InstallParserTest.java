@@ -4,9 +4,8 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.mock.MockInstallBoundary;
 import org.hydev.mcpm.client.arguments.parsers.InstallParser;
 import org.hydev.mcpm.client.commands.controllers.InstallController;
-import org.hydev.mcpm.client.database.SilentInstallPresenter;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.input.FuzzyInstallInput;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,7 @@ public class InstallParserTest {
         args = new ArgsParser(List.of(parser));
     }
 
-    void assertAcceptable(InstallInput input, String name, boolean load) {
+    void assertAcceptable(FuzzyInstallInput input, String name, boolean load) {
         assertEquals(input.name(), name);
         assertEquals(input.type(), SearchPackagesType.BY_NAME);
         assertEquals(input.load(), load); // should we keep this?

@@ -3,6 +3,8 @@ package org.hydev.mcpm.client.installer;
 import org.hydev.mcpm.client.Downloader;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.display.progress.ProgressBarFetcherListener;
+import org.hydev.mcpm.client.installer.input.ExactInstallInput;
+import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.loader.LoadBoundary;
 import org.hydev.mcpm.client.loader.PluginLoader;
@@ -14,7 +16,7 @@ import org.hydev.mcpm.client.search.SearchPackagesInput;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.search.SearchPackagesResult;
 import org.hydev.mcpm.client.search.SearchInteractor;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.input.FuzzyInstallInput;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.utils.ColorLogger;
@@ -62,39 +64,52 @@ public class InstallInteractor implements InstallBoundary {
      * @param installInput the plugin submitted by the user for installing
      */
     @Override
-    public List<InstallResult> installPlugin(InstallInput installInput) {
-        var pluginName = installInput.name();
+    public List<InstallResult> installPlugin(InstallInput input) {
+        PluginModel pluginModel;
 
-        // 1. Search the name and get a list of plugins
-        SearchPackagesResult searchResult = getSearchResult(installInput);
-        if (searchResult.state() == SearchPackagesResult.State.INVALID_INPUT) {
-            return List.of(new InstallResult(Type.SEARCH_INVALID_INPUT, pluginName));
+        // 1. If the installer input is fuzzy, search and obtain a plugin of the name
+        if (input instanceof FuzzyInstallInput installInput) {
+            var pluginName = installInput.name();
+
+            // 1. Search the name and get a list of plugins
+            SearchPackagesResult searchResult = getSearchResult(installInput);
+            if (searchResult.state() == SearchPackagesResult.State.INVALID_INPUT) {
+                return List.of(new InstallResult(Type.SEARCH_INVALID_INPUT, pluginName));
+            }
+
+            if (searchResult.state() == SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE) {
+                return List.of(new InstallResult(Type.SEARCH_FAILED_TO_FETCH_DATABASE, pluginName));
+            }
+
+            if (searchResult.plugins().isEmpty()) {
+                return List.of(new InstallResult(Type.NOT_FOUND, pluginName));
+            }
+
+            pluginModel = getLastestPluginModel(searchResult);
         }
-
-        if (searchResult.state() == SearchPackagesResult.State.FAILED_TO_FETCH_DATABASE) {
-            return List.of(new InstallResult(Type.SEARCH_FAILED_TO_FETCH_DATABASE, pluginName));
+        else if (input instanceof ExactInstallInput exact) {
+            pluginModel = exact.model();
         }
-
-        if (searchResult.plugins().isEmpty()) {
-            return List.of(new InstallResult(Type.NOT_FOUND, pluginName));
+        else {
+            throw new UnsupportedOperationException("InstallInput type " + input.getClass() + " not supported.");
         }
 
         // 2. Get the latest version of the plugin for the user
         // TODO: Let the user pick a plugin ID (Future)
-        PluginModel pluginModel = getLastestPluginModel(searchResult);
         var idPluginModel = pluginModel.id();
         var pluginVersion = pluginModel.getLatestPluginVersion().orElse(null);
         if (pluginVersion == null) {
-            return List.of(new InstallResult(Type.NO_VERSION_AVAILABLE, pluginName));
+            return List.of(new InstallResult(Type.NO_VERSION_AVAILABLE, idPluginModel + ""));
         }
+        var pluginName = pluginVersion.meta().name();
 
         var results = new ArrayList<InstallResult>();
         // 3. Installing the dependency of that plugin
         if (pluginVersion.meta().depend() != null) {
             for (String dependency : pluginVersion.meta().depend()) {
-                var dependencyInput = new InstallInput(dependency,
+                var dependencyInput = new FuzzyInstallInput(dependency,
                         SearchPackagesType.BY_NAME,
-                        installInput.load(), false);
+                        input.load(), false);
                 var rec = installPlugin(dependencyInput);
                 results.addAll(rec);
             }
@@ -107,13 +122,13 @@ public class InstallInteractor implements InstallBoundary {
             long pluginVersionId = pluginVersion.id();
             long pluginModelId = idPluginModel;
             localPluginTracker.addEntry(pluginName,
-                    installInput.isManuallyInstalled(),
+                    input.isManuallyInstalled(),
                     pluginVersionId,
                     pluginModelId);
         }
 
         // 6. Load the plugin
-        var loadResult = loadPlugin(pluginName, installInput.load());
+        var loadResult = loadPlugin(pluginName, input.load());
 
         // 7. Add success installed
         if (ifPluginDownloaded) {
@@ -130,7 +145,7 @@ public class InstallInteractor implements InstallBoundary {
      *
      * @param input the input pending for installation
      */
-    private SearchPackagesResult getSearchResult(InstallInput input) {
+    private SearchPackagesResult getSearchResult(FuzzyInstallInput input) {
         SearchPackagesInput searchPackagesInput = new SearchPackagesInput(input.type(), input.name(), false);
         SearchPackagesResult searchPackageResult = searchInteractor.search(searchPackagesInput);
         return searchPackageResult;
@@ -190,7 +205,7 @@ public class InstallInteractor implements InstallBoundary {
         LocalPluginTracker tracker = new LocalPluginTracker();
         InstallInteractor installInteractor = new InstallInteractor(spigotPluginDownloader, loader,
                                                                     searcher, tracker);
-        InstallInput installInput = new InstallInput("JedCore",
+        FuzzyInstallInput installInput = new FuzzyInstallInput("JedCore",
                                                     SearchPackagesType.BY_NAME,
                                                     true,
                                                     true);

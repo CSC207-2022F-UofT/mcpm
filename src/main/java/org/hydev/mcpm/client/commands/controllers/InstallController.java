@@ -3,7 +3,7 @@ package org.hydev.mcpm.client.commands.controllers;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.input.FuzzyInstallInput;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public record InstallController(InstallBoundary boundary)
      * @return Results
      */
     public List<InstallResult> install(String name, SearchPackagesType type, boolean load) {
-        var input = new InstallInput(name, type, load, true);
+        var input = new FuzzyInstallInput(name, type, load, true);
         return boundary.installPlugin(input);
     }
 }
