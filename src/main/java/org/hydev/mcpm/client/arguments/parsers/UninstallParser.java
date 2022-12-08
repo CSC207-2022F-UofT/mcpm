@@ -4,14 +4,16 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
-import org.hydev.mcpm.client.uninstall.UninstallResult;
+import org.hydev.mcpm.client.commands.presenters.UninstallResultPresenter;
 
 import java.util.function.Consumer;
 
 /**
  * Command parser for the uninstallation use case
  */
-public record UninstallParser(UninstallController controller) implements CommandParser {
+public record UninstallParser(UninstallController controller, UninstallResultPresenter presenter)
+    implements CommandParser
+{
     @Override
     public String name() {
         return "uninstall";
@@ -41,13 +43,6 @@ public record UninstallParser(UninstallController controller) implements Command
 
         // Uninstall
         var result = controller.uninstall(name, details.getBoolean("recursive"));
-
-        // Print result
-        if (result.state() == UninstallResult.State.FAILED_TO_DELETE) {
-            log.accept("&cFailed to delete plugin file");
-        }
-        if (result.state() == UninstallResult.State.SUCCESS) {
-            log.accept("&aPlugin " + name + " uninstalled successfully!");
-        }
+        presenter.displayResult(name, result, log);
     }
 }

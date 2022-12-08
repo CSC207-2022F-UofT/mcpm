@@ -3,6 +3,7 @@ package org.hydev.mcpm.client.arguments;
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.display.presenters.SearchPresenter;
+import org.hydev.mcpm.client.display.presenters.UninstallPresenter;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -22,6 +23,7 @@ public class ParserFactory {
     public static List<CommandParser> baseParsers(ControllerFactoryBoundary factory) {
         var searchPresenter = new SearchPresenter(factory.pageBoundary());
         var installPresenter = new InstallPresenter();
+        var uninstallPresenter = new UninstallPresenter();
 
         /*
          * Add general parsers to this list!
@@ -38,7 +40,7 @@ public class ParserFactory {
             new InstallParser(factory.installController(), installPresenter),
             new RefreshParser(factory.refreshController()),
             new PageParser(factory.pageBoundary()),
-            new UninstallParser(factory.uninstallController()),
+            new UninstallParser(factory.uninstallController(), uninstallPresenter),
             new UpdateParser(factory.updateController())
         );
     }

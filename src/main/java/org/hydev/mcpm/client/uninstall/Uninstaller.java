@@ -29,10 +29,11 @@ public class Uninstaller implements UninstallBoundary {
         this.tracker = tracker;
         this.unloader = unloader;
         this.jarFinder = jarFinder;
+
     }
 
     @Override
-    public UninstallResult uninstall(UninstallInput input) {
+    public UninstallResult uninstall(UninstallInput input)  {
         // 1. Unload plugin
         // This will throw PluginNotFoundException if the plugin isn't loaded. If it is loaded,
         // this will return the jar of the currently loaded plugin, which is the most precise.
@@ -41,26 +42,32 @@ public class Uninstaller implements UninstallBoundary {
         File jar = null;
         if (unloader != null) {
             try {
+                // In the minecraft server environment, we can find the exact jar of the loaded
+                // plugin because java's url class loader keeps track of jar file paths.
                 jar = unloader.unloadPlugin(input.name());
             }
             catch (PluginNotFoundException ignored) { }
         }
 
-        // 2. If it isn't loaded, find the plugin jar file in local file system
-        if (jar == null) {
-            // This will throw PluginNotFoundException when a plugin of the name in the file system
-            // could not be found.
-            try {
-                jar = jarFinder.findJar(input.name());
-            }
-            catch (PluginNotFoundException e) {
-                return new UninstallResult(NOT_FOUND);
+        if (jar != null) {
+            // Delete file
+            if (input.delete() && !jar.delete()) {
+                return new UninstallResult(FAILED_TO_DELETE);
             }
         }
+        else if (input.delete()) {
+            // When unloader is not null, it means that we are in CLI environment, so we need to
+            // find the plugin of the name
+            PluginRemover fileRemover = new PluginRemover(jarFinder);
 
-        // 3. Delete plugin jar
-        if (!jar.delete()) {
-            return new UninstallResult(FAILED_TO_DELETE);
+            // Delete file
+            var deleteResult = fileRemover.removeFile(input.name());
+            if (deleteResult == FileRemoveResult.NOT_FOUND) {
+                return new UninstallResult(NOT_FOUND);
+            }
+            else if (deleteResult == FileRemoveResult.FAILED_TO_DELETE) {
+                return new UninstallResult(FAILED_TO_DELETE);
+            }
         }
 
         // 4. Remove manually installed flag from the tracker
@@ -85,4 +92,5 @@ public class Uninstaller implements UninstallBoundary {
 
         return result;
     }
+
 }
