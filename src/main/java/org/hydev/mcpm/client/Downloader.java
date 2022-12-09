@@ -11,20 +11,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 /**
  * File downloader
  */
 public class Downloader
 {
-    /** Number of simultaneous downloads */
-    private int threads = 5;
-
     private final ProgressBar bar = new ProgressBar(ProgressBarTheme.ASCII_THEME);
 
     /**
@@ -77,52 +68,5 @@ public class Downloader
         {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Download multiple files from the internet to local storage through HTTP requests
-     * <p>
-     * The implementation must use multithreading
-     *
-     * @param urls Mapping of remote urls to local file paths
-     */
-    public void downloadFiles(Map<String, String> urls)
-    {
-        try (ExecutorService executor = Executors.newFixedThreadPool(threads))
-        {
-            var files = urls.keySet().stream().toList();
-
-            if (files.size() > 0)
-            {
-                for (String url : files)
-                {
-                    executor.submit(() ->
-                    {
-                        String to = urls.get(url);
-                        downloadFile(url, to);
-                    });
-                }
-                executor.shutdown();
-                // All files submitted for downloading
-
-                //noinspection ResultOfMethodCallIgnored
-                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-
-                // All files are completely downloaded
-            }
-        } catch (InterruptedException e) { /* do nothing */ }
-    }
-
-    /**
-     * Setter for threads
-     *
-     * @param threads Number of simultaneous downloads
-     * @return this (for fluent access)
-     */
-    @SuppressWarnings("unused")
-    public Downloader threads(int threads)
-    {
-        this.threads = threads;
-        return this;
     }
 }

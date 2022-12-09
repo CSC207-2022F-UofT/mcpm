@@ -91,7 +91,6 @@ public class ProgressRow implements ProgressRowBoundary {
      *
      * @param incr Increase amount
      */
-    @Override
     public void increase(long incr)
     {
         if (this.completed >= total) return;

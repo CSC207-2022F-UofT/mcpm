@@ -4,7 +4,6 @@ import org.fusesource.jansi.AnsiConsole;
 import org.hydev.mcpm.client.display.ProgressBarBoundary;
 import org.hydev.mcpm.client.display.ProgressRowBoundary;
 import org.hydev.mcpm.utils.ConsoleUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
