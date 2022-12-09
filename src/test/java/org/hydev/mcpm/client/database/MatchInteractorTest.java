@@ -59,7 +59,7 @@ public class MatchInteractorTest {
     }
 
     /**
-     * Test the match command for an PluginModelId object.
+     * Test the match command for a PluginModelId object that does not exist.
      */
     @Test
     void matchInvalidIdentifier() {
