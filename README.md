@@ -150,7 +150,6 @@ or pass a specific version string to force MCPM to download a specific version o
 ```shell
 mcpm update # Updates all plugins to their latest versions
 mcpm update JedCore CoreProtect # Update ONLY JedCore & CoreProtect
-mcpm update JedCore --version "2.10.0-Spigot1.18-PK1.9.3" # Install only the 2.10.0 version of JedCore
 ```
 
 # List Installed Plugins
@@ -198,6 +197,7 @@ This allows plugins to be shared across servers and admins.
 You can also keep configurations for later and improve them as you learn more about the plugin landscape.
 
 ```
-mcpm export plugins.txt # Export a list of all currently installed plugins into a file called plugins.txt.
-mcpm import plugins.txt # Import (install) every plugin contained in the plugins.txt file.
+mcpm export # export to a url
+mcpm export file plugins.txt # Export a list of all currently installed plugins into a file called plugins.txt.
+mcpm import file plugins.txt # Import (install) every plugin contained in the plugins.txt file.
 ```
