@@ -17,8 +17,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Contains tests for testing the info controller and parser objects.
@@ -119,7 +118,7 @@ Plugin Info:
 > Authors      : Hello world
 > Commands     : comm
             """.trim() + "\n";
-        assertEquals(ColorLogger.trimNoColor(output.get()), expected);
+        assertEquals(expected, ColorLogger.trimNoColor(output.get()));
     }
 
     /**
@@ -128,17 +127,12 @@ Plugin Info:
     @Test
     void testPluginDetailsDirectly() throws PluginNotFoundException
     {
-        controller.info("My Plugin2");
-
-        var expected = """
-Plugin Info:
-> Name         : My Plugin2
-> Main         : org.My Plugin2
-> Version      : v1.1
-> Description  : bc
-> Authors      : Hello world
-> Commands     : comm
-            """.trim() + "\n";
-        assertEquals(ColorLogger.trimNoColor(output.get()), expected);
+        var yml = controller.info("My Plugin2");
+        assertEquals(yml.name(), "My Plugin2");
+        assertEquals(yml.main(), "org.My Plugin2");
+        assertEquals(yml.version(), "v1.1");
+        assertEquals(yml.description(), "bc");
+        assertEquals(yml.getFirstAuthor(), "Hello world");
+        assertTrue(yml.commands().containsKey("comm"));
     }
 }

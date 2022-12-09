@@ -35,7 +35,7 @@ public record InfoParser(InfoController controller, InfoPresenter presenter) imp
         }
         catch (PluginNotFoundException e)
         {
-            log.accept("&cPlugin not " + name + " not found.");
+            log.accept(String.format("&cCannot find plugin '%s'", name));
         }
     }
 
