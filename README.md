@@ -19,6 +19,7 @@ MCPM allows you to:
  - Export and share your best plugin configurations with others!
 
 ## Getting Started
+
 MCPM requires Java 19, which can be installed [here](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html).
 
 MCPM runs in two environments:
