@@ -5,6 +5,8 @@ import org.hydev.mcpm.client.arguments.parsers.InfoParser;
 import org.hydev.mcpm.client.commands.controllers.InfoController;
 import org.hydev.mcpm.client.database.MockPluginTracker;
 import org.hydev.mcpm.client.database.PluginMockFactory;
+import org.hydev.mcpm.client.display.presenters.KVInfoPresenter;
+import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.models.PluginCommand;
 import org.hydev.mcpm.utils.ColorLogger;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +53,7 @@ public class InfoParserTest {
 
         var tracker = new MockPluginTracker(plugins);
         controller = new InfoController(tracker);
-        var parser = new InfoParser(controller);
+        var parser = new InfoParser(controller, new KVInfoPresenter());
         args = new ArgsParser(List.of(parser));
     }
 
@@ -124,8 +126,9 @@ Plugin Info:
      * Tests whether the info parser will present the correct message when invoked via controller.
      */
     @Test
-    void testPluginDetailsDirectly() {
-        controller.info("My Plugin2", log);
+    void testPluginDetailsDirectly() throws PluginNotFoundException
+    {
+        controller.info("My Plugin2");
 
         var expected = """
 Plugin Info:
