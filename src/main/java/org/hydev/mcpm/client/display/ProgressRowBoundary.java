@@ -16,13 +16,6 @@ public interface ProgressRowBoundary {
     String toString(ProgressBarTheme theme, int cols);
 
     /**
-     * Increase progress by incr.
-     *
-     * @param incr Increase amount
-     */
-    void increase(long incr);
-
-    /**
      * Update the progress.
      *
      * @param completed Completed so far
