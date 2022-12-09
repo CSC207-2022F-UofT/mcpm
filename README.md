@@ -18,7 +18,7 @@ MCPM allows you to:
  - Hot Reload your plugins while everyone is playing. No need to restart your server to test something new! 
  - Export and share your best plugin configurations with others!
 
-# Getting Started
+## Getting Started
 MCPM requires Java 19, which can be installed [here](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html).
 
 MCPM runs in two environments:
@@ -56,7 +56,7 @@ mcpm install JedCore # Install it to our local directory!
 
 On a Windows machine, I recommend running MCPM in the minecraft server environment. Alternatively, you can setup Windows Subsystem for Linux (WSL) to run everything as if you're using Linux.
 
-# Getting Help
+## Getting Help
 
 If you need a reminder of what mcpm provides, you can type in `mcpm` without arguments or use the `mcpm help` command.
 
@@ -95,7 +95,7 @@ named arguments:
   -h, --help
 ```
 
-# Search
+## Search
 
 With MCPM you can search for new plugins using the search command.
 There's 3 different ways you can search for new plugins:
@@ -111,7 +111,7 @@ mcpm search --keyword "protect land" # Search for a plugin that has protect in i
 mcpm search --command claim # Search for a plugin that provides a /claim command.
 ```
 
-# Install Plugins
+## Install Plugins
 
 This is feature is in-progress and does not have a CommandParser yet.
 
@@ -130,7 +130,7 @@ mcpm install JedCore # Installs the latest version of the JedCore plugin.
 We recommend you use the search command before installing anything,
 however the option to install by keyword and command are still provided.
 
-# Uninstall Plugins
+## Uninstall Plugins
 
 This is feature is in-progress and does not have a CommandParser yet.
 
@@ -151,7 +151,7 @@ This is to prevent you from creating invalid setups with your server
 mcpm uninstall JedCore # Remove JedCore and its dependencies.
 ```
 
-# Update Plugins
+## Update Plugins
 
 This is feature is in-progress and does not have a CommandParser yet.
 
@@ -165,7 +165,7 @@ mcpm update # Updates all plugins to their latest versions
 mcpm update JedCore CoreProtect # Update ONLY JedCore & CoreProtect
 ```
 
-# List Installed Plugins
+## List Installed Plugins
 
 MCPM allows you to easily see a list of all the plugins you currently have enabled.
 
@@ -177,7 +177,7 @@ mcpm list manual # Prints a list of all manually installed commands (excludes pl
 mcpm list outdated # Prints a list of all commands that need updates
 ```
 
-# Hot Reload Plugins
+## Hot Reload Plugins
 
 MCPM allows you to quickly reload plugins on the fly.
 
@@ -195,7 +195,7 @@ mcpm unload JedCore # Unload the JedCore plugin on the fly.
 
 After a plugin is loaded, the plugin should start taking effect without the need for restarting your server.
 
-# Export/Import Plugin Configurations
+## Export/Import Plugin Configurations
 
 This is feature is in-progress and does not have a CommandParser for all components yet.
 
@@ -209,7 +209,7 @@ You can then use the `import` command later to quickly reinstall that list of pl
 This allows plugins to be shared across servers and admins.
 You can also keep configurations for later and improve them as you learn more about the plugin landscape.
 
-```
+```shell
 mcpm export # export to a url
 mcpm export file plugins.txt # Export a list of all currently installed plugins into a file called plugins.txt.
 mcpm import file plugins.txt # Import (install) every plugin contained in the plugins.txt file.
