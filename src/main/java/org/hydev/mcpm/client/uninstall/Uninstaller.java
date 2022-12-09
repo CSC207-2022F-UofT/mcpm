@@ -5,8 +5,6 @@ import org.hydev.mcpm.client.loader.LocalJarBoundary;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.loader.UnloadBoundary;
 
-import java.io.File;
-
 import static org.hydev.mcpm.client.uninstall.UninstallResult.State.*;
 
 
@@ -39,21 +37,20 @@ public class Uninstaller implements UninstallBoundary {
         // this will return the jar of the currently loaded plugin, which is the most precise.
         // Since people may still uninstall a plugin when it's not loaded, we ignore the not
         // found error here.
-        File jar = null;
         if (unloader != null) {
             try {
                 // In the minecraft server environment, we can find the exact jar of the loaded
                 // plugin because java's url class loader keeps track of jar file paths.
-                jar = unloader.unloadPlugin(input.name());
+                if (input.delete()) {
+                    if (!unloader.unloadAndDeletePlugin(input.name())) {
+                        return new UninstallResult(FAILED_TO_DELETE);
+                    }
+                }
+                else {
+                    unloader.unloadPlugin(input.name());
+                }
             }
             catch (PluginNotFoundException ignored) { }
-        }
-
-        if (jar != null) {
-            // Delete file
-            if (input.delete() && !jar.delete()) {
-                return new UninstallResult(FAILED_TO_DELETE);
-            }
         }
         else if (input.delete()) {
             // When unloader is not null, it means that we are in CLI environment, so we need to
