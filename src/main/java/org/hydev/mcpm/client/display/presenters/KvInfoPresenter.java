@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 /**
  * Implementation of InfoPresenter
  */
-public class KVInfoPresenter implements InfoPresenter
+public class KvInfoPresenter implements InfoPresenter
 {
     private static final int LEN_LEFT = 12;
     private static final int LEN_RIGHT = 60;

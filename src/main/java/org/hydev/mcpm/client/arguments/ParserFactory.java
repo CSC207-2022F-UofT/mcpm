@@ -2,7 +2,7 @@ package org.hydev.mcpm.client.arguments;
 
 import org.hydev.mcpm.client.arguments.parsers.*;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
-import org.hydev.mcpm.client.display.presenters.KVInfoPresenter;
+import org.hydev.mcpm.client.display.presenters.KvInfoPresenter;
 import org.hydev.mcpm.client.display.presenters.SearchPresenter;
 import org.hydev.mcpm.client.display.presenters.UninstallPresenter;
 
@@ -25,7 +25,7 @@ public class ParserFactory {
         var searchPresenter = new SearchPresenter(factory.pageBoundary());
         var installPresenter = new InstallPresenter();
         var uninstallPresenter = new UninstallPresenter();
-        var infoPresenter = new KVInfoPresenter();
+        var infoPresenter = new KvInfoPresenter();
 
         /*
          * Add general parsers to this list!

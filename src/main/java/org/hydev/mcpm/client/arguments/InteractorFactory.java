@@ -138,6 +138,11 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(SearchInteractor.class, () -> new SearchInteractor(fetcher, listener));
     }
 
+    /**
+     * Create a plugin downloader
+     *
+     * @return Cached Plugin downloader instance
+     */
     public PluginDownloader pluginDownloader() {
         var mirror = mirrorSelector();
 
@@ -157,6 +162,11 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(InstallInteractor.class, () -> new InstallInteractor(downloader, loader, searcher, tracker));
     }
 
+    /**
+     * Create a match plugin interator instance
+     *
+     * @return Cached MatchPluginInteractor instance
+     */
     public MatchPluginsBoundary matchBoundary() {
         var fetcher = databaseFetcher();
         var listener = fetcherListener();
@@ -164,6 +174,11 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(MatchPluginsInteractor.class, () -> new MatchPluginsInteractor(fetcher, listener));
     }
 
+    /**
+     * Create a CheckForUpdatesInteractor instance
+     *
+     * @return Cached CheckForUpdatesInteractor instance
+     */
     public CheckForUpdatesBoundary checkForUpdatesBoundary() {
         var matcher = matchBoundary();
 
@@ -201,6 +216,11 @@ public class InteractorFactory implements InteractorFactoryBoundary {
         return cache(ListAllInteractor.class, () -> new ListAllInteractor(tracker, checkForUpdates));
     }
 
+    /**
+     * Create a file remover instance
+     *
+     * @return Cached PluginRemover instance
+     */
     public FileRemove fileRemover() {
         var boundary = jarBoundary();
 

@@ -5,7 +5,7 @@ import org.hydev.mcpm.client.arguments.parsers.InfoParser;
 import org.hydev.mcpm.client.commands.controllers.InfoController;
 import org.hydev.mcpm.client.database.MockPluginTracker;
 import org.hydev.mcpm.client.database.PluginMockFactory;
-import org.hydev.mcpm.client.display.presenters.KVInfoPresenter;
+import org.hydev.mcpm.client.display.presenters.KvInfoPresenter;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.models.PluginCommand;
 import org.hydev.mcpm.utils.ColorLogger;
@@ -52,7 +52,7 @@ public class InfoParserTest {
 
         var tracker = new MockPluginTracker(plugins);
         controller = new InfoController(tracker);
-        var parser = new InfoParser(controller, new KVInfoPresenter());
+        var parser = new InfoParser(controller, new KvInfoPresenter());
         args = new ArgsParser(List.of(parser));
     }
 
