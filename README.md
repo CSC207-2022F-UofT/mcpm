@@ -23,48 +23,61 @@ MCPM requires Java 19, which can be installed [here](https://www.oracle.com/java
 
 MCPM runs in two environments:
 
+- The **In-Game** environment, where you can configure your server in-game. (Recommended)
  - The **CLI** environment, where you can search, download, update and configure plugins from the command line.
- - The **In-Game** environment, where you can configure your server in-game.
 
-To access the CLI environment on a Unix machine, you can use the `./mcpm` shortcut in the root directory.
-
-```shell
-mcpm search JedCore # Look for plugins named JedCore
-mcpm install JedCore # Install it to our local directory!
-```
-
-On a Windows machine, I recommend executing the shortcut via a bash emulator (Git Bash),
-launching the app yourself using `java`, or investigating the scripts in the /tools folder (run.py).
+### In-Game Environment
 
 The In-Game environment is more involved and requires a server with our MCPM plugin.
 
-You can quickly set up a test server using the `tools/start_server.py` script.
+To install MCPM as a plugin on an existing Bukkit-API Minecraft server (e.g. Spigot / Paper / Purpur / Pufferfish), you can go to [GitHub Releases](https://github.com/CSC207-2022F-UofT/mcpm/releases), download the latest version's jar, drag it into the `plugins` folder of your server, and restart the server.
+
+However, if you are someone grading the course project, you probably don't have an existing minecraft server. You can easily set up a testing Minecraft server using the `tools/start_server.py` script on **Unix** (Linux / macOS).
 This script will automatically download the proper JDK to build and run the server environment.
+If you are using **Windows**, please run this script in the Windows Subsystem for Linux (WSL) environment.
 
 ```shell
 pip install -r requirements.txt
-python -m tools.start_server
+python -m tools.start_server    
 ```
 
 When in-game, use the `/mcpm ...` slash command to start configuring plugins.
 
 For example, if you wanted to search for plugins named `JedCore`, type `/mcpm search JedCore` in chat.
 
+### CLI Environment
+
+The CLI environment provides easy access across directories without having to install MCPM to a server. However, CLI usage provides a reduced set of features because hot reloading requires the server JVM environment. To access the CLI environment on a **Unix** machine, you can use the `./mcpm` shortcut in the root directory.
+
+```shell
+mcpm search JedCore # Look for plugins named JedCore
+mcpm install JedCore # Install it to our local directory!
+```
+
+On a Windows machine, I recommend running MCPM in the minecraft server environment. Alternatively, you can setup Windows Subsystem for Linux (WSL) to run everything as if you're using Linux.
+
 # Getting Help
 
-If you need a reminder of what mcpm provides, you can use the `-h` or `--help` argument to learn more.
+If you need a reminder of what mcpm provides, you can type in `mcpm` without arguments or use the `mcpm help` command.
 
 ```
-> mcpm --help
+> mcpm help
 
-usage: mcpm [-h] {echo,export} ...
-
-positional arguments:
-    echo: This is a dummy echo command that...
-    export: This command allows you to export...
-    
-named arguments:
-  -h, --help             show this help message and exit
+mcpm: Minecraft Plugin Package Manager
+/mcpm export - Export plugin configuration
+/mcpm import - Import a plugins config from a previous export
+/mcpm list - List installed plugins
+/mcpm search - Search for a plugin in the database
+/mcpm mirror - Select a source (mirror) to download plugins from
+/mcpm info - Show the info of an installed plugin
+/mcpm install - Download and install a plugin from the database
+/mcpm refresh - Refresh cached plugin database
+/mcpm uninstall - Uninstall a plugin from file system
+/mcpm update - Updates plugins to the latest version.
+/mcpm load - Load a plugin in the plugins folder
+/mcpm reload - Reload a currently loaded plugin
+/mcpm unload - Unload a currently loaded plugin
+To view the help message of a command, use /mcpm <command> -h
 ```
 
 You can also learn more about the options that each subcommand provides by passing `-h` to them!
@@ -72,14 +85,14 @@ You can also learn more about the options that each subcommand provides by passi
 ```
 > mcpm export --help
 
-usage: mcpm export [-h] [-c {true,false}] outfile
+usage: mcpm export [-h] [{pastebin,file,literal}] [out]
 
 positional arguments:
-  outfile
+  {pastebin,file,literal}
+  out
 
 named arguments:
-  -h, --help             show this help message and exit
-  -c {true,false}, --cache {true,false}
+  -h, --help
 ```
 
 # Search
@@ -201,3 +214,140 @@ mcpm export # export to a url
 mcpm export file plugins.txt # Export a list of all currently installed plugins into a file called plugins.txt.
 mcpm import file plugins.txt # Import (install) every plugin contained in the plugins.txt file.
 ```
+
+## MCPRS - Plugin Repository Server
+
+The downloadable Spigot plugins and their meta info are stored on our server, hosted in Toronto 🇨🇦. If you live far from Canada, please consider switching to one of the mirrors below:
+
+**North America** 🇺🇸
+
+| Mirror URL (HTTPS)   | Hosted By | Provider    | Location      | Speed    | Update |
+|----------------------|-----------|-------------|---------------|----------|--------|
+| mcprs.hydev.org      | HyDEV     | OVH Hosting | 🇨🇦 Montreal | 100 Mbps | 1 day  |
+| mcprs-bell.hydev.org | HyDEV     | Bell Canada | 🇨🇦 Toronto  | 750 Mbps | 1 day  |
+
+**Europe** 🇪🇺
+
+| Mirror URL (HTTPS)  | Hosted By | Provider   | Location        | Speed    | Update |
+|---------------------|-----------|------------|-----------------|----------|--------|
+| mcprs-lux.hydev.org | HyDEV     | GCore Labs | 🇱🇺 Luxembourg | 200 Mbps | 1 day  |
+
+**Asia**
+
+| Mirror URL (HTTPS)    | Hosted By | Provider | Location   | Speed    | Update |
+|-----------------------|-----------|----------|------------|----------|--------|
+| mcprs-tokyo.hydev.org | HyDEV     | Vultr    | 🇯🇵 Tokyo | 200 Mbps | 1 day  |
+
+If you want to contribute your network traffic by setting up a mirror, feel free to check out [How to set up a mirror](#How to set up a mirror)
+
+### How to set up a mirror
+
+The MCPRS server is hosted with a plain file server that supports both http and rsync. The official server is hosted using Nginx, but any file server with such compatibility would work. You can follow one of the approaches below to set up a mirror.
+
+After setting up a mirror, if you want to add it to our mirror list, you can submit a pull request to this repo editing the [mirrorlist.yml](mirrorlist.yml) file.
+
+#### Setup Mirror using Docker Compose
+
+For convenience, we created a docker image so that you can set up a mirror using Docker. It will automatically set up:
+
+1. `mcprs-sync`: Script to automatically sync updates every 24 hours (configurable)
+2. `mcprs-rsyncd`: rsync server
+3. `mcprs-nginx`: HTTP server (without SSL). This is only recommended if you don't have any other HTTP services set up
+
+You need to install docker and docker-compose, then you need to run:
+
+```bash
+git clone https://github.com/CSC207-2022F-UofT/mcpm
+cd mcpm/tools/mirror
+
+# Then, you should review or edit the docker-compose.yml script. After that:
+
+sudo mkdir -p /data/mcprs
+
+# If you want to start everything (including nginx):
+sudo docker-compose up -d
+
+# Or if you want to start sync and rsyncd but want to use your own HTTP server, do:
+sudo docker-compose up mcprs-sync mcprs-rsyncd -d
+```
+
+Note: If `docker-compose` says command not found, try `docker compose` instead.
+
+#### Setup Mirror Manually
+
+You can sync all files from an existing mirror by using `rsync`, run rsync automatically using `crontab` or systemd timer, and hosting the synchronized local directory using `nginx`.
+
+```bash
+# Use rsync to sync 
+alias rsync1="rsync -rlptH --info=progress2 --safe-links --delete-delay --delay-updates --timeout=600 --contimeout=60 --no-motd"
+rsync1 "SOURCE_URL" "LOCAL_DIR"
+```
+
+```nginx.conf
+# /etc/nginx/conf.d/mcprs.conf
+# Make sure to include this sub-config in your /etc/nginx/nginx.conf
+# You can do "include /etc/nginx/conf.d/*.conf;"
+# After testing the http server works, you can use certbot to obtain a HTTPS certificate
+server
+{
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name mcprs.example.com; # TODO: Change this to your domain
+
+    root LOCAL_DIR; # TODO: Change this to your filesystem location
+
+    location / {
+        autoindex on;
+    }
+}
+
+# HTTPS Redirect
+server
+{
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name default;
+    return 301 https://$host$request_uri;
+}
+```
+
+```rsyncd.conf
+# /etc/rsyncd.conf
+uid = nobody
+gid = nobody
+use chroot = no
+max connections = 4
+syslog facility = local5
+pid file = /run/rsyncd.pid
+
+[mcprs]
+        path = /ws/mcpm/.mcpm
+        comment = MCPM Plugin Repository Server
+```
+
+### How does the server work?
+
+Server file/endpoint structure:
+
+`/db` : Database sync  
+`/db/core.json` : Core database (plain text)  
+`/db/core.zst` : Core database (compressed)  
+`/pkgs` : List of packages  
+`/pkgs/spiget` : Raw Spiget packages indexed by resource ids and version ids  
+`/pkgs/spiget/{resource-id}` : One Spiget resource  
+`/pkgs/spiget/{resource-id}/{version-id}` : One Spiget version  
+`/pkgs/spiget/{resource-id}/{version-id}/release.jar` : Jar published by the developer   
+`/pkgs/spiget/{resource-id}/{version-id}/plugin.yml` : Meta info  
+`/pkgs/links` : Generated symbolic links indexed by names and version names  
+`/pkgs/links/{name}` : One package  
+`/pkgs/links/{name}/{version}` : One version  
+`/pkgs/links/{name}/{version}/release.jar` : Prebuilt jar for the version of a package  
+`/pkgs/links/{name}/{version}/plugin.yml` : Meta info for the version of a package
+
+Internal server file structure:
+
+`/crawler` : Crawler cache / data storage  
+`/crawler/spiget` : Spiget crawler  
+`/crawler/spiget/resources.json` : List of all resources on SpigotMC  
+`/crawler/spiget/backups/resources.{timestamp}.json` : Older resources  
+`/cralwer/spiget/versions/{resource_id}.json` : Resource versions info
