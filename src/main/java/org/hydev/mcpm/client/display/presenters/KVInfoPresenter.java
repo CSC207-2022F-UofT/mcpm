@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.display.presenters;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.hydev.mcpm.client.commands.presenters.InfoPresenter;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.ColorLogger;
@@ -25,11 +25,15 @@ public class KVInfoPresenter implements InfoPresenter
 
     /**
      * Format a kv pair if value isn't null, return empty string if value is null
+     * <p>
+     * Deprecation warnings are suppressed because we don't want to import Apache Commons Text just for wrapping words
+     * when Apache Commons Lang3 already provides the WorldUtils (through deprecated).
      *
      * @param key Key
      * @param rawValue Value
      * @return Formatted pair
      */
+    @SuppressWarnings("deprecation")
     private static String formatPair(String key, @Nullable Object rawValue)
     {
         if (rawValue == null) return "";
