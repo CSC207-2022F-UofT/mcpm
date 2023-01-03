@@ -8,10 +8,10 @@ pushd "$SCRIPT_DIR"
 PY="/home/azalea/.conda/envs/310/bin/python3"
 
 # Crawl packages
-$PY -m tools.run org.hydev.mcpm.server.crawlers.SpigetCrawler
+$PY -m tools.run org.hydev.mcpm.server.SpigetCrawler
 
 # Create database
-$PY -m tools.run org.hydev.mcpm.server.crawlers.spiget.CreateDatabase
+$PY -m tools.run org.hydev.mcpm.server.spiget.CreateDatabase
 
 # Zstd compression
 rm -rf .mcpm/db.zst
