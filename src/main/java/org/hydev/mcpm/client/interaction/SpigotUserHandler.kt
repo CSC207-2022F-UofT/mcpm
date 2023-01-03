@@ -30,10 +30,14 @@ class SpigotUserHandler : Listener
     private val listening: HashMap<UUID, (String) -> Unit> = HashMap()
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun onSay(e: AsyncPlayerChatEvent) = e.hijack(e.player.uniqueId, e.message)
+    fun onSay(e: AsyncPlayerChatEvent) {
+        e.hijack(e.player.uniqueId, e.message)
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun onConsole(e: ServerCommandEvent) = e.hijack(serverUuid, e.command)
+    fun onConsole(e: ServerCommandEvent) {
+        e.hijack(serverUuid, e.command)
+    }
 
     /**
      * When the console types something or when the player say something:
@@ -56,7 +60,9 @@ class SpigotUserHandler : Listener
      * When player quit, we stop listening to them.
      */
     @EventHandler
-    fun onQuit(e: PlayerQuitEvent) = listening.remove(e.player.uniqueId)
+    fun onQuit(e: PlayerQuitEvent) {
+        listening.remove(e.player.uniqueId)
+    }
 
     /**
      * Create a user interactor for a player
