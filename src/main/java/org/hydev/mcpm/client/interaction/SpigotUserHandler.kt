@@ -7,6 +7,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.server.ServerCommandEvent
@@ -20,7 +21,7 @@ import kotlin.coroutines.suspendCoroutine
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2023-01-02
  */
-class SpigotUserHandler
+class SpigotUserHandler : Listener
 {
     // Unique id to identify the server console user
     private val serverUuid = UUID.randomUUID()

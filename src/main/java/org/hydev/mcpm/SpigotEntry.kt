@@ -43,6 +43,9 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
 
         // Register mcpm command
         getCommand("mcpm")!!.setExecutor(this)
+
+        // Register event listeners
+        server.pluginManager.registerEvents(interaction, this)
     }
 
     /**
