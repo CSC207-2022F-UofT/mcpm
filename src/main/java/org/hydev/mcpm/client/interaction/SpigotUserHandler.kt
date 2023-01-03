@@ -1,18 +1,17 @@
 package org.hydev.mcpm.client.interaction
 
 import org.bukkit.command.CommandSender
-import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
-import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
-import org.bukkit.event.EventPriority.*
+import org.bukkit.event.EventPriority.HIGHEST
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.server.ServerCommandEvent
-import java.util.UUID
+import org.hydev.mcpm.utils.ColorLogger.printc
+import org.hydev.mcpm.utils.ConsoleUtils.RAW_OUT
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -73,6 +72,8 @@ class SpigotUserHandler : Listener
         // Callback responded, resume the coroutine
         override suspend fun input() = suspendCoroutine { async -> listening[p.uuid()] = { async.resume(it) } }
 
-        override fun print(txt: String) = p.sendMessage(txt.replace("&", "§"))
+        override fun print(txt: String) {
+            if (p is Player) p.sendMessage(txt.replace("&", "§")) else RAW_OUT.printc(txt)
+        }
     }
 }

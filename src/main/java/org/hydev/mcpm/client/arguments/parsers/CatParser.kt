@@ -18,11 +18,12 @@ class CatParser : CommandParser
 
     override suspend fun run(details: Namespace, log: ILogger)
     {
+        log.print("&bWelcome to 🐱. I'll repeat what you say until you type exit.")
         while (true)
         {
             val a = log.input()
             if (a == "exit") return
-            log.print(a)
+            log.print("🐱: $a")
         }
     }
 
