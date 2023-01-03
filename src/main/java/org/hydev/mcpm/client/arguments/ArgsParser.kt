@@ -67,7 +67,7 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
         try
         {
             val namespace = parser.parseArgs(arguments)
-            val handleObject = namespace.get<CommandHandler>("handler")
+            val handleObject = runCatching { namespace.get<CommandHandler>("handler") }.getOrNull()
                 ?: throw ArgumentParserException("Unrecognized command.", parser)
             handleObject.run(namespace, log)
         }
