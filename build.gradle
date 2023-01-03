@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.0'
     id 'application'
     id 'maven-publish'
     id 'checkstyle'
@@ -91,6 +91,9 @@ dependencies {
     // ZSTD but pure java for platforms that doesn't support native
     // https://mvnrepository.com/artifact/io.airlift/aircompressor
     implementation 'io.airlift:aircompressor:0.21'
+
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
 
     // Unit tests
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
