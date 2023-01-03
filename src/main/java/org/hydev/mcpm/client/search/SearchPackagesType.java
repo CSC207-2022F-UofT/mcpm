@@ -6,6 +6,7 @@ package org.hydev.mcpm.client.search;
 public enum SearchPackagesType {
         BY_NAME,
         BY_COMMAND,
-        BY_KEYWORD
+        BY_KEYWORD,
+        BY_ID
 }
 
