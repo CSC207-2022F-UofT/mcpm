@@ -44,13 +44,13 @@ public class MockInstaller implements InstallBoundary {
             return List.of(new InstallResult(InstallResult.Type.PLUGIN_EXISTS, name));
 
         var model = plugins.stream()
-            .filter(plugin -> plugin.getLatestPluginVersion()
+            .filter(plugin -> plugin.getLatest()
                 .map(x -> x.meta() != null && installInput.name().equals(x.meta().name()))
                 .orElse(false)
             ).findFirst();
 
         var modelId = model.map(PluginModel::id).orElse(0L);
-        var versionId = model.map(x -> x.getLatestPluginVersion()
+        var versionId = model.map(x -> x.getLatest()
             .map(PluginVersion::id).orElse(0L)
         ).orElse(0L);
 

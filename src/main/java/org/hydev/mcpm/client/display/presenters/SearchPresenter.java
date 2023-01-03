@@ -33,7 +33,7 @@ public class SearchPresenter implements SearchResultPresenter {
 
         // Print the plugins found
         var list = result.plugins().stream()
-                .map(PluginModel::getLatestPluginVersion)
+                .map(PluginModel::getLatest)
                 .filter(Optional::isPresent)
                 .map(it -> it.get().meta())
                 .toList();

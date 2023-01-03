@@ -66,7 +66,7 @@ public class ListUpdatableHelper implements ListUpdatableBoundary {
             // get the names of the plugins that are outdated from result
             ArrayList<String> outdated = new ArrayList<>();
             for (PluginModel pluginModel : rawResult.updatable().values()) {
-                pluginModel.getLatestPluginVersion()
+                pluginModel.getLatest()
                     .ifPresent(pluginVersion -> outdated.add(pluginVersion.meta().name()));
             }
             return outdated;

@@ -32,7 +32,7 @@ public class SearcherByKeyword implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            var v = plugin.getLatestPluginVersion();
+            var v = plugin.getLatest();
             if (v.isPresent() && v.get().meta() != null &&
                     v.get().meta().description() != null && !v.get().meta().description().equals("")) {
                 String[] keywords = v.get().meta().description()

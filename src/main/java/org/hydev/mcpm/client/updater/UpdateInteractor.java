@@ -65,7 +65,7 @@ public record UpdateInteractor(
     }
 
     private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load) {
-        var latest = model.getLatestPluginVersion().orElse(null);
+        var latest = model.getLatest().orElse(null);
 
         if (latest == null || latest.meta() == null || latest.meta().name() == null) {
             return defaultOutcomeFor(state, MISMATCHED);

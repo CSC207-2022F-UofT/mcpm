@@ -26,7 +26,7 @@ public class SearcherByName implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            plugin.getLatestPluginVersion().ifPresent(p ->
+            plugin.getLatest().ifPresent(p ->
             {
                 if (p.meta() != null && p.meta().name() != null && !p.meta().name().isBlank()) {
                     String name = p.meta().name().toLowerCase();

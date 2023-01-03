@@ -25,7 +25,7 @@ public record PluginModel(
      * @return The latest PluginVersion of itself, if it exists.
      */
     @JsonIgnore
-    public Optional<PluginVersion> getLatestPluginVersion() {
+    public Optional<PluginVersion> getLatest() {
         return versions.stream().max(Comparator.comparingLong(PluginVersion::id));
     }
 }

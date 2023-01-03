@@ -21,7 +21,7 @@ public class MockPluginTracker extends LocalPluginTracker {
     public MockPluginTracker(List<PluginModel> plugins) {
         ymls = new ArrayList<>();
         for (var plugin : plugins) {
-            var version = plugin.getLatestPluginVersion();
+            var version = plugin.getLatest();
 
             version.ifPresent(pluginVersion -> ymls.add(pluginVersion.meta()));
         }
