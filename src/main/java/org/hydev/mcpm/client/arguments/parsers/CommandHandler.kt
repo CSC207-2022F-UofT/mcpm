@@ -1,13 +1,13 @@
-package org.hydev.mcpm.client.arguments.parsers;
+package org.hydev.mcpm.client.arguments.parsers
 
-import net.sourceforge.argparse4j.inf.Namespace;
-import org.hydev.mcpm.client.interaction.ILogger;
+import net.sourceforge.argparse4j.inf.Namespace
+import org.hydev.mcpm.client.interaction.ILogger
 
 /**
  * Provides an implementation for a Command.
  * Typically, an implementation will involve grabbing view details from the Namespace and calling a controller.
  */
-public interface CommandHandler
+interface CommandHandler
 {
     /**
      * Called when the user executed the Subparser command in configure.
@@ -23,5 +23,5 @@ public interface CommandHandler
      *
      * @param details A details object that contains all the arguments that the user executed this command with.
      */
-    void run(Namespace details, ILogger log);
+    suspend fun run(details: Namespace, log: ILogger)
 }

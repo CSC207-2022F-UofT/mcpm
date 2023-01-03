@@ -27,7 +27,7 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
         val parsers = parser.addSubparsers()
         for (parser in rawSubparsers)
         {
-            val subparser = parsers.addParser(parser.name(), false)
+            val subparser = parsers.addParser(parser.name, false)
             parser.configure(subparser)
             subparser.setDefault("handler", parser)
             subparser.addArgument("-h", "--help").action(PrintHelpAction(subparser))
@@ -35,12 +35,15 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
 
         // Create help string and help command
         help = "mcpm: Minecraft Plugin Package Manager\n" +
-            rawSubparsers.filter { it.description().isNotBlank() }
-                .map { "&f/mcpm ${it.name()} &6- ${it.description()}&r\n" }.joinToString("") +
+            rawSubparsers.filter { it.description.isNotBlank() }
+                .map { "&f/mcpm ${it.name} &6- ${it.description}&r\n" }.joinToString("") +
             "To view the help message of a command, use /mcpm <command> -h"
 
         val helpSub = parsers.addParser("help", false)
-        helpSub.setDefault("handler", CommandHandler { _, l -> l.print(help) })
+        helpSub.setDefault("handler", object : CommandHandler
+        {
+            override suspend fun run(details: Namespace, log: ILogger) = log.print(help)
+        })
     }
 
     /**
@@ -52,7 +55,7 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
      * For default handling, pass this to ArgsParser#fail.
      */
     @Throws(ArgumentParserException::class)
-    fun parse(arguments: Array<String>, log: ILogger)
+    suspend fun parse(arguments: Array<String>, log: ILogger)
     {
         // If no args are present, add help
         if (arguments.isEmpty())

@@ -8,6 +8,6 @@ package org.hydev.mcpm.client.interaction
  */
 class NullLogger : ILogger
 {
-    override suspend fun input(): String? = null
+    override suspend fun input(): String = ""
     override fun print(txt: String) {}
 }

@@ -11,7 +11,7 @@ import org.hydev.mcpm.utils.ColorLogger
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2023-01-02
  */
-fun main(args: Array<String>)
+suspend fun main(args: Array<String>)
 {
     val parser = ArgsParserFactory.baseArgsParser()
 

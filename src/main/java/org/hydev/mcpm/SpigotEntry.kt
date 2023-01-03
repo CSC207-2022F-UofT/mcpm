@@ -1,5 +1,8 @@
 package org.hydev.mcpm
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -50,12 +53,16 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
         logger.info("Disabled!")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean
     {
         val log = if (sender is Player) interaction.create(sender) else StdLogger()
         try
         {
-            parser.parse(args, log)
+            // Run async
+            GlobalScope.launch {
+                parser.parse(args, log)
+            }
         }
         catch (e: ArgumentParserException)
         {
@@ -67,7 +74,7 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String>?
     {
         if (command.name.lowercase() != "mcpm") return null
-        return if (args.size == 1) parser.rawSubparsers.map { it.name() }
+        return if (args.size == 1) parser.rawSubparsers.map { it.name }
         else null
     }
 }

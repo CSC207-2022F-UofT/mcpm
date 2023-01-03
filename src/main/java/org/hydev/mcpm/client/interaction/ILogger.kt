@@ -13,7 +13,7 @@ interface ILogger
      *
      * @return Text of the user's input
      */
-    suspend fun input(): String?
+    suspend fun input(): String
 
     /**
      * Output something (Colored)

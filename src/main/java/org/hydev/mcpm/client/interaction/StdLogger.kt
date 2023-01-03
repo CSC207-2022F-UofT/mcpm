@@ -10,10 +10,10 @@ import org.hydev.mcpm.utils.ColorLogger.printc
  */
 class StdLogger : ILogger
 {
-    override suspend fun input(): String?
+    override suspend fun input(): String
     {
         // Since in the CLI mode, there are only ever going to have one user, so blocking is fine
-        return readlnOrNull()
+        return readln()
     }
 
     override fun print(txt: String)
