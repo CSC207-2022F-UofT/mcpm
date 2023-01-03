@@ -73,7 +73,8 @@ class SpigotUserHandler : Listener
         override suspend fun input() = suspendCoroutine { async -> listening[p.uuid()] = { async.resume(it) } }
 
         override fun print(txt: String) {
-            if (p is Player) p.sendMessage(txt.replace("&", "§")) else RAW_OUT.printc(txt)
+            // if (p is Player) p.sendMessage(txt.replace("&", "§")) else RAW_OUT.printc(txt)
+            p.sendMessage(txt.replace("&", "§"))
         }
     }
 }
