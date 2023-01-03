@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     # Run java
     try:
-        cmd = [java, "-cp", cp, cls, *(" ".join(args.args).split() or [])]
+        cmd = [java, "-cp", cp, cls, *(args.args or [])]
         check_call(cmd)
     except subprocess.CalledProcessError:
         pass
