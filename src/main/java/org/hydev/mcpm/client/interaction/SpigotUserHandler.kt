@@ -44,7 +44,7 @@ class SpigotUserHandler : Listener
      * When the console types something or when the player say something:
      * If we're listening, we hijack the event.
      */
-    private fun Cancellable.hijack(uuid: UUID, msg: String) = listening[uuid]?.let {
+    private fun Cancellable.hijack(uuid: UUID, msg: String) = listening.remove(uuid)?.let {
         // Run callback
         it(msg)
 
@@ -70,15 +70,8 @@ class SpigotUserHandler : Listener
      */
     fun create(p: CommandSender) = object : ILogger
     {
-        override suspend fun input() = suspendCoroutine { async ->
-            val id = p.uuid()
-
-            // Callback responded, remove the callback and resume the coroutine
-            listening[id] = {
-                listening.remove(id)
-                async.resume(it)
-            }
-        }
+        // Callback responded, resume the coroutine
+        override suspend fun input() = suspendCoroutine { async -> listening[p.uuid()] = { async.resume(it) } }
 
         override fun print(txt: String) = p.sendMessage(txt.replace("&", "§"))
     }
