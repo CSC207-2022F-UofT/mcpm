@@ -60,16 +60,16 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean
     {
         val log = interaction.create(sender)
-        try
-        {
-            // Run async
-            GlobalScope.launch {
+        // Run async
+        GlobalScope.launch {
+            try
+            {
                 parser.parse(args, log)
             }
-        }
-        catch (e: ArgumentParserException)
-        {
-            parser.fail(e, log)
+            catch (e: ArgumentParserException)
+            {
+                parser.fail(e, log)
+            }
         }
         return true
     }
