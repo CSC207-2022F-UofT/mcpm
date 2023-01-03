@@ -7,6 +7,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
+import org.bukkit.event.EventPriority.*
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -29,12 +30,12 @@ class SpigotUserHandler : Listener
     // Listening[uuid] = handler
     private val listening: HashMap<UUID, (String) -> Unit> = HashMap()
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = HIGHEST)
     fun onSay(e: AsyncPlayerChatEvent) {
         e.hijack(e.player.uniqueId, e.message)
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = HIGHEST)
     fun onConsole(e: ServerCommandEvent) {
         e.hijack(serverUuid, e.command)
     }
@@ -69,7 +70,15 @@ class SpigotUserHandler : Listener
      */
     fun create(p: CommandSender) = object : ILogger
     {
-        override suspend fun input() = suspendCoroutine { async -> listening[p.uuid()] = { async.resume(it) } }
+        override suspend fun input() = suspendCoroutine { async ->
+            val id = p.uuid()
+
+            // Callback responded, remove the callback and resume the coroutine
+            listening[id] = {
+                listening.remove(id)
+                async.resume(it)
+            }
+        }
 
         override fun print(txt: String) = p.sendMessage(txt.replace("&", "§"))
     }
