@@ -104,6 +104,8 @@ object ColorLogger
      */
     @JvmStatic
     fun lengthNoColor(txt: String?) = trimNoColor(txt).length
+
+    fun PrintStream.printc(txt: String) = println(encodeAnsiString(txt))
 }
 
 
