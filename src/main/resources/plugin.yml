@@ -23,3 +23,4 @@ libraries:
 - com.github.luben:zstd-jni:1.5.2-5
 - io.airlift:aircompressor:0.21
 - org.jetbrains.kotlin:kotlin-stdlib:1.8.0
+- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4
