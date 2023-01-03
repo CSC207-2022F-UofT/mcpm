@@ -60,7 +60,7 @@ class ArgsParserTest
         // Should print test help
         p.parse(new String[]{"test", "-h"}, out);
         assertThrows(AssertionError.class, () -> p.parse(new String[]{"test", "asd"}, out));
-        printc(p.help());
+        printc(p.getHelp());
         assertEquals(p.getRawSubparsers().size(), 1);
     }
 
