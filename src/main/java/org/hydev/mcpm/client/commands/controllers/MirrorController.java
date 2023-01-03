@@ -1,10 +1,10 @@
 package org.hydev.mcpm.client.commands.controllers;
 
 import org.hydev.mcpm.client.database.mirrors.MirrorSelectBoundary;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.hydev.mcpm.client.display.presenters.Table.tabulate;
 
@@ -43,7 +43,7 @@ public record MirrorController(MirrorSelectBoundary boundary)
      * @param refresh If we should refresh the database
      * @param log Logger
      */
-    public void ping(boolean refresh, Consumer<String> log)
+    public void ping(boolean refresh, ILogger log)
     {
         try
         {
@@ -52,17 +52,17 @@ public record MirrorController(MirrorSelectBoundary boundary)
 
             // Display the top 20 results
             var ping = boundary.pingMirrors();
-            log.accept(tabulate(ping.stream().limit(20).map(it ->
+            log.print(tabulate(ping.stream().limit(20).map(it ->
                     List.of((selected.host().equals(it.k().host()) ? "&6> " : "&f  ") + it.k().host(),
                         formatPing(it.v()), formatSpeed(it.k().speed()))).toList(),
                 List.of(":Host", "Delay:", "Speed:")));
 
             // User feedback
-            log.accept("You can use /mcpm mirror select <host> to select a mirror.");
+            log.print("You can use /mcpm mirror select <host> to select a mirror.");
         }
         catch (IOException e)
         {
-            log.accept(String.format("&cUnexpected error during processing: %s", e));
+            log.print(String.format("&cUnexpected error during processing: %s", e));
         }
     }
 
@@ -72,7 +72,7 @@ public record MirrorController(MirrorSelectBoundary boundary)
      * @param host Hostname of the mirror
      * @param log Logger
      */
-    public void select(String host, Consumer<String> log)
+    public void select(String host, ILogger log)
     {
         try
         {
@@ -80,15 +80,15 @@ public record MirrorController(MirrorSelectBoundary boundary)
                 .orElseThrow(() -> new AssertionError(String.format("No mirror of the host %s is found", host)));
 
             boundary.setSelectedMirror(mirror);
-            log.accept(String.format("&aSuccessfully selected %s as the mirror source", host));
+            log.print(String.format("&aSuccessfully selected %s as the mirror source", host));
         }
         catch (IOException e)
         {
-            log.accept(String.format("&cError occurred while writing the configuration file: %s", e));
+            log.print(String.format("&cError occurred while writing the configuration file: %s", e));
         }
         catch (AssertionError e)
         {
-            log.accept("&c" + e.getMessage());
+            log.print("&c" + e.getMessage());
         }
     }
 }

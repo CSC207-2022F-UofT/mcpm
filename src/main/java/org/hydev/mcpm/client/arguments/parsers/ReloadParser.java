@@ -3,8 +3,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.ReloadController;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Argument parser for ReloadCommand. See ReloadEntry.
@@ -31,7 +30,7 @@ public record ReloadParser(ReloadController controller) implements CommandParser
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
+    public void run(Namespace details, ILogger log)
     {
         controller.reload(details.get("plugins"), log);
     }

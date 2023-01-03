@@ -4,10 +4,9 @@ import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.inf.*
 import org.hydev.mcpm.client.arguments.parsers.CommandHandler
 import org.hydev.mcpm.client.arguments.parsers.CommandParser
-import org.hydev.mcpm.utils.ColorLogger
+import org.hydev.mcpm.client.interaction.ILogger
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.util.function.Consumer
 
 /**
  * Handles parsing command arguments into CommandEntry objects (to be dispatched to Controller).
@@ -41,7 +40,7 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
             "To view the help message of a command, use /mcpm <command> -h"
 
         val helpSub = parsers.addParser("help", false)
-        helpSub.setDefault("handler", CommandHandler { _, l -> l.accept(help) })
+        helpSub.setDefault("handler", CommandHandler { _, l -> l.print(help) })
     }
 
     /**
@@ -53,12 +52,12 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
      * For default handling, pass this to ArgsParser#fail.
      */
     @Throws(ArgumentParserException::class)
-    fun parse(arguments: Array<String>, log: Consumer<String?>)
+    fun parse(arguments: Array<String>, log: ILogger)
     {
         // If no args are present, add help
         if (arguments.isEmpty())
         {
-            log.accept(help)
+            log.print(help)
             return
         }
 
@@ -71,7 +70,7 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
         }
         catch (e: HelpException)
         {
-            log.accept("&e" + e.help())
+            log.print("&e" + e.help())
         }
     }
 
@@ -80,11 +79,11 @@ class ArgsParser(val rawSubparsers: List<CommandParser>)
      *
      * @param e The error object that was caught from #parse.
      */
-    fun fail(e: ArgumentParserException?, log: Consumer<String?>)
+    fun fail(e: ArgumentParserException?, log: ILogger)
     {
         val writer = StringWriter()
         val printer = PrintWriter(writer)
         parser.handleError(e, printer)
-        log.accept("&c$writer")
+        log.print("&c$writer")
     }
 }

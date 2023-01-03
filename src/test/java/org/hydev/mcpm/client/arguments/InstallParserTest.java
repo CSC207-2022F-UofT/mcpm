@@ -6,13 +6,14 @@ import org.hydev.mcpm.client.arguments.parsers.InstallParser;
 import org.hydev.mcpm.client.commands.controllers.InstallController;
 import org.hydev.mcpm.client.display.presenters.InstallPresenter;
 import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests both the InstallParser and InstallController classes (since they are invoked in a similar way).
@@ -50,7 +51,7 @@ public class InstallParserTest {
     void testNoArguments() {
         var exception = assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "install" }, log -> {})
+            () -> args.parse(new String[] { "install" }, new NullLogger())
         );
 
         assertEquals(exception.getMessage(), "too few arguments");
@@ -62,7 +63,7 @@ public class InstallParserTest {
     @Test
     void testInstallSingleName() throws ArgumentParserException {
 
-        args.parse(new String[] { "install", "JedCore" }, log -> {});
+        args.parse(new String[] { "install", "JedCore" }, new NullLogger());
         var inputs = installer.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -74,7 +75,7 @@ public class InstallParserTest {
      */
     @Test
     void testInstallNoLoad() throws ArgumentParserException {
-        args.parse(new String[] { "install", "ABC", "--no-load" }, log -> {});
+        args.parse(new String[] { "install", "ABC", "--no-load" }, new NullLogger());
         var inputs = installer.getInputs();
 
         assertEquals(inputs.size(), 1);

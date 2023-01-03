@@ -1,6 +1,5 @@
 package org.hydev.mcpm.client.interaction
 
-import org.hydev.mcpm.utils.ColorLogger
 import org.hydev.mcpm.utils.ColorLogger.printc
 
 /**
@@ -9,7 +8,7 @@ import org.hydev.mcpm.utils.ColorLogger.printc
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2023-01-02
  */
-class StdInteractor : IUserInteractor
+class StdLogger : ILogger
 {
     override suspend fun input(): String?
     {

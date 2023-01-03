@@ -1,21 +1,24 @@
 package org.hydev.mcpm.client.arguments;
 
+import kotlin.coroutines.Continuation;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.parsers.InfoParser;
 import org.hydev.mcpm.client.commands.controllers.InfoController;
 import org.hydev.mcpm.client.database.MockPluginTracker;
 import org.hydev.mcpm.client.database.PluginMockFactory;
 import org.hydev.mcpm.client.display.presenters.KvInfoPresenter;
+import org.hydev.mcpm.client.interaction.ILogger;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.models.PluginCommand;
 import org.hydev.mcpm.utils.ColorLogger;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class InfoParserTest {
     private AtomicReference<String> output;
-    private Consumer<String> log;
+    private ILogger log;
     private InfoController controller;
 
     private ArgsParser args;
@@ -36,7 +39,19 @@ public class InfoParserTest {
     @BeforeEach
     public void setup() {
         output = new AtomicReference<>("");
-        log = text -> output.set(output.get() + text);
+        log = new ILogger() {
+            @Override
+            public Object input(@NotNull Continuation<? super String> $completion)
+            {
+                return null;
+            }
+
+            @Override
+            public void print(@NotNull String txt)
+            {
+                output.set(output.get() + txt);
+            }
+        };
 
         var command = new PluginCommand(
             "desc", List.of("alias"), "perms", "usage  string"
@@ -64,7 +79,7 @@ public class InfoParserTest {
     void testNoArguments() {
         var exception = assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "info" }, log -> { })
+            () -> args.parse(new String[] { "info" }, new NullLogger())
         );
 
         assertEquals(exception.getMessage(), "too few arguments");

@@ -4,8 +4,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.ImportController;
 import org.hydev.mcpm.client.export.ImportInput;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Parser for the import use case
@@ -31,7 +30,7 @@ public record ImportParser(ImportController controller) implements CommandParser
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log) {
+    public void run(Namespace details, ILogger log) {
         controller.importPlugins(new ImportInput(details.get("type"), details.get("input")), log);
     }
 }

@@ -4,6 +4,7 @@ import org.hydev.mcpm.client.arguments.mock.MockExportBoundary;
 import org.hydev.mcpm.client.commands.controllers.ExportController;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
 import org.hydev.mcpm.client.export.ExportPluginsResult;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ public class ExportParserTest {
     void testControllerWithFailState() {
         exporter.setDefaultResult(ExportPluginsResult.State.FAILED);
 
-        controller.export(new ExportPluginsInput("literal", null), log -> { });
+        controller.export(new ExportPluginsInput("literal", null), new NullLogger());
         var inputs = exporter.getInputs();
         assertEquals(inputs.size(), 1);
 

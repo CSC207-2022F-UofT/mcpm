@@ -5,13 +5,14 @@ import org.hydev.mcpm.client.arguments.mock.MockSearchBoundary;
 import org.hydev.mcpm.client.arguments.mock.MockSearchPresenter;
 import org.hydev.mcpm.client.arguments.parsers.SearchParser;
 import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests both the SearchParser and SearchController classes (since they are invoked in a similar way).
@@ -40,7 +41,7 @@ public class SearchParserTest {
     void testNoArguments() {
         var exception = assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "search" }, log -> {})
+            () -> args.parse(new String[] { "search" }, new NullLogger())
         );
 
         assertEquals(exception.getMessage(), "too few arguments");
@@ -51,7 +52,7 @@ public class SearchParserTest {
      */
     @Test
     void testSearchOneTerm() throws ArgumentParserException {
-        args.parse(new String[] { "search", "test" }, log -> {});
+        args.parse(new String[] { "search", "test" }, new NullLogger());
         var inputs = searcher.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -67,7 +68,7 @@ public class SearchParserTest {
      */
     @Test
     void testSearchManyTerms() throws ArgumentParserException {
-        args.parse(new String[] { "search", "test", "two", "three" }, log -> {});
+        args.parse(new String[] { "search", "test", "two", "three" }, new NullLogger());
         var inputs = searcher.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -83,7 +84,7 @@ public class SearchParserTest {
      */
     @Test
     void testSearchNoCache() throws ArgumentParserException {
-        args.parse(new String[] { "search", "test", "two", "--no-cache" }, log -> {});
+        args.parse(new String[] { "search", "test", "two", "--no-cache" }, new NullLogger());
         var inputs = searcher.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -99,7 +100,7 @@ public class SearchParserTest {
      */
     @Test
     void testSearchByCommand() throws ArgumentParserException {
-        args.parse(new String[] { "search", "--command", "hello" }, log -> {});
+        args.parse(new String[] { "search", "--command", "hello" }, new NullLogger());
         var inputs = searcher.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -115,7 +116,7 @@ public class SearchParserTest {
      */
     @Test
     void testSearchByKeyword() throws ArgumentParserException {
-        args.parse(new String[] { "search", "--keyword", "hello", "world" }, log -> {});
+        args.parse(new String[] { "search", "--keyword", "hello", "world" }, new NullLogger());
         var inputs = searcher.getInputs();
 
         assertEquals(inputs.size(), 1);

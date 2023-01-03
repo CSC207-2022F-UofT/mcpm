@@ -5,6 +5,7 @@ import org.hydev.mcpm.client.arguments.mock.MockUninstallBoundary;
 import org.hydev.mcpm.client.arguments.parsers.UninstallParser;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
 import org.hydev.mcpm.client.display.presenters.UninstallPresenter;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.hydev.mcpm.client.uninstall.UninstallResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class UninstallParserTest {
     public void testNoArguments() {
         var exception = assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "uninstall" }, log -> { })
+            () -> args.parse(new String[] { "uninstall" }, new NullLogger())
         );
 
         assertEquals(exception.getMessage(), "too few arguments");
@@ -51,7 +52,7 @@ public class UninstallParserTest {
      */
     @Test
     public void testOnePlugin() throws ArgumentParserException {
-        args.parse(new String[] { "uninstall", "myPlugin" }, log -> { });
+        args.parse(new String[] { "uninstall", "myPlugin" }, new NullLogger());
 
         var inputs = uninstaller.getInputs();
         assertEquals(inputs.size(), 1);
@@ -66,7 +67,7 @@ public class UninstallParserTest {
      */
     @Test
     public void testWithRecursive() throws ArgumentParserException {
-        args.parse(new String[] { "uninstall", "newPlugin", "--no-recursive" }, log -> { });
+        args.parse(new String[] { "uninstall", "newPlugin", "--no-recursive" }, new NullLogger());
 
         var inputs = uninstaller.getInputs();
         assertEquals(inputs.size(), 1);
@@ -83,7 +84,7 @@ public class UninstallParserTest {
     public void testWithFailResult() throws ArgumentParserException {
         uninstaller.setDefaultState(UninstallResult.State.FAILED_TO_DELETE);
 
-        args.parse(new String[] { "uninstall", "my hello" }, log -> { });
+        args.parse(new String[] { "uninstall", "my hello" }, new NullLogger());
         // Should still pass.
 
         var inputs = uninstaller.getInputs();

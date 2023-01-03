@@ -3,8 +3,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.LoadController;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 
 /**
@@ -32,7 +31,7 @@ public record LoadParser(LoadController controller) implements CommandParser
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
+    public void run(Namespace details, ILogger log)
     {
         controller.load(details.getList("plugins"), log);
     }

@@ -2,8 +2,7 @@ package org.hydev.mcpm.client.display.presenters;
 
 import org.hydev.mcpm.client.commands.presenters.ExportPresenter;
 import org.hydev.mcpm.client.export.ExportPluginsResult;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * ExportPresenter that presents to a log.
@@ -26,7 +25,7 @@ public class LogExportPresenter implements ExportPresenter {
 
 
     @Override
-    public void present(ExportPluginsResult exportPluginsResult, Consumer<String> log) {
-        log.accept(getColor(exportPluginsResult) + getMessage(exportPluginsResult));
+    public void present(ExportPluginsResult exportPluginsResult, ILogger log) {
+        log.print(getColor(exportPluginsResult) + getMessage(exportPluginsResult));
     }
 }

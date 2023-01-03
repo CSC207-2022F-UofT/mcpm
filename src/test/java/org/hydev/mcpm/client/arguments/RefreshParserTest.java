@@ -7,6 +7,7 @@ import org.hydev.mcpm.client.arguments.mock.MockRefreshFetcher;
 import org.hydev.mcpm.client.arguments.parsers.RefreshParser;
 import org.hydev.mcpm.client.commands.controllers.RefreshController;
 import org.hydev.mcpm.client.database.fetcher.QuietFetcherListener;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +45,7 @@ public class RefreshParserTest {
      */
     @Test
     void testFetchDatabase() throws ArgumentParserException {
-        args.parse(new String[] { "refresh" }, log -> { });
+        args.parse(new String[] { "refresh" }, new NullLogger());
 
         assertTrue(fetcher.getFetched());
     }
@@ -56,7 +57,7 @@ public class RefreshParserTest {
     void testFailedToFetch() throws ArgumentParserException {
         fetcher.setDefaultResult(null);
 
-        args.parse(new String[] { "refresh" }, log -> { });
+        args.parse(new String[] { "refresh" }, new NullLogger());
 
         // We won't test for anything fancy here.
         // It should still fetch and pass, but I'm not going to bother uhh...

@@ -3,8 +3,7 @@ package org.hydev.mcpm.client.commands.controllers;
 import org.hydev.mcpm.client.commands.presenters.ExportPresenter;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Controller for the export plugins use case.
@@ -23,7 +22,7 @@ public record ExportController(
      * @param input Input specifying the export parameters
      * @param log where to log the operation
      */
-    public void export(ExportPluginsInput input, Consumer<String> log) {
+    public void export(ExportPluginsInput input, ILogger log) {
         var result = boundary.export(input);
         presenter.present(result, log);
     }

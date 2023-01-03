@@ -1,8 +1,7 @@
 package org.hydev.mcpm.client.commands.presenters;
 
 import org.hydev.mcpm.client.export.ImportResult;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Interface for displaying the results of an import
@@ -14,5 +13,5 @@ public interface ImportPresenter {
      *
      * @param result the result to present
      */
-    void present(ImportResult result, Consumer<String> log);
+    void present(ImportResult result, ILogger log);
 }

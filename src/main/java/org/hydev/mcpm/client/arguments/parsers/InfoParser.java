@@ -4,9 +4,8 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.InfoController;
 import org.hydev.mcpm.client.commands.presenters.InfoPresenter;
+import org.hydev.mcpm.client.interaction.ILogger;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
-
-import java.util.function.Consumer;
 
 /**
  * Command parser for the info use case
@@ -26,7 +25,7 @@ public record InfoParser(InfoController controller, InfoPresenter presenter) imp
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
+    public void run(Namespace details, ILogger log)
     {
         var name = details.getString("name");
         try
@@ -35,7 +34,7 @@ public record InfoParser(InfoController controller, InfoPresenter presenter) imp
         }
         catch (PluginNotFoundException e)
         {
-            log.accept(String.format("&cCannot find plugin '%s'", name));
+            log.print(String.format("&cCannot find plugin '%s'", name));
         }
     }
 

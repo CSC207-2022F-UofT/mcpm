@@ -2,8 +2,7 @@ package org.hydev.mcpm.client.display.presenters;
 
 import org.hydev.mcpm.client.commands.presenters.ImportPresenter;
 import org.hydev.mcpm.client.export.ImportResult;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * ImportPresenter that writes to a log
@@ -30,7 +29,7 @@ public class LogImportPresenter implements ImportPresenter {
     }
 
     @Override
-    public void present(ImportResult result, Consumer<String> log) {
-        log.accept(getColor(result) + getMessage(result));
+    public void present(ImportResult result, ILogger log) {
+        log.print(getColor(result) + getMessage(result));
     }
 }

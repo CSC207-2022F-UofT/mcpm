@@ -4,9 +4,11 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.hydev.mcpm.client.arguments.ArgsParserFactory
 import org.hydev.mcpm.client.interaction.SpigotUserHandler
+import org.hydev.mcpm.client.interaction.StdLogger
 import org.hydev.mcpm.utils.ColorLogger
 
 /**
@@ -50,7 +52,7 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean
     {
-        val log = ColorLogger.toMinecraft(sender)
+        val log = if (sender is Player) interaction.create(sender) else StdLogger()
         try
         {
             parser.parse(args, log)

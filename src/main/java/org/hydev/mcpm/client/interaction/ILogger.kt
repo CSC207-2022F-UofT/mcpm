@@ -6,7 +6,7 @@ package org.hydev.mcpm.client.interaction
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2023-01-02
  */
-interface IUserInteractor
+interface ILogger
 {
     /**
      * Ask the user for an input (non-blocking with coroutine)

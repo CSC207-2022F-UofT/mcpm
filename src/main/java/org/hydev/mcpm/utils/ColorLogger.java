@@ -1,10 +1,6 @@
 package org.hydev.mcpm.utils;
 
-import org.bukkit.command.CommandSender;
-
-import java.io.PrintStream;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static org.hydev.mcpm.utils.Sugar.uncheckedMapOf;
 
@@ -60,17 +56,6 @@ public class ColorLogger
     }
 
     /**
-     * Create a logger that sends colored messages to a minecraft player
-     *
-     * @param sender Minecraft CommandSender
-     * @return Logger function
-     */
-    public static Consumer<String> toMinecraft(CommandSender sender)
-    {
-        return s -> sender.sendMessage(s == null ? "null" : s.replace("&", "§"));
-    }
-
-    /**
      * Colorize string with ANSI escape sequences for color output to stdout
      *
      * @param in Input string
@@ -94,27 +79,6 @@ public class ColorLogger
         }
 
         return in.replace(ampEscape, "&");
-    }
-
-    /**
-     * Create a logger that prints colored messages to a standard print stream
-     *
-     * @param stream Print stream (can be stdout or stderr)
-     * @return Logger function
-     */
-    public static Consumer<String> toPrint(PrintStream stream)
-    {
-        return s -> stream.println(encodeAnsiString(s));
-    }
-
-    /**
-     * Create a logger that prints colored messages to stdout
-     *
-     * @return Logger function
-     */
-    public static Consumer<String> toStdOut()
-    {
-        return toPrint(System.out);
     }
 
     /**

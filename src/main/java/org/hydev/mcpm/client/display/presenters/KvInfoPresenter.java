@@ -3,6 +3,7 @@ package org.hydev.mcpm.client.display.presenters;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.hydev.mcpm.client.commands.presenters.InfoPresenter;
+import org.hydev.mcpm.client.interaction.ILogger;
 import org.hydev.mcpm.client.models.PluginYml;
 import org.hydev.mcpm.utils.ColorLogger;
 
@@ -10,7 +11,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Implementation of InfoPresenter
@@ -65,7 +65,7 @@ public class KvInfoPresenter implements InfoPresenter
     }
 
     @Override
-    public void present(PluginYml pl, Consumer<String> log)
+    public void present(PluginYml pl, ILogger log)
     {
         String msg = "&bPlugin Info:\n" +
             formatPair("Name", "&b" + pl.name()) +
@@ -81,6 +81,6 @@ public class KvInfoPresenter implements InfoPresenter
             formatPair("Load Before", pl.loadbefore()) +
             formatPair("Libraries", pl.libraries()) +
             formatPair("Commands", pl.commands());
-        log.accept(msg);
+        log.print(msg);
     }
 }

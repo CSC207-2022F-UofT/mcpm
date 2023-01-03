@@ -5,9 +5,9 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.SearchPackagesController;
 import org.hydev.mcpm.client.commands.presenters.SearchResultPresenter;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * SearchParser has two arguments: "type" and "text."
@@ -43,7 +43,7 @@ public record SearchParser(SearchPackagesController controller,
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log) {
+    public void run(Namespace details, ILogger log) {
         // Convert type
         var type = "name";
         if (details.getBoolean("byKeyword"))

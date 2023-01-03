@@ -6,10 +6,10 @@ import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.InstallController;
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter;
 import org.hydev.mcpm.client.installer.output.InstallResult;
+import org.hydev.mcpm.client.interaction.ILogger;
 import org.hydev.mcpm.client.search.SearchPackagesType;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Handles parsing install arguments (to be dispatched to Controller).
@@ -36,7 +36,7 @@ public record InstallParser(InstallController controller, InstallResultPresenter
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log) {
+    public void run(Namespace details, ILogger log) {
         var name = details.getString("name");
         List<InstallResult> result = controller.install(name,
                                                         SearchPackagesType.BY_NAME,

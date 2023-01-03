@@ -4,6 +4,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.mock.MockLoadBoundary;
 import org.hydev.mcpm.client.arguments.parsers.LoadParser;
 import org.hydev.mcpm.client.commands.controllers.LoadController;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ public class LoadParserTest {
     void testNoArguments() {
         var exception = assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "load" }, log -> { })
+            () -> args.parse(new String[] { "load" }, new NullLogger())
         );
 
         assertEquals(exception.getMessage(), "too few arguments");
@@ -53,7 +54,7 @@ public class LoadParserTest {
      */
     @Test
     void testOnePlugin() throws ArgumentParserException {
-        args.parse(new String[] { "load", "myPlugin" }, log -> { });
+        args.parse(new String[] { "load", "myPlugin" }, new NullLogger());
 
         assertEquals(new HashSet<>(loader.getNames()), Set.of("myPlugin"));
     }
@@ -63,7 +64,7 @@ public class LoadParserTest {
      */
     @Test
     void testManyPlugins() throws ArgumentParserException {
-        args.parse(new String[] { "load", "plugin1", "plugin2", "plugin3" }, log -> { });
+        args.parse(new String[] { "load", "plugin1", "plugin2", "plugin3" }, new NullLogger());
 
         assertEquals(new HashSet<>(loader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));
     }
@@ -73,7 +74,7 @@ public class LoadParserTest {
      */
     @Test
     void testController() {
-        controller.load(List.of("plugin1", "plugin2", "plugin3"), log -> { });
+        controller.load(List.of("plugin1", "plugin2", "plugin3"), new NullLogger());
 
         assertEquals(new HashSet<>(loader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));
     }
@@ -85,7 +86,7 @@ public class LoadParserTest {
     void testNotFound() {
         loader.setThrowsNotFound(true);
 
-        controller.load(List.of("plugin1", "plugin2", "plugin3"), log -> { });
+        controller.load(List.of("plugin1", "plugin2", "plugin3"), new NullLogger());
 
         // Should still make all requests.
         assertEquals(new HashSet<>(loader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));
@@ -98,7 +99,7 @@ public class LoadParserTest {
     void testFailToLoad() {
         loader.setDefaultResult(false);
 
-        controller.load(List.of("plugin1", "plugin2", "plugin3"), log -> { });
+        controller.load(List.of("plugin1", "plugin2", "plugin3"), new NullLogger());
 
         // Should still make all requests. Not a great other way to check without looking at presentation.
         assertEquals(new HashSet<>(loader.getNames()), Set.of("plugin1", "plugin2", "plugin3"));

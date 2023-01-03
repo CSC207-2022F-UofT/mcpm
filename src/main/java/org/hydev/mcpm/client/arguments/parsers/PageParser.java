@@ -2,10 +2,8 @@ package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-
 import org.hydev.mcpm.client.commands.controllers.PageBoundary;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Parser for the pagination command
@@ -31,14 +29,14 @@ public record PageParser(PageBoundary controller) implements CommandParser
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
+    public void run(Namespace details, ILogger log)
     {
         var page = controller.formatPage(details.getInt("page"));
         if (page == null)
         {
-            log.accept("&cNo pages available.");
+            log.print("&cNo pages available.");
             return;
         }
-        log.accept(page);
+        log.print(page);
     }
 }

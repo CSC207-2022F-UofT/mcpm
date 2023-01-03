@@ -4,10 +4,11 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.arguments.parsers.CommandParser;
+import org.hydev.mcpm.client.interaction.ILogger;
+import org.hydev.mcpm.client.interaction.StdLogger;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.hydev.mcpm.utils.ColorLogger.printc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,9 +22,9 @@ class ArgsParserTest
     static class TestCommand implements CommandParser
     {
         @Override
-        public void run(Namespace details, Consumer<String> log)
+        public void run(Namespace details, ILogger log)
         {
-            log.accept(details.toString());
+            log.print(details.toString());
             assertEquals(details.getString("a"), "meow");
         }
 
@@ -52,7 +53,7 @@ class ArgsParserTest
     @Test
     void testParse() throws ArgumentParserException
     {
-        Consumer<String> out = System.out::println;
+        ILogger out = new StdLogger();
         var p = new ArgsParser(List.of(new TestCommand()));
         p.parse(new String[]{"test", "meow"}, out);
         // Should print help
@@ -70,7 +71,7 @@ class ArgsParserTest
     @Test
     void testFail()
     {
-        Consumer<String> out = System.out::println;
+        ILogger out = new StdLogger();
 
         var p = new ArgsParser(List.of(new TestCommand()));
 

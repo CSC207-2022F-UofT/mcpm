@@ -5,8 +5,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.UninstallController;
 import org.hydev.mcpm.client.commands.presenters.UninstallResultPresenter;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Command parser for the uninstallation use case
@@ -37,7 +36,7 @@ public record UninstallParser(UninstallController controller, UninstallResultPre
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
+    public void run(Namespace details, ILogger log)
     {
         var name = details.getString("name");
 

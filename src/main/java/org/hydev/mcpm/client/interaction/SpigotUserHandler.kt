@@ -41,7 +41,7 @@ class SpigotUserHandler
     /**
      * Create a user interactor for a player
      */
-    fun create(p: Player) = object : IUserInteractor
+    fun create(p: Player) = object : ILogger
     {
         override suspend fun input() = suspendCoroutine { async -> listening[p.uniqueId] = { async.resume(it) } }
 

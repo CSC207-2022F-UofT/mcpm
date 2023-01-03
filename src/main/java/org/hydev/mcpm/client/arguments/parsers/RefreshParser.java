@@ -3,9 +3,9 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.RefreshController;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 /**
  * Refresh the database cache and mirror list
@@ -31,16 +31,16 @@ public record RefreshParser(RefreshController controller) implements CommandPars
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
+    public void run(Namespace details, ILogger log)
     {
         try
         {
             controller.refresh();
-            log.accept("&aDatabase refreshed successfully!");
+            log.print("&aDatabase refreshed successfully!");
         }
         catch (IOException e)
         {
-            log.accept("&cDatabase refresh failed: " + e.getMessage());
+            log.print("&cDatabase refresh failed: " + e.getMessage());
         }
     }
 }

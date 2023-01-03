@@ -3,8 +3,7 @@ package org.hydev.mcpm.client.arguments.parsers;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.ListController;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Command parser for List command
@@ -26,7 +25,7 @@ public record ListParser(ListController controller) implements CommandParser {
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log) {
+    public void run(Namespace details, ILogger log) {
         controller.listAll(details.getString("type"), log);
     }
 }

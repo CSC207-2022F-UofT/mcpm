@@ -5,14 +5,15 @@ import org.hydev.mcpm.client.arguments.mock.MockUpdateBoundary;
 import org.hydev.mcpm.client.arguments.parsers.UpdateParser;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.database.SilentUpdatePresenter;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests both the UpdateParser and UpdateController classes (since they are invoked in a similar way).
@@ -40,7 +41,7 @@ public class UpdateParserTest {
      */
     @Test
     void testUpdateAll() throws ArgumentParserException {
-        args.parse(new String[] { "update" }, log -> {});
+        args.parse(new String[] { "update" }, new NullLogger());
         var inputs = updater.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -57,7 +58,7 @@ public class UpdateParserTest {
      */
     @Test
     void testUpdateNoCache() throws ArgumentParserException {
-        args.parse(new String[] { "update", "--no-cache" }, log -> {});
+        args.parse(new String[] { "update", "--no-cache" }, new NullLogger());
         var inputs = updater.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -74,7 +75,7 @@ public class UpdateParserTest {
      */
     @Test
     void testUpdateWithLoad() throws ArgumentParserException {
-        args.parse(new String[] { "update", "--load" }, log -> {});
+        args.parse(new String[] { "update", "--load" }, new NullLogger());
         var inputs = updater.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -91,7 +92,7 @@ public class UpdateParserTest {
      */
     @Test
     void testUpdateSingleName() throws ArgumentParserException {
-        args.parse(new String[] { "update", "HelloWorld" }, log -> {});
+        args.parse(new String[] { "update", "HelloWorld" }, new NullLogger());
         var inputs = updater.getInputs();
 
         assertEquals(inputs.size(), 1);
@@ -108,7 +109,7 @@ public class UpdateParserTest {
      */
     @Test
     void testUpdateManyNames() throws ArgumentParserException {
-        args.parse(new String[] { "update", "TpProtect", "RealWorld" }, log -> {});
+        args.parse(new String[] { "update", "TpProtect", "RealWorld" }, new NullLogger());
         var inputs = updater.getInputs();
 
         assertEquals(inputs.size(), 1);

@@ -4,13 +4,14 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.mock.MockListBoundary;
 import org.hydev.mcpm.client.arguments.parsers.ListParser;
 import org.hydev.mcpm.client.commands.controllers.ListController;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.hydev.mcpm.client.list.ListType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests both the ListParser and ListController classes (since they are invoked in a similar way).
@@ -37,7 +38,7 @@ public class ListParserTest {
      */
     @Test
     void testListDefault() throws ArgumentParserException {
-        args.parse(new String[] { "list" }, log -> { });
+        args.parse(new String[] { "list" }, new NullLogger());
 
         var types = lister.getTypes();
         assertEquals(types.size(), 1);
@@ -49,7 +50,7 @@ public class ListParserTest {
      */
     @Test
     void testListAll() throws ArgumentParserException {
-        args.parse(new String[] { "list", "all" }, log -> { });
+        args.parse(new String[] { "list", "all" }, new NullLogger());
 
         var types = lister.getTypes();
         assertEquals(types.size(), 1);
@@ -61,7 +62,7 @@ public class ListParserTest {
      */
     @Test
     void testListManual() throws ArgumentParserException {
-        args.parse(new String[] { "list", "manual" }, log -> { });
+        args.parse(new String[] { "list", "manual" }, new NullLogger());
 
         var types = lister.getTypes();
         assertEquals(types.size(), 1);
@@ -73,7 +74,7 @@ public class ListParserTest {
      */
     @Test
     void testListAutomatic() throws ArgumentParserException {
-        args.parse(new String[] { "list", "automatic" }, log -> { });
+        args.parse(new String[] { "list", "automatic" }, new NullLogger());
 
         var types = lister.getTypes();
         assertEquals(types.size(), 1);
@@ -85,7 +86,7 @@ public class ListParserTest {
      */
     @Test
     void testListOutdated() throws ArgumentParserException {
-        args.parse(new String[] { "list", "outdated" }, log -> { });
+        args.parse(new String[] { "list", "outdated" }, new NullLogger());
 
         var types = lister.getTypes();
         assertEquals(types.size(), 1);
@@ -99,7 +100,7 @@ public class ListParserTest {
     void testListInvalid() {
         var exception = assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "list", "pizza" }, log -> { })
+            () -> args.parse(new String[] { "list", "pizza" }, new NullLogger())
         );
 
         // Again, debatable if this is the best way to tell what kind of error is happening.
@@ -114,7 +115,7 @@ public class ListParserTest {
     void testTooManyArguments() {
         assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "list", "all", "outdated" }, log -> { })
+            () -> args.parse(new String[] { "list", "all", "outdated" }, new NullLogger())
         );
     }
 
@@ -123,7 +124,7 @@ public class ListParserTest {
      */
     @Test
     void testController() {
-        controller.listAll("manual", log -> { });
+        controller.listAll("manual", new NullLogger());
 
         var types = lister.getTypes();
         assertEquals(types.size(), 1);
@@ -135,7 +136,7 @@ public class ListParserTest {
      */
     @Test
     void testControllerInvalid() {
-        controller.listAll("pizza", log -> { });
+        controller.listAll("pizza", new NullLogger());
 
         assertTrue(lister.getTypes().isEmpty());
     }

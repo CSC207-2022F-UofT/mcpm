@@ -4,6 +4,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import org.hydev.mcpm.client.arguments.mock.MockMirrorBoundary;
 import org.hydev.mcpm.client.arguments.parsers.MirrorParser;
 import org.hydev.mcpm.client.commands.controllers.MirrorController;
+import org.hydev.mcpm.client.interaction.NullLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +47,7 @@ public class MirrorParserTest {
     void testNoArguments() {
         var exception = assertThrows(
             ArgumentParserException.class,
-            () -> args.parse(new String[] { "mirror" }, log -> { })
+            () -> args.parse(new String[] { "mirror" }, new NullLogger())
         );
 
         assertEquals(exception.getMessage(), "too few arguments");
@@ -57,7 +58,7 @@ public class MirrorParserTest {
      */
     @Test
     void testPing() throws ArgumentParserException {
-        args.parse(new String[] { "mirror", "ping" }, log -> { });
+        args.parse(new String[] { "mirror", "ping" }, new NullLogger());
 
         // Not going to bother to test log output, just expected behaviour for the MirrorBoundary.
         // Feel free to contribute something like InfoController's tests if you want.
@@ -71,7 +72,7 @@ public class MirrorParserTest {
     void testPingThrowing() throws ArgumentParserException {
         mirrors.setThrowsException(true);
 
-        args.parse(new String[] { "mirror", "ping" }, log -> { });
+        args.parse(new String[] { "mirror", "ping" }, new NullLogger());
 
         mirrors.setThrowsException(false);
 
@@ -88,7 +89,7 @@ public class MirrorParserTest {
      */
     @Test
     void testPingRefreshing() throws ArgumentParserException {
-        args.parse(new String[] { "mirror", "ping", "--refresh" }, log -> { });
+        args.parse(new String[] { "mirror", "ping", "--refresh" }, new NullLogger());
 
         // We're just looking for no extreme behaviour here... It should not reach the point where mirrors are pinged.
         assertTrue(mirrors.getDidUpdateMirrors());
@@ -100,7 +101,7 @@ public class MirrorParserTest {
      */
     @Test
     void testSelectNoArguments() throws ArgumentParserException, IOException {
-        args.parse(new String[] { "mirror", "select" }, log -> { });
+        args.parse(new String[] { "mirror", "select" }, new NullLogger());
 
         // This is the default value for MockMirrorSelector.
         // I guess there's also no guarantee that selected mirror works?
@@ -112,7 +113,7 @@ public class MirrorParserTest {
      */
     @Test
     void testSelectHost() throws ArgumentParserException, IOException {
-        args.parse(new String[] { "mirror", "select", "mcpm.something.com" }, log -> { });
+        args.parse(new String[] { "mirror", "select", "mcpm.something.com" }, new NullLogger());
 
         assertEquals(mirrors.getSelectedMirror().host(), "mcpm.something.com");
     }
@@ -122,7 +123,7 @@ public class MirrorParserTest {
      */
     @Test
     void testSelectMissing() throws ArgumentParserException, IOException {
-        args.parse(new String[] { "mirror", "select", "mcpm.some.mirror.com" }, log -> { });
+        args.parse(new String[] { "mirror", "select", "mcpm.some.mirror.com" }, new NullLogger());
 
         // This is the default value for MockMirrorSelector.
         assertEquals(mirrors.getSelectedMirror().host(), "mcpm.pizza.com");
@@ -135,7 +136,7 @@ public class MirrorParserTest {
     void testSelectThrows() throws ArgumentParserException, IOException {
         mirrors.setThrowsException(true);
 
-        args.parse(new String[] { "mirror", "select", "mcpm.something.com" }, log -> { });
+        args.parse(new String[] { "mirror", "select", "mcpm.something.com" }, new NullLogger());
 
         mirrors.setThrowsException(false);
 

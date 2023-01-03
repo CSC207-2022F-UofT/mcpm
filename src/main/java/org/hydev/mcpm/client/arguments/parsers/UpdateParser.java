@@ -5,8 +5,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.UpdateController;
 import org.hydev.mcpm.client.display.presenters.LogUpdatePresenter;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Handles parsing related to the update command.
@@ -46,9 +45,9 @@ public record UpdateParser(UpdateController controller) implements CommandParser
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log) {
+    public void run(Namespace details, ILogger log) {
         // Since log can change from invocation to invocation,
-        // and I don't want UpdatePresenter to depend on Consumer<String>,
+        // and I don't want UpdatePresenter to depend on ILogger,
         // I'll instantiate this every call.
         var presenter = new LogUpdatePresenter(log);
         controller.update(

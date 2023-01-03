@@ -2,6 +2,7 @@ package org.hydev.mcpm
 
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import org.hydev.mcpm.client.arguments.ArgsParserFactory
+import org.hydev.mcpm.client.interaction.StdLogger
 import org.hydev.mcpm.utils.ColorLogger
 
 /**
@@ -16,10 +17,10 @@ fun main(args: Array<String>)
 
     try
     {
-        parser.parse(args, ColorLogger.toStdOut())
+        parser.parse(args, StdLogger())
     }
     catch (e: ArgumentParserException)
     {
-        parser.fail(e, ColorLogger.toStdOut())
+        parser.fail(e, StdLogger())
     }
 }

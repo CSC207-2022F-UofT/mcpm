@@ -4,8 +4,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import org.hydev.mcpm.client.commands.controllers.ExportController;
 import org.hydev.mcpm.client.export.ExportPluginsInput;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Parser for the ExportPluginsBoundary interface.
@@ -35,7 +34,7 @@ public record ExportPluginsParser(ExportController controller) implements Comman
     }
 
     @Override
-    public void run(Namespace details, Consumer<String> log)
+    public void run(Namespace details, ILogger log)
     {
         controller.export(new ExportPluginsInput(details.get("type"), details.get("out")), log);
     }

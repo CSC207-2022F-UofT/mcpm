@@ -1,8 +1,7 @@
 package org.hydev.mcpm.client.arguments.parsers;
 
 import net.sourceforge.argparse4j.inf.Namespace;
-
-import java.util.function.Consumer;
+import org.hydev.mcpm.client.interaction.ILogger;
 
 /**
  * Provides an implementation for a Command.
@@ -24,5 +23,5 @@ public interface CommandHandler
      *
      * @param details A details object that contains all the arguments that the user executed this command with.
      */
-    void run(Namespace details, Consumer<String> log);
+    void run(Namespace details, ILogger log);
 }
