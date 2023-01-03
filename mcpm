@@ -5,4 +5,4 @@ set -e
 ./gradlew :compileJava
 classpath=$(./gradlew :printCp 2>& 1>/dev/null)
 
-/usr/lib/jvm/java-17-openjdk/bin/java -cp "$classpath" org.hydev.mcpm.CliEntryKt "$@"
+$JAVA_HOME/bin/java -cp "$classpath" org.hydev.mcpm.CliEntryKt "$@"
