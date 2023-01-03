@@ -41,7 +41,7 @@ public class InfoParserTest {
         output = new AtomicReference<>("");
         log = new ILogger() {
             @Override
-            public Object input(@NotNull Continuation<? super String> $completion)
+            public Object input(@NotNull Continuation<? super String> completion)
             {
                 return null;
             }
