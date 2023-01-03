@@ -43,7 +43,8 @@ public class ParserFactory {
             new RefreshParser(factory.refreshController()),
             new PageParser(factory.pageBoundary()),
             new UninstallParser(factory.uninstallController(), uninstallPresenter),
-            new UpdateParser(factory.updateController())
+            new UpdateParser(factory.updateController()),
+            new CatParser()
         );
     }
 
