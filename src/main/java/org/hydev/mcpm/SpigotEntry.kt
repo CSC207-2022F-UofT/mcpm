@@ -5,9 +5,8 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
-import org.hydev.mcpm.client.arguments.ArgsParser
 import org.hydev.mcpm.client.arguments.ArgsParserFactory
-import org.hydev.mcpm.client.arguments.parsers.CommandParser
+import org.hydev.mcpm.client.interaction.SpigotUserHandler
 import org.hydev.mcpm.utils.ColorLogger
 
 /**
@@ -15,7 +14,8 @@ import org.hydev.mcpm.utils.ColorLogger
  */
 class SpigotEntry : JavaPlugin(), CommandExecutor
 {
-    private lateinit var parser: ArgsParser
+    private val parser = ArgsParserFactory.serverArgsParser()
+    private val interaction = SpigotUserHandler()
 
     companion object
     {
@@ -35,9 +35,6 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
 
         // Initialize logger
         logger.info("Enabled!")
-
-        // Initialize controller
-        parser = ArgsParserFactory.serverArgsParser()
 
         // Register mcpm command
         getCommand("mcpm")!!.setExecutor(this)
