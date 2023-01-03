@@ -56,7 +56,7 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean
     {
-        val log = if (sender is Player) interaction.create(sender) else StdLogger()
+        val log = interaction.create(sender)
         try
         {
             // Run async
