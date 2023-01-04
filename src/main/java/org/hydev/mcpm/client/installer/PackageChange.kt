@@ -22,7 +22,7 @@ class PackageChange(
     val originalFile: File? = null,
     val manual: Boolean = false)
 {
-    enum class Type(val symbol: String) { ADD("+"), REMOVE("-"), UPGRADE("U") }
+    enum class Type(val symbol: String) { ADD("&a+"), REMOVE("&c-"), UPGRADE("&e↑") }
 
     /**
      * Compute type
