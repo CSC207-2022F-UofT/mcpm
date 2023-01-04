@@ -112,7 +112,7 @@ class Installer(
         val changes = plugins.map { PackageChange(new = it.latest.get(), manual = true) }.toMutableList()
 
         // Resolve dependencies
-        val deps = plugins.flatMap { it.latest.get().meta.depend }
+        val deps = plugins.flatMap { it.latest.get().meta.depend ?: listOf() }
         if (deps.isNotEmpty())
             changes += resolveNames(deps, log).map { PackageChange(new = it.latest.get(), manual = false) }
 
