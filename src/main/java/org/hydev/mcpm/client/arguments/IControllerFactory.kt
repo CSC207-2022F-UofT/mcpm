@@ -66,6 +66,13 @@ interface IControllerFactory
     fun infoController(): InfoController
 
     /**
+     * Creates an `install` controller that interfaces with InstallBoundary.
+     *
+     * @return A InstallController object.
+     */
+    fun installController(): InstallController
+
+    /**
      * Creates an `uninstall` controller that interfaces with UninstallBoundary.
      *
      * @return A UninstallController object.

@@ -21,6 +21,7 @@ data class ControllerFactory(val boundary: IInteractorFactory) : IControllerFact
     override fun searchController() = SearchPackagesController(boundary.searcher)
     override fun mirrorController() = MirrorController(boundary.mirrorSelector)
     override fun infoController() = InfoController(boundary.tracker)
+    override fun installController() = InstallController(boundary.installer)
     override fun uninstallController() = UninstallController(boundary.uninstaller)
     override fun updateController() = UpdateController(boundary.updater)
 
