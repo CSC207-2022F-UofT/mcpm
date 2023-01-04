@@ -32,7 +32,7 @@ class PackageChange(
     /**
      * Format package change list
      */
-    fun List<PackageChange>.fmt() = Table(listOf("Plugin", "Current", "Latest", "Size"), map {
+    val List<PackageChange>.table get() = Table(listOf("Plugin", "Current", "Latest", "Size"), map {
         val ty = it.type
         listOf(
             ty.symbol + (it.new?.meta?.name ?: it.original?.name ?: it.originalFile?.name),
@@ -41,4 +41,9 @@ class PackageChange(
             it.originalFile?.length()?.sizeFmt().toString()
         )
     })
+
+    val List<PackageChange>.downloadSize get() = sumOf { it.new?.size ?: 0 }
+
+    val List<PackageChange>.fmt get() = "Found $size plugins changes\n\n" +
+        "$table\n\nTotal download size: $downloadSize"
 }
