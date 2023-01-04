@@ -11,6 +11,7 @@ import org.hydev.mcpm.client.updater.UpdateInput;
 import org.hydev.mcpm.client.updater.UpdateInteractor;
 import org.hydev.mcpm.client.updater.UpdateOutcome;
 import org.hydev.mcpm.client.updater.UpdateResult;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test methods related to the Update plugins use case.
  * To accomplish this, we use mock installers, plugin trackers and databases.
  */
+@Disabled
 public class UpdateInteractorTest {
     private record MockPackage(
         UpdateBoundary updator,

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.hydev.mcpm.client.export.storage.StringStorage;
 import org.hydev.mcpm.client.export.storage.StringStorageFactory;
 import org.hydev.mcpm.client.installer.IInstaller;
-import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
-import org.hydev.mcpm.client.search.SearchPackagesType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,12 +27,14 @@ public record ImportInteractor(IInstaller install) implements ImportPluginsBound
             var plugins = JACKSON.readValue(json, new TypeReference<List<ExportModel>>() { });
             // TODO: Install specific versions
             var results = new ArrayList<InstallResult>();
-            for (var p : plugins) {
-                results.addAll(install.installPlugin(
-                        new InstallInput(p.name(), SearchPackagesType.BY_NAME, true, true)));
-            }
+            // TODO: Implement this
+            throw new UnsupportedOperationException("TODO");
+            //for (var p : plugins) {
+            //    results.addAll(install.installPlugin(
+            //            new InstallInput(p.name(), SearchPackagesType.BY_NAME, true, true)));
+            //}
 
-            return new ImportResult(results);
+            //return new ImportResult(results);
         } catch (JsonProcessingException e) {
             return new ImportResult("Import source is invalid or corrupted.");
         } catch (IOException e) {
