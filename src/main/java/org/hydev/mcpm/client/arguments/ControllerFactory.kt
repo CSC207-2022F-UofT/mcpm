@@ -12,25 +12,25 @@ import org.hydev.mcpm.client.local.PageController
  * @param boundary A provider to acquire the required interactors to initialize the controllers.
  */
 @JvmRecord
-data class ControllerFactory(val boundary: InteractorFactoryBoundary) : IControllerFactory
+data class ControllerFactory(val boundary: IInteractorFactory) : IControllerFactory
 {
     override fun pageBoundary() = PageController(20)
-    override fun exportController() = ExportController(boundary.exportBoundary(), LogExportPresenter())
-    override fun importController() = ImportController(boundary.importBoundary(), LogImportPresenter())
-    override fun listController() = ListController(boundary.listBoundary())
-    override fun searchController() = SearchPackagesController(boundary.searchBoundary())
-    override fun mirrorController() = MirrorController(boundary.mirrorSelector())
-    override fun infoController() = InfoController(boundary.pluginTracker())
-    override fun uninstallController() = UninstallController(boundary.uninstallBoundary())
-    override fun updateController() = UpdateController(boundary.updateBoundary())
+    override fun exportController() = ExportController(boundary.exporter, LogExportPresenter())
+    override fun importController() = ImportController(boundary.importer, LogImportPresenter())
+    override fun listController() = ListController(boundary.lister)
+    override fun searchController() = SearchPackagesController(boundary.searcher)
+    override fun mirrorController() = MirrorController(boundary.mirrorSelector)
+    override fun infoController() = InfoController(boundary.tracker)
+    override fun uninstallController() = UninstallController(boundary.uninstaller)
+    override fun updateController() = UpdateController(boundary.updater)
 
     override fun refreshController() = RefreshController(
-        boundary.databaseFetcher(),
-        boundary.fetcherListener(),
-        boundary.mirrorSelector()
+        boundary.databaseFetcher,
+        boundary.fetcherListener,
+        boundary.mirrorSelector
     )
 
-    override fun loadController() = LoadController(boundary.loadBoundary())
-    override fun reloadController() = ReloadController(boundary.reloadBoundary())
-    override fun unloadController() = UnloadController(boundary.unloadBoundary())
+    override fun loadController() = LoadController(boundary.loader)
+    override fun reloadController() = ReloadController(boundary.reloader)
+    override fun unloadController() = UnloadController(boundary.unloader)
 }
