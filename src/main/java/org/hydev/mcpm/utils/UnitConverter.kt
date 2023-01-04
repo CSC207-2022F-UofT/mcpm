@@ -36,7 +36,7 @@ object UnitConverter
     @JvmStatic
     fun binarySpeedFormatter(): Function<Double, String>
     {
-        return Function { autoBinarySize(it).toString() }
+        return Function { autoBinarySize(it).toString() + "/s" }
     }
 
     /**
@@ -47,6 +47,6 @@ object UnitConverter
      */
     data class UnitSize(@JvmField val unit: String, val size: Double)
     {
-        override fun toString() = String.format("%5.1f %2$3s/s", size, unit)
+        override fun toString() = String.format("%5.1f %2$3s", size, unit)
     }
 }
