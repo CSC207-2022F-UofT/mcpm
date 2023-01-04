@@ -16,6 +16,15 @@ interface ILogger
     suspend fun input(): String
 
     /**
+     * Ask the user for an input with prompt
+     */
+    suspend fun input(prompt: String): String
+    {
+        print(prompt)
+        return input()
+    }
+
+    /**
      * Output something (Colored)
      *
      * @param txt: Text to be printed
