@@ -77,7 +77,7 @@ data class Table(val headers: List<String>, val rows: List<List<String>>, val se
             val lens = headers.indices.map { col: Int -> rows.maxOfOrNull { lengthNoColor(it[col]) } ?: 0 }
 
             // Format string
-            val lines = rows.map { it.mapIndexed { col, v -> justify(v, justify[col], lens[col]) }.joinToString(sep) }
+            val lines = rows.map { it.mapIndexed { col, v -> justify(v, justify[col], lens[col]) + "&r" }.joinToString(sep) }
 
             // Join
             return lines.joinToString("&r\n")
