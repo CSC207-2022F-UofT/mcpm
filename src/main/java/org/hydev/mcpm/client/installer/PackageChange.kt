@@ -33,13 +33,13 @@ class PackageChange(
 /**
  * Format package change list
  */
-val List<PackageChange>.table get() = Table(listOf("Plugin", "Current", "Latest", "Size"), map {
+val List<PackageChange>.table get() = Table(listOf(":Plugin", "Current", "Latest", "Size:"), map {
     val ty = it.type
     listOf(
         ty.symbol + (it.new?.meta?.name ?: it.original?.name ?: it.originalFile?.name),
         it.original?.version ?: "&7-",
         it.new?.meta?.version ?: "&7-",
-        it.originalFile?.length()?.sizeFmt().toString()
+        (if (ty == Type.REMOVE) -(it.originalFile?.length() ?: 0) else it.new?.size ?: 0).sizeFmt().toString()
     )
 })
 
