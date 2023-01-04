@@ -17,6 +17,7 @@ import java.util.Optional;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginModel(
     long id,
+    long downloads,
     List<PluginVersion> versions)
 {
     /**

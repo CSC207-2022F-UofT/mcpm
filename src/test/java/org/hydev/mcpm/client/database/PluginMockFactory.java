@@ -117,7 +117,7 @@ public class PluginMockFactory {
      * @return A PluginModel object.
      */
     public static PluginModel model(long id) {
-        return new PluginModel(id, List.of());
+        return new PluginModel(id, 0, List.of());
     }
 
     /**
@@ -130,7 +130,7 @@ public class PluginMockFactory {
      */
     public static PluginModel model(long id, String name) {
         return new PluginModel(
-                id,
+                id, 0,
                 List.of(version(id, name, "ver." + name)) // NOT SEMVER
         );
     }
@@ -163,7 +163,7 @@ public class PluginMockFactory {
     public static PluginModel model(long id, String name, String description, List<String> versionNames,
                                     Map<String, PluginCommand> commands) {
         return new PluginModel(
-                id,
+                id, 0,
                 IntStream.range(0, versionNames.size())
                         .mapToObj(i -> version(i, name, versionNames.get(i), description, commands))
                         .toList()

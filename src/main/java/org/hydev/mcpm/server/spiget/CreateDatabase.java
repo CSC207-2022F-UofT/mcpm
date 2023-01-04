@@ -6,7 +6,9 @@ import org.hydev.mcpm.client.models.Database;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginVersion;
 import org.hydev.mcpm.client.models.PluginYml;
+import org.hydev.mcpm.server.SpigetCrawler;
 import org.hydev.mcpm.utils.HashUtils;
+import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
@@ -115,6 +117,9 @@ public class CreateDatabase {
 
     @NotNull
     private static Optional<PluginModel> createPluginModel(File directory) {
+        var resources = new SpigetCrawler(new File(packageStore)).crawlAllResources(false);
+        var idMap = resources.stream().map(it -> new Pair<>(it.id(), it)).collect(Pair.toMap());
+
         try {
             var id = Long.parseLong(directory.getName());
             var versionFiles = directory.listFiles();
@@ -131,7 +136,7 @@ public class CreateDatabase {
                 .map(Optional::get)
                 .toList();
 
-            return Optional.of(new PluginModel(id, versions));
+            return Optional.of(new PluginModel(id, idMap.get(id).downloads(), versions));
         } catch (NumberFormatException e) {
             e.printStackTrace();
 
