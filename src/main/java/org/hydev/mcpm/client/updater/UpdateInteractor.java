@@ -1,7 +1,7 @@
 package org.hydev.mcpm.client.updater;
 
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
-import org.hydev.mcpm.client.installer.InstallBoundary;
+import org.hydev.mcpm.client.installer.IInstaller;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.matcher.PluginModelId;
 import org.hydev.mcpm.client.matcher.PluginVersionId;
@@ -27,9 +27,9 @@ import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
  * @param pluginTracker The plugin tracker to use for getting installed plugin information.
  */
 public record UpdateInteractor(
-        CheckForUpdatesBoundary checkBoundary,
-        InstallBoundary installer,
-        PluginTracker pluginTracker
+    CheckForUpdatesBoundary checkBoundary,
+    IInstaller installer,
+    PluginTracker pluginTracker
 ) implements UpdateBoundary {
     @Nullable
     private PluginVersionState stateByName(Map<String, PluginYml> installed, String name) {

@@ -16,8 +16,8 @@ import org.hydev.mcpm.client.loader.LocalJarFinder;
 import org.hydev.mcpm.client.loader.PluginLoader;
 import org.hydev.mcpm.client.loader.ReloadBoundary;
 import org.hydev.mcpm.client.loader.UnloadBoundary;
-import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.InstallInteractor;
+import org.hydev.mcpm.client.installer.IInstaller;
+import org.hydev.mcpm.client.installer.Installer;
 import org.hydev.mcpm.client.installer.PluginDownloader;
 import org.hydev.mcpm.client.installer.SpigotPluginDownloader;
 import org.hydev.mcpm.client.list.ListAllBoundary;
@@ -153,13 +153,13 @@ public class InteractorFactory implements InteractorFactoryBoundary {
     }
 
     @Override
-    public InstallBoundary installBoundary() {
+    public IInstaller installBoundary() {
         var tracker = pluginTracker();
         var searcher = searchBoundary();
         var downloader = pluginDownloader();
         var loader = loadBoundary();
 
-        return cache(InstallInteractor.class, () -> new InstallInteractor(downloader, loader, searcher, tracker));
+        return cache(Installer.class, () -> new Installer(downloader, loader, searcher, tracker));
     }
 
     /**

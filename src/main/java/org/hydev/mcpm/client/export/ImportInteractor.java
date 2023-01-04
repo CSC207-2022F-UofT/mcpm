@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.hydev.mcpm.client.export.storage.StringStorage;
 import org.hydev.mcpm.client.export.storage.StringStorageFactory;
-import org.hydev.mcpm.client.installer.InstallBoundary;
+import org.hydev.mcpm.client.installer.IInstaller;
 import org.hydev.mcpm.client.installer.input.InstallInput;
 import org.hydev.mcpm.client.installer.output.InstallResult;
 import org.hydev.mcpm.client.search.SearchPackagesType;
@@ -20,7 +20,7 @@ import static org.hydev.mcpm.Constants.JACKSON;
  *
  * @param install the installer boundary
  */
-public record ImportInteractor(InstallBoundary install) implements ImportPluginsBoundary {
+public record ImportInteractor(IInstaller install) implements ImportPluginsBoundary {
     @Override
     public ImportResult importPlugins(ImportInput input) {
         try {

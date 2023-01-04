@@ -6,7 +6,7 @@ import org.hydev.mcpm.client.database.mirrors.MirrorSelectBoundary;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
 import org.hydev.mcpm.client.export.ExportPluginsBoundary;
 import org.hydev.mcpm.client.export.ImportPluginsBoundary;
-import org.hydev.mcpm.client.installer.InstallBoundary;
+import org.hydev.mcpm.client.installer.IInstaller;
 import org.hydev.mcpm.client.list.ListAllBoundary;
 import org.hydev.mcpm.client.loader.LoadBoundary;
 import org.hydev.mcpm.client.loader.ReloadBoundary;
@@ -87,7 +87,7 @@ public interface InteractorFactoryBoundary {
      *
      * @return A InstallBoundary object.
      */
-    InstallBoundary installBoundary();
+    IInstaller installBoundary();
 
     /**
      * Creates an `update` boundary object for updating installed plugins.
