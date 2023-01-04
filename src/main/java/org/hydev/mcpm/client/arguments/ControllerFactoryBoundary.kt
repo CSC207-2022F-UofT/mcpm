@@ -1,113 +1,109 @@
-package org.hydev.mcpm.client.arguments;
+package org.hydev.mcpm.client.arguments
 
-import org.hydev.mcpm.client.commands.controllers.*;
+import org.hydev.mcpm.client.commands.controllers.*
 
 /**
  * Abstract factory for creating controller classes.
  * Classes can implement this in order to provide their own ways of initializing Controllers.
- * <p>
+ *
+ *
  * The methods of this class should be cached
  * (e.g. you should be able to invoke them many times and get the same object).
  */
-public interface ControllerFactoryBoundary {
+interface ControllerFactoryBoundary
+{
     /**
      * Creates a page boundary object that handles pagination and persisting of pages (for the `page` command).
-     * <p>
+     *
+     *
      * PageBoundary/PageController technically acts as a controller in this case.
      * And is used for instantiation of other Controller classes.
      *
      * @return A PageBoundary object.
      */
-    PageBoundary pageBoundary();
+    fun pageBoundary(): PageBoundary
 
     /**
      * Creates an export controller that interfaces with ExportPluginsBoundary.
      *
      * @return A ExportController object.
      */
-    ExportController exportController();
+    fun exportController(): ExportController
 
     /**
      * Creates an import controller that interfaces with ImportPluginsBoundary.
      *
      * @return A ImportController object.
      */
-    ImportController importController();
+    fun importController(): ImportController
+
     /**
      * Creates a list controller that interfaces with ListAllBoundary.
      *
      * @return A ListController object.
      */
-
-    ListController listController();
+    fun listController(): ListController
 
     /**
      * Creates a search controller that interfaces with SearchPackagesBoundary.
      *
      * @return A SearchPackagesController object.
      */
-    SearchPackagesController searchController();
+    fun searchController(): SearchPackagesController
 
     /**
      * Creates a mirror controller that interfaces with MirrorSelectorBoundary.
      *
      * @return A MirrorController object.
      */
-    MirrorController mirrorController();
+    fun mirrorController(): MirrorController
 
     /**
      * Creates an info controller that presents the user installed plugin info.
      *
      * @return A InfoController object.
      */
-    InfoController infoController();
-
-    /**
-     * Creates a mirror controller that interfaces with InstallBoundary.
-     *
-     * @return A InstallController object.
-     */
-    InstallController installController();
+    fun infoController(): InfoController
 
     /**
      * Creates an `uninstall` controller that interfaces with UninstallBoundary.
      *
      * @return A UninstallController object.
      */
-    UninstallController uninstallController();
+    fun uninstallController(): UninstallController
 
     /**
      * Creates an update controller that interfaces with UpdateBoundary.
      *
      * @return A UpdateController object.
      */
-    UpdateController updateController();
+    fun updateController(): UpdateController
 
     /**
      * Creates a refresh controller that fetches the database in case it gets out of date.
      *
      * @return A RefreshController object.
      */
-    RefreshController refreshController();
+    fun refreshController(): RefreshController
 
     /**
      * Creates a load controller that interfaces with LoadBoundary.
      *
      * @return A LoadController object.
      */
-    LoadController loadController();
+    fun loadController(): LoadController
 
     /**
      * Creates a reload controller that interfaces with ReloadBoundary.
      *
      * @return A ReloadController object.
      */
-    ReloadController reloadController();
+    fun reloadController(): ReloadController
 
     /**
      * Creates an unload controller that interfaces with UnloadBoundary.
      *
      * @return A UnloadController object.
      */
-    UnloadController unloadController();
+    fun unloadController(): UnloadController
 }
