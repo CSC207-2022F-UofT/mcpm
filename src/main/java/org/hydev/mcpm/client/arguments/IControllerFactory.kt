@@ -10,7 +10,7 @@ import org.hydev.mcpm.client.commands.controllers.*
  * The methods of this class should be cached
  * (e.g. you should be able to invoke them many times and get the same object).
  */
-interface ControllerFactoryBoundary
+interface IControllerFactory
 {
     /**
      * Creates a page boundary object that handles pagination and persisting of pages (for the `page` command).

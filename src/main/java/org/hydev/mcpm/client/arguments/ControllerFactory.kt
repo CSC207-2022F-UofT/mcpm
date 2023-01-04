@@ -12,7 +12,7 @@ import org.hydev.mcpm.client.local.PageController
  * @param boundary A provider to acquire the required interactors to initialize the controllers.
  */
 @JvmRecord
-data class ControllerFactory(val boundary: InteractorFactoryBoundary) : ControllerFactoryBoundary
+data class ControllerFactory(val boundary: InteractorFactoryBoundary) : IControllerFactory
 {
     override fun pageBoundary() = PageController(20)
     override fun exportController() = ExportController(boundary.exportBoundary(), LogExportPresenter())
