@@ -69,7 +69,7 @@ public record LogUpdatePresenter(ILogger log) implements UpdatePresenter {
             .map(LogUpdatePresenter::flattenOutcome)
             .toList();
 
-        return Table.tabulate(rows, headers);
+        return new Table(headers, rows, " | ").toString();
     }
 
     // Unsure if this should take the input, but it allows for a nicer formatting.

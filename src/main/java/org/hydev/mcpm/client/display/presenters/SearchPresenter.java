@@ -39,7 +39,8 @@ public class SearchPresenter implements SearchResultPresenter {
                 .toList();
 
         var table = new Table(List.of(":Name", "Author", "Version:"),
-                list.stream().map(p -> List.of("&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList());
+                list.stream().map(p -> List.of("&a" + p.name(), "&e" + p.getFirstAuthor(), p.version())).toList(),
+            " | ");
 
         // Pagination
         if (pageController != null) {

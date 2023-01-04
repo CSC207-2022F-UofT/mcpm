@@ -98,7 +98,7 @@ class MirrorParserTest
     @Test
     @Throws(ArgumentParserException::class, IOException::class)
     fun testSelectNoArguments() = runBlocking {
-        args.parse(arrayOf("mirror", "select"), NullLogger())
+        args.parse(arrayOf("mirror", "select", "mcpm.pizza.com"), NullLogger())
 
         // This is the default value for MockMirrorSelector.
         // I guess there's also no guarantee that selected mirror works?

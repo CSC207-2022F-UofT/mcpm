@@ -63,7 +63,7 @@ class Installer(
             val tbl = Table(listOf("ID", "Name", "Author", "Version"),
                 sr.filter { it.latest.isPresent }.map {
                     val meta = it.latest.get().meta
-                    listOf(it.id.toString(), meta.name, meta.author, meta.version)
+                    listOf(it.id.toString(), meta.name, meta.firstAuthor, meta.version)
                 })
             log.print(tbl.toString())
             log.print("&6Multiple plugins matching $name found. Please choose a plugin ID: ")
