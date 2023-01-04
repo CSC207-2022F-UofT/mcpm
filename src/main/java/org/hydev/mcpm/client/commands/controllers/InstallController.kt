@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.commands.controllers
 
 import org.hydev.mcpm.client.installer.IInstaller
+import org.hydev.mcpm.client.installer.InstallException
 import org.hydev.mcpm.client.installer.input.InstallInput
 import org.hydev.mcpm.client.installer.output.InstallResult
 import org.hydev.mcpm.client.interaction.ILogger
@@ -21,6 +22,11 @@ data class InstallController(val boundary: IInstaller)
     suspend fun install(names: List<String>, ids: List<Long>, load: Boolean, log: ILogger): List<InstallResult>
     {
         val input = InstallInput(names, ids, load, true)
-        return boundary.install(input, log)
+        return try {
+            boundary.install(input, log)
+        } catch (e: InstallException) {
+            log.print("&c${e.message}")
+            emptyList()
+        }
     }
 }
