@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.installer
 
 import org.hydev.mcpm.client.display.presenters.Table
+import org.hydev.mcpm.client.installer.PackageChange.Type
 import org.hydev.mcpm.client.models.PluginVersion
 import org.hydev.mcpm.client.models.PluginYml
 import org.hydev.mcpm.utils.UnitConverter.sizeFmt
@@ -44,6 +45,12 @@ val List<PackageChange>.table get() = Table(listOf(":Plugin", "Current", "Latest
 })
 
 val List<PackageChange>.downloadSize get() = sumOf { it.new?.size ?: 0 }
+val List<PackageChange>.originalSize get() = sumOf { it.originalFile?.length() ?: 0 }
+val List<PackageChange>.upgradeSize get() = downloadSize - originalSize
+val List<PackageChange>.removedSize get() = filter { it.type == Type.REMOVE }.sumOf { it.originalFile?.length() ?: 0 }
 
 val List<PackageChange>.fmt get() = "Found $size plugins changes\n\n" +
-    "$table\n\nTotal download size: $downloadSize"
+        "$table\n\n" +
+        if (downloadSize != 0L) "Total Download Size: ${downloadSize.sizeFmt()}\n" else "" +
+        if (removedSize != 0L) "Total Removed Size: ${removedSize.sizeFmt()}\n" else "" +
+        "Net Upgrade Size: ${upgradeSize.sizeFmt()}"
