@@ -60,10 +60,10 @@ class Installer(
             }
 
             // Multiple plugins with the same name, ask user for input
-            val tbl = Table(listOf("ID", "Author", "Version", "Main"),
-                sr.filter { it.latest.isPresent }.map {
+            val tbl = Table(listOf(":ID", "Author", "Version", "Main", "Downloads:"),
+                sr.takeLast(20).map {
                     val meta = it.latest.get().meta
-                    listOf(it.id.toString(), meta.firstAuthor ?: "-", meta.version, meta.main)
+                    listOf(it.id.toString(), meta.firstAuthor ?: "-", meta.version, meta.main, it.downloads.toString())
                 })
             log.print(tbl.toString())
             log.print("&6Multiple plugins matching $name found. Please choose a plugin ID: ")
