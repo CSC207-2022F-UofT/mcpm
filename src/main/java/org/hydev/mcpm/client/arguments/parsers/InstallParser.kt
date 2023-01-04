@@ -3,16 +3,15 @@ package org.hydev.mcpm.client.arguments.parsers
 import net.sourceforge.argparse4j.impl.Arguments
 import net.sourceforge.argparse4j.inf.Namespace
 import net.sourceforge.argparse4j.inf.Subparser
+import org.hydev.mcpm.client.commands.controllers.InstallController
 import org.hydev.mcpm.client.commands.presenters.InstallResultPresenter
-import org.hydev.mcpm.client.installer.IInstaller
-import org.hydev.mcpm.client.installer.input.InstallInput
 import org.hydev.mcpm.client.interaction.ILogger
 
 /**
  * Handles parsing install arguments (to be dispatched to Controller).
  */
 
-data class InstallParser(val boundary: IInstaller, val presenter: InstallResultPresenter) : CommandParser
+data class InstallParser(val controller: InstallController, val presenter: InstallResultPresenter) : CommandParser
 {
     override val name = "install"
     override val description = "Download and install a plugin from the database"
@@ -36,7 +35,7 @@ data class InstallParser(val boundary: IInstaller, val presenter: InstallResultP
             names.clear()
         }
 
-        val result = boundary.install(InstallInput(names, ids, !details.getBoolean("noLoad"), true), log)
+        val result = controller.install(names, ids, !details.getBoolean("noLoad"), log)
         presenter.displayResult(result, log)
     }
 }
