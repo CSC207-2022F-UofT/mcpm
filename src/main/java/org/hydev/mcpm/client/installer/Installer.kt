@@ -65,22 +65,28 @@ class Installer(
                     val meta = it.latest.get().meta
                     listOf(it.id.toString(), meta.firstAuthor ?: "-", meta.version, meta.main, it.downloads.toString())
                 })
+            val default = sr.last()
             log.print(tbl.toString())
-            log.print("&6Multiple plugins matching $name found. Please choose a plugin ID: ")
+            log.print("&6Multiple plugins matching $name found. \n" +
+                "&rPlease choose a plugin ID &7(defaults to the plugin with highest downloads: ${default.id}):")
 
             // Validate input
             while (true)
             {
-                val id = runCatching { log.input() }.getOrNull()?.toLongOrNull()
-                if (id == null)
-                {
+                val inp = runCatching { log.input() }.getOrNull()
+                if (inp.isNullOrBlank()) {
+                    log.print("&aUsing default ${default.id}")
+                    return@mapNotNull default
+                }
+
+                val id = inp.toLongOrNull()
+                if (id == null) {
                     log.print("&cInvalid input. Please make sure you input the plugin ID:")
                     continue
                 }
 
                 val pl = sr.filter { it.id == id }
-                if (pl.isEmpty())
-                {
+                if (pl.isEmpty()) {
                     log.print("&cThe ID you typed $id isn't in the plugin list. Please try again:")
                     continue
                 }
