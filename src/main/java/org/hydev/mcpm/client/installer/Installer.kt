@@ -34,7 +34,7 @@ class Installer(
         if (sr.plugins.isEmpty())
             throw InstallException("Plugin not found: $field")
 
-        return sr.plugins
+        return sr.plugins.filter { it.latest.isPresent }.sortedBy { it.downloads }
     }
 
     /**
