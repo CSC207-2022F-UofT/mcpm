@@ -28,4 +28,17 @@ class PackageChange(
      * Compute type
      */
     val type get() = if (new != null) if (original != null) Type.UPGRADE else Type.ADD else Type.REMOVE
+
+    /**
+     * Format package change list
+     */
+    fun List<PackageChange>.fmt() = Table(listOf("Plugin", "Current", "Latest", "Size"), map {
+        val ty = it.type
+        listOf(
+            ty.symbol + (it.new?.meta?.name ?: it.original?.name ?: it.originalFile?.name),
+            it.original?.version ?: "&7-",
+            it.new?.meta?.version ?: "&7-",
+            it.originalFile?.length()?.sizeFmt().toString()
+        )
+    })
 }
