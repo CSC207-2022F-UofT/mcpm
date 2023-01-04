@@ -25,13 +25,13 @@ import org.hydev.mcpm.client.updater.UpdateInteractor
  * @author Azalea (https://github.com/hykilpikonna)
  * @since 2023-01-04
  */
-class InteractorFactory : IInteractorFactory
+class InteractorFactory(val server: Boolean) : IInteractorFactory
 {
     override val mirrorSelector by lazy { MirrorSelector() }
     override val databaseFetcher by lazy { LocalDatabaseFetcher(mirrorSelector.selectedMirrorSupplier()) }
     override val tracker by lazy { LocalPluginTracker() }
     override val jarFinder by lazy { LocalJarFinder() }
-    override val pluginLoader by lazy { PluginLoader(jarFinder) }
+    override val pluginLoader by lazy { if (server) PluginLoader(jarFinder) else null }
     override val loader by lazy { pluginLoader }
     override val reloader by lazy { pluginLoader }
     override val unloader by lazy { pluginLoader }

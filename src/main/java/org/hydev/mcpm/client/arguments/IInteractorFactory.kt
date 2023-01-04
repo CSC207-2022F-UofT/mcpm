@@ -28,10 +28,10 @@ interface IInteractorFactory
     val databaseFetcher: DatabaseFetcher
     val tracker: PluginTracker
     val jarFinder: LocalJarBoundary
-    val pluginLoader: PluginLoader
-    val loader: LoadBoundary
-    val reloader: ReloadBoundary
-    val unloader: UnloadBoundary
+    val pluginLoader: PluginLoader?
+    val loader: LoadBoundary?
+    val reloader: ReloadBoundary?
+    val unloader: UnloadBoundary?
     val fetcherListener: DatabaseFetcherListener
     val searcher: SearchPackagesBoundary
     val pluginDownloader: PluginDownloader
