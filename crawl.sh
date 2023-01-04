@@ -14,7 +14,7 @@ $PY -m tools.run org.hydev.mcpm.server.SpigetCrawler
 $PY -m tools.run org.hydev.mcpm.server.spiget.CreateDatabase
 
 # Zstd compression
-rm -rf .mcpm/db.zst
-zstd -f -19 -T36 .mcpm/db
+zstd -f -19 -T36 .mcpm/db -o .mcpm/db.zst1
+mv -f .mcpm/db.zst1 .mcpm/db.zst
 
 popd

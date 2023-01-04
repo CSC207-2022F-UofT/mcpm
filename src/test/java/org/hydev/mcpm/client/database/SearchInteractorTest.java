@@ -88,7 +88,7 @@ public class SearchInteractorTest {
         assertEquals(result.state(), SearchPackagesResult.State.SUCCESS);
 
         var text = formatStr(result, ", ");
-        assertEquals("Holographic Displays, WorldGuard", text);
+        assertEquals("WorldGuard, Holographic Displays", text);
     }
 
     /**

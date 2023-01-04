@@ -1,14 +1,12 @@
 package org.hydev.mcpm.client.updater;
 
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
-import org.hydev.mcpm.client.installer.InstallBoundary;
-import org.hydev.mcpm.client.installer.input.InstallInput;
+import org.hydev.mcpm.client.installer.IInstaller;
 import org.hydev.mcpm.client.matcher.PluginModelId;
 import org.hydev.mcpm.client.matcher.PluginVersionId;
 import org.hydev.mcpm.client.matcher.PluginVersionState;
 import org.hydev.mcpm.client.models.PluginModel;
 import org.hydev.mcpm.client.models.PluginYml;
-import org.hydev.mcpm.client.search.SearchPackagesType;
 import org.hydev.mcpm.utils.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +25,9 @@ import static org.hydev.mcpm.client.updater.UpdateOutcome.State.*;
  * @param pluginTracker The plugin tracker to use for getting installed plugin information.
  */
 public record UpdateInteractor(
-        CheckForUpdatesBoundary checkBoundary,
-        InstallBoundary installer,
-        PluginTracker pluginTracker
+    CheckForUpdatesBoundary checkBoundary,
+    IInstaller installer,
+    PluginTracker pluginTracker
 ) implements UpdateBoundary {
     @Nullable
     private PluginVersionState stateByName(Map<String, PluginYml> installed, String name) {
@@ -65,7 +63,7 @@ public record UpdateInteractor(
     }
 
     private UpdateOutcome updateByModel(PluginModel model, PluginVersionState state, boolean load) {
-        var latest = model.getLatestPluginVersion().orElse(null);
+        var latest = model.getLatest().orElse(null);
 
         if (latest == null || latest.meta() == null || latest.meta().name() == null) {
             return defaultOutcomeFor(state, MISMATCHED);
@@ -83,20 +81,22 @@ public record UpdateInteractor(
         // We should assume InstallBoundary has the same PluginTracker.
         pluginTracker.removeEntry(name);
 
-        var input = new InstallInput(name, SearchPackagesType.BY_NAME, load, manuallyInstalled);
-
-        var result = installer.installPlugin(input);
-
-        // Network error is used for events that aren't necessarily network errors.
-        // But I don't want to have too many fail states. Maybe we should go for INTERNAL_ERROR?
-        return switch (result.get(0).type()) {
-            case NOT_FOUND -> defaultOutcomeFor(state, MISMATCHED);
-            case SEARCH_INVALID_INPUT -> throw new RuntimeException(); // Something went wrong.
-            case SEARCH_FAILED_TO_FETCH_DATABASE,
-                NO_VERSION_AVAILABLE -> defaultOutcomeFor(state, NETWORK_ERROR);
-            case PLUGIN_EXISTS -> throw new RuntimeException(); // We need to know something went wrong.
-            case SUCCESS_INSTALLED -> new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
-        };
+        //var input = new InstallInput(name, SearchPackagesType.BY_NAME, load, manuallyInstalled);
+        //
+        //var result = installer.installPlugin(input);
+        //
+        //// Network error is used for events that aren't necessarily network errors.
+        //// But I don't want to have too many fail states. Maybe we should go for INTERNAL_ERROR?
+        //return switch (result.get(0).type()) {
+        //    case NOT_FOUND -> defaultOutcomeFor(state, MISMATCHED);
+        //    case SEARCH_INVALID_INPUT -> throw new RuntimeException(); // Something went wrong.
+        //    case SEARCH_FAILED_TO_FETCH_DATABASE,
+        //        NO_VERSION_AVAILABLE -> defaultOutcomeFor(state, NETWORK_ERROR);
+        //    case PLUGIN_EXISTS -> throw new RuntimeException(); // We need to know something went wrong.
+        //    case SUCCESS_INSTALLED -> new UpdateOutcome(UPDATED, state.versionId().versionString(), latestVersion);
+        //};
+        // TODO: Implement this
+        throw new UnsupportedOperationException("TODO");
     }
 
     private UpdateOutcome makeOutcome(@Nullable PluginVersionState state, CheckForUpdatesResult result, boolean load) {

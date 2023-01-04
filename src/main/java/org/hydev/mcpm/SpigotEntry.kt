@@ -1,12 +1,17 @@
 package org.hydev.mcpm
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.hydev.mcpm.client.arguments.ArgsParserFactory
 import org.hydev.mcpm.client.interaction.SpigotUserHandler
+import org.hydev.mcpm.client.interaction.StdLogger
 import org.hydev.mcpm.utils.ColorLogger
 
 /**
@@ -38,6 +43,9 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
 
         // Register mcpm command
         getCommand("mcpm")!!.setExecutor(this)
+
+        // Register event listeners
+        server.pluginManager.registerEvents(interaction, this)
     }
 
     /**
@@ -48,16 +56,20 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
         logger.info("Disabled!")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean
     {
-        val log = ColorLogger.toMinecraft(sender)
-        try
-        {
-            parser.parse(args, log)
-        }
-        catch (e: ArgumentParserException)
-        {
-            parser.fail(e, log)
+        val log = interaction.create(sender)
+        // Run async
+        GlobalScope.launch {
+            try
+            {
+                parser.parse(args, log)
+            }
+            catch (e: ArgumentParserException)
+            {
+                parser.fail(e, log)
+            }
         }
         return true
     }
@@ -65,7 +77,7 @@ class SpigotEntry : JavaPlugin(), CommandExecutor
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String>?
     {
         if (command.name.lowercase() != "mcpm") return null
-        return if (args.size == 1) parser.rawSubparsers.map { it.name() }
+        return if (args.size == 1) parser.rawSubparsers.map { it.name }
         else null
     }
 }

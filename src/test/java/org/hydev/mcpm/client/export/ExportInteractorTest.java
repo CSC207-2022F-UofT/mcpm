@@ -4,6 +4,7 @@ import org.hydev.mcpm.client.commands.controllers.ExportController;
 import org.hydev.mcpm.client.database.PluginMockFactory;
 import org.hydev.mcpm.client.database.tracker.MockPluginTracker;
 import org.hydev.mcpm.client.database.tracker.PluginTracker;
+import org.hydev.mcpm.client.interaction.StdLogger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,6 @@ class ExportInteractorTest {
     @Tag("IntegrationTest")
     void testExportImport() {
         var exportController = new ExportController(interactor, (exportPluginsResult, log) -> {});
-        exportController.export(new ExportPluginsInput("literal", ""), System.out::println);
+        exportController.export(new ExportPluginsInput("literal", ""), new StdLogger());
     }
 }

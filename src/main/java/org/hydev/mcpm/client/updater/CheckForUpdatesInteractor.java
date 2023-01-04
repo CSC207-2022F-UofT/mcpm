@@ -68,7 +68,7 @@ public record CheckForUpdatesInteractor(
                 continue;
             }
 
-            var optionalLatest = value.getLatestPluginVersion();
+            var optionalLatest = value.getLatest();
 
             // guard let?
             if (optionalLatest.isEmpty()) {

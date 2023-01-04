@@ -17,6 +17,7 @@ import java.util.Optional;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PluginModel(
     long id,
+    long downloads,
     List<PluginVersion> versions)
 {
     /**
@@ -25,7 +26,7 @@ public record PluginModel(
      * @return The latest PluginVersion of itself, if it exists.
      */
     @JsonIgnore
-    public Optional<PluginVersion> getLatestPluginVersion() {
+    public Optional<PluginVersion> getLatest() {
         return versions.stream().max(Comparator.comparingLong(PluginVersion::id));
     }
 }

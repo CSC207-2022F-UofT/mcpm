@@ -1,5 +1,6 @@
 package org.hydev.mcpm.utils;
 
+import org.hydev.mcpm.client.interaction.StdLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +17,8 @@ class ColorLoggerTest
     @Tag("IntegrationTest")
     void toStdOut()
     {
-        var log = ColorLogger.toStdOut();
-        log.accept("&aGreen! &cRed! &bBlue! &rDefault!");
+        var log = new StdLogger();
+        log.print("&aGreen! &cRed! &bBlue! &rDefault!");
         printc("&aPrintc!");
         printfc("&aPrintfc! %.2f", 0.031f);
     }

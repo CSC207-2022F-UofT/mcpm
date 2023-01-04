@@ -41,7 +41,7 @@ public record PluginModelId(
             return false;
         }
 
-        var optionalMeta = model.getLatestPluginVersion().map(PluginVersion::meta);
+        var optionalMeta = model.getLatest().map(PluginVersion::meta);
 
         if (optionalMeta.isEmpty()) {
             return pluginName == null && pluginMain == null;

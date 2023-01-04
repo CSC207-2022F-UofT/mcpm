@@ -26,7 +26,7 @@ public class SearcherByCommand implements Searcher {
         Map<String, List<PluginModel>> models = new HashMap<>();
         for (PluginModel plugin : plugins) {
             // Get latest version
-            var v = plugin.getLatestPluginVersion();
+            var v = plugin.getLatest();
             if (v.isPresent() && v.get().meta() != null && v.get().meta().commands() != null) {
                 List<String> aliases = v.get().meta()
                         .commands().keySet().stream()

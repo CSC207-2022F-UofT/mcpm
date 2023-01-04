@@ -1,6 +1,7 @@
 package org.hydev.mcpm.client.display.presenters;
 
 import org.hydev.mcpm.client.commands.presenters.UpdatePresenter;
+import org.hydev.mcpm.client.interaction.ILogger;
 import org.hydev.mcpm.client.updater.UpdateInput;
 import org.hydev.mcpm.client.updater.UpdateOutcome;
 import org.hydev.mcpm.client.updater.UpdateResult;
@@ -8,7 +9,6 @@ import org.hydev.mcpm.client.updater.UpdateResult;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  *
  * @param log A consumer that takes Minecraft Color coded strings to print to the user.
  */
-public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresenter {
+public record LogUpdatePresenter(ILogger log) implements UpdatePresenter {
     private static String userShortFromType(UpdateOutcome.State state) {
         return switch (state) {
             case MISMATCHED -> "Not Found";
@@ -69,7 +69,7 @@ public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresente
             .map(LogUpdatePresenter::flattenOutcome)
             .toList();
 
-        return Table.tabulate(rows, headers);
+        return new Table(headers, rows, " | ").toString();
     }
 
     // Unsure if this should take the input, but it allows for a nicer formatting.
@@ -85,7 +85,7 @@ public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresente
         }
 
         if (outcomes.isEmpty()) {
-            log.accept("&2All plugins are up to date.");
+            log.print("&2All plugins are up to date.");
         } else {
             var updated = outcomes.values().stream()
                 .filter(x -> x.state() == UpdateOutcome.State.UPDATED)
@@ -96,14 +96,14 @@ public record LogUpdatePresenter(Consumer<String> log) implements UpdatePresente
                 .count();
 
             if (failed > 0) {
-                log.accept("&cFailed to update " + failed + " plugins (" + updated + " plugins updated).");
+                log.print("&cFailed to update " + failed + " plugins (" + updated + " plugins updated).");
             } else if (updated > 0) {
-                log.accept("&2Updated " + updated + " plugins successfully.");
+                log.print("&2Updated " + updated + " plugins successfully.");
             } else {
-                log.accept("&2All plugins are up to date.");
+                log.print("&2All plugins are up to date.");
             }
 
-            log.accept(tabulateOutcomes(outcomes));
+            log.print(tabulateOutcomes(outcomes));
         }
     }
 }

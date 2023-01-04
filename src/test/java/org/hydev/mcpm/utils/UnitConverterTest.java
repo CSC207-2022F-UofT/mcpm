@@ -12,11 +12,11 @@ class UnitConverterTest
     @Test
     void autoBinarySize()
     {
-        assertEquals(UnitConverter.autoBinarySize(10).unit(), "B");
-        assertEquals(UnitConverter.autoBinarySize(1000_0).unit(), "KiB");
-        assertEquals(UnitConverter.autoBinarySize(1000_000_00d).unit(), "MiB");
-        assertEquals(UnitConverter.autoBinarySize(1000_000_000_0d).unit(), "GiB");
-        assertEquals(UnitConverter.autoBinarySize(1000_000_000_000_00d).unit(), "TiB");
+        assertEquals(UnitConverter.autoBinarySize(10).unit, "B");
+        assertEquals(UnitConverter.autoBinarySize(1000_0).unit, "KiB");
+        assertEquals(UnitConverter.autoBinarySize(1000_000_00d).unit, "MiB");
+        assertEquals(UnitConverter.autoBinarySize(1000_000_000_0d).unit, "GiB");
+        assertEquals(UnitConverter.autoBinarySize(1000_000_000_000_00d).unit, "TiB");
     }
 
     @Test

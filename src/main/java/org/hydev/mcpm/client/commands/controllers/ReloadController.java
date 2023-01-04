@@ -1,10 +1,10 @@
 package org.hydev.mcpm.client.commands.controllers;
 
+import org.hydev.mcpm.client.interaction.ILogger;
 import org.hydev.mcpm.client.loader.PluginNotFoundException;
 import org.hydev.mcpm.client.loader.ReloadBoundary;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * A command that handles plugin reloading operations. See ReloadEntry and ReloadParser.
@@ -16,14 +16,14 @@ public record ReloadController(ReloadBoundary reloader) {
      * @param pluginNames A list of all plugin names to be reloaded.
      * @param log Callback for status for log events.
      */
-    public void reload(List<String> pluginNames, Consumer<String> log) {
+    public void reload(List<String> pluginNames, ILogger log) {
         for (var name : pluginNames) {
             try {
-                log.accept(String.format("&6Reloading %s...", name));
+                log.print(String.format("&6Reloading %s...", name));
                 reloader.reloadPlugin(name);
-                log.accept(String.format("&aPlugin %s reloaded!", name));
+                log.print(String.format("&aPlugin %s reloaded!", name));
             } catch (PluginNotFoundException e) {
-                log.accept(String.format("&cError: Plugin %s not found", name));
+                log.print(String.format("&cError: Plugin %s not found", name));
             }
         }
     }
